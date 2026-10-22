@@ -23,7 +23,7 @@
         pad += p;
         text += links[i].offsetWidth - p;
       }
-      var room = nav.clientWidth - pad;
+      var room = nav.clientWidth - pad - (parseFloat(getComputedStyle(nav).columnGap) || 0) * (links.length - 1);
       if (text > room) nav.style.setProperty('--nav-fit', (room / text * 0.98).toFixed(3));
     }
     function setH() { fitNav(); document.documentElement.style.setProperty('--hdr-h', header.offsetHeight + 'px'); }

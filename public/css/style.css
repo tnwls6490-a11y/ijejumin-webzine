@@ -90,9 +90,9 @@ a { color: inherit; }
 @media (min-width: 900px) {
   .wz-nav { width: auto; margin-left: auto; }
 }
-/* 휴대폰: 메뉴 세 개를 한 줄에. 그래도 넘치면(좁은 화면, 휴대폰 글자 크기 설정) site.js가 --nav-fit으로 글자를 더 줄인다 */
+/* 휴대폰: 메뉴 세 개를 한 줄에, 오른쪽 끝에 모아 둔다. 넘치면(좁은 화면, 휴대폰 글자 크기 설정) site.js가 --nav-fit으로 글자를 더 줄인다 */
 @media (max-width: 899px) {
-  .wz-nav { flex-wrap: nowrap; justify-content: space-between; gap: 0; width: calc(100% + 20px); margin-right: -10px; font-size: calc(15px * var(--nav-fit, 1)); white-space: nowrap; }
+  .wz-nav { flex-wrap: nowrap; justify-content: flex-end; gap: 4px; width: calc(100% + 20px); margin-right: -10px; font-size: calc(15px * var(--nav-fit, 1)); white-space: nowrap; }
   .wz-nav a { padding: 0 8px; font-size: inherit; }
 }
 
@@ -394,8 +394,9 @@ a { color: inherit; }
   font-size: clamp(16px, 1.6vw, 20px); font-weight: 600; line-height: 1.6;
   text-shadow: 0 1px 3px rgba(0, 0, 0, .55), 0 0 18px rgba(6, 22, 44, .7);
 }
-/* 줄이 모자라면 말 덩어리 사이에서만 바꾼다 ('생존기'만 혼자 남지 않게) */
-.landing__phrase { display: inline-block; white-space: nowrap; }
+/* 말 덩어리: 줄이 모자라면 덩어리 사이에서 먼저 바꾼다 ('생존기'처럼 한 낱말만 혼자 남지 않게).
+   덩어리가 한 줄보다 길 때만 그 안에서 바뀐다 */
+.phrase { display: inline-block; }
 .landing__next {
   display: inline-flex; align-items: center; gap: 8px;
   min-height: 44px; padding: 0 22px; border-radius: 999px;
@@ -733,6 +734,9 @@ a { color: inherit; }
   .people .person__top { position: relative; inset: auto; }
   .people .person__center { position: static; flex: 1; min-height: 0; display: flex; flex-direction: column; }
   .people .person--photo .person__center { z-index: 4; }   /* 앞 제목이 아래로 내려와도 무대 아래쪽 어둡게 덮는 층(::after)보다 위에 */
+  /* 에밀리: 얼굴이 사진 한가운데라 오른쪽 앞 제목에 가려진다. 인물을 왼쪽으로 옮기고(배경·누끼 함께), 누끼를 앞 제목보다 앞에 둔다 */
+  .person--photo-side .person__photo { object-position: 64% 45%; }
+  .people .person--photo-side .person__cut { z-index: 4; }
   .people .person__name { position: static; flex: 1; display: flex; flex-direction: column; justify-content: space-between; gap: 12px; }
   .js .people .person--photo .person__back { position: relative; top: auto; left: auto; right: auto; margin-top: 10px; align-self: flex-start; }
   .js .people .person--photo .person__front { position: relative; top: auto; left: auto; right: auto; margin-right: 8px; align-self: flex-end; text-align: left; }
@@ -1210,6 +1214,10 @@ a { color: inherit; }
 .pick__intro-mark b { display: block; width: 66px; height: 2px; background: #F97316; }
 .pick__quote-box { margin: 0; }
 .pick__quote { margin: 0; font-size: clamp(22px, 3vw, 34px); font-weight: 700; line-height: 1.55; letter-spacing: -0.03em; }
+@media (max-width: 600px) {
+  .pick__quote .phrase { display: block; }   /* 휴대폰: 말 덩어리마다 한 줄씩 (네 줄) */
+  .pick__quote br { display: none; }
+}
 .pick__cite { display: block; margin: 16px 0 0; font-size: 16px; font-style: normal; color: rgba(255, 255, 255, .72); }
 .pick__cols {
   display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;
