@@ -118,54 +118,59 @@ a { color: inherit; }
 }
 
 /* ---------- 공통 틀: 푸터 ----------
-   사용자가 준 시안의 모양을 화면 가득한 띠로 (2026-10-22, 둥근 카드에 넣었다가 사용자 요청으로 전체 폭으로)
-   위: 푸터 위 안내(.wz-outro): 왼쪽 주황 로고 + 주황 '육지에서 나고, 섬에서 자라는 중'·회색 팀 이름,
-       오른쪽 '메뉴'·'인터뷰' 두 칸(사이에 세로 선, 이름은 주황, 링크는 회색)
-   아래: 공통 기준 푸터(.site-footer, 코드 그대로): 가는 선 아래 왼쪽 '이제주민 · 한경 웹진', 오른쪽 '개인정보처리방침 →'
-   바탕은 옅은 살구색, 위 끝에 가는 선. 주황 글자는 로고와 같은 주황(--orange, 사용자 요청). 살구색 위 대비는 약 2.7:1로 공통 기준(4.5:1)에 못 미쳐 올리기 전 확인 목록에 적어 둠.
-   (그 전: 둥근 카드 → 헤더와 같은 주황 바탕·흰 글자 → 파랑 #2C64A0 바탕) */
-.wz-outro, .site-footer { background: #FFF6EC; color: var(--muted); }
-.wz-outro { border-top: 1px solid #F1DCC6; }
+   사용자가 준 시안(다른 웹진 푸터)의 짜임대로 정리 (2026-10-23)
+   바탕은 헤더와 같은 주황, 글자는 흰색 (사용자 요청 "이전의 주황색으로")
+   위(.wz-outro): 왼쪽 흰 로고 + 소개 | '만든 사람들' | '출처'. 칸 이름 오른쪽으로 점선이 이어진다
+   아래: 공통 기준 푸터(.site-footer, 코드 그대로): 파선 아래 왼쪽 '개인정보처리방침'(굵게·밑줄), 오른쪽 '이제주민 · 한경 웹진'
+   주황 위 흰 글자는 대비 2.8:1로 공통 기준(4.5:1)에 못 미친다 (헤더와 같음, 올리기 전 확인 목록에 적어 둠)
+   (그 전: 옅은 살구색 띠에 주황 글자, 오른쪽 메뉴·인터뷰 두 칸 → 둥근 카드 → 헤더와 같은 주황 바탕·흰 글자 → 파랑 #2C64A0 바탕) */
+.wz-outro, .site-footer { background: var(--hdr-bg); color: var(--hdr-ink); }
 .wz-outro__inner {
-  display: grid; grid-template-columns: 1fr auto auto; align-items: start; gap: 24px 0;
-  padding-top: 36px; padding-bottom: 20px;
-}
-.wz-outro__brand {
-  display: grid; grid-template-columns: auto 1fr; align-items: center; column-gap: 22px; align-self: center;
+  display: grid; grid-template-columns: 1.35fr 1fr 1.4fr; align-items: start; gap: 32px clamp(32px, 4vw, 56px);
+  padding-top: clamp(44px, 6vw, 68px); padding-bottom: clamp(32px, 4vw, 48px);
 }
 .wz-outro__logo {
-  grid-row: 1 / span 2; display: block; width: 76px; height: 88px;
-  background: var(--orange);
+  display: block; width: 64px; height: 74px; margin-bottom: 18px;
+  background: var(--hdr-ink);
   -webkit-mask: url(../images/logo-ijejumin-white.webp) center / contain no-repeat;
   mask: url(../images/logo-ijejumin-white.webp) center / contain no-repeat;
 }
-.wz-outro__tagline { margin: 0 0 6px; align-self: end; font-size: clamp(18px, 1.7vw, 21px); font-weight: 700; line-height: 1.4; letter-spacing: -0.01em; color: var(--orange); }
-.wz-outro__team { margin: 0; align-self: start; font-size: 16px; color: var(--muted); }
-.wz-outro__col { display: flex; flex-direction: column; align-items: flex-start; min-width: 150px; padding: 0 28px; }
-.wz-outro__col + .wz-outro__col { border-left: 1px solid #F1DCC6; padding-right: 0; }
-.wz-outro__head { margin: 0 0 2px; font-size: 16px; font-weight: 700; color: var(--orange); }
-.wz-outro__col a { display: inline-flex; align-items: center; min-height: 44px; font-size: 16px; font-weight: 500; line-height: 1.35; color: var(--muted); text-decoration: none; }
-.wz-outro__col a:hover { color: var(--orange); text-decoration: underline; text-underline-offset: 4px; }
-.wz-outro :focus-visible, .site-footer :focus-visible { outline-color: var(--orange-ink); }
+.wz-outro__desc { margin: 0; font-size: 17px; font-weight: 500; line-height: 1.75; }
+.wz-outro__head {
+  display: flex; align-items: center; gap: 14px; margin: 0 0 12px;
+  font-size: 16px; font-weight: 700; letter-spacing: .16em;
+}
+.wz-outro__head::after { content: ""; flex: 1; border-top: 2px dotted rgba(255, 255, 255, .6); }
+.wz-outro__line { margin: 0 0 8px; font-size: 16px; line-height: 1.7; }
+.wz-outro__line a {
+  display: inline-flex; align-items: center; min-height: 44px; vertical-align: middle;
+  color: inherit; font-weight: 600; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 4px;
+}
+.wz-outro :focus-visible, .site-footer :focus-visible { outline-color: var(--hdr-ink); }
 .site-footer .container {
   position: relative;
   display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
-  gap: 4px 16px; padding-top: 8px; padding-bottom: 14px; font-size: 16px; color: var(--orange);
+  gap: 4px 24px; padding-top: 10px; padding-bottom: 18px; font-size: 16px;
 }
-/* 위 안내와 아래 줄 사이 가는 선 (칸 안쪽 여백만큼 들여서) */
-.site-footer .container::before { content: ""; position: absolute; left: 16px; right: 16px; top: 0; height: 1px; background: #F1DCC6; }
-.site-footer a { display: inline-flex; align-items: center; gap: 10px; min-height: 44px; color: var(--orange); text-decoration: none; }
-.site-footer a::after { content: "→"; }
-.site-footer a:hover { text-decoration: underline; text-underline-offset: 4px; }
-@media (max-width: 760px) {
-  /* 휴대폰: 로고·소개를 위에 두고, 그 아래 메뉴·인터뷰 두 칸 */
-  .wz-outro__inner { grid-template-columns: 1fr 1fr; gap: 22px 0; padding-top: 28px; padding-bottom: 14px; }
-  .wz-outro__brand { grid-column: 1 / -1; column-gap: 16px; }
-  .wz-outro__logo { width: 56px; height: 65px; }
-  .wz-outro__tagline { font-size: 18px; }
-  .wz-outro__col { min-width: 0; padding: 0 14px 0 0; }
-  .wz-outro__col + .wz-outro__col { padding: 0 0 0 16px; }
-  .site-footer .container { padding-top: 6px; padding-bottom: 10px; }
+/* 위 안내와 아래 줄 사이 파선 (칸 안쪽 여백만큼 들여서) */
+.site-footer .container::before { content: ""; position: absolute; left: 16px; right: 16px; top: 0; border-top: 1px dashed rgba(255, 255, 255, .65); }
+/* 시안처럼 '개인정보처리방침'은 왼쪽, '이제주민 · 한경 웹진'은 오른쪽 (마크업은 공통 기준 그대로, 순서만 CSS로) */
+.site-footer a {
+  order: -1; display: inline-flex; align-items: center; min-height: 44px;
+  color: inherit; font-weight: 700; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 4px;
+}
+.site-footer a:hover, .wz-outro__line a:hover { text-decoration-thickness: 2px; }
+@media (max-width: 1000px) {
+  /* 태블릿: 로고·소개를 위에 두고, 그 아래 만든 사람들·출처 두 칸 */
+  .wz-outro__inner { grid-template-columns: 1fr 1fr; }
+  .wz-outro__brand { grid-column: 1 / -1; }
+}
+@media (max-width: 640px) {
+  /* 휴대폰: 한 줄에 한 칸씩 */
+  .wz-outro__inner { grid-template-columns: 1fr; gap: 28px; padding-top: 40px; padding-bottom: 28px; }
+  .wz-outro__logo { width: 56px; height: 65px; margin-bottom: 14px; }
+  .wz-outro__desc { font-size: 16px; }
+  .site-footer .container { padding-bottom: 12px; }
 }
 
 /* =========================================================
