@@ -14,7 +14,8 @@
   --orange-ink: #C2410C;
   --peach: #FFD9BC;
   --cabin: #F3EDE3;
-  --hdr-bg: #2C64A0;   /* 헤더: 첫 화면 사진 위쪽 하늘과 같은 파랑 (흰 글자 대비 6:1) */
+  --hdr-bg: #F97316;   /* 헤더: 인터뷰 화면의 주황 선과 같은 주황 (사용자 요청) */
+  --hdr-ink: #12233A;  /* 헤더 글자·로고: 주황 위에서 대비 5.6:1 (흰 글자는 2.8:1이라 공통 기준 4.5:1에 못 미침) */
   --font: Pretendard, "Pretendard Variable", "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
 }
 
@@ -76,24 +77,27 @@ a { color: inherit; }
 .wz-name {
   display: inline-flex; align-items: center; min-height: 44px;
   font-size: 0;   /* 글자 '이제주민'은 화면 낭독용으로 남기고, 보이는 것은 로고 */
-  color: #FFFFFF; text-decoration: none;
+  color: var(--hdr-ink); text-decoration: none;
 }
 .wz-name::before {
+  /* 흰 로고 그림을 모양틀로 써서 헤더 글자색으로 칠한다 */
   content: ""; width: 50px; height: 58px;
-  background: url(../images/logo-ijejumin-white.webp) center / contain no-repeat;
+  background: var(--hdr-ink);
+  -webkit-mask: url(../images/logo-ijejumin-white.webp) center / contain no-repeat;
+  mask: url(../images/logo-ijejumin-white.webp) center / contain no-repeat;
 }
 @media (max-width: 899px) {
   .wz-name::before { width: 40px; height: 46px; }
 }
-.wz-tagline { font-size: 16px; color: #E6EEF8; }
+.wz-tagline { font-size: 16px; color: var(--hdr-ink); }
 .wz-nav { display: flex; flex-wrap: wrap; gap: 0 2px; width: 100%; margin-left: -10px; }
 .wz-nav a {
   display: inline-flex; align-items: center; min-height: 44px; padding: 0 10px;
-  font-size: 16px; font-weight: 600; color: #FFFFFF; text-decoration: none;
+  font-size: 16px; font-weight: 600; color: var(--hdr-ink); text-decoration: none;
   border-radius: 999px;
 }
-.wz-nav a:hover { background: rgba(255, 255, 255, .16); color: #FFFFFF; }
-.wz-header :focus-visible { outline-color: #FFFFFF; }
+.wz-nav a:hover { background: rgba(18, 35, 58, .12); color: var(--hdr-ink); }
+.wz-header :focus-visible { outline-color: var(--hdr-ink); }
 
 @media (min-width: 900px) {
   .wz-nav { width: auto; margin-left: auto; }
@@ -200,11 +204,11 @@ a { color: inherit; }
   transform: scale(var(--scene));
   transform-origin: 50% 55%;
 }
-/* 헤더 바로 아래: 헤더 파랑에서 사진 하늘로 경계 없이 이어지게 */
+/* 사진 맨 위: 짙은 하늘 파랑에서 사진 하늘로 경계 없이 이어지게 (헤더 색과는 따로) */
 .scene__inner::after {
   content: ""; position: absolute; left: 0; right: 0; top: 0; z-index: 4;
   height: clamp(64px, 16%, 150px); pointer-events: none;
-  background: linear-gradient(180deg, var(--hdr-bg) 0%, rgba(44, 100, 160, .72) 30%, rgba(44, 100, 160, .3) 65%, rgba(44, 100, 160, 0) 100%);
+  background: linear-gradient(180deg, #2C64A0 0%, rgba(44, 100, 160, .72) 30%, rgba(44, 100, 160, .3) 65%, rgba(44, 100, 160, 0) 100%);
 }
 
 /* 실사 제주: 사진 → 글자 → 분화구(앞) 순서로 겹쳐 글자가 분화구 뒤에 있는 것처럼 */
@@ -1295,10 +1299,10 @@ a { color: inherit; }
   box-shadow: 0 10px 28px rgba(18, 35, 58, .2);
   opacity: 0; visibility: hidden; pointer-events: none;
 }
-/* 로고: 흰 로고 그림을 모양틀로 써서 헤더와 같은 파랑으로 칠한다 */
+/* 로고: 흰 로고 그림을 모양틀로 써서 파랑으로 칠한다 */
 .pick__cover-logo {
   width: calc(var(--pw) * .2); aspect-ratio: 180 / 209;
-  background: var(--hdr-bg);
+  background: #2C64A0;
   -webkit-mask: url(../images/logo-ijejumin-white.webp) center / contain no-repeat;
   mask: url(../images/logo-ijejumin-white.webp) center / contain no-repeat;
 }
