@@ -328,15 +328,15 @@ a { color: inherit; }
 .shade-panel img { width: 100%; height: 100%; max-width: none; user-select: none; }
 /* 손잡이가 은은하게 빛났다 사그라든다: 여기를 누르면 된다는 표시. 가리개가 닫혀 있을 때만 */
 .shade-panel::after {
-  /* 손잡이 크기의 빛: 가운데는 하얗게, 둘레로 따뜻한 빛이 번진다 */
+  /* 손잡이 둘레의 따뜻한 빛. 손잡이 자체는 거의 그대로 두고(사용자 요청) 둘레만 밝힌다 */
   content: ""; position: absolute; pointer-events: none;
   left: 50.3%; top: 92.4%; width: 35%; height: 2.8%;
   transform: translate(-50%, -50%);
   border-radius: 999px;
-  background: rgba(255, 251, 240, .7);
+  background: rgba(255, 251, 240, .1);
   box-shadow:
-    0 0 calc(var(--fw, 600px) * .02) calc(var(--fw, 600px) * .006) rgba(255, 226, 168, .85),
-    0 0 calc(var(--fw, 600px) * .06) calc(var(--fw, 600px) * .012) rgba(255, 210, 140, .45);
+    0 0 calc(var(--fw, 600px) * .03) calc(var(--fw, 600px) * .004) rgba(255, 226, 168, .5),
+    0 0 calc(var(--fw, 600px) * .07) calc(var(--fw, 600px) * .012) rgba(255, 210, 140, .35);
   opacity: 0;
   transition: opacity .5s ease;
 }
@@ -344,9 +344,10 @@ a { color: inherit; }
    닫힌 가리개의 손잡이 자리에 고정해 두고, 끌어 올리는 동안은 끈다 */
 .porthole::after {
   content: ""; position: absolute; pointer-events: none;
-  left: 50%; top: 71.9%; width: 50%; height: 20%;
+  left: 50%; top: 71.9%; width: 78%; height: 32%;
   transform: translate(-50%, -50%);
-  background: radial-gradient(closest-side, rgba(255, 224, 170, .62), rgba(255, 214, 150, .3) 45%, rgba(255, 214, 150, .08) 75%, rgba(255, 214, 150, 0));
+  /* 가운데(손잡이)는 너무 하얘지지 않게 낮추고, 바깥으로 넓고 고르게 번지게 */
+  background: radial-gradient(closest-side, rgba(255, 220, 165, .34), rgba(255, 214, 150, .3) 26%, rgba(255, 214, 150, .14) 56%, rgba(255, 214, 150, .04) 82%, rgba(255, 214, 150, 0));
   mix-blend-mode: screen;
   opacity: 0;
   transition: opacity .5s ease;
