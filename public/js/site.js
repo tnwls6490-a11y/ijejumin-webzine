@@ -468,6 +468,9 @@
          글이 지나가면 떠올라 뒤집히며 제자리로 내려온다 */
       var sink = introIn * (1 - introOut);
       var dropY = (.09 * sink - .07 * introOut * (1 - flip)) * window.innerHeight - Math.sin(flip * Math.PI) * .04 * window.innerHeight - lift * flip;
+      /* 엽서가 모이는 자리는 나선 가운데보다 무대 높이의 2.5%만큼 위 (사용자 요청 "진짜 살짝만 위로").
+         모이면서 올라가고, 뒤집히는 동안 마지막 엽서 자리로 돌아온다 */
+      var rise = .025 * stage.clientHeight * m * (1 - flip);
       var cw0 = cards[0].offsetWidth || 1;
       var grow = finalCard ? finalCard.offsetWidth / (cw0 * 1.55) : 1;   // 묶음 → 엽서 한 장 크기
       var half = clamp(ang / 90, 0, 1);
@@ -475,7 +478,7 @@
       world.style.opacity = (1 - .35 * sink).toFixed(3);
       world.style.visibility = fin ? 'hidden' : '';
       section.style.setProperty('--fin', fin);
-      section.style.setProperty('--fy', dropY.toFixed(1) + 'px');
+      section.style.setProperty('--fy', (dropY - rise).toFixed(1) + 'px');
       section.style.setProperty('--fr', (ang - 180).toFixed(2));
       section.style.setProperty('--fs', (.85 + .15 * clamp((ang - 90) / 90, 0, 1)).toFixed(3));
       section.classList.toggle('is-intro', intro > .5);
@@ -522,7 +525,7 @@
         var x2 = x * cz - y1 * sz, y2 = x * sz + y1 * cz;
         /* 모였을 때: 부채꼴로 살짝 엇갈려 쌓인 엽서 묶음 */
         var fanR = 0, fanX = 0, fanY = 0;   // 모였을 때 한 장처럼 딱 맞게 겹친다
-        var X = x2 * k + fanX, Y = y2 * k + fanY, Z = (z1 - R * .35) * k - i * .5 * m;
+        var X = x2 * k + fanX, Y = y2 * k + fanY - rise, Z = (z1 - R * .35) * k - i * .5 * m;
         var deg = ((th * 180 / Math.PI) % 360 + 540) % 360 - 180;   // 바깥을 향한 각도 (-180~180)
         it.el.style.zIndex = 1000 + Math.round(Z * 4);   // 모인 묶음(0.5px 간격)도 앞뒤가 갈리게
         it.el.style.transform = view + 'translate3d(' + X.toFixed(1) + 'px,' + Y.toFixed(1) + 'px,' + Z.toFixed(1) + 'px) rotateZ(' + (tz * 180 / Math.PI).toFixed(2) + 'deg) rotateX(' + (tx * 180 / Math.PI).toFixed(2) + 'deg) rotateY(' + (deg * k).toFixed(2) + 'deg) rotateZ(' + fanR.toFixed(2) + 'deg) scale(' + (1 + .55 * m).toFixed(3) + ')';
@@ -537,7 +540,7 @@
         cover.style.visibility = cv > 0 ? 'visible' : 'hidden';
         cover.style.opacity = cv.toFixed(3);
         cover.style.zIndex = 9000;
-        cover.style.transform = view + 'translate3d(0,' + ((1 - cv) * 28).toFixed(1) + 'px,2px) scale(' + (1 + .55 * m).toFixed(3) + ')';
+        cover.style.transform = view + 'translate3d(0,' + ((1 - cv) * 28 - rise).toFixed(1) + 'px,2px) scale(' + (1 + .55 * m).toFixed(3) + ')';
       }
       section.style.setProperty('--merge', m.toFixed(3));
       section.classList.toggle('is-merging', m > .35);
