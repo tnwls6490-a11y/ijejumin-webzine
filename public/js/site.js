@@ -427,6 +427,16 @@
       var len = section.offsetHeight - pad - stage.offsetHeight - 200;   // 마지막 200px은 다 모인 카드에 머문다
       return clamp((hdr - r.top - pad) / Math.max(len, 1), 0, 1);
     }
+    /* 뒷면 엽서가 무대 아래로 넘치면(낮은 휴대폰 화면) 뒤집히면서 그만큼 위로 올린다 */
+    var lift = 0;
+    function measureLift() {
+      if (!finalCard) return;
+      var h = finalCard.offsetHeight, c = finalCard.offsetTop;   // c: 엽서 가운데 높이 (translate -50% 전)
+      lift = clamp(c + h / 2 + 12 - stage.clientHeight, 0, Math.max(0, c - h / 2 - 8));
+    }
+    measureLift();
+    window.addEventListener('resize', measureLift);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(measureLift);
     function frame(ts) {
       window.requestAnimationFrame(frame);
       if (!visible) { last = null; return; }
@@ -452,7 +462,7 @@
       /* 모인 엽서는 글이 떠오를 때 글 아래로 살짝 가라앉았다가(작아지고 어두워짐),
          글이 지나가면 떠올라 뒤집히며 제자리로 내려온다 */
       var sink = introIn * (1 - introOut);
-      var dropY = (.09 * sink - .07 * introOut * (1 - flip)) * window.innerHeight - Math.sin(flip * Math.PI) * .04 * window.innerHeight;
+      var dropY = (.09 * sink - .07 * introOut * (1 - flip)) * window.innerHeight - Math.sin(flip * Math.PI) * .04 * window.innerHeight - lift * flip;
       var cw0 = cards[0].offsetWidth || 1;
       var grow = finalCard ? finalCard.offsetWidth / (cw0 * 1.55) : 1;   // 묶음 → 엽서 한 장 크기
       var half = clamp(ang / 90, 0, 1);
