@@ -1376,6 +1376,14 @@ a { color: inherit; }
 .pick__final-title { margin: 8px 0 18px; font-size: clamp(24px, 2.8vw, 30px); font-weight: 800; line-height: 1.35; letter-spacing: -0.03em; }
 .pick__final-text p { margin: 0; font-size: 17px; line-height: 1.7; color: var(--muted); }
 .pick__final-text p + p { margin-top: 12px; }
+/* 글 아래 짧은 주소 줄 세 개: 엽서 뒷면 느낌 (사용자 요청) */
+.pick__final-text::after {
+  content: ""; display: block; width: min(220px, 56%); height: 25px; margin: 26px auto 0;
+  background:
+    linear-gradient(#D8CFC1, #D8CFC1) 0 0 / 100% 1px no-repeat,
+    linear-gradient(#D8CFC1, #D8CFC1) 0 12px / 100% 1px no-repeat,
+    linear-gradient(#D8CFC1, #D8CFC1) 0 24px / 100% 1px no-repeat;
+}
 
 /* 카드 팝업 */
 .pick-pop {
@@ -1412,7 +1420,8 @@ a { color: inherit; }
   .pick-pop__body::before { top: 20px; right: 4px; width: 44px; height: 52px; }
   .pick-pop__kicker, .pick-pop__title { margin-right: 60px; }
   /* 휴대폰: 카카오톡 막대가 보이는 낮은 화면(312×520)에서도 무대 안에 들어가도록 여백을 줄였다 */
-  .pick__final { padding: 20px 16px 22px; border-width: 8px; min-height: 0; }
+  .pick__final { padding: 16px 16px 18px; border-width: 8px; min-height: 0; }
+  .pick__final-text::after { height: 17px; margin-top: 14px; background-position: 0 0, 0 8px, 0 16px; }
   .pick__final-title { margin-top: 4px; margin-bottom: 10px; font-size: 21px; }
   .pick__final-text p { font-size: 16px; line-height: 1.55; }
   .pick__final-text p + p { margin-top: 8px; }
