@@ -718,15 +718,29 @@ a { color: inherit; }
    (위 정보 → 뒷 제목 → 사진 → 앞 제목 → 설명 → 버튼). 화면이 낮거나 휴대폰 글자 크기를 키워도
    사진 자리만 줄어들고 글자끼리는 겹치지 않는다. 아래 이름 버튼 높이(--chips-h)는 site.js가 잰다 */
 @media (max-width: 899px) {
-  /* 무대 높이는 site.js가 지금까지 본 가장 낮은 화면 높이(--people-vh)로 고정한다.
-     앱 안 브라우저가 위아래 막대를 숨겨 화면이 길어지면 무대 아래로 남는 칸은 무대 아래쪽과 같은 색 */
-  .js .people__stage { min-height: 0; height: calc(var(--people-vh, 100svh) - var(--hdr-h, 0px)); }
+  /* 무대 높이는 지금 화면 높이를 따른다(앱 안 브라우저가 위아래 막대를 숨기면 같이 길어진다).
+     site.js가 잴 때만 지금까지 본 가장 낮은 높이(--people-vh)를 잠깐 넣는다 */
+  .js .people__stage {
+    min-height: 0;
+    height: calc(var(--people-vh, 100vh) - var(--hdr-h, 0px));
+    height: calc(var(--people-vh, 100dvh) - var(--hdr-h, 0px));
+  }
   .js .people { background: #0A0E14; }
-  /* 제목과 설명이 겹칠 만큼 낮으면(site.js가 붙임): 이름 버튼을 숨기고 위쪽 번호를 줄인다 → 그래도 좁으면 제목도 줄인다 */
-  .people__stage.is-tight .people__chips, .people__stage.is-tight .person__kicker { display: none; }
+  /* 가장 낮은 높이에서 제목과 설명이 겹치면(site.js가 붙임): 위 '이주민 인터뷰' 줄을 숨기고 번호·제목을 줄인다.
+     그래도 겹치면 제목·간격을 더 줄인다. 아래 이름 버튼은 숨기지 않는다 */
+  .people__stage.is-tight .person__kicker { display: none; }
   .people__stage.is-tight .person__no-big { font-size: 34px; }
-  .people__stage.is-tighter .person--photo .person__back { font-size: clamp(28px, 8.4vw, 56px); }
-  .people__stage.is-tighter .person--photo .person__front { font-size: clamp(22px, 6.6vw, 42px); }
+  .people__stage.is-tight .person--photo .person__back { font-size: clamp(28px, 8.4vw, 56px); }
+  .people__stage.is-tight .person--photo .person__front { font-size: clamp(22px, 6.6vw, 42px); }
+  .people__stage.is-tighter .person--photo .person__back { font-size: clamp(24px, 7.4vw, 48px); }
+  .people__stage.is-tighter .person--photo .person__front { font-size: clamp(20px, 5.8vw, 36px); }
+  .people__stage.is-tighter .person__name { gap: 6px; }
+  .people__stage.is-tighter .person__desc { line-height: 1.4; }
+  .people__stage.is-tighter .person__bottom { gap: 8px; margin-top: 12px; }
+  .people__stage.is-tighter .person__no-big { font-size: 28px; }
+  .js .people__stage.is-tighter .person { padding-top: 8px; padding-bottom: calc(var(--pad-y) + var(--chips-h) + 6px); }
+  .js .people__stage.is-tighter .person--photo .person__back { margin-top: 4px; }
+  .people__stage.is-tighter .people__arrow { bottom: calc(var(--pad-y) + var(--chips-h) + 6px); }
   .js .people .person {
     display: flex; flex-direction: column;
     padding: var(--pad-y) var(--pad-x) calc(var(--pad-y) + var(--chips-h) + 12px);

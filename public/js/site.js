@@ -196,14 +196,15 @@
     stage.addEventListener('click', function (e) { if (Math.abs(e.detail) && stage.classList.contains('is-dragging')) e.preventDefault(); }, true);
 
     /* ---------- 휴대폰 배치 맞추기 ----------
-       1) 높이 고정: 카카오톡 같은 앱 안 브라우저는 스크롤할 때 위아래 막대가 나왔다 들어가며 화면 높이가 바뀐다.
-          그때마다 무대가 줄었다 늘면 글자가 겹치니, 지금까지 본 가장 낮은 높이로 무대를 고정한다 (폭이 바뀌면 다시 잰다)
-       2) 아래 이름 버튼이 몇 줄로 놓였는지(글자 크기에 따라 달라짐) 재서, 그만큼 위 글자·버튼을 띄운다
-       3) 그래도 제목과 설명이 겹치면(낮은 화면, 휴대폰 글자 크기 설정) 이름 버튼을 숨기고 번호를 줄인다(is-tight).
-          그래도 겹치면 제목을 줄인다(is-tighter). 넘기기는 좌우 화살표로 한다 */
+       1) 아래 이름 버튼이 몇 줄로 놓였는지(글자 크기에 따라 달라짐) 재서, 그만큼 위 글자·버튼을 띄운다
+       2) 카카오톡 같은 앱 안 브라우저는 스크롤할 때 위아래 막대가 나왔다 들어가며 화면 높이가 바뀐다.
+          무대는 지금 높이를 따르되, 글자를 얼마나 줄일지는 지금까지 본 가장 낮은 높이에서 한 번 정한다
+          (스크롤할 때마다 글자 크기가 오락가락하지 않게. 폭이 바뀌면 다시 잰다)
+       3) 그 높이에서 제목과 설명이 겹치면(낮은 화면, 휴대폰 글자 크기 설정) 번호·제목을 줄인다(is-tight),
+          그래도 겹치면 더 줄인다(is-tighter). 이름 버튼은 숨기지 않는다 */
     var chipsBox = section.querySelector('.people__chips');
     var narrowQuery = window.matchMedia ? window.matchMedia('(max-width: 899px)') : null;
-    var lockW = 0, lockH = 0;
+    var lockW = 0, minH = 0;
     function setChipsH() {
       section.style.setProperty('--chips-h', ((chipsBox ? chipsBox.offsetHeight : 0) + 8) + 'px');
     }
@@ -217,20 +218,24 @@
     }
     function layoutMobile() {
       stage.classList.remove('is-tight', 'is-tighter');
+      section.style.removeProperty('--people-vh');
       if (!narrowQuery || !narrowQuery.matches) {
-        section.style.removeProperty('--people-vh');
         section.style.removeProperty('--chips-h');
         lockW = 0;
         return;
       }
       var w = window.innerWidth, h = window.innerHeight;
-      if (w !== lockW) { lockW = w; lockH = h; } else lockH = Math.min(lockH, h);
-      section.style.setProperty('--people-vh', lockH + 'px');
+      if (w !== lockW) { lockW = w; minH = h; } else minH = Math.min(minH, h);
+      /* 가장 낮은 높이로 잠깐 바꿔서 재고(화면에 그려지기 전), 다시 지금 높이로 돌린다 */
+      section.style.setProperty('--people-vh', minH + 'px');
       setChipsH();
-      if (!crowded()) return;
-      stage.classList.add('is-tight');
+      if (crowded()) {
+        stage.classList.add('is-tight');
+        setChipsH();
+        if (crowded()) stage.classList.add('is-tighter');
+      }
+      section.style.removeProperty('--people-vh');
       setChipsH();
-      if (crowded()) stage.classList.add('is-tighter');
     }
     window.addEventListener('resize', layoutMobile);
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(layoutMobile);
