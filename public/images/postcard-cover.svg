@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 614 377">
+  <!-- 로고 엽서 그림: 옅은 노을빛 하늘과 바다, 수평선 양끝의 낮은 섬, 오른쪽 위 갈매기 두 마리 (사용자가 준 시안을 본떠 그림) -->
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FDEBD7"/>
+      <stop offset="1" stop-color="#FAD4AA"/>
+    </linearGradient>
+    <radialGradient id="glow" cx=".5" cy=".64" r=".55">
+      <stop offset="0" stop-color="#FFF5E8" stop-opacity=".75"/>
+      <stop offset="1" stop-color="#FFF5E8" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="sea" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#F9CB9C"/>
+      <stop offset="1" stop-color="#F6BA82"/>
+    </linearGradient>
+  </defs>
+  <rect width="614" height="377" fill="url(#sky)"/>
+  <rect width="614" height="377" fill="url(#glow)"/>
+  <!-- 섬: 왼쪽은 낮고 납작하게, 오른쪽은 조금 높게 -->
+  <path d="M40 249 C 58 241 76 237 98 236 L 146 236 C 162 237 175 242 188 249 Z" fill="#F2B27C" opacity=".8"/>
+  <path d="M418 249 C 430 241 442 236 456 233 C 466 225 478 215 496 213 L 520 213 C 536 215 546 224 554 232 C 568 237 580 242 592 249 Z" fill="#F1AE76" opacity=".85"/>
+  <!-- 바다 -->
+  <rect y="249" width="614" height="128" fill="url(#sea)"/>
+  <rect y="248" width="614" height="2" fill="#F4B47D" opacity=".55"/>
+  <g fill="none" stroke="#FCE3C6" stroke-width="1.6" stroke-linecap="round" opacity=".85">
+    <path d="M70 272 H 168"/>
+    <path d="M232 266 H 300"/>
+    <path d="M430 270 H 540"/>
+    <path d="M120 300 H 250"/>
+    <path d="M360 294 H 470"/>
+    <path d="M50 330 H 150"/>
+    <path d="M250 326 H 400"/>
+    <path d="M470 338 H 580"/>
+  </g>
+  <!-- 갈매기 두 마리 -->
+  <g fill="none" stroke="#EE8B46" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M486 164 q 12 -13 24 -1 q 11 -15 25 -4"/>
+    <path d="M532 196 q 7 -8 14 -1 q 7 -9 15 -2"/>
+  </g>
+</svg>
