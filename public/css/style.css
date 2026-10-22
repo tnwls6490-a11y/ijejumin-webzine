@@ -130,6 +130,7 @@ a { color: inherit; }
   --cy: 50%;                        /* 유리 중심 높이 */
   /* 스크롤에 따라 site.js가 바꾸는 값 */
   --zoom: 1; --scene: 1; --cloud: 0; --land: 0; --shade: 0;  /* 가리개는 처음에 닫힘 */
+  --sc: #4A3F36;   /* 안내 그림(스크롤 표시 · 손잡이 위 화살표) 색: 기내 벽(베이지) 위에서 읽히는 짙은 갈색 */
 
   position: sticky; top: var(--hdr-h, 0px);
   height: calc(100vh - var(--hdr-h, 0px)); height: calc(100svh - var(--hdr-h, 0px));
@@ -358,19 +359,18 @@ a { color: inherit; }
   0%, 100% { opacity: .1; }
   50% { opacity: .9; }
 }
-/* 손잡이 위 주황 겹화살표(위쪽): 가리개를 위로 올리면 된다는 표시. 아래 화살표부터 차례로 빛나며 살짝 위로 오른다 */
+/* 손잡이 위 겹화살표(위쪽): 가리개를 위로 올리면 된다는 표시. 아래 화살표부터 차례로 짙어지며 살짝 위로 오른다 */
 .shade-arrow {
   position: absolute; left: 50.3%; top: 86%;
   display: flex; flex-direction: column; align-items: center;
   transform: translate(-50%, -50%);
   pointer-events: none;
-  filter: drop-shadow(0 0 calc(var(--fw, 600px) * .008) rgba(249, 115, 22, .85));
   opacity: 0; transition: opacity .4s ease;
 }
 .shade-arrow i {
   width: calc(var(--fw, 600px) * .026); height: calc(var(--fw, 600px) * .026);
-  border-top: max(1.5px, calc(var(--fw, 600px) * .0034)) solid #F97316;
-  border-left: max(1.5px, calc(var(--fw, 600px) * .0034)) solid #F97316;
+  border-top: max(1.5px, calc(var(--fw, 600px) * .0034)) solid var(--sc);   /* 아래 스크롤 표시와 같은 색 */
+  border-left: max(1.5px, calc(var(--fw, 600px) * .0034)) solid var(--sc);
   transform: scale(1.2, .72) rotate(45deg);   /* 납작하고 넓은 꺾쇠 (시안처럼) */
 }
 .shade-arrow i + i { margin-top: calc(var(--fw, 600px) * -.012); }
@@ -416,7 +416,6 @@ a { color: inherit; }
 .intro__arrow { display: inline-block; color: var(--orange-ink); animation: nudge 1.4s ease-in-out infinite; }
 /* 화면 아래 스크롤 표시: 가는 선 그림 + 글자 SCROLL. 스크롤을 시작하면 사라진다 */
 .intro__scroll {
-  --sc: #4A3F36;   /* 기내 벽(베이지) 위에서 읽히는 짙은 갈색 */
   position: absolute; left: 50%; bottom: clamp(12px, 2.5vh, 32px); z-index: 2;
   display: none; flex-direction: column; align-items: center; gap: 8px;
   margin: 0; transform: translateX(-50%);
