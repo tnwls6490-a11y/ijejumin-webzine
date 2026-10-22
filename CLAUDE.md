@@ -39,7 +39,7 @@ ijejumin-webzine/
 ├── 시작하기.md             사람용 사용법
 ├── public/                → 실제로 올라가는 웹진
 │   ├── index.html         서브메인 (완성된 첫 화면 + 섹션 3개)
-│   ├── articles/          상세페이지 (아직 비어 있음)
+│   ├── articles/          상세페이지 (지금은 find-my-jeju.html 하나)
 │   ├── images/            사진 + credits.txt
 │   ├── media/             무음 클립·배경음악 (아직 비어 있음)
 │   ├── css/style.css
@@ -207,6 +207,9 @@ ijejumin-webzine/
     - 테스트를 웹진 안(`articles/jeju-village-test.html`)으로 옮기면 세 주소를 `./articles/jeju-village-test.html`로 바꾼다
 - 작은 카드 2개: 왼쪽 그림 + 아이콘·제목·설명·주황 링크 + 오른쪽 동그란 화살표
   - 제주살이 체크리스트 `find-checklist.webp`, 마을·청년 정보 `find-village.webp`
+  - 상세페이지 `articles/find-my-jeju.html`로 간다 (사용자 요청 "2개로 유지하고 연결", 2026-10-23)
+    - 체크리스트 → `#checklist`, 마을·청년 정보 → `#policy`(정책모음. 사용자는 이 카드를 '정책모음'이라고 부른다)
+    - 카드 제목·그림은 시안 그대로 두었다. 상세페이지의 '살고 싶은 동네'(#towns)로 바로 가는 카드는 없다
   - 두 그림은 사용자가 준 원본 그림(1536×1024)을 720×480으로 줄여 같은 이름으로 바꿨다 (2026-10-23). 전에는 시안에서 잘라 낸 작은 그림(약 270×190)이었다
     - 같은 이름으로 바꿔서 `index.html`의 두 그림 주소 끝에 `?v=2`를 붙였다 (휴대폰 캐시)
     - 마을 그림은 집이 오른쪽에 있어, 휴대폰의 좁은 칸에서도 집이 보이게 오른쪽(68%)을 기준으로 자른다 (`.find__sub-img--right`)
@@ -220,8 +223,18 @@ ijejumin-webzine/
 | `articles/parang-of-records.html` | 인터뷰 03 파랑오브레코즈 |
 | `articles/emily.html` | 인터뷰 04 에밀리 |
 | `articles/jeju-village-test.html` | 나의 제주 마을 테스트 (지금은 링크하지 않고 테스트 아티팩트로 바로 간다) |
-| `articles/jeju-checklist.html` | 제주살이 체크리스트 |
-| `articles/jeju-village-info.html` | 마을·청년 정보 |
+
+- 계획했던 `articles/jeju-checklist.html`·`jeju-village-info.html`은 만들지 않고 아래 상세페이지 하나로 합쳤다
+
+## 만든 상세페이지: 나의 제주찾기 (`articles/find-my-jeju.html`)
+- 사용자가 준 링크 https://gyeol-jeju-journal.vercel.app/neighborhoods.html 의 동네 안내서를 소재로, 서브메인 03과 같은 디자인으로 만들었다
+- 세 부분: `#towns` 살고 싶은 동네(10곳 × 명소 5곳, 카드를 옆으로 넘김) / `#checklist` 제주살이 체크리스트(6주제 24문항) / `#policy` 정책모음
+  - 정책모음은 자료가 없어 '정책 자료를 준비하고 있어요' 카드만 있다. **자료(정책 이름·대상·내용·출처)를 받으면 채운다. 지어내지 않는다**
+  - 체크리스트는 공통 기준(입력 폼 금지) 때문에 메모 칸 없이 누르면 표시만 한다. 그 사람의 브라우저에만 저장(`ijejumin.checklist.v1`)
+- 명소 사진 44장 `images/place-TT-S.webp`(동네 번호-명소 번호), 첫 화면 `find-hero.webp`, 공유 미리보기 `og-find-my-jeju.jpg`
+  - Wikimedia Commons·제주관광공사 공개 사진. 출처는 카드 아래, 페이지 맨 아래 '사진 출처 모두 보기', `credits.txt`에 적었다
+  - 사진이 없는 명소 6곳은 '사진 준비 중'
+- 처음 그릴 때는 동네 10곳이 다 펼쳐져 있다가 `site.js`가 하나만 남긴다. 그래서 `#checklist` 등으로 들어오면 정리한 뒤 그 자리로 다시 맞춘다
 
 - 인터뷰 상세페이지 흐름(노션 기획):
   1. 인물 중심의 임팩트 있는 인트로

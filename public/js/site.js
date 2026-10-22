@@ -681,6 +681,24 @@
     nextBtn.addEventListener('click', function () { go(1); });
     window.addEventListener('resize', request);
     update();
+
+    /* 처음 그릴 때는 동네 10곳이 다 펼쳐져 있다가 여기서 하나만 남는다. 그래서 메인 카드로 #checklist·#policy에 들어오면
+       브라우저가 먼저 내려간 자리가 어긋난다. 동네를 정리한 뒤 그 자리로 다시 맞춘다 (다 불러온 뒤 한 번 더, 그사이 직접 스크롤하면 그만둔다) */
+    var target = window.location.hash && document.getElementById(window.location.hash.slice(1));
+    if (!target) return;
+    var touched = false;
+    function jump() {
+      if (touched) return;
+      var root = document.documentElement;
+      root.style.scrollBehavior = 'auto';   // 부드럽게 흐르지 않고 바로
+      target.scrollIntoView();
+      root.style.scrollBehavior = '';
+    }
+    ['wheel', 'touchstart', 'keydown'].forEach(function (type) {
+      window.addEventListener(type, function () { touched = true; }, { once: true, passive: true });
+    });
+    jump();
+    window.addEventListener('load', jump);
   })();
 
   /* ---------- 상세 '나의 제주찾기': 제주살이 체크리스트 (이 브라우저에만 저장, 서버로 보내지 않음) ---------- */
