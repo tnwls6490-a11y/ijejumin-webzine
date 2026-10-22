@@ -239,10 +239,12 @@ a { color: inherit; }
   position: absolute; inset: 0; width: 100%; height: 100%; max-width: none;
 }
 @media (max-aspect-ratio: 1/1) {
-  /* 세로 화면(휴대폰): 사진 위쪽 흐린 띠가 넓지 않게 사진을 조금 키우고(분화구는 화면 폭 안) 살짝 위로 올린다.
-     위쪽 경계도 짧게 흐린다 */
+  /* 세로 화면(휴대폰): 사진 위쪽 흐린 띠가 넓지 않게 사진을 조금 키우고(분화구는 화면 폭 안), 위쪽 경계도 짧게 흐린다.
+     사진 위치는 화면 높이가 아니라 화면 위에서부터 고정한다 (사진 위 끝 = 72px, 사진 높이 = 폭의 110%).
+     카카오톡처럼 스크롤할 때 막대가 숨었다 나타나 화면 높이가 바뀌어도 위쪽 여백이 그대로이고, 늘어난 높이는 아래로 간다.
+     72px는 카카오톡 막대가 보일 때(화면 높이 약 514px) 원래 사진이 있던 자리 */
   .jeju {
-    --jw: 220vw; top: 47%;
+    --jw: 220vw; top: calc(72px + 55vw);
     -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 5%, #000 91%, transparent 100%), linear-gradient(90deg, transparent 0, #000 7%, #000 93%, transparent 100%);
     mask-image: linear-gradient(180deg, transparent 0, #000 5%, #000 91%, transparent 100%), linear-gradient(90deg, transparent 0, #000 7%, #000 93%, transparent 100%);
   }
