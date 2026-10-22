@@ -1124,13 +1124,14 @@ a { color: inherit; }
 .pcard__word {
   position: absolute; left: 6%; right: 6%; bottom: 7%;
   display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; line-clamp: 3; overflow: hidden;
-  padding: .45em .65em; border-radius: calc(var(--cw) * .04);
+  /* 위아래 여백은 투명 테두리로: 안쪽 여백(padding)으로 두면 잘린 다음 줄이 그 여백에 비쳐 보인다 */
+  padding: 0 .65em; border-block: .45em solid transparent; border-radius: calc(var(--cw) * .04);
   font-size: max(8px, calc(var(--cw) * .072)); font-weight: 600; line-height: 1.4; color: var(--ink);
   background: rgba(255, 253, 248, .94);
 }
 .pcard.is-back .pcard__word { visibility: hidden; }
 @media (max-width: 600px) {
-  .pcard__word { -webkit-line-clamp: 2; line-clamp: 2; padding: .35em .5em; }   /* 휴대폰: 엽서가 작아 두 줄까지 (우표가 가려지지 않게) */
+  .pcard__word { -webkit-line-clamp: 2; line-clamp: 2; padding: 0 .5em; border-block-width: .35em; font-size: max(10px, calc(var(--cw) * .1)); }   /* 휴대폰: 두 줄까지 (우표가 가려지지 않게) */
 }
 .pcard__mark { width: calc(var(--cw) * .13); height: calc(var(--cw) * .13); border-radius: 30%; background: conic-gradient(#F97316 0 50%, #FDBA74 0); }
 .pcard__kicker { font-size: max(8px, calc(var(--cw) * .062)); color: var(--muted); white-space: nowrap; }
@@ -1277,7 +1278,7 @@ html:not(.js) .pick__intro { position: relative; left: auto; top: auto; translat
 html:not(.js) .pick__world, html:not(.js) .pick__headline { display: none; }
 html:not(.js) .pick__final { opacity: 1; transform: none; }
 @media (max-width: 899px) {
-  .pcard { --cw: clamp(60px, 16vw, 96px); }
+  .pcard { --cw: clamp(84px, 25vw, 112px); }   /* 휴대폰에서도 엽서를 크게 (390px 화면에서 약 141×94px) */
   .pick__world, .pick__final { top: 60%; }
 }
 
