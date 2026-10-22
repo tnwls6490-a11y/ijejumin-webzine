@@ -1120,14 +1120,18 @@ a { color: inherit; }
 }
 .pcard--note::before { top: 9%; right: 7%; width: 15%; height: 28%; }
 .pcard--note.is-back > * { visibility: hidden; }
-/* 엽서 아래 번호·장소 이름 (뒤돌아 있을 때는 거울글자가 되니 숨긴다) */
-.pcard__place {
-  position: absolute; left: 6%; bottom: 7%; max-width: 74%;
-  padding: .18em .6em; border-radius: 999px;
-  font-size: max(9px, calc(var(--cw) * .085)); font-weight: 700; line-height: 1.35; color: var(--ink);
-  background: rgba(255, 253, 248, .92); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+/* 엽서 아래쪽에 이주민의 한마디 (세 줄까지, 넘치면 …. 전체는 팝업에서). 뒤돌아 있을 때는 거울글자가 되니 숨긴다 */
+.pcard__word {
+  position: absolute; left: 6%; right: 6%; bottom: 7%;
+  display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; line-clamp: 3; overflow: hidden;
+  padding: .45em .65em; border-radius: calc(var(--cw) * .04);
+  font-size: max(8px, calc(var(--cw) * .072)); font-weight: 600; line-height: 1.4; color: var(--ink);
+  background: rgba(255, 253, 248, .94);
 }
-.pcard.is-back .pcard__place { visibility: hidden; }
+.pcard.is-back .pcard__word { visibility: hidden; }
+@media (max-width: 600px) {
+  .pcard__word { -webkit-line-clamp: 2; line-clamp: 2; padding: .35em .5em; }   /* 휴대폰: 엽서가 작아 두 줄까지 (우표가 가려지지 않게) */
+}
 .pcard__mark { width: calc(var(--cw) * .13); height: calc(var(--cw) * .13); border-radius: 30%; background: conic-gradient(#F97316 0 50%, #FDBA74 0); }
 .pcard__kicker { font-size: max(8px, calc(var(--cw) * .062)); color: var(--muted); white-space: nowrap; }
 .pcard__big { font-size: max(11px, calc(var(--cw) * .105)); font-weight: 800; line-height: 1.2; letter-spacing: -0.02em; }
