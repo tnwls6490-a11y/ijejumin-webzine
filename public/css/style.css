@@ -369,6 +369,9 @@ a { color: inherit; }
   backdrop-filter: blur(14px) brightness(.6) saturate(1.4);
   text-shadow: 0 1px 2px rgba(6, 22, 44, .6), 0 0 10px rgba(6, 22, 44, .35);
 }
+@media (max-width: 600px) {
+  .landing__eyebrow { padding: 4px 14px; font-size: 14px; letter-spacing: .02em; border-width: 1px; }
+}
 .landing__foot {
   /* 상자 없이 사진 위에 바로 놓는다. 글자 뒤만 경계 없이 살짝 어둡게 해 읽기 쉽게 */
   display: flex; flex-direction: column; align-items: center; gap: 18px;
@@ -380,6 +383,8 @@ a { color: inherit; }
   font-size: clamp(16px, 1.6vw, 20px); font-weight: 600; line-height: 1.6;
   text-shadow: 0 1px 3px rgba(0, 0, 0, .55), 0 0 18px rgba(6, 22, 44, .7);
 }
+/* 줄이 모자라면 말 덩어리 사이에서만 바꾼다 ('생존기'만 혼자 남지 않게) */
+.landing__phrase { display: inline-block; white-space: nowrap; }
 .landing__next {
   display: inline-flex; align-items: center; gap: 8px;
   min-height: 44px; padding: 0 22px; border-radius: 999px;
@@ -692,6 +697,29 @@ a { color: inherit; }
   .person--photo .person__back::after { width: 30vw; }
   .person--photo .person__line--back { -webkit-text-stroke-width: 1px; }
 }
+/* 휴대폰: 자리를 화면 높이 비율로 박지 않고 위에서 아래로 차례로 쌓는다
+   (위 정보 → 뒷 제목 → 사진 → 앞 제목 → 설명 → 버튼). 화면이 낮거나 휴대폰 글자 크기를 키워도
+   사진 자리만 줄어들고 글자끼리는 겹치지 않는다. 아래 이름 버튼 높이(--chips-h)는 site.js가 잰다 */
+@media (max-width: 899px) {
+  .js .people__stage { min-height: 0; }
+  .js .people .person {
+    display: flex; flex-direction: column;
+    padding: var(--pad-y) var(--pad-x) calc(var(--pad-y) + var(--chips-h) + 12px);
+  }
+  .people .person__top { position: relative; inset: auto; }
+  .people .person__center { position: static; flex: 1; min-height: 0; display: flex; flex-direction: column; }
+  .people .person--photo .person__center { z-index: 4; }   /* 앞 제목이 아래로 내려와도 무대 아래쪽 어둡게 덮는 층(::after)보다 위에 */
+  .people .person__name { position: static; flex: 1; display: flex; flex-direction: column; justify-content: space-between; gap: 12px; }
+  .js .people .person--photo .person__back { position: relative; top: auto; left: auto; right: auto; margin-top: 10px; align-self: flex-start; }
+  .js .people .person--photo .person__front { position: relative; top: auto; left: auto; right: auto; margin-right: 8px; align-self: flex-end; text-align: left; }
+  .people .person__bottom { position: relative; inset: auto; display: flex; flex-direction: column; align-items: flex-start; gap: 14px; margin-top: 22px; }
+  .people .person__desc, .people .person__cta { position: static; width: auto; translate: none; }
+}
+/* 화면이 아주 낮은 휴대폰: 제목을 조금 줄여 사진 자리를 남긴다 */
+@media (max-width: 899px) and (max-height: 640px) {
+  .people .person--photo .person__back { font-size: clamp(30px, 9vw, 60px); }
+  .people .person--photo .person__front { font-size: clamp(24px, 7vw, 44px); }
+}
 
 
 /* ---------- 인물 누끼: 첫 줄(외곽선 글자) 뒤 · 둘째 줄 앞 ----------
@@ -864,7 +892,13 @@ a { color: inherit; }
 .people__arrow--next:hover { transform: translateX(3px); }
 .people__arrow:disabled { opacity: .3; cursor: default; background: rgba(255, 255, 255, .4); color: var(--ink); transform: none; }
 @media (max-width: 899px) {
-  .people__arrow { width: 48px; height: 48px; font-size: 20px; top: 40%; }
+  /* 휴대폰: 제목과 부딪히지 않게 '인터뷰 읽기' 버튼 줄 오른쪽에 나란히 둔다 */
+  .people__arrow { width: 48px; height: 48px; font-size: 20px; top: auto; bottom: calc(var(--pad-y) + var(--chips-h) + 12px); translate: none; }
+  .people__arrow--prev { left: auto; right: calc(var(--pad-x) + 58px); }
+}
+@media (max-width: 380px) {
+  .people__arrow { width: 44px; height: 44px; bottom: calc(var(--pad-y) + var(--chips-h) + 14px); }
+  .people__arrow--prev { right: calc(var(--pad-x) + 52px); }
 }
 .people:not(.is-ready) .people__arrow { display: none; }
 

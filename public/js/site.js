@@ -177,7 +177,18 @@
     stage.addEventListener('pointercancel', endDrag);
     stage.addEventListener('click', function (e) { if (Math.abs(e.detail) && stage.classList.contains('is-dragging')) e.preventDefault(); }, true);
 
+    /* 휴대폰: 아래 이름 버튼이 몇 줄로 놓였는지(글자 크기에 따라 달라짐) 재서, 그만큼 위 글자·버튼을 띄운다 */
+    var chipsBox = section.querySelector('.people__chips');
+    var narrowQuery = window.matchMedia ? window.matchMedia('(max-width: 899px)') : null;
+    function setChipsH() {
+      if (chipsBox && narrowQuery && narrowQuery.matches) section.style.setProperty('--chips-h', (chipsBox.offsetHeight + 8) + 'px');
+      else section.style.removeProperty('--chips-h');
+    }
+    window.addEventListener('resize', setChipsH);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(setChipsH);
+
     section.classList.add('is-ready');
+    setChipsH();
     for (var k = 0; k < n; k++) { persons[k].classList.add('no-anim'); setSide(persons[k], 1); }
     show(0, 1);
     fromScroll();
