@@ -1009,8 +1009,10 @@ a { color: inherit; }
   text-shadow: 0 0 6px #000000, 0 0 14px #000000, 0 0 28px rgba(0, 0, 0, .9);
 }
 .pick__world {
+  /* 엽서들은 3D 공간을 같이 쓰지 않는다(flat). 원근은 site.js가 엽서마다 따로 주고, 앞뒤는 z-index로 정한다
+     → 모이는 동안 엽서끼리 서로를 뚫고 지나가며 깨져 보이지 않는다 */
   position: absolute; z-index: 1; left: 50%; top: 58%;
-  width: 0; height: 0; transform-style: preserve-3d;
+  width: 0; height: 0; transform-style: flat;
 }
 .pcard {
   /* 가로로 긴 엽서: 흰 테두리 안에 그림, 오른쪽 위에 우표 */
