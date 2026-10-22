@@ -860,28 +860,31 @@
     if (word) setVar('--word-fit', Math.min(1, 0.84 * vw / (word.offsetWidth || 1)).toFixed(4));
   }
 
-  /* 스크롤 → 창 속으로 빨려 들어가기
-     짧은 스크롤(휠 2~3번)로 목표 진행도가 정해지고, 화면은 그 목표를 부드럽게 따라가며
-     약 2초 동안 창 → 구름 → 제주로 이어서 빨려 들어간다. 위로 스크롤하면 거꾸로 돌아간다 */
-  var shownP = 0, lastTs = null;
+  /* 스크롤 → 창 속으로 빨려 들어가기 (사용자 요청: 한 번에 빨려 들어가듯이, 2026-10-22)
+     조금이라도(8px) 내리면 스크롤 양과 상관없이 약 2.4초 동안 창 → 구름 → 제주까지 한 번에 재생한다.
+     맨 위로 돌아오면 같은 방식으로 거꾸로 돌아간다. 재생하는 동안은 휠·손가락 스크롤을 잠깐 막아 끝까지 이어지게 한다 */
+  var RUN_MS = 2400;
+  var shownP = 0;
+  var run = null;   // 지금 재생 중인 움직임 { from, to, start, dur }
   function targetP() {
-    var rect = intro.getBoundingClientRect();
-    /* 도착 뒤 700px은 제주 화면에 머무는 구간이라 진행도에서 뺀다 (style.css의 .intro 높이와 맞춘다) */
-    var span = rect.height - stage.offsetHeight - 700 - window.innerHeight;
-    /* 상단 바·헤더를 지나는 스크롤부터 진행도에 넣는다 (페이지 맨 위 = 0) */
-    var startTop = rect.top + window.scrollY;
-    var total = span + startTop;
-    return total > 0 ? clamp(window.scrollY / total, 0, 1) : 0;
+    var startTop = intro.getBoundingClientRect().top + window.scrollY;   // 상단 바·헤더를 지난 곳부터 (페이지 맨 위 = 0)
+    return window.scrollY - startTop > 8 ? 1 : 0;
   }
+  function easeInOut(t) { return t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2; }
   function update(ts) {
     ticking = false;
     var target = targetP();
-    var dt = (ts && lastTs !== null) ? clamp((ts - lastTs) / 1000, 0, 0.1) : 1 / 60;
-    lastTs = ts || null;
-    if (reduced()) shownP = target;
-    else shownP += (target - shownP) * (1 - Math.exp(-dt / 0.7));
-    if (Math.abs(target - shownP) < 0.0008) { shownP = target; lastTs = null; }
-    else requestUpdate();
+    var now = ts || performance.now();
+    if (reduced()) { shownP = target; run = null; }
+    else if (shownP !== target && (!run || run.to !== target)) {
+      run = { from: shownP, to: target, start: now, dur: RUN_MS * Math.abs(target - shownP) + 1 };
+    }
+    if (run) {
+      var k = clamp((now - run.start) / run.dur, 0, 1);
+      shownP = run.from + (run.to - run.from) * easeInOut(k);
+      if (k >= 1) { shownP = run.to; run = null; }
+      else requestUpdate();
+    }
     var p = shownP;
 
     if (p > 0.02 && !isOpen) setOpen(true);
@@ -958,4 +961,8 @@
   window.addEventListener('scroll', function () { syncHeader(); requestUpdate(); }, { passive: true });
   window.addEventListener('resize', function () { measure(); syncHeader(); requestUpdate(); });
   if (reduceQuery && reduceQuery.addEventListener) reduceQuery.addEventListener('change', requestUpdate);
+  /* 제주로 빨려 들어가는 동안은 휠·손가락 스크롤을 막는다 (끝나면 바로 풀린다) */
+  function holdScroll(e) { if (run && run.to === 1) e.preventDefault(); }
+  window.addEventListener('wheel', holdScroll, { passive: false });
+  window.addEventListener('touchmove', holdScroll, { passive: false });
 })();
