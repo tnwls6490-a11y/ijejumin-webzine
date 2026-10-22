@@ -734,8 +734,6 @@ a { color: inherit; }
   .people .person__top { position: relative; inset: auto; }
   .people .person__center { position: static; flex: 1; min-height: 0; display: flex; flex-direction: column; }
   .people .person--photo .person__center { z-index: 4; }   /* 앞 제목이 아래로 내려와도 무대 아래쪽 어둡게 덮는 층(::after)보다 위에 */
-  /* 에밀리: PC처럼 화면 가운데에 두고, 오른쪽 앞 제목이 얼굴을 가리지 않게 누끼를 앞 제목보다 앞에 둔다 (제목 왼쪽이 인물 뒤로 들어간다) */
-  .people .person--photo-side .person__cut { z-index: 4; }
   .people .person__name { position: static; flex: 1; display: flex; flex-direction: column; justify-content: space-between; gap: 12px; }
   .js .people .person--photo .person__back { position: relative; top: auto; left: auto; right: auto; margin-top: 10px; align-self: flex-start; }
   .js .people .person--photo .person__front { position: relative; top: auto; left: auto; right: auto; margin-right: 8px; align-self: flex-end; text-align: left; }
