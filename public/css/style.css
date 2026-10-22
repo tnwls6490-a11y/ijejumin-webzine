@@ -204,11 +204,20 @@ a { color: inherit; }
   transform: scale(var(--scene));
   transform-origin: 50% 55%;
 }
-/* 사진 맨 위: 짙은 하늘 파랑에서 사진 하늘로 경계 없이 이어지게 (헤더 색과는 따로) */
+/* 사진 위쪽을 하늘색(#2C64A0)으로 늘린다 (사용자 요청): 사진이 시작하는 곳(--sky-top)까지는 하늘색으로 채우고,
+   거기서부터 사진 하늘로 경계 없이 이어지게 흐린다. PC는 사진을 --sky만큼 내려 위쪽 하늘 자리를 만든다 */
+.scene__inner { --sky: 0px; --sky-top: 0px; }
+@media (max-aspect-ratio: 1/1) {
+  /* 휴대폰: 사진 위쪽 남는 자리(원래 흐린 사진)를 하늘색으로 */
+  .scene__inner { --sky-top: calc(47vh - 55vw); --sky-top: calc(47svh - 55vw); }
+}
+@media (min-aspect-ratio: 1/1) {
+  .scene__inner { --sky: clamp(56px, 10vh, 110px); --sky-top: var(--sky); }
+}
 .scene__inner::after {
   content: ""; position: absolute; left: 0; right: 0; top: 0; z-index: 4;
-  height: clamp(64px, 16%, 150px); pointer-events: none;
-  background: linear-gradient(180deg, #2C64A0 0%, rgba(44, 100, 160, .72) 30%, rgba(44, 100, 160, .3) 65%, rgba(44, 100, 160, 0) 100%);
+  height: calc(var(--sky-top) + clamp(64px, 14vh, 130px)); pointer-events: none;
+  background: linear-gradient(180deg, #2C64A0 0, #2C64A0 calc(var(--sky-top) + 16px), rgba(44, 100, 160, .6) calc(var(--sky-top) + 40px), rgba(44, 100, 160, .25) calc(var(--sky-top) + 75px), rgba(44, 100, 160, 0) 100%);
 }
 
 /* 실사 제주: 사진 → 글자 → 분화구(앞) 순서로 겹쳐 글자가 분화구 뒤에 있는 것처럼 */
@@ -253,6 +262,7 @@ a { color: inherit; }
     --stage-h: calc(100vh - var(--hdr-h, 0px));
     --stage-h: calc(100svh - var(--hdr-h, 0px));
     --jw: max(125vw, calc(var(--stage-h) * 2));
+    top: calc(50% + var(--sky));   /* 위쪽 하늘 자리만큼 사진을 내린다 */
     -webkit-mask-image: none; mask-image: none;
   }
 }
