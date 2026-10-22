@@ -127,7 +127,8 @@ a { color: inherit; }
    (그 전: 옅은 살구색 띠에 주황 글자, 오른쪽 메뉴·인터뷰 두 칸 → 둥근 카드 → 헤더와 같은 주황 바탕·흰 글자 → 파랑 #2C64A0 바탕) */
 .wz-outro, .site-footer { background: var(--hdr-bg); color: var(--hdr-ink); }
 .wz-outro__inner {
-  display: grid; grid-template-columns: 1.35fr 1fr 1.4fr; align-items: start; gap: 32px clamp(32px, 4vw, 56px);
+  /* 시안처럼 로고·글씨는 왼쪽, '만든 사람들'·'출처'는 오른쪽에 모아 둔다 (사용자 요청) */
+  display: grid; grid-template-columns: 1fr auto auto; align-items: start; gap: 32px clamp(40px, 5vw, 72px);
   padding-top: clamp(30px, 3.4vw, 42px); padding-bottom: clamp(20px, 2.2vw, 26px);
 }
 .wz-outro__brand { display: flex; flex-direction: column; align-items: flex-start; gap: 12px; }
@@ -139,6 +140,7 @@ a { color: inherit; }
 }
 .wz-outro__tagline { margin: 0; font-size: clamp(22px, 2.4vw, 30px); font-weight: 700; line-height: 1.35; letter-spacing: -0.02em; }
 .wz-outro__team { margin: 0; font-size: 16px; }
+.wz-outro__col { min-width: 0; max-width: 360px; }   /* 출처처럼 긴 글은 이 폭에서 줄을 바꾼다 */
 .wz-outro__head {
   display: flex; align-items: center; gap: 14px; margin: 0 0 8px;
   font-size: 16px; font-weight: 700; letter-spacing: .16em;
@@ -165,8 +167,8 @@ a { color: inherit; }
 }
 .site-footer a:hover, .wz-outro__line a:hover { text-decoration-thickness: 2px; }
 @media (max-width: 1000px) {
-  /* 태블릿: 로고·소개를 위에 두고, 그 아래 만든 사람들·출처 두 칸 */
-  .wz-outro__inner { grid-template-columns: 1fr 1fr; }
+  /* 태블릿: 로고·글씨를 위에 두고, 그 아래 만든 사람들·출처 두 칸 */
+  .wz-outro__inner { grid-template-columns: auto auto; justify-content: start; }
   .wz-outro__brand { grid-column: 1 / -1; }
 }
 @media (max-width: 640px) {
