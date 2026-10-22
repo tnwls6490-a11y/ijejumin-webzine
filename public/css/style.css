@@ -340,7 +340,19 @@ a { color: inherit; }
   opacity: 0;
   transition: opacity .5s ease;
 }
-.js .intro__stage:not(.is-open) .shade-panel::after { animation: handle-glow 2.6s ease-in-out infinite; }
+/* 손잡이 둘레로 넓게 번지는 빛: 가리개 판의 빛은 창 안쪽에서 잘리니, 창틀 위에 따로 깐다.
+   닫힌 가리개의 손잡이 자리에 고정해 두고, 끌어 올리는 동안은 끈다 */
+.porthole::after {
+  content: ""; position: absolute; pointer-events: none;
+  left: 50%; top: 71.9%; width: 50%; height: 20%;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(closest-side, rgba(255, 224, 170, .62), rgba(255, 214, 150, .3) 45%, rgba(255, 214, 150, .08) 75%, rgba(255, 214, 150, 0));
+  mix-blend-mode: screen;
+  opacity: 0;
+  transition: opacity .5s ease;
+}
+.js .intro__stage:not(.is-open):not(.is-dragging) .shade-panel::after,
+.js .intro__stage:not(.is-open):not(.is-dragging) .porthole::after { animation: handle-glow 2.6s ease-in-out infinite; }
 @keyframes handle-glow {
   0%, 100% { opacity: .1; }
   50% { opacity: .9; }
@@ -443,7 +455,8 @@ a { color: inherit; }
 
 @media (prefers-reduced-motion: reduce) {
   .groundfog img, .intro__arrow { animation: none; }
-  .js .intro__stage:not(.is-open) .shade-panel::after { animation: none; opacity: .6; }   /* 깜빡이지 않고 은은하게 켜 둔다 */
+  .js .intro__stage:not(.is-open):not(.is-dragging) .shade-panel::after,
+  .js .intro__stage:not(.is-open):not(.is-dragging) .porthole::after { animation: none; opacity: .6; }   /* 깜빡이지 않고 은은하게 켜 둔다 */
   .shade { transition-duration: .01s; }
   html { scroll-behavior: auto; }
 }
