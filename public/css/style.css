@@ -1222,8 +1222,29 @@ a { color: inherit; }
   /* 그림(614×377)과 같은 비율로 맞춰 양옆이 잘리지 않게 */
   top: calc(var(--pw) / -3.258); height: calc(var(--pw) / 1.629);
   border-width: 0;
-  background: #F2E2CE url(../images/postcard-front.webp) center / cover no-repeat;
+  background: #F3E4CE center / cover no-repeat;
 }
+/* 엽서마다 다른 그림: 장소에 맞춘 아래 풍경 · 왼쪽 꽃과 열매 · 오른쪽 색면 · 우표. 11번은 시안 그림 그대로 */
+.pcard--d01 { background-image: url(../images/postcard-front-01.svg); }
+.pcard--d02 { background-image: url(../images/postcard-front-02.svg); }
+.pcard--d03 { background-image: url(../images/postcard-front-03.svg); }
+.pcard--d04 { background-image: url(../images/postcard-front-04.svg); }
+.pcard--d05 { background-image: url(../images/postcard-front-05.svg); }
+.pcard--d06 { background-image: url(../images/postcard-front-06.svg); }
+.pcard--d07 { background-image: url(../images/postcard-front-07.svg); }
+.pcard--d08 { background-image: url(../images/postcard-front-08.svg); }
+.pcard--d09 { background-image: url(../images/postcard-front-09.svg); }
+.pcard--d10 { background-image: url(../images/postcard-front-10.svg); }
+.pcard--d11 { background-image: url(../images/postcard-front-11.webp); }
+.pcard--d12 { background-image: url(../images/postcard-front-12.svg); }
+.pcard--d13 { background-image: url(../images/postcard-front-13.svg); }
+.pcard--d14 { background-image: url(../images/postcard-front-14.svg); }
+.pcard--d15 { background-image: url(../images/postcard-front-15.svg); }
+.pcard--d16 { background-image: url(../images/postcard-front-16.svg); }
+.pcard--d17 { background-image: url(../images/postcard-front-17.svg); }
+.pcard--d18 { background-image: url(../images/postcard-front-18.svg); }
+.pcard--d19 { background-image: url(../images/postcard-front-19.svg); }
+.pcard--d20 { background-image: url(../images/postcard-front-20.svg); }
 .pcard.pcard--post::before { content: none; }
 .pcard__label {
   position: absolute; left: 20.5%; top: 14.5%;
