@@ -471,17 +471,22 @@ a { color: inherit; }
 }
 .is-landed .landing { pointer-events: auto; }
 /* 위쪽 줄 (사용자가 준 시안): 왼쪽에 헤더와 같은 흰 로고와 '육지에서 나고, 섬에서 자라는 중',
-   오른쪽에 '제주 이주민 인터뷰 웹진', 아래에 가는 흰 선. 헤더 로고와 같은 가운데 1200px 칸에 맞춘다 */
+   오른쪽에 '제주 이주민 인터뷰 웹진'. 헤더 로고와 같은 가운데 1200px 칸에 맞춘다 */
 .landing__top {
-  align-self: center; width: 100%; max-width: 1168px;
+  --logo-w: 50px; --logo-h: 58px;
+  position: relative; align-self: center; width: 100%; max-width: 1168px;
   display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 24px;
-  padding-bottom: 14px; border-bottom: 1px solid rgba(255, 255, 255, .78);
   text-align: left;
+}
+/* 가는 흰 선: 로고 아래 끝 높이에서, 로고 바로 옆부터 오른쪽 끝까지 (사용자 요청) */
+.landing__top::after {
+  content: ""; position: absolute; left: calc(var(--logo-w) + 10px); right: 0; top: calc(var(--logo-h) - 1px);
+  height: 1px; background: rgba(255, 255, 255, .78); pointer-events: none;
 }
 .landing__brand { display: flex; align-items: center; gap: 16px; margin: 0; }
 .landing__logo {
   /* 로고는 기존 흰 로고 그대로 (사용자 요청) */
-  flex: none; width: 50px; height: 58px;
+  flex: none; width: var(--logo-w); height: var(--logo-h);
   background: url(../images/logo-ijejumin-white.webp) center / contain no-repeat;
   filter: drop-shadow(0 1px 3px rgba(6, 22, 44, .45));
 }
@@ -492,7 +497,7 @@ a { color: inherit; }
 }
 .landing__kind {
   margin: 0 0 0 auto;
-  font-size: 16px; font-weight: 600; line-height: 1.5; color: #FFFFFF; letter-spacing: .02em;
+  font-size: 16px; font-weight: 400; line-height: 1.4; color: #FFFFFF;   /* 왼쪽 문구처럼 얇게 (사용자 요청) */
   text-shadow: 0 1px 3px rgba(0, 0, 0, .55), 0 0 12px rgba(6, 22, 44, .55);
 }
 /* 유리 캡슐 ('나의 제주찾기' 상세페이지 첫 화면에서 쓴다. 서브메인 첫 화면에서는 사용자 요청으로 뺐다)
@@ -512,8 +517,7 @@ a { color: inherit; }
 }
 @media (max-width: 600px) {
   .landing__eyebrow { padding: 3px 12px; font-size: 13px; letter-spacing: .02em; border-width: 1px; }
-  .landing__logo { width: 40px; height: 46px; }
-  .landing__top { padding-bottom: 10px; }
+  .landing__top { --logo-w: 40px; --logo-h: 46px; }
 }
 .landing__foot {
   /* 상자 없이 사진 위에 바로 놓는다. 글자 뒤만 경계 없이 살짝 어둡게 해 읽기 쉽게 */
