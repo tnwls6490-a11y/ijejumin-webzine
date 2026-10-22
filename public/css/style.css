@@ -1209,7 +1209,7 @@ a { color: inherit; }
 .pick__world {
   /* 엽서들은 3D 공간을 같이 쓰지 않는다(flat). 원근은 site.js가 엽서마다 따로 주고, 앞뒤는 z-index로 정한다
      → 모이는 동안 엽서끼리 서로를 뚫고 지나가며 깨져 보이지 않는다 */
-  position: absolute; z-index: 1; left: 50%; top: 52%;   /* 나선 가운데 높이 (엽서를 잡기 쉽게 58% → 52%로 올림, 사용자 요청). 마지막 엽서(.pick__final)와 같은 높이 */
+  position: absolute; z-index: 1; left: 50%; top: 54%;   /* 나선 가운데 높이 (엽서를 잡기 쉽게 58% → 52%로 올렸다가 "살짝만 더 내려줘"로 54%, 사용자 요청). 마지막 엽서(.pick__final)와 같은 높이 */
   width: 0; height: 0; transform-style: flat;
 }
 .pcard {
@@ -1396,7 +1396,7 @@ a { color: inherit; }
    가운데 정렬: 주황 '제주생존한마디' → 큰 제목 → 소개 글 → 아래 가는 선 */
 .pick__final {
   --fw: min(700px, calc(100vw - 32px));
-  position: absolute; left: 50%; top: 52%; z-index: 5;   /* 나선(.pick__world)과 같은 높이 */
+  position: absolute; left: 50%; top: 54%; z-index: 5;   /* 나선(.pick__world)과 같은 높이 */
   width: var(--fw); translate: -50% -50%;
   padding: 0 28px 30px; border-radius: 10px; text-align: center;
   border: 12px solid #FFFDF8;
@@ -1576,7 +1576,7 @@ html:not(.js) .pick__world, html:not(.js) .pick__headline { display: none; }
 html:not(.js) .pick__final { opacity: 1; transform: none; }
 @media (max-width: 899px) {
   .pcard, .pick__cover { --cw: clamp(84px, 25vw, 112px); }   /* 휴대폰에서도 엽서를 크게 (390px 화면에서 약 141×94px) */
-  .pick__world, .pick__final { top: 55%; }   /* 휴대폰: 위 큰 제목 아래로 조금 내리되, 엽서를 잡기 쉽게 60% → 55% */
+  .pick__world, .pick__final { top: 57%; }   /* 휴대폰: 위 큰 제목 아래로 조금 내리되, 엽서를 잡기 쉽게 60% → 55% → 57%(살짝 내림) */
 }
 
 /* ---------- 카테고리 ---------- */
