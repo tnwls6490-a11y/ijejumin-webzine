@@ -737,6 +737,8 @@ a { color: inherit; }
   /* 에밀리: 세로 화면에서는 사진 높이가 무대에 꼭 맞아 위아래 여유가 없다. 배경·누끼를 함께 아래쪽 기준으로 24% 키워 인물을 위로 올린다
      (휴대폰에서는 사진이 원본보다 작게 보여서 키워도 원본 크기 안) */
   .person--photo-side .person__photo { scale: 1.24; transform-origin: 50% 100%; }
+  /* 안세은 · 아인학교(둘째 슬라이드): 두 사람이 사진 가로 약 47%에 서 있어 왼쪽으로 치우쳐 보인다. 화면 가운데로 (배경·누끼 함께) */
+  .people .person--photo[data-index="2"] .person__photo { object-position: 46% 40%; }
   .people .person__name { position: static; flex: 1; display: flex; flex-direction: column; justify-content: space-between; gap: 12px; }
   .js .people .person--photo .person__back { position: relative; top: auto; left: auto; right: auto; margin-top: 10px; align-self: flex-start; }
   .js .people .person--photo .person__front { position: relative; top: auto; left: auto; right: auto; margin-right: 8px; align-self: flex-end; text-align: left; }
