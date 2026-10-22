@@ -135,9 +135,12 @@ ijejumin-webzine/
   - 마우스로 끌어서 돌릴 수 있고, 손을 놓으면 관성으로 천천히 멈춘다. 엽서를 누르면 팝업(`<dialog>`)이 뜬다
 - 스크롤에 따라 차례로 진행된다
   1. 엽서가 한 장으로 모인다. 거의 다 모이면 **이제주민 로고 엽서**(`.pick__cover`)가 아래에서 살짝 떠오르며 맨 위에 덮인다 (사용자 요청, 2026-10-22)
-     - 사용자가 준 시안대로: 맑은 하늘·뭉게구름 그림 `images/postcard-cover-sky.svg`(하늘색 하늘, 왼쪽 아래·오른쪽 뭉게구름) 위에
+     - 사용자가 준 시안대로: 맑은 하늘·뭉게구름 그림 `images/postcard-cover-sky.webp`(하늘색 하늘, 왼쪽 아래·오른쪽 뭉게구름) 위에
        주황 로고(흰 로고 그림을 모양틀로 써서 `--orange`로 칠함), 그 아래 주황 팀 이름 '살러 왔다, 살아남기' (2026-10-22)
-       - 거쳐 온 모양: `postcard-front-cover.svg` 위 파란 로고 → 주황 바탕에 흰 로고 → 노을빛 바다 `postcard-cover.svg` → 지금 하늘
+       - 구름 그림은 `reference/tools/make-cover-sky.py`로 만든다: 둥근 봉우리(반구)를 이음매 없이 합치고, 왼쪽 위 햇빛으로 밝은 면·그늘을 계산
+         - "구름이 너무 가짜 같다"는 사용자 말에, 동그라미를 겹친 만화풍 SVG 대신 이 방식으로 바꿨다 (2026-10-22)
+         - 구름 모양을 바꾸려면 스크립트의 `puffs`(x, y, 반지름) 목록을 고치고 `py reference/tools/make-cover-sky.py public/images/postcard-cover-sky.webp`
+       - 거쳐 온 모양: `postcard-front-cover.svg` 위 파란 로고 → 주황 바탕에 흰 로고 → 노을빛 바다 `postcard-cover.svg` → 만화풍 하늘 SVG → 지금 하늘
        - 노을빛 바다 그림(`postcard-cover.svg`)과 `postcard-front-cover.svg`는 지금 쓰지 않는다. 되돌릴 때 `style.css`의 그림 주소만 바꾸면 된다
      - 누를 수 없는 꾸밈용이다(`aria-hidden`)
   2. 소개 글이 올라온다
