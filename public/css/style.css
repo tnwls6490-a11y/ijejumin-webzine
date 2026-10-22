@@ -889,10 +889,10 @@ a { color: inherit; }
   .people .person__top { position: relative; inset: auto; }
   .people .person__center { position: static; flex: 1; min-height: 0; display: flex; flex-direction: column; }
   .people .person--photo .person__center { z-index: 4; }   /* 앞 제목이 아래로 내려와도 무대 아래쪽 어둡게 덮는 층(::after)보다 위에 */
-  /* 에밀리: 세로 화면에서는 사진 높이가 무대에 꼭 맞아 위아래 여유가 없다.
-     배경·누끼를 함께 0.92배로 줄이고 위로 8% 당겨, 인물은 작게·얼굴은 무대 높이 약 40%에 둔다.
-     사진 아래 끝(무대 약 84%)은 서서히 흐려 무대 아래쪽 어두운 색으로 이어진다 */
-  .person--photo-side .person__photo { transform-origin: 50% 0; scale: .92; translate: 0 -8%; }
+  /* 에밀리: 세로 화면에서는 사진 높이가 무대에 꼭 맞는다. 사진(손까지 나오는 넓은 사진, 2026-10-22 교체)은 줄이지 않아
+     양옆이 꽉 차고, 배경·누끼를 함께 위로 8% 당겨 얼굴을 무대 높이 약 40%에 둔다.
+     사진 아래 끝(무대 약 92%)은 서서히 흐려 무대 아래쪽 어두운 색으로 이어진다 */
+  .person--photo-side .person__photo { translate: 0 -8%; }
   .person--photo-side .person__photo:not(.person__cut) {
     -webkit-mask-image: linear-gradient(180deg, #000 0, #000 80%, transparent 100%);
     mask-image: linear-gradient(180deg, #000 0, #000 80%, transparent 100%);
