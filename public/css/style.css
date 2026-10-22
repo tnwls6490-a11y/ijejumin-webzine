@@ -1055,6 +1055,7 @@ a { color: inherit; }
 }
 .find__sub:hover { transform: translateY(-4px); box-shadow: 0 14px 30px rgba(18, 35, 58, .12); }
 .find__sub-img { flex: none; align-self: stretch; width: min(46%, 266px); height: auto; min-height: 100%; object-fit: cover; }
+.find__sub-img--right { object-position: 68% 50%; }   /* 마을 그림: 집이 오른쪽에 있어, 휴대폰처럼 좁은 칸에서도 집이 보이게 */
 .find__sub-body { flex: 1; min-width: 0; display: flex; flex-direction: column; align-items: flex-start; gap: 2px; padding: 24px 0 14px; }
 .find__icon { color: var(--orange-ink); margin-bottom: 8px; }
 .find__sub-title { font-size: clamp(18px, 1.8vw, 24px); font-weight: 800; letter-spacing: -0.03em; }
