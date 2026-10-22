@@ -1325,8 +1325,8 @@ a { color: inherit; }
 }
 .pcard.is-back .pcard__label { visibility: hidden; }
 /* 표지 엽서: 엽서가 다 모이면 맨 위로 떠오르는 이제주민 로고 엽서 (site.js가 위치·투명도를 넣는다)
-   사용자가 준 시안대로: 옅은 노을빛 바다 그림(섬·갈매기) 위에 주황 로고, 그 아래 주황 팀 이름 '살러 왔다, 살아남기' (2026-10-22)
-   (그 전에는 주황 바탕에 흰 로고였다) */
+   사용자가 준 시안대로: 맑은 하늘·뭉게구름 그림(postcard-cover-sky.svg) 위에 주황 로고, 그 아래 주황 팀 이름 '살러 왔다, 살아남기' (2026-10-22)
+   (그 전: 노을빛 바다 그림 postcard-cover.svg → 주황 바탕에 흰 로고) */
 .pick__cover {
   --cw: clamp(96px, 10.4vw, 156px);
   --pw: calc(var(--cw) * 1.45);
@@ -1334,7 +1334,7 @@ a { color: inherit; }
   width: var(--pw); height: calc(var(--pw) / 1.629);
   display: flex; flex-direction: column; align-items: center; justify-content: center; gap: calc(var(--pw) * .035);
   border-radius: calc(var(--cw) * .035); overflow: hidden;
-  background: #FCE4C8 url(../images/postcard-cover.svg) center / cover no-repeat;
+  background: #B2DCF8 url(../images/postcard-cover-sky.svg) center / cover no-repeat;
   box-shadow: 0 10px 28px rgba(18, 35, 58, .2);
   opacity: 0; visibility: hidden; pointer-events: none;
 }
