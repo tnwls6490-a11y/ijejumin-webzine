@@ -499,12 +499,13 @@
       var R = clamp(W * .36, cw * 1.8, 580);       // 반지름이 클수록 좌우로 카드 사이가 넓어진다
       var span = Math.max(H * 1.4, cw * 7);                 // 나선의 높이 (화면 위아래로 살짝 넘친다)
       /* 나선의 축은 똑바로 서 있다가, 마우스를 올리면 커서 쪽으로 각도가 천천히 옮겨 간다 (0.5초에 걸쳐 따라감).
-         좌우: 나선이 커서 쪽으로 최대 약 11도 돌아본다 · 위아래: 앞쪽이 커서 쪽으로 최대 약 5도 기운다. 엽서가 모이는 동안은 다시 똑바로 */
+         좌우: 나선이 커서 쪽으로 최대 약 11도 돌아본다 · 위아래: 앞쪽이 커서 쪽으로 최대 약 2.5도 기운다. 엽서가 모이는 동안은 다시 똑바로
+         (위아래는 전에 5도였는데, 아래쪽 엽서를 잡으려 하면 엽서가 커서보다 아래로 내려가 2.5도로 줄였다) */
       var follow = 1 - Math.exp(-dt / .5);
       lean.x += (aim.x * k - lean.x) * follow;
       lean.y += (aim.y * k - lean.y) * follow;
       var yaw = lean.x * .2;
-      var tx = -lean.y * .09, tz = 0;
+      var tx = -lean.y * .045, tz = 0;
       var cx = Math.cos(tx), sx = Math.sin(tx), cz = Math.cos(tz), sz = Math.sin(tz);
       for (var i = 0; i < n; i++) {
         var it = items[i];
