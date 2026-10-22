@@ -387,6 +387,63 @@ a { color: inherit; }
   opacity: 1; transform: translate(-50%, 0);
 }
 .intro__arrow { display: inline-block; color: var(--orange-ink); animation: nudge 1.4s ease-in-out infinite; }
+/* 화면 아래 스크롤 표시: 가는 선 그림 + 글자 SCROLL. 스크롤을 시작하면 사라진다 */
+.intro__scroll {
+  --sc: #4A3F36;   /* 기내 벽(베이지) 위에서 읽히는 짙은 갈색 */
+  position: absolute; left: 50%; bottom: clamp(12px, 2.5vh, 32px); z-index: 2;
+  display: none; flex-direction: column; align-items: center; gap: 8px;
+  margin: 0; transform: translateX(-50%);
+  font-size: 13px; font-weight: 600; line-height: 1; letter-spacing: .34em; text-indent: .34em; color: var(--sc);
+  pointer-events: none;
+  opacity: 0; transition: opacity .4s ease;
+}
+.js .intro__scroll { display: flex; }
+.js .intro__stage:not(.is-moving) .intro__scroll { opacity: 1; }
+/* 마우스: 둥근 몸통 안에서 휠(점)이 아래로 굴러 내려간다 */
+.intro__mouse {
+  position: relative; width: 20px; height: 32px;
+  border: 1.5px solid var(--sc); border-radius: 11px;
+}
+.intro__mouse::before {
+  content: ""; position: absolute; left: 50%; top: 7px;
+  width: 4px; height: 4px; margin-left: -2px; border-radius: 50%;
+  background: var(--sc);
+  animation: wheel 1.8s ease-in-out infinite;
+}
+@keyframes wheel {
+  0% { transform: translateY(0); opacity: 1; }
+  70% { transform: translateY(9px); opacity: 0; }
+  100% { transform: translateY(0); opacity: 0; }
+}
+.intro__chev {
+  width: 9px; height: 9px; margin-top: -2px;
+  border-right: 1.5px solid var(--sc); border-bottom: 1.5px solid var(--sc);
+  transform: rotate(45deg);
+  animation: chev 1.8s ease-in-out infinite;
+}
+@keyframes chev {
+  0%, 100% { transform: translateY(-2px) rotate(45deg); }
+  50% { transform: translateY(2px) rotate(45deg); }
+}
+/* 세로 줄: 옅은 선 위로 짙은 빛이 위에서 아래로 흘러내린다 */
+.intro__line {
+  position: relative; display: none; width: 1.5px; height: 44px; overflow: hidden;
+  background: rgba(74, 63, 54, .25);
+}
+.intro__line::before {
+  content: ""; position: absolute; left: 0; top: 0; width: 100%; height: 16px;
+  background: var(--sc);
+  animation: line-run 1.8s ease-in-out infinite;
+}
+@keyframes line-run {
+  from { transform: translateY(-16px); }
+  to { transform: translateY(44px); }
+}
+/* 마우스가 없는 손가락 화면: 마우스·꺾쇠 대신 세로 줄 */
+@media (hover: none), (pointer: coarse) {
+  .intro__mouse, .intro__chev { display: none; }
+  .intro__line { display: block; }
+}
 @keyframes nudge {
   0%, 100% { transform: translateY(-2px); }
   50% { transform: translateY(3px); }
@@ -455,7 +512,8 @@ a { color: inherit; }
 /* 움직임 줄이기 설정을 켠 사람: 확대 대신 바로 넘어간다 */
 
 @media (prefers-reduced-motion: reduce) {
-  .groundfog img, .intro__arrow { animation: none; }
+  .groundfog img, .intro__arrow, .intro__mouse::before, .intro__chev, .intro__line::before { animation: none; }
+  .intro__line::before { transform: translateY(14px); }
   .js .intro__stage:not(.is-open):not(.is-dragging) .shade-panel::after,
   .js .intro__stage:not(.is-open):not(.is-dragging) .porthole::after { animation: none; opacity: .6; }   /* 깜빡이지 않고 은은하게 켜 둔다 */
   .shade { transition-duration: .01s; }
