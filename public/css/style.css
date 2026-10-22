@@ -15,7 +15,7 @@
   --peach: #FFD9BC;
   --cabin: #F3EDE3;
   --hdr-bg: #F97316;   /* 헤더: 인터뷰 화면의 주황 선과 같은 주황 (사용자 요청) */
-  --hdr-ink: #12233A;  /* 헤더 글자·로고: 주황 위에서 대비 5.6:1 (흰 글자는 2.8:1이라 공통 기준 4.5:1에 못 미침) */
+  --hdr-ink: #FFFFFF;  /* 헤더 글자·로고: 흰색 (사용자 요청). 주황 위 흰 글자는 대비 2.8:1로 공통 기준 4.5:1에 못 미친다 → 올리기 전 확인 목록에 적어 둠 */
   --font: Pretendard, "Pretendard Variable", "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
 }
 
@@ -96,7 +96,7 @@ a { color: inherit; }
   font-size: 16px; font-weight: 600; color: var(--hdr-ink); text-decoration: none;
   border-radius: 999px;
 }
-.wz-nav a:hover { background: rgba(18, 35, 58, .12); color: var(--hdr-ink); }
+.wz-nav a:hover { background: rgba(255, 255, 255, .18); color: var(--hdr-ink); }
 .wz-header :focus-visible { outline-color: var(--hdr-ink); }
 
 @media (min-width: 900px) {
