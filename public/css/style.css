@@ -466,6 +466,28 @@ a { color: inherit; }
   pointer-events: none;
 }
 .is-landed .landing { pointer-events: auto; }
+/* 위쪽 줄: 왼쪽에 헤더와 같은 로고·문구, 가운데에 유리 캡슐 */
+.landing__top { position: relative; align-self: stretch; display: flex; flex-direction: column; align-items: center; }
+.landing__brand {
+  /* 헤더 로고와 같은 자리(가운데 1200px 칸의 왼쪽 끝)에, 캡슐과 같은 높이로 */
+  position: absolute; left: max(0px, calc((100% - 1168px) / 2)); top: 50%; translate: 0 -50%;
+  display: flex; align-items: center; gap: 14px; margin: 0;
+}
+.landing__logo {
+  flex: none; width: 50px; height: 58px;
+  background: url(../images/logo-ijejumin-white.webp) center / contain no-repeat;
+  filter: drop-shadow(0 1px 3px rgba(6, 22, 44, .45));
+}
+.landing__tagline {
+  font-size: 16px; line-height: 1.4; color: #FFFFFF; white-space: nowrap;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, .55), 0 0 14px rgba(6, 22, 44, .6);
+}
+@media (max-width: 899px) {
+  /* 좁은 화면: 로고·문구 줄을 캡슐 위에 따로 둔다 (가운데 캡슐과 겹치지 않게) */
+  .landing__brand { position: static; translate: none; align-self: flex-start; margin-bottom: 12px; }
+  .landing__logo { width: 40px; height: 46px; }
+  .landing__tagline { white-space: normal; }   /* 글자를 크게 보는 휴대폰에서도 화면 밖으로 넘치지 않게 */
+}
 .landing__eyebrow {
   /* 투명한 유리 캡슐: 뒤 사진을 어둡게 하지 않고 흐리게만 한다. 위쪽이 살짝 반사되고 테두리가 또렷하다.
      흰 글자는 그림자로 하늘·구름 위에서도 읽힌다 */
