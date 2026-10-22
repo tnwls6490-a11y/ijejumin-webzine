@@ -98,6 +98,7 @@ a { color: inherit; }
   transform: translateY(calc(var(--hdr-hide, 0px) * -1));
 }
 .has-intro .wz-header:focus-within { transform: none; }
+.has-intro .topbar { display: none; }   /* 첫 화면은 비행기 창부터 바로 시작한다 (사용자 요청으로 서브메인에서 상단 바를 뺌) */
 /* 휴대폰: 메뉴 세 개를 한 줄에, 오른쪽 끝에 모아 둔다. 넘치면(좁은 화면, 휴대폰 글자 크기 설정) site.js가 --nav-fit으로 글자를 더 줄인다 */
 @media (max-width: 899px) {
   .wz-nav { flex-wrap: nowrap; justify-content: flex-end; gap: 4px; width: calc(100% + 20px); margin-right: -10px; font-size: calc(15px * var(--nav-fit, 1)); white-space: nowrap; }
