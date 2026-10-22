@@ -4,7 +4,7 @@
     {
       "name": "webzine",
       "runtimeExecutable": "python",
-      "runtimeArgs": ["-m", "http.server", "8737", "--directory", "public"],
+      "runtimeArgs": ["reference/tools/serve.py", "8737"],
       "port": 8737
     },
     {
