@@ -313,10 +313,11 @@ a { color: inherit; }
 /* 안내 문구 */
 .intro__hint {
   position: absolute; left: 50%; margin: 0;
-  bottom: calc(100% - var(--cy) + var(--ph) / 2 + var(--fh) * .14);
+  /* 창 위에 띄운다. 단, 휴대폰처럼 화면이 낮아 창 위 자리가 모자라면 화면 위 12px 아래에서 멈춘다 (문구 높이 = 1.6em + 위아래 여백 16px) */
+  bottom: min(calc(100% - var(--cy) + var(--ph) / 2 + var(--fh) * .14), calc(100% - 12px - 1.6em - 16px));
   max-width: calc(100% - 32px);
   padding: 8px 18px; border-radius: 999px;
-  font-size: 16px; font-weight: 600; color: var(--muted); text-align: center;
+  font-size: 16px; font-weight: 600; line-height: 1.6; color: var(--muted); text-align: center;
   white-space: nowrap;
   background: rgba(255, 252, 246, .9);
   box-shadow: 0 2px 12px rgba(60, 45, 30, .18);
