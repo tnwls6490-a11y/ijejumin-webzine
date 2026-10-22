@@ -654,6 +654,11 @@ a { color: inherit; }
 /* 얼굴이 화면 한가운데 있는 사진: 제목을 얼굴 위쪽에 */
 .person--photo-side .person__back { top: 15%; }
 .person--photo-side .person__front { top: calc(15% + 1.08em); }
+@media (min-width: 900px) {
+  /* 에밀리 사진은 가슴께에서 끝나 아래 여유가 없다. 배경·누끼를 함께 아래쪽 기준으로 18% 키워 인물을 위로 올린다
+     (1280px 화면에서도 원본 1600px 안) */
+  .person--photo-side .person__photo { scale: 1.18; transform-origin: 58% 100%; }
+}
 @media (max-width: 899px) {
   .person__photo { object-position: 50% 45%; }
   .person--photo .person__back, .person--photo .person__front { left: var(--pad-x); font-size: clamp(28px, 7.8vw, 60px); }   /* 가장 긴 제목도 한 줄에 들어가는 크기 */
