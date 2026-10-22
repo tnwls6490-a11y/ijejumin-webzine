@@ -1343,14 +1343,14 @@ a { color: inherit; }
 .pcard__kicker { font-size: max(8px, calc(var(--cw) * .062)); color: var(--muted); white-space: nowrap; }
 .pcard__big { font-size: max(11px, calc(var(--cw) * .105)); font-weight: 800; line-height: 1.2; letter-spacing: -0.02em; }
 .pcard__small { margin-top: auto; font-size: max(8px, calc(var(--cw) * .056)); line-height: 1.35; color: var(--muted); }
-/* 모두 모였을 때 남는 한 장 (엽서 뒷면): 흰 엽서 판 가운데에 소개 글을 가운데 정렬 (사용자가 준 글, 2026-10-22)
-   우표는 사용자 요청으로 지웠고, 가운데 세로줄·주소 줄도 가운데로 온 글과 겹쳐 뺐다 */
+/* 모두 모였을 때 남는 한 장 (엽서 뒷면): 사용자가 준 시안대로 (2026-10-22)
+   위 줄: 왼쪽 주황 '02 — JEJU LIFE STORIES', 오른쪽 주황 편지 봉투, 그 아래 가는 선
+   가운데 정렬: 주황 '제주생존한마디' → 큰 제목 → 소개 글 → 아래 가는 선 */
 .pick__final {
   --fw: min(700px, calc(100vw - 32px));
   position: absolute; left: 50%; top: 56%; z-index: 5;
-  width: var(--fw); min-height: min(400px, 62vw); translate: -50% -50%;
-  display: flex; flex-direction: column; justify-content: center;
-  padding: 44px 48px; border-radius: 10px; text-align: center;
+  width: var(--fw); translate: -50% -50%;
+  padding: 0 28px 30px; border-radius: 10px; text-align: center;
   border: 12px solid #FFFDF8;
   background: #FFFDF8;
   color: var(--ink);
@@ -1358,19 +1358,17 @@ a { color: inherit; }
   opacity: 0; transform: scale(.9);
   pointer-events: none;
 }
-.pick__final-kicker { margin: 0; font-size: 16px; font-weight: 800; line-height: 1.4; letter-spacing: .04em; color: var(--orange-ink); }
-.pick__final-kicker span { margin-right: .3em; }
-.pick__final-title { margin: 8px 0 18px; font-size: clamp(24px, 2.8vw, 30px); font-weight: 800; line-height: 1.35; letter-spacing: -0.03em; }
-.pick__final-text p { margin: 0; font-size: 17px; line-height: 1.7; color: var(--muted); }
-.pick__final-text p + p { margin-top: 12px; }
-/* 글 아래 짧은 주소 줄 세 개: 엽서 뒷면 느낌 (사용자 요청) */
-.pick__final-text::after {
-  content: ""; display: block; width: min(220px, 56%); height: 25px; margin: 26px auto 0;
-  background:
-    linear-gradient(#D8CFC1, #D8CFC1) 0 0 / 100% 1px no-repeat,
-    linear-gradient(#D8CFC1, #D8CFC1) 0 12px / 100% 1px no-repeat,
-    linear-gradient(#D8CFC1, #D8CFC1) 0 24px / 100% 1px no-repeat;
+.pick__final-head {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  padding: 14px 0 16px; border-bottom: 1px solid #E6DCCB; text-align: left;
 }
+.pick__final-tag { margin: 0; font-size: 16px; font-weight: 500; line-height: 1.4; letter-spacing: .02em; color: var(--orange-ink); }
+.pick__final-mail { flex: none; width: 24px; height: 24px; color: var(--orange-ink); }
+.pick__final-kicker { margin: 30px 0 0; font-size: 16px; font-weight: 500; line-height: 1.4; color: var(--orange-ink); }
+.pick__final-title { margin: 8px 0 16px; font-size: clamp(24px, 2.8vw, 30px); font-weight: 800; line-height: 1.35; letter-spacing: -0.03em; }
+.pick__final-text { padding-bottom: 32px; border-bottom: 1px solid #E6DCCB; }
+.pick__final-text p { margin: 0; font-size: 17px; line-height: 1.85; color: var(--muted); }
+.pick__final-text p + p { margin-top: 12px; }
 
 /* 카드 팝업 */
 .pick-pop {
@@ -1406,12 +1404,26 @@ a { color: inherit; }
   .pick-pop__body { border-left: 0; border-top: 1px solid #D8CFC1; margin: 18px 18px 6px; padding: 22px 4px 26px; }
   .pick-pop__body::before { top: 20px; right: 4px; width: 44px; height: 52px; }
   .pick-pop__kicker, .pick-pop__title { margin-right: 60px; }
-  /* 휴대폰: 카카오톡 막대가 보이는 낮은 화면(312×520)에서도 무대 안에 들어가도록 여백을 줄였다 */
-  .pick__final { padding: 16px 16px 18px; border-width: 8px; min-height: 0; }
-  .pick__final-text::after { height: 17px; margin-top: 14px; background-position: 0 0, 0 8px, 0 16px; }
-  .pick__final-title { margin-top: 4px; margin-bottom: 10px; font-size: 21px; }
-  .pick__final-text p { font-size: 16px; line-height: 1.55; }
+  /* 휴대폰: 여백을 줄이고, 위 줄 글자는 한 줄에 들어가게 조금 작게 */
+  .pick__final { padding: 0 14px 16px; border-width: 8px; }
+  .pick__final-head { padding: 10px 0 12px; }
+  .pick__final-tag { font-size: 14px; letter-spacing: 0; }
+  .pick__final-mail { width: 22px; height: 22px; }
+  .pick__final-kicker { margin-top: 18px; }
+  .pick__final-title { margin: 4px 0 10px; font-size: 21px; }
+  .pick__final-text { padding-bottom: 18px; }
+  .pick__final-text p { font-size: 16px; line-height: 1.6; }
   .pick__final-text p + p { margin-top: 8px; }
+}
+/* 카카오톡 막대가 보이는 낮은 휴대폰 화면(312×520): 엽서가 무대 안에 들어가도록 더 촘촘하게 */
+@media (max-width: 599px) and (max-height: 560px) {
+  .pick__final { padding-bottom: 12px; border-width: 6px; }
+  .pick__final-head { padding: 7px 0 9px; }
+  .pick__final-kicker { margin-top: 12px; }
+  .pick__final-title { margin-bottom: 8px; }
+  .pick__final-text { padding-bottom: 12px; }
+  .pick__final-text p { line-height: 1.45; }
+  .pick__final-text p + p { margin-top: 6px; }
 }
 /* 위아래 여백만 준다 (오른쪽 여백은 우표 자리라 위에서 따로 정한다) */
 .pick-pop__kicker { margin-top: 0; margin-bottom: 0; font-size: 16px; font-weight: 800; color: var(--orange-ink); letter-spacing: .04em; }
