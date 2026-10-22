@@ -327,38 +327,6 @@ a { color: inherit; }
   transition: transform .8s cubic-bezier(.2, .8, .2, 1);
 }
 .shade-panel img { width: 100%; height: 100%; max-width: none; user-select: none; }
-/* 손잡이가 은은하게 빛났다 사그라든다: 여기를 누르면 된다는 표시. 가리개가 닫혀 있을 때만 */
-.shade-panel::after {
-  /* 손잡이 둘레의 따뜻한 빛. 손잡이 자체는 거의 그대로 두고(사용자 요청) 둘레만 밝힌다 */
-  content: ""; position: absolute; pointer-events: none;
-  left: 50.3%; top: 92.4%; width: 35%; height: 2.8%;
-  transform: translate(-50%, -50%);
-  border-radius: 999px;
-  background: rgba(255, 251, 240, .1);
-  box-shadow:
-    0 0 calc(var(--fw, 600px) * .03) calc(var(--fw, 600px) * .004) rgba(255, 226, 168, .5),
-    0 0 calc(var(--fw, 600px) * .07) calc(var(--fw, 600px) * .012) rgba(255, 210, 140, .35);
-  opacity: 0;
-  transition: opacity .5s ease;
-}
-/* 손잡이 둘레로 넓게 번지는 빛: 가리개 판의 빛은 창 안쪽에서 잘리니, 창틀 위에 따로 깐다.
-   닫힌 가리개의 손잡이 자리에 고정해 두고, 끌어 올리는 동안은 끈다 */
-.porthole::after {
-  content: ""; position: absolute; pointer-events: none;
-  left: 50%; top: 71.9%; width: 78%; height: 32%;
-  transform: translate(-50%, -50%);
-  /* 가운데(손잡이)는 너무 하얘지지 않게 낮추고, 바깥으로 넓고 고르게 번지게 */
-  background: radial-gradient(closest-side, rgba(255, 220, 165, .34), rgba(255, 214, 150, .3) 26%, rgba(255, 214, 150, .14) 56%, rgba(255, 214, 150, .04) 82%, rgba(255, 214, 150, 0));
-  mix-blend-mode: screen;
-  opacity: 0;
-  transition: opacity .5s ease;
-}
-.js .intro__stage:not(.is-open):not(.is-dragging) .shade-panel::after,
-.js .intro__stage:not(.is-open):not(.is-dragging) .porthole::after { animation: handle-glow 2.6s ease-in-out infinite; }
-@keyframes handle-glow {
-  0%, 100% { opacity: .1; }
-  50% { opacity: .9; }
-}
 /* 손잡이 위 겹화살표(위쪽): 가리개를 위로 올리면 된다는 표시. 아래 화살표부터 차례로 짙어지며 살짝 위로 오른다 */
 .shade-arrow {
   position: absolute; left: 50.3%; top: 86%;
@@ -414,17 +382,21 @@ a { color: inherit; }
   opacity: 1; transform: translate(-50%, 0);
 }
 .intro__arrow { display: inline-block; color: var(--orange-ink); animation: nudge 1.4s ease-in-out infinite; }
-/* 화면 아래 스크롤 표시: 가는 선 그림 + 글자 SCROLL. 스크롤을 시작하면 사라진다 */
+/* 화면 아래 스크롤 표시: 가는 선 그림 + 글자 SCROLL.
+   창(가리개)을 연 뒤, 가리개가 다 올라갈 즈음 아래에서 살며시 떠오른다. 스크롤을 시작하면 바로 사라진다 */
 .intro__scroll {
   position: absolute; left: 50%; bottom: clamp(12px, 2.5vh, 32px); z-index: 2;
   display: none; flex-direction: column; align-items: center; gap: 8px;
-  margin: 0; transform: translateX(-50%);
+  margin: 0; transform: translate(-50%, 12px);
   font-size: 13px; font-weight: 600; line-height: 1; letter-spacing: .34em; text-indent: .34em; color: var(--sc);
   pointer-events: none;
-  opacity: 0; transition: opacity .4s ease;
+  opacity: 0; transition: opacity .3s ease, transform .3s ease;
 }
 .js .intro__scroll { display: flex; }
-.js .intro__stage:not(.is-moving) .intro__scroll { opacity: 1; }
+.js .intro__stage.is-open:not(.is-moving) .intro__scroll {
+  opacity: 1; transform: translate(-50%, 0);
+  transition: opacity .9s ease .5s, transform 1.1s cubic-bezier(.2, .8, .2, 1) .5s;
+}
 /* 마우스: 둥근 몸통 안에서 휠(점)이 아래로 굴러 내려간다 */
 .intro__mouse {
   position: relative; width: 20px; height: 32px;
@@ -542,8 +514,7 @@ a { color: inherit; }
   .js .intro__stage:not(.is-open):not(.is-dragging) .shade-arrow,
   .js .intro__stage:not(.is-open):not(.is-dragging) .shade-arrow i { animation: none; }
   .intro__line::before { transform: translateY(14px); }
-  .js .intro__stage:not(.is-open):not(.is-dragging) .shade-panel::after,
-  .js .intro__stage:not(.is-open):not(.is-dragging) .porthole::after { animation: none; opacity: .6; }   /* 깜빡이지 않고 은은하게 켜 둔다 */
+  .intro__scroll, .js .intro__stage.is-open:not(.is-moving) .intro__scroll { transition: opacity .3s ease; transform: translateX(-50%); }
   .shade { transition-duration: .01s; }
   html { scroll-behavior: auto; }
 }
