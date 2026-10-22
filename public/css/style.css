@@ -1260,6 +1260,27 @@ a { color: inherit; }
   font-family: "Ijeju Card", var(--font); font-size: calc(var(--pw) * .042); font-weight: 700; line-height: 1.4; letter-spacing: -0.02em; color: #1E1B18;
 }
 .pcard.is-back .pcard__label { visibility: hidden; }
+/* 표지 엽서: 엽서가 다 모이면 맨 위로 떠오르는 이제주민 로고 엽서 (site.js가 위치·투명도를 넣는다) */
+.pick__cover {
+  --cw: clamp(96px, 10.4vw, 156px);
+  --pw: calc(var(--cw) * 1.45);
+  position: absolute; left: calc(var(--pw) / -2); top: calc(var(--pw) / -3.258);
+  width: var(--pw); height: calc(var(--pw) / 1.629);
+  display: flex; flex-direction: column; align-items: center; gap: calc(var(--pw) * .022);
+  padding-top: calc(var(--pw) * .06);
+  border-radius: calc(var(--cw) * .035); overflow: hidden;
+  background: #F3E4CE url(../images/postcard-front-cover.svg) center / cover no-repeat;
+  box-shadow: 0 10px 28px rgba(18, 35, 58, .2);
+  opacity: 0; visibility: hidden; pointer-events: none;
+}
+/* 로고: 흰 로고 그림을 모양틀로 써서 헤더와 같은 파랑으로 칠한다 */
+.pick__cover-logo {
+  width: calc(var(--pw) * .2); aspect-ratio: 180 / 209;
+  background: var(--hdr-bg);
+  -webkit-mask: url(../images/logo-ijejumin-white.webp) center / contain no-repeat;
+  mask: url(../images/logo-ijejumin-white.webp) center / contain no-repeat;
+}
+.pick__cover-text { font-size: calc(var(--pw) * .05); font-weight: 800; line-height: 1.2; letter-spacing: .06em; color: #DC5A1E; white-space: nowrap; }
 /* 팝업 그림면: 추천 장소 사진 (돌아가는 엽서 앞면에는 무늬만). 사진이 오기 전에는 뒤의 무늬가 보인다 */
 .pick-pop__photo {
   position: absolute; inset: 0; width: 100%; height: 100%; border-radius: inherit;
@@ -1441,7 +1462,7 @@ html:not(.js) .pick__intro { position: relative; left: auto; top: auto; translat
 html:not(.js) .pick__world, html:not(.js) .pick__headline { display: none; }
 html:not(.js) .pick__final { opacity: 1; transform: none; }
 @media (max-width: 899px) {
-  .pcard { --cw: clamp(84px, 25vw, 112px); }   /* 휴대폰에서도 엽서를 크게 (390px 화면에서 약 141×94px) */
+  .pcard, .pick__cover { --cw: clamp(84px, 25vw, 112px); }   /* 휴대폰에서도 엽서를 크게 (390px 화면에서 약 141×94px) */
   .pick__world, .pick__final { top: 60%; }
 }
 

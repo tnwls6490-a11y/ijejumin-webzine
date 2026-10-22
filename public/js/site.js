@@ -360,6 +360,7 @@
     var cardsBox = section.querySelector('.pick__cards');
     var world = section.querySelector('.pick__world');
     var finalCard = section.querySelector('.pick__final');
+    var cover = section.querySelector('.pick__cover');       // 다 모이면 맨 위에 오는 로고 엽서
     var cards = Array.prototype.slice.call(section.querySelectorAll('.pcard'));
     var pop = section.querySelector('.pick-pop');
     var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -513,6 +514,14 @@
         it.el.style.setProperty('--shade', ((1 - Math.cos(ang)) / 2 * .42 * k).toFixed(3));
         var back = Math.abs(deg * k) > 90;                   // 뒤돌아 있는 엽서는 글자(장소 이름)를 숨긴다
         if (back !== it.back) { it.el.classList.toggle('is-back', back); it.back = back; }
+      }
+      /* 엽서가 거의 다 모이면 이제주민 로고 엽서가 아래에서 살짝 떠오르며 맨 위에 덮인다 */
+      if (cover) {
+        var cv = smooth(.8, 1, m);
+        cover.style.visibility = cv > 0 ? 'visible' : 'hidden';
+        cover.style.opacity = cv.toFixed(3);
+        cover.style.zIndex = 9000;
+        cover.style.transform = view + 'translate3d(0,' + ((1 - cv) * 28).toFixed(1) + 'px,2px) scale(' + (1 + .55 * m).toFixed(3) + ')';
       }
       section.style.setProperty('--merge', m.toFixed(3));
       section.classList.toggle('is-merging', m > .35);

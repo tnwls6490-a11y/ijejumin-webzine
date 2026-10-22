@@ -377,6 +377,8 @@ DESIGNS = {
     '18': ('eulalia', 'bird', C['mint'], 'crater', 'island', {'shape': 'flat'}, (True, True)),
     '19': ('hydrangea', 'arch', C['mint'], 'halla', 'waterfall', {}, (False, False)),
     '20': ('tangerine', 'circle', C['orange'], 'crater', 'seongsan', {}, (False, True)),
+    # 표지: 엽서가 다 모이면 맨 위에 덮이는 이제주민 로고 엽서 (로고·글자는 style.css에서 가운데에 올린다)
+    'cover': ('camellia', 'bird', C['sky'], 'tangerine', 'island', {'shape': 'dome'}, (True, True)),
 }
 
 
@@ -389,7 +391,7 @@ def grain(seed):
 def build(no):
     motif, ak, acol, st, scene, opt, (wl, wr) = DESIGNS[no]
     body = (f'<rect width="{W}" height="{H}" fill="{C["cream"]}"/>' + accent(ak, acol) + SCENES[scene](**opt)
-            + MOTIF[motif]() + frame_waves(wl, wr) + stamp(st, int(no)) + grain(int(no)))
+            + MOTIF[motif]() + frame_waves(wl, wr) + stamp(st, 0) + grain(int(no) if no.isdigit() else 21))
     return (f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W} {H}" width="{W}" height="{H}">'
             f'<defs></defs>{body}</svg>')
 
