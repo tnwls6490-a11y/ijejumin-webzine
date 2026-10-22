@@ -118,23 +118,17 @@ a { color: inherit; }
 }
 
 /* ---------- 공통 틀: 푸터 ----------
-   사용자가 준 시안대로 (2026-10-22): 크림 바탕 위에 옅은 살구색 둥근 카드 하나
+   사용자가 준 시안의 모양을 화면 가득한 띠로 (2026-10-22, 둥근 카드에 넣었다가 사용자 요청으로 전체 폭으로)
    위: 푸터 위 안내(.wz-outro): 왼쪽 주황 로고 + 주황 '육지에서 나고, 섬에서 자라는 중'·회색 팀 이름,
        오른쪽 '메뉴'·'인터뷰' 두 칸(사이에 세로 선, 이름은 주황, 링크는 회색)
    아래: 공통 기준 푸터(.site-footer, 코드 그대로): 가는 선 아래 왼쪽 '이제주민 · 한경 웹진', 오른쪽 '개인정보처리방침 →'
-   두 부분은 .container 두 개라 같은 폭이다. 위는 카드 윗부분, 아래는 카드 아랫부분으로 칠해 한 장처럼 보이게 한다.
-   주황 글자는 대비 4.5:1을 넘게 짙은 주황(--orange-ink)을 쓴다. 로고(그림)만 밝은 주황.
-   (그 전: 헤더와 같은 주황 바탕·흰 글자 → 그보다 전: 파랑 #2C64A0 바탕) */
-.wz-outro, .site-footer { background: #F7F3EC; color: var(--muted); }
-.wz-outro { padding-top: clamp(24px, 5vh, 56px); }
-.site-footer { padding-bottom: clamp(24px, 5vh, 56px); }
-.wz-outro__inner, .site-footer .container {
-  width: calc(100% - 32px); max-width: 1168px;
-  background: #FFF6EC; border: 1px solid #F1DCC6;
-}
+   바탕은 옅은 살구색, 위 끝에 가는 선. 주황 글자는 대비 4.5:1을 넘게 짙은 주황(--orange-ink)을 쓴다. 로고(그림)만 밝은 주황.
+   (그 전: 둥근 카드 → 헤더와 같은 주황 바탕·흰 글자 → 파랑 #2C64A0 바탕) */
+.wz-outro, .site-footer { background: #FFF6EC; color: var(--muted); }
+.wz-outro { border-top: 1px solid #F1DCC6; }
 .wz-outro__inner {
   display: grid; grid-template-columns: 1fr auto auto; align-items: start; gap: 24px 0;
-  padding: 28px 36px 18px; border-bottom: 0; border-radius: 18px 18px 0 0;
+  padding-top: 36px; padding-bottom: 20px;
 }
 .wz-outro__brand {
   display: grid; grid-template-columns: auto 1fr; align-items: center; column-gap: 22px; align-self: center;
@@ -156,24 +150,22 @@ a { color: inherit; }
 .site-footer .container {
   position: relative;
   display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
-  gap: 4px 16px; padding: 8px 36px 10px; font-size: 16px; color: var(--orange-ink);
-  border-top: 0; border-radius: 0 0 18px 18px;
+  gap: 4px 16px; padding-top: 8px; padding-bottom: 14px; font-size: 16px; color: var(--orange-ink);
 }
-/* 위 안내와 아래 줄 사이 가는 선 (카드 안쪽 여백만큼 들여서) */
-.site-footer .container::before { content: ""; position: absolute; left: 36px; right: 36px; top: 0; height: 1px; background: #F1DCC6; }
+/* 위 안내와 아래 줄 사이 가는 선 (칸 안쪽 여백만큼 들여서) */
+.site-footer .container::before { content: ""; position: absolute; left: 16px; right: 16px; top: 0; height: 1px; background: #F1DCC6; }
 .site-footer a { display: inline-flex; align-items: center; gap: 10px; min-height: 44px; color: var(--orange-ink); text-decoration: none; }
 .site-footer a::after { content: "→"; }
 .site-footer a:hover { text-decoration: underline; text-underline-offset: 4px; }
 @media (max-width: 760px) {
   /* 휴대폰: 로고·소개를 위에 두고, 그 아래 메뉴·인터뷰 두 칸 */
-  .wz-outro__inner { grid-template-columns: 1fr 1fr; gap: 22px 0; padding: 24px 18px 14px; }
+  .wz-outro__inner { grid-template-columns: 1fr 1fr; gap: 22px 0; padding-top: 28px; padding-bottom: 14px; }
   .wz-outro__brand { grid-column: 1 / -1; column-gap: 16px; }
   .wz-outro__logo { width: 56px; height: 65px; }
   .wz-outro__tagline { font-size: 18px; }
   .wz-outro__col { min-width: 0; padding: 0 14px 0 0; }
   .wz-outro__col + .wz-outro__col { padding: 0 0 0 16px; }
-  .site-footer .container { padding: 6px 18px 8px; }
-  .site-footer .container::before { left: 18px; right: 18px; }
+  .site-footer .container { padding-top: 6px; padding-bottom: 10px; }
 }
 
 /* =========================================================
@@ -984,7 +976,7 @@ a { color: inherit; }
 /* 검은 엽서 무대 바로 다음에 '나의 제주찾기'(크림)가 이어진다.
    전에는 사이에 검정 → 크림 그라데이션 띠(화면 높이의 70%)가 있었는데, 너무 길어 사용자 요청으로 뺐다 (2026-10-22) */
 .pick + .cat { border-top: 0; padding-top: clamp(64px, 10vh, 112px); }
-.cat.find { background: #F7F3EC; }
+.cat.find { background: #F7F3EC; padding-bottom: clamp(56px, 9vh, 96px); }   /* 아래 푸터와의 빈 곳을 줄였다 (사용자 요청, 전에는 150~280px) */
 .find .cat__label { letter-spacing: .04em; }
 .find .cat__title { font-size: clamp(30px, 4.4vw, 52px); font-weight: 800; }
 .find .cat__text { font-size: clamp(16px, 1.5vw, 20px); }
