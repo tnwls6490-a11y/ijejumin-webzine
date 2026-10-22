@@ -120,28 +120,30 @@ a { color: inherit; }
 /* ---------- 공통 틀: 푸터 ----------
    사용자가 준 시안(다른 웹진 푸터)의 짜임대로 정리 (2026-10-23)
    바탕은 헤더와 같은 주황, 글자는 흰색 (사용자 요청 "이전의 주황색으로")
-   위(.wz-outro): 왼쪽 흰 로고 + 소개 | '만든 사람들' | '출처'. 칸 이름 오른쪽으로 점선이 이어진다
-   아래: 공통 기준 푸터(.site-footer, 코드 그대로): 파선 아래 왼쪽 '개인정보처리방침'(굵게·밑줄), 오른쪽 '이제주민 · 한경 웹진'
+   위(.wz-outro): 왼쪽 흰 로고 + 소개 | '만든 사람들' | '출처'. 칸 이름 오른쪽으로 가는 실선이 이어진다 (시안은 점선, 사용자 요청으로 실선)
+   아래: 공통 기준 푸터(.site-footer, 코드 그대로): 실선 아래 왼쪽 '개인정보처리방침'(굵게·밑줄), 오른쪽 '이제주민 · 한경 웹진'
+   높이는 줄여 두었다 (사용자 요청 "높이를 줄여줘", 공통 기준에 푸터 크기 기준은 없음): 위아래 여백·로고·줄 간격을 줄임
    주황 위 흰 글자는 대비 2.8:1로 공통 기준(4.5:1)에 못 미친다 (헤더와 같음, 올리기 전 확인 목록에 적어 둠)
    (그 전: 옅은 살구색 띠에 주황 글자, 오른쪽 메뉴·인터뷰 두 칸 → 둥근 카드 → 헤더와 같은 주황 바탕·흰 글자 → 파랑 #2C64A0 바탕) */
 .wz-outro, .site-footer { background: var(--hdr-bg); color: var(--hdr-ink); }
 .wz-outro__inner {
   display: grid; grid-template-columns: 1.35fr 1fr 1.4fr; align-items: start; gap: 32px clamp(32px, 4vw, 56px);
-  padding-top: clamp(44px, 6vw, 68px); padding-bottom: clamp(32px, 4vw, 48px);
+  padding-top: clamp(28px, 3.2vw, 40px); padding-bottom: clamp(18px, 2vw, 24px);
 }
 .wz-outro__logo {
-  display: block; width: 64px; height: 74px; margin-bottom: 18px;
+  display: block; width: 50px; height: 58px; margin-bottom: 12px;
   background: var(--hdr-ink);
   -webkit-mask: url(../images/logo-ijejumin-white.webp) center / contain no-repeat;
   mask: url(../images/logo-ijejumin-white.webp) center / contain no-repeat;
 }
-.wz-outro__desc { margin: 0; font-size: 17px; font-weight: 500; line-height: 1.75; }
+.wz-outro__desc { margin: 0; font-size: 17px; font-weight: 500; line-height: 1.65; }
 .wz-outro__head {
-  display: flex; align-items: center; gap: 14px; margin: 0 0 12px;
+  display: flex; align-items: center; gap: 14px; margin: 0 0 8px;
   font-size: 16px; font-weight: 700; letter-spacing: .16em;
 }
-.wz-outro__head::after { content: ""; flex: 1; border-top: 2px dotted rgba(255, 255, 255, .6); }
-.wz-outro__line { margin: 0 0 8px; font-size: 16px; line-height: 1.7; }
+.wz-outro__head::after { content: ""; flex: 1; border-top: 1px solid rgba(255, 255, 255, .6); }
+.wz-outro__line { margin: 0 0 4px; font-size: 16px; line-height: 1.6; }
+.wz-outro__line:last-child { margin-bottom: 0; }
 .wz-outro__line a {
   display: inline-flex; align-items: center; min-height: 44px; vertical-align: middle;
   color: inherit; font-weight: 600; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 4px;
@@ -150,10 +152,10 @@ a { color: inherit; }
 .site-footer .container {
   position: relative;
   display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
-  gap: 4px 24px; padding-top: 10px; padding-bottom: 18px; font-size: 16px;
+  gap: 0 24px; padding-top: 4px; padding-bottom: 8px; font-size: 16px;
 }
-/* 위 안내와 아래 줄 사이 파선 (칸 안쪽 여백만큼 들여서) */
-.site-footer .container::before { content: ""; position: absolute; left: 16px; right: 16px; top: 0; border-top: 1px dashed rgba(255, 255, 255, .65); }
+/* 위 안내와 아래 줄 사이 실선 (칸 안쪽 여백만큼 들여서) */
+.site-footer .container::before { content: ""; position: absolute; left: 16px; right: 16px; top: 0; border-top: 1px solid rgba(255, 255, 255, .6); }
 /* 시안처럼 '개인정보처리방침'은 왼쪽, '이제주민 · 한경 웹진'은 오른쪽 (마크업은 공통 기준 그대로, 순서만 CSS로) */
 .site-footer a {
   order: -1; display: inline-flex; align-items: center; min-height: 44px;
@@ -167,10 +169,10 @@ a { color: inherit; }
 }
 @media (max-width: 640px) {
   /* 휴대폰: 한 줄에 한 칸씩 */
-  .wz-outro__inner { grid-template-columns: 1fr; gap: 28px; padding-top: 40px; padding-bottom: 28px; }
-  .wz-outro__logo { width: 56px; height: 65px; margin-bottom: 14px; }
+  .wz-outro__inner { grid-template-columns: 1fr; gap: 20px; padding-top: 28px; padding-bottom: 18px; }
+  .wz-outro__logo { width: 44px; height: 51px; margin-bottom: 10px; }
   .wz-outro__desc { font-size: 16px; }
-  .site-footer .container { padding-bottom: 12px; }
+  .site-footer .container { padding-bottom: 6px; }
 }
 
 /* =========================================================
