@@ -1032,6 +1032,12 @@ a { color: inherit; }
   /* 카드 위에 겹쳐도 읽히도록 검은 빛을 두른다 */
   text-shadow: 0 0 6px #000000, 0 0 14px #000000, 0 0 28px rgba(0, 0, 0, .9);
 }
+/* 부제 아래 안내: 엽서를 누르면 무엇을 볼 수 있는지 */
+.pick__guide {
+  max-width: calc(100% - 32px); margin-top: .3em; white-space: normal;
+  font-size: clamp(16px, 1.3vw, 19px); font-weight: 500; line-height: 1.5; color: rgba(255, 255, 255, .88);
+  text-shadow: 0 0 6px #000000, 0 0 14px #000000, 0 0 24px rgba(0, 0, 0, .9);
+}
 .pick__world {
   /* 엽서들은 3D 공간을 같이 쓰지 않는다(flat). 원근은 site.js가 엽서마다 따로 주고, 앞뒤는 z-index로 정한다
      → 모이는 동안 엽서끼리 서로를 뚫고 지나가며 깨져 보이지 않는다 */
