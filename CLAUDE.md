@@ -201,6 +201,10 @@ ijejumin-webzine/
   - 배경은 하늘색, 오른쪽에 바다·섬·유채꽃 사진 `find-test-bg.jpg`(테스트 시안 bg.jpg)
   - 가운데 오른쪽에 테스트 첫 화면 표지 `find-test-cover.webp`를 기울여 세운다. 카드 위로 살짝 튀어나오고 아래는 카드 끝에서 잘린다
   - 표지는 테스트 시안의 제목 그림·하르방·문구로 다시 짠 그림이다. 표지 옆 하르방은 `find-harbang.webp`
+  - '테스트 시작하기' 버튼·표지 그림·오른쪽 아래 화살표(`.find__btn`·`.find__cover`·`.find__corner`) 세 곳은
+    사용자가 만든 테스트 아티팩트 `https://claude.ai/artifact/Qhchi6VWQa5d3jBMB8tCCt`로 간다 (사용자 요청, 2026-10-23)
+    - 아티팩트는 '링크가 있는 누구나' 볼 수 있게 공유되어 있다. 같은 탭에서 열리고, 뒤로 가기로 웹진에 돌아온다
+    - 테스트를 웹진 안(`articles/jeju-village-test.html`)으로 옮기면 세 주소를 `./articles/jeju-village-test.html`로 바꾼다
 - 작은 카드 2개: 왼쪽 그림 + 아이콘·제목·설명·주황 링크 + 오른쪽 동그란 화살표
   - 제주살이 체크리스트 `find-checklist.webp`, 마을·청년 정보 `find-village.webp`
   - 두 그림은 사용자가 준 원본 그림(1536×1024)을 720×480으로 줄여 같은 이름으로 바꿨다 (2026-10-23). 전에는 시안에서 잘라 낸 작은 그림(약 270×190)이었다
@@ -215,7 +219,7 @@ ijejumin-webzine/
 | `articles/ain-school.html` | 인터뷰 02 아인학교 (안세은 선생님) |
 | `articles/parang-of-records.html` | 인터뷰 03 파랑오브레코즈 |
 | `articles/emily.html` | 인터뷰 04 에밀리 |
-| `articles/jeju-village-test.html` | 나의 제주 마을 테스트 |
+| `articles/jeju-village-test.html` | 나의 제주 마을 테스트 (지금은 링크하지 않고 테스트 아티팩트로 바로 간다) |
 | `articles/jeju-checklist.html` | 제주살이 체크리스트 |
 | `articles/jeju-village-info.html` | 마을·청년 정보 |
 
