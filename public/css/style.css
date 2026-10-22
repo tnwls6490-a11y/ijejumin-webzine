@@ -326,6 +326,25 @@ a { color: inherit; }
   transition: transform .8s cubic-bezier(.2, .8, .2, 1);
 }
 .shade-panel img { width: 100%; height: 100%; max-width: none; user-select: none; }
+/* 손잡이가 은은하게 빛났다 사그라든다: 여기를 누르면 된다는 표시. 가리개가 닫혀 있을 때만 */
+.shade-panel::after {
+  /* 손잡이 크기의 빛: 가운데는 하얗게, 둘레로 따뜻한 빛이 번진다 */
+  content: ""; position: absolute; pointer-events: none;
+  left: 50.3%; top: 92.4%; width: 35%; height: 2.8%;
+  transform: translate(-50%, -50%);
+  border-radius: 999px;
+  background: rgba(255, 251, 240, .7);
+  box-shadow:
+    0 0 calc(var(--fw, 600px) * .02) calc(var(--fw, 600px) * .006) rgba(255, 226, 168, .85),
+    0 0 calc(var(--fw, 600px) * .06) calc(var(--fw, 600px) * .012) rgba(255, 210, 140, .45);
+  opacity: 0;
+  transition: opacity .5s ease;
+}
+.js .intro__stage:not(.is-open) .shade-panel::after { animation: handle-glow 2.6s ease-in-out infinite; }
+@keyframes handle-glow {
+  0%, 100% { opacity: .1; }
+  50% { opacity: .9; }
+}
 .shade {
   margin: 0; padding: 0; border: 0; border-radius: 26% / 20%;
   background: transparent; font: inherit; color: inherit; cursor: grab;
@@ -424,6 +443,7 @@ a { color: inherit; }
 
 @media (prefers-reduced-motion: reduce) {
   .groundfog img, .intro__arrow { animation: none; }
+  .js .intro__stage:not(.is-open) .shade-panel::after { animation: none; opacity: .6; }   /* 깜빡이지 않고 은은하게 켜 둔다 */
   .shade { transition-duration: .01s; }
   html { scroll-behavior: auto; }
 }
