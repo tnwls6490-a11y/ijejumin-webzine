@@ -531,9 +531,7 @@
     var popWhy = pop.querySelector('.pick-pop__why');
     var popWord = pop.querySelector('.pick-pop__word-text');
     var popInner = pop.querySelector('.pick-pop__inner');
-    var popPhoto = document.createElement('img');            // 팝업 그림면에 누른 엽서의 사진을 크게 보여 준다
-    popPhoto.className = 'pick-pop__photo';
-    popPhoto.decoding = 'async';
+    var popPhoto = null;                                     // 팝업 그림면의 장소 사진 (엽서 앞면에는 없고 팝업에서만 보인다)
     var opener = null;
     world.addEventListener('click', function (e) {
       var card = e.target.closest('.pcard');
@@ -542,12 +540,18 @@
       opener = card;
       var type = (card.className.match(/pcard--([a-z]+)/) || [])[1] || '';
       popCard.className = 'pick-pop__card ' + (type === 'note' ? 'is-note' : 'pcard pcard--' + type);
-      var photo = card.querySelector('.pcard__photo');
+      /* 사진은 누를 때마다 새로 만든다 (주소만 바꾸면 새 사진이 올 때까지 앞 엽서의 사진이 잠깐 남는다). 오기 전에는 무늬가 보인다 */
+      if (popPhoto) popCard.removeChild(popPhoto);
+      popPhoto = null;
+      var photo = card.getAttribute('data-photo');
       if (photo) {
-        popPhoto.src = photo.currentSrc || photo.src;
-        popPhoto.alt = photo.alt;
+        popPhoto = document.createElement('img');
+        popPhoto.className = 'pick-pop__photo';
+        popPhoto.decoding = 'async';
+        popPhoto.alt = card.getAttribute('data-photo-alt') || '';
+        popPhoto.src = photo;
         popCard.appendChild(popPhoto);
-      } else if (popPhoto.parentNode) popPhoto.parentNode.removeChild(popPhoto);
+      }
       /* 엽서에 담긴 설문 내용(장소 · 추천 이유 · 한마디)을 팝업에 옮긴다 */
       popNo.textContent = card.getAttribute('data-no') || '';
       popTitle.textContent = card.getAttribute('data-place') || '';
