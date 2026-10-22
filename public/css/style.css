@@ -151,7 +151,14 @@ a { color: inherit; }
 }
 .has-intro .intro__stage { top: 0; height: 100vh; height: 100svh; }   /* 헤더가 숨은 동안은 화면 가득 */
 @media (max-width: 600px) {
-  .intro__stage { --cy: 42%; }
+  /* 휴대폰: 창틀(사진 높이의 11~84%)이 위 안내 문구(화면 위 12px + 문구 약 42px)와
+     아래 스크롤 표시(약 85px) 사이에 들어가도록 창 크기를 화면 높이에 맞추고, 그 사이 가운데에 둔다.
+     창틀 높이 = 창 폭 × 0.973 이므로 창 폭 ≤ (화면 높이 − 160px) × 1.027 */
+  .intro__stage {
+    --fw: min(120vw, calc((100vh - 160px) * 1.027), 760px);
+    --fw: min(120vw, calc((100svh - 160px) * 1.027), 760px);
+    --cy: calc(50% - 16px);
+  }
 }
 /* 사진 바깥까지 기내 벽이 이어지도록, 사진의 벽을 흐리게 넓힌 이미지를 창 사진과 같은 중심에 깐다 */
 .intro__stage::before {
@@ -433,25 +440,6 @@ a { color: inherit; }
   0%, 100% { transform: translateY(-2px) rotate(45deg); }
   50% { transform: translateY(2px) rotate(45deg); }
 }
-/* 세로 줄: 옅은 선 위로 짙은 빛이 위에서 아래로 흘러내린다 */
-.intro__line {
-  position: relative; display: none; width: 1.5px; height: 44px; overflow: hidden;
-  background: rgba(74, 63, 54, .25);
-}
-.intro__line::before {
-  content: ""; position: absolute; left: 0; top: 0; width: 100%; height: 16px;
-  background: var(--sc);
-  animation: line-run 1.8s ease-in-out infinite;
-}
-@keyframes line-run {
-  from { transform: translateY(-16px); }
-  to { transform: translateY(44px); }
-}
-/* 마우스가 없는 손가락 화면: 마우스·꺾쇠 대신 세로 줄 */
-@media (hover: none), (pointer: coarse) {
-  .intro__mouse, .intro__chev { display: none; }
-  .intro__line { display: block; }
-}
 @keyframes nudge {
   0%, 100% { transform: translateY(-2px); }
   50% { transform: translateY(3px); }
@@ -551,10 +539,9 @@ a { color: inherit; }
 /* 움직임 줄이기 설정을 켠 사람: 확대 대신 바로 넘어간다 */
 
 @media (prefers-reduced-motion: reduce) {
-  .groundfog img, .intro__arrow, .intro__mouse::before, .intro__chev, .intro__line::before { animation: none; }
+  .groundfog img, .intro__arrow, .intro__mouse::before, .intro__chev { animation: none; }
   .js .intro__stage:not(.is-open):not(.is-dragging) .shade-arrow,
   .js .intro__stage:not(.is-open):not(.is-dragging) .shade-arrow i { animation: none; }
-  .intro__line::before { transform: translateY(14px); }
   .shade { transition-duration: .01s; }
   html { scroll-behavior: auto; }
 }
