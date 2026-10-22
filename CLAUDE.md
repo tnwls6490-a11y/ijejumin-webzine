@@ -135,9 +135,12 @@ ijejumin-webzine/
   - 마우스로 끌어서 돌릴 수 있고, 손을 놓으면 관성으로 천천히 멈춘다. 엽서를 누르면 팝업(`<dialog>`)이 뜬다
 - 스크롤에 따라 차례로 진행된다
   1. 엽서가 한 장으로 모인다. 거의 다 모이면 **이제주민 로고 엽서**(`.pick__cover`)가 아래에서 살짝 떠오르며 맨 위에 덮인다 (사용자 요청, 2026-10-22)
-     - 사용자가 준 시안대로: 그림 없이 민무늬 크림 바탕(`#F6F0E7`) 가운데에
-       주황 로고(흰 로고 그림을 모양틀로 써서 `--orange`로 칠함), 그 아래 주황 팀 이름 '살러 왔다, 살아남기' (2026-10-22)
-       - 바로 전에는 맑은 하늘·뭉게구름 그림 `images/postcard-cover-sky.webp`였다 (파일은 남겨 둠, 아래 설명 참고)
+     - 사용자가 준 시안대로: 수채화 느낌의 바다·등대 그림 `images/postcard-cover-sea.webp` 위 가운데에
+       주황 로고(흰 로고 그림을 모양틀로 써서 `--orange`로 칠함), 그 아래 주황 팀 이름 '살러 왔다, 살아남기' (2026-10-23)
+       - 그림: 옅은 하늘, 수평선 아래 파란 바다·앞쪽 흰 물거품, 오른쪽 검은 현무암 바위 위 흰 등대, 왼쪽 갈매기 세 마리
+         - 글자 뒤 수평선 근처 바다는 햇빛 반사로 밝게 해 주황 글자가 읽히게 했다
+         - `reference/tools/make-cover-sea.py`로 만든다 (`py reference/tools/make-cover-sea.py public/images/postcard-cover-sea.webp`)
+       - 바로 전: 민무늬 크림(`#F6F0E7`) → 그 전: 맑은 하늘·뭉게구름 `images/postcard-cover-sky.webp` (파일은 남겨 둠)
        - 구름 그림은 `reference/tools/make-cover-sky.py`로 만든다: 둥근 봉우리(반구)를 이음매 없이 합치고, 왼쪽 위 햇빛으로 밝은 면·그늘을 계산
          - "구름이 너무 가짜 같다"는 사용자 말에, 동그라미를 겹친 만화풍 SVG 대신 이 방식으로 바꿨다 (2026-10-22)
          - 구름 모양을 바꾸려면 스크립트의 `puffs`(x, y, 반지름) 목록을 고치고 `py reference/tools/make-cover-sky.py public/images/postcard-cover-sky.webp`
