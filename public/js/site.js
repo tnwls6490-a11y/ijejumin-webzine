@@ -366,14 +366,14 @@
     var n = cards.length;
     var TURNS = 2;                                           // 나선이 감긴 바퀴 수 (정수여야 맨 위 카드가 맨 아래로 이어질 때 모양이 맞는다)
     var items = cards.map(function (el, i) {
-      return { el: el, a: i / n * TURNS * Math.PI * 2, h0: i / n, note: el.classList.contains('pcard--note'), back: false, lift: 0 };
+      return { el: el, a: i / n * TURNS * Math.PI * 2, h0: i / n, note: el.classList.contains('pcard--note'), back: false };
     });
     function clamp(v, a, b) { return Math.min(b, Math.max(a, v)); }
     function ease(t) { return t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2; }
     function smooth(a, b, x) { var u = clamp((x - a) / (b - a), 0, 1); return u * u * (3 - 2 * u); }
 
     var spin = 0, speed = 1, shown = 0, last = null, visible = false, hover = false, isOpen = false;
-    var hoverCard = null;                                    // 마우스를 올린 엽서 (살짝 떠오른다)
+    var aim = { x: 0, y: 0 }, lean = { x: 0, y: 0 };        // 엽서 무대 위 마우스 위치(-1~1)와, 그 위치를 천천히 따라가는 나선의 기울기
     var drag = null, vel = 0, dragged = false;
 
     /* 마우스·손가락으로 좌우로 잡아 돌리기 (위아래로 밀면 평소처럼 스크롤) */
@@ -408,18 +408,16 @@
     }
     stage.addEventListener('pointerup', endDrag);
     stage.addEventListener('pointercancel', endDrag);
-    world.addEventListener('pointerover', function (e) {
-      var card = e.target.closest('.pcard');
-      if (!card) return;
-      hover = true;
-      if (e.pointerType === 'mouse') hoverCard = card;      // 손가락으로 누를 때는 떠오르지 않고 바로 팝업
+    world.addEventListener('pointerover', function (e) { if (e.target.closest('.pcard')) hover = true; });
+    world.addEventListener('pointerout', function (e) { if (e.target.closest('.pcard')) hover = false; });
+    /* 마우스를 올리면 나선 전체가 커서 쪽으로 살짝 돌아보듯 기운다 (손가락·움직임 줄이기 설정에서는 그대로) */
+    stage.addEventListener('pointermove', function (e) {
+      if (e.pointerType !== 'mouse' || reduce) return;
+      var r = stage.getBoundingClientRect();
+      aim.x = clamp((e.clientX - r.left) / Math.max(r.width, 1) * 2 - 1, -1, 1);
+      aim.y = clamp((e.clientY - r.top) / Math.max(r.height, 1) * 2 - 1, -1, 1);
     });
-    world.addEventListener('pointerout', function (e) {
-      var card = e.target.closest('.pcard');
-      if (!card) return;
-      hover = false;
-      if (card === hoverCard && !card.contains(e.relatedTarget)) hoverCard = null;
-    });
+    stage.addEventListener('pointerleave', function () { aim.x = 0; aim.y = 0; });
 
     function target() {
       var r = section.getBoundingClientRect();
@@ -484,12 +482,17 @@
       var view = 'translateY(' + vy.toFixed(1) + 'px) perspective(' + persp + 'px) translateY(' + (-vy).toFixed(1) + 'px) ';
       var R = clamp(W * .36, cw * 1.8, 580);       // 반지름이 클수록 좌우로 카드 사이가 넓어진다
       var span = Math.max(H * 1.4, cw * 7);                 // 나선의 높이 (화면 위아래로 살짝 넘친다)
-      /* 나선의 축은 똑바로 세운다 (기울이지 않음) */
-      var tx = 0, tz = 0;
+      /* 나선의 축은 똑바로 서 있다가, 마우스를 올리면 커서 쪽으로 각도가 천천히 옮겨 간다 (0.5초에 걸쳐 따라감).
+         좌우: 나선이 커서 쪽으로 최대 약 11도 돌아본다 · 위아래: 앞쪽이 커서 쪽으로 최대 약 5도 기운다. 엽서가 모이는 동안은 다시 똑바로 */
+      var follow = 1 - Math.exp(-dt / .5);
+      lean.x += (aim.x * k - lean.x) * follow;
+      lean.y += (aim.y * k - lean.y) * follow;
+      var yaw = lean.x * .2;
+      var tx = -lean.y * .09, tz = 0;
       var cx = Math.cos(tx), sx = Math.sin(tx), cz = Math.cos(tz), sz = Math.sin(tz);
       for (var i = 0; i < n; i++) {
         var it = items[i];
-        var ang = it.a + spin;
+        var ang = it.a + spin + yaw;
         var x = Math.sin(ang) * R, z = Math.cos(ang) * R;
         /* 나선 모양은 제자리에 두고, 카드가 나선을 따라 흘러간다 (돌려도 중심 높이가 바뀌지 않음).
            맨 위로 올라간 카드는 맨 아래에서 다시 나온다 */
@@ -504,19 +507,15 @@
         var fanR = 0, fanX = 0, fanY = 0;   // 모였을 때 한 장처럼 딱 맞게 겹친다
         var X = x2 * k + fanX, Y = y2 * k + fanY, Z = (z1 - R * .35) * k - i * .5 * m;
         var deg = ((ang * 180 / Math.PI) % 360 + 540) % 360 - 180;   // 바깥을 향한 각도 (-180~180)
-        /* 마우스를 올린 엽서: 앞으로 살짝 떠오르며 커지고 조금 기운다 (0.12초에 걸쳐 부드럽게) */
-        it.lift += ((it.el === hoverCard ? 1 : 0) - it.lift) * (reduce ? 1 : 1 - Math.exp(-dt / .12));
-        var lift = it.lift < .001 ? 0 : it.lift;
-        it.el.style.zIndex = 1000 + Math.round(Z * 4) + (lift > .02 ? 4000 : 0);   // 모인 묶음(0.5px 간격)도 앞뒤가 갈리게, 떠오른 엽서는 맨 위
-        it.el.style.transform = view + 'translate3d(' + X.toFixed(1) + 'px,' + (Y - 8 * lift).toFixed(1) + 'px,' + (Z + 50 * lift).toFixed(1) + 'px) rotateZ(' + (tz * 180 / Math.PI).toFixed(2) + 'deg) rotateX(' + (tx * 180 / Math.PI).toFixed(2) + 'deg) rotateY(' + (deg * k).toFixed(2) + 'deg) rotateZ(' + (fanR - 2 * lift).toFixed(2) + 'deg) scale(' + ((1 + .55 * m) * (1 + .08 * lift)).toFixed(3) + ')';
+        it.el.style.zIndex = 1000 + Math.round(Z * 4);   // 모인 묶음(0.5px 간격)도 앞뒤가 갈리게
+        it.el.style.transform = view + 'translate3d(' + X.toFixed(1) + 'px,' + Y.toFixed(1) + 'px,' + Z.toFixed(1) + 'px) rotateZ(' + (tz * 180 / Math.PI).toFixed(2) + 'deg) rotateX(' + (tx * 180 / Math.PI).toFixed(2) + 'deg) rotateY(' + (deg * k).toFixed(2) + 'deg) rotateZ(' + fanR.toFixed(2) + 'deg) scale(' + (1 + .55 * m).toFixed(3) + ')';
         it.el.style.opacity = (edge + (1 - edge) * m).toFixed(3);
-        it.el.style.setProperty('--shade', ((1 - Math.cos(ang)) / 2 * .42 * k * (1 - lift)).toFixed(3));
+        it.el.style.setProperty('--shade', ((1 - Math.cos(ang)) / 2 * .42 * k).toFixed(3));
         var back = Math.abs(deg * k) > 90;                   // 뒤돌아 있는 엽서는 글자(장소 이름)를 숨긴다
         if (back !== it.back) { it.el.classList.toggle('is-back', back); it.back = back; }
       }
       section.style.setProperty('--merge', m.toFixed(3));
       section.classList.toggle('is-merging', m > .35);
-      if (m > .35) hoverCard = null;                         // 모이기 시작하면 엽서를 누를 수 없으니 떠오른 엽서도 내려놓는다
       section.classList.toggle('is-merged', ang > 150);
     }
     if ('IntersectionObserver' in window) {
