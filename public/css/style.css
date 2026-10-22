@@ -1353,10 +1353,18 @@ a { color: inherit; }
   -webkit-mask: url(../images/logo-ijejumin-white.webp) center / contain no-repeat;
   mask: url(../images/logo-ijejumin-white.webp) center / contain no-repeat;
 }
-/* 팀 이름: 시안처럼 굵게, 뒤의 바다 그림과 섞이지 않게 둘레에 은은한 흰 빛 (사용자 요청 "글이 잘 보이게") */
+/* 팀 이름: 시안처럼 굵게. 바다 그림과 섞이지 않게 뒤를 밝힌다 (사용자 요청 "글이 잘 보이게")
+   글자마다 흰 테두리처럼 감싸던 빛(text-shadow 세 겹)이 어색하다는 말에 (사용자 요청 "좀 더 자연스럽게", 2026-10-23)
+   글자 뒤에 물 위 햇빛처럼 옆으로 길고 가장자리가 흐린 빛을 깔고, 글자 둘레 빛은 아주 옅게만 남겼다 */
 .pick__cover-text {
+  position: relative; isolation: isolate;
   font-size: calc(var(--pw) * .05); font-weight: 800; line-height: 1.2; letter-spacing: .02em; color: var(--orange); white-space: nowrap;   /* 크기: 엽서 폭의 5% (사용자 요청으로 6.2% → 5%) */
-  text-shadow: 0 0 2px rgba(255, 255, 255, .95), 0 0 6px rgba(255, 255, 255, .85), 0 0 14px rgba(255, 255, 255, .6);
+  text-shadow: 0 0 calc(var(--pw) * .012) rgba(255, 255, 255, .55);
+}
+.pick__cover-text::before {
+  content: ""; position: absolute; z-index: -1;
+  left: -30%; right: -30%; top: -70%; bottom: -70%;
+  background: radial-gradient(closest-side, rgba(255, 255, 255, .62), rgba(255, 255, 255, .38) 45%, rgba(255, 255, 255, .12) 75%, rgba(255, 255, 255, 0));
 }
 /* 팝업 그림면: 추천 장소 사진 (돌아가는 엽서 앞면에는 무늬만). 사진이 오기 전에는 뒤의 무늬가 보인다 */
 .pick-pop__photo {
