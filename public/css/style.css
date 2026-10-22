@@ -1344,7 +1344,7 @@ a { color: inherit; }
 .pcard__big { font-size: max(11px, calc(var(--cw) * .105)); font-weight: 800; line-height: 1.2; letter-spacing: -0.02em; }
 .pcard__small { margin-top: auto; font-size: max(8px, calc(var(--cw) * .056)); line-height: 1.35; color: var(--muted); }
 /* 모두 모였을 때 남는 한 장 (엽서 뒷면): 사용자가 준 시안대로 (2026-10-22)
-   위 줄: 왼쪽 주황 '02 — JEJU LIFE STORIES', 오른쪽 주황 편지 봉투, 그 아래 가는 선
+   위 줄: 왼쪽 주황 '02 — JEJU LIFE STORIES', 그 아래 가는 선 (오른쪽 편지 봉투 그림은 사용자 요청으로 지웠다)
    가운데 정렬: 주황 '제주생존한마디' → 큰 제목 → 소개 글 → 아래 가는 선 */
 .pick__final {
   --fw: min(700px, calc(100vw - 32px));
@@ -1363,12 +1363,12 @@ a { color: inherit; }
   padding: 14px 0 16px; border-bottom: 1px solid #E6DCCB; text-align: left;
 }
 .pick__final-tag { margin: 0; font-size: 16px; font-weight: 500; line-height: 1.4; letter-spacing: .02em; color: var(--orange-ink); }
-.pick__final-mail { flex: none; width: 24px; height: 24px; color: var(--orange-ink); }
 .pick__final-kicker { margin: 30px 0 0; font-size: 16px; font-weight: 500; line-height: 1.4; color: var(--orange-ink); }
 .pick__final-title { margin: 8px 0 16px; font-size: clamp(24px, 2.8vw, 30px); font-weight: 800; line-height: 1.35; letter-spacing: -0.03em; }
 .pick__final-text { padding-bottom: 32px; border-bottom: 1px solid #E6DCCB; }
 .pick__final-text p { margin: 0; font-size: 17px; line-height: 1.85; color: var(--muted); }
 .pick__final-text p + p { margin-top: 12px; }
+.pick__final-text p:last-child { font-weight: 700; }   /* 마지막 문장 '지금부터 … 들려드릴게요.'는 굵게 (사용자 요청) */
 
 /* 카드 팝업 */
 .pick-pop {
@@ -1408,7 +1408,6 @@ a { color: inherit; }
   .pick__final { padding: 0 14px 16px; border-width: 8px; }
   .pick__final-head { padding: 10px 0 12px; }
   .pick__final-tag { font-size: 14px; letter-spacing: 0; }
-  .pick__final-mail { width: 22px; height: 22px; }
   .pick__final-kicker { margin-top: 18px; }
   .pick__final-title { margin: 4px 0 10px; font-size: 21px; }
   .pick__final-text { padding-bottom: 18px; }
