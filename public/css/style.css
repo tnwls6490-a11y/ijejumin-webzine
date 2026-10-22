@@ -140,7 +140,7 @@ a { color: inherit; }
 }
 .wz-outro__tagline { margin: 0; font-size: clamp(22px, 2.4vw, 30px); font-weight: 700; line-height: 1.35; letter-spacing: -0.02em; }
 .wz-outro__team { margin: 0; font-size: 16px; }
-.wz-outro__col { min-width: 0; max-width: 360px; }   /* 출처처럼 긴 글은 이 폭에서 줄을 바꾼다 */
+.wz-outro__col { min-width: 0; max-width: 360px; }   /* 긴 글은 이 폭에서 줄을 바꾼다. 출처는 <br>로 줄을 나눠 칸이 글 폭만큼만 차지하고 오른쪽 끝에 붙는다 (사용자 요청 "좀 더 오른쪽으로") */
 .wz-outro__head { margin: 0 0 8px; font-size: 16px; font-weight: 700; letter-spacing: .16em; }
 .wz-outro__line { margin: 0 0 4px; font-size: 16px; line-height: 1.6; }
 .wz-outro__line:last-child { margin-bottom: 0; }
