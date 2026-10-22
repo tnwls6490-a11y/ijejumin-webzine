@@ -480,7 +480,7 @@ a { color: inherit; }
 }
 /* 가는 흰 선: 로고 아래 끝 높이에서, 로고 바로 옆부터 오른쪽 끝까지 (사용자 요청) */
 .landing__top::after {
-  content: ""; position: absolute; left: calc(var(--logo-w) + 10px); right: 0; top: calc(var(--logo-h) - 1px);
+  content: ""; position: absolute; left: calc(var(--logo-w) + 10px); right: 0; top: calc(var(--logo-h) * .9 - 1px);   /* 로고 아래 끝보다 살짝 위 */
   height: 1px; background: rgba(255, 255, 255, .78); pointer-events: none;
 }
 .landing__brand { display: flex; align-items: center; gap: 16px; margin: 0; }
