@@ -470,7 +470,7 @@ a { color: inherit; }
   pointer-events: none;
 }
 .is-landed .landing { pointer-events: auto; }
-/* 위쪽 줄 (사용자가 준 시안): 왼쪽에 주황 '이제주민' 글자 로고와 JEJU LOCAL STORIES,
+/* 위쪽 줄 (사용자가 준 시안): 왼쪽에 헤더와 같은 흰 로고와 JEJU LOCAL STORIES,
    오른쪽에 '제주 이주민 인터뷰 웹진', 아래에 가는 흰 선. 헤더 로고와 같은 가운데 1200px 칸에 맞춘다 */
 .landing__top {
   align-self: center; width: 100%; max-width: 1168px;
@@ -479,14 +479,12 @@ a { color: inherit; }
   text-align: left;
 }
 .landing__brand { display: flex; align-items: center; gap: 16px; margin: 0; }
-.landing__mark {
-  /* 지붕 선 아래 '이제주민' */
-  position: relative; display: inline-block; padding-top: 11px;
-  font-family: "Ijeju Display", var(--font); font-size: 32px; font-weight: 700; line-height: 1; letter-spacing: -0.03em;
-  color: var(--orange);
-  text-shadow: 0 1px 2px rgba(6, 22, 44, .35);
+.landing__logo {
+  /* 로고는 기존 흰 로고 그대로 (사용자 요청) */
+  flex: none; width: 50px; height: 58px;
+  background: url(../images/logo-ijejumin-white.webp) center / contain no-repeat;
+  filter: drop-shadow(0 1px 3px rgba(6, 22, 44, .45));
 }
-.landing__roof { position: absolute; left: -3%; top: 0; width: 106%; height: 13px; overflow: visible; color: var(--orange); }
 .landing__sub {
   font-size: 11px; font-weight: 700; line-height: 1.7; letter-spacing: .3em; color: #FFFFFF;
   text-shadow: 0 1px 2px rgba(6, 22, 44, .6);
@@ -513,8 +511,7 @@ a { color: inherit; }
 }
 @media (max-width: 600px) {
   .landing__eyebrow { padding: 3px 12px; font-size: 13px; letter-spacing: .02em; border-width: 1px; }
-  .landing__mark { font-size: 26px; padding-top: 9px; }
-  .landing__roof { height: 11px; }
+  .landing__logo { width: 40px; height: 46px; }
   .landing__sub { font-size: 10px; letter-spacing: .24em; }
   .landing__top { padding-bottom: 10px; }
 }
