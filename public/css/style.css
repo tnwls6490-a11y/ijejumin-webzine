@@ -956,14 +956,9 @@ a { color: inherit; }
 
 
 /* ---------- 03 나의 제주찾기: 랜딩페이지로 가는 카테고리 4개 ---------- */
-.pick-fade {
-  /* 검은 엽서 무대에서 '나의 제주찾기'(밝은 배경)로: 긴 구간에 걸쳐 천천히 밝아진다 (앞뒤는 완만하게) */
-  height: clamp(320px, 70vh, 640px);
-  background: linear-gradient(180deg,
-    #000000 0%, #050504 10%, #12100E 22%, #2A2622 34%, #4C4640 46%,
-    #776F66 58%, #A59D92 70%, #CEC7BC 81%, #EAE5DC 91%, #F7F3EC 100%);
-}
-.pick-fade + .cat { border-top: 0; padding-top: clamp(40px, 8vh, 96px); }
+/* 검은 엽서 무대 바로 다음에 '나의 제주찾기'(크림)가 이어진다.
+   전에는 사이에 검정 → 크림 그라데이션 띠(화면 높이의 70%)가 있었는데, 너무 길어 사용자 요청으로 뺐다 (2026-10-22) */
+.pick + .cat { border-top: 0; padding-top: clamp(64px, 10vh, 112px); }
 .cat.find { background: #F7F3EC; }
 .find .cat__label { letter-spacing: .04em; }
 .find .cat__title { font-size: clamp(30px, 4.4vw, 52px); font-weight: 800; }
