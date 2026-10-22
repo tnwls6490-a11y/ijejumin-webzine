@@ -9,10 +9,28 @@
   (function () {
     var header = document.querySelector('.wz-header');
     if (!header) return;
-    function setH() { document.documentElement.style.setProperty('--hdr-h', header.offsetHeight + 'px'); }
+    var nav = header.querySelector('.wz-nav');
+    var narrowQuery = window.matchMedia ? window.matchMedia('(max-width: 899px)') : null;
+    /* 휴대폰: 메뉴가 한 줄에 안 들어가면 들어갈 만큼 글자를 줄인다 (양옆 여백은 그대로 두고 글자 폭만 계산) */
+    function fitNav() {
+      if (!nav) return;
+      nav.style.removeProperty('--nav-fit');
+      if (!narrowQuery || !narrowQuery.matches) return;
+      var links = nav.children, text = 0, pad = 0;
+      for (var i = 0; i < links.length; i++) {
+        var cs = getComputedStyle(links[i]);
+        var p = parseFloat(cs.paddingLeft) + parseFloat(cs.paddingRight);
+        pad += p;
+        text += links[i].offsetWidth - p;
+      }
+      var room = nav.clientWidth - pad;
+      if (text > room) nav.style.setProperty('--nav-fit', (room / text * 0.98).toFixed(3));
+    }
+    function setH() { fitNav(); document.documentElement.style.setProperty('--hdr-h', header.offsetHeight + 'px'); }
     setH();
     window.addEventListener('resize', setH);
     window.addEventListener('load', setH);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(setH);
   })();
 
   /* ---------- 다음 화면이 아래에서 올라와 퍼지기 (.rise) ---------- */
