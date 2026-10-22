@@ -122,7 +122,7 @@ a { color: inherit; }
    위: 푸터 위 안내(.wz-outro): 왼쪽 주황 로고 + 주황 '육지에서 나고, 섬에서 자라는 중'·회색 팀 이름,
        오른쪽 '메뉴'·'인터뷰' 두 칸(사이에 세로 선, 이름은 주황, 링크는 회색)
    아래: 공통 기준 푸터(.site-footer, 코드 그대로): 가는 선 아래 왼쪽 '이제주민 · 한경 웹진', 오른쪽 '개인정보처리방침 →'
-   바탕은 옅은 살구색, 위 끝에 가는 선. 주황 글자는 대비 4.5:1을 넘게 짙은 주황(--orange-ink)을 쓴다. 로고(그림)만 밝은 주황.
+   바탕은 옅은 살구색, 위 끝에 가는 선. 주황 글자는 로고와 같은 주황(--orange, 사용자 요청). 살구색 위 대비는 약 2.7:1로 공통 기준(4.5:1)에 못 미쳐 올리기 전 확인 목록에 적어 둠.
    (그 전: 둥근 카드 → 헤더와 같은 주황 바탕·흰 글자 → 파랑 #2C64A0 바탕) */
 .wz-outro, .site-footer { background: #FFF6EC; color: var(--muted); }
 .wz-outro { border-top: 1px solid #F1DCC6; }
@@ -139,22 +139,22 @@ a { color: inherit; }
   -webkit-mask: url(../images/logo-ijejumin-white.webp) center / contain no-repeat;
   mask: url(../images/logo-ijejumin-white.webp) center / contain no-repeat;
 }
-.wz-outro__tagline { margin: 0 0 6px; align-self: end; font-size: clamp(18px, 1.7vw, 21px); font-weight: 700; line-height: 1.4; letter-spacing: -0.01em; color: var(--orange-ink); }
+.wz-outro__tagline { margin: 0 0 6px; align-self: end; font-size: clamp(18px, 1.7vw, 21px); font-weight: 700; line-height: 1.4; letter-spacing: -0.01em; color: var(--orange); }
 .wz-outro__team { margin: 0; align-self: start; font-size: 16px; color: var(--muted); }
 .wz-outro__col { display: flex; flex-direction: column; align-items: flex-start; min-width: 150px; padding: 0 28px; }
 .wz-outro__col + .wz-outro__col { border-left: 1px solid #F1DCC6; padding-right: 0; }
-.wz-outro__head { margin: 0 0 2px; font-size: 16px; font-weight: 700; color: var(--orange-ink); }
+.wz-outro__head { margin: 0 0 2px; font-size: 16px; font-weight: 700; color: var(--orange); }
 .wz-outro__col a { display: inline-flex; align-items: center; min-height: 44px; font-size: 16px; font-weight: 500; line-height: 1.35; color: var(--muted); text-decoration: none; }
-.wz-outro__col a:hover { color: var(--orange-ink); text-decoration: underline; text-underline-offset: 4px; }
+.wz-outro__col a:hover { color: var(--orange); text-decoration: underline; text-underline-offset: 4px; }
 .wz-outro :focus-visible, .site-footer :focus-visible { outline-color: var(--orange-ink); }
 .site-footer .container {
   position: relative;
   display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
-  gap: 4px 16px; padding-top: 8px; padding-bottom: 14px; font-size: 16px; color: var(--orange-ink);
+  gap: 4px 16px; padding-top: 8px; padding-bottom: 14px; font-size: 16px; color: var(--orange);
 }
 /* 위 안내와 아래 줄 사이 가는 선 (칸 안쪽 여백만큼 들여서) */
 .site-footer .container::before { content: ""; position: absolute; left: 16px; right: 16px; top: 0; height: 1px; background: #F1DCC6; }
-.site-footer a { display: inline-flex; align-items: center; gap: 10px; min-height: 44px; color: var(--orange-ink); text-decoration: none; }
+.site-footer a { display: inline-flex; align-items: center; gap: 10px; min-height: 44px; color: var(--orange); text-decoration: none; }
 .site-footer a::after { content: "→"; }
 .site-footer a:hover { text-decoration: underline; text-underline-offset: 4px; }
 @media (max-width: 760px) {
