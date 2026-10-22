@@ -66,8 +66,8 @@ ijejumin-webzine/
 ### 01 이주민 인터뷰 (`.people`, #cat-1)
 - 화면이 아래에서 둥근 카드처럼 올라온다 (`.rise`)
 - 실사 사진 4장을 슬라이드로 보여 준다. 스크롤 약 470px마다 다음 사람으로 넘어간다
-  1. 안세은 선생님 · 아인학교
-  2. 이재은 강사님
+  1. 이재은 강사님
+  2. 안세은 선생님 · 아인학교 (2026-10-22 사용자 요청으로 1·2 순서를 바꿈. 사진 파일 번호 interview-01·02는 그대로)
   3. 파랑오브레코즈
   4. 에밀리 ("반려견과 함께하는 제주 살이의 의미")
 - 사진은 `interview-0N-photo.jpg`, 누끼(배경을 지운 인물)는 `interview-0N-cut.webp`
@@ -103,8 +103,8 @@ ijejumin-webzine/
 ## 아직 없는 페이지 (index.html이 이미 링크하고 있음)
 | 링크 | 내용 |
 |---|---|
-| `articles/ain-school.html` | 인터뷰 01 아인학교 (안세은 선생님) |
-| `articles/lee-jaeeun.html` | 인터뷰 02 이재은 강사님 |
+| `articles/lee-jaeeun.html` | 인터뷰 01 이재은 강사님 |
+| `articles/ain-school.html` | 인터뷰 02 아인학교 (안세은 선생님) |
 | `articles/parang-of-records.html` | 인터뷰 03 파랑오브레코즈 |
 | `articles/emily.html` | 인터뷰 04 에밀리 |
 | `articles/jeju-village-test.html` | 나의 제주 마을 테스트 |

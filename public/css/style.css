@@ -763,8 +763,8 @@ a { color: inherit; }
 }
 /* 첫 줄이 인물에 살짝 걸치도록 슬라이드마다 자리를 맞춘다 (PC) */
 @media (min-width: 900px) {
-  .people .person--photo[data-index="1"] .person__back { left: 9%; }
-  .people .person--photo[data-index="2"] .person__back { left: 24%; top: 8%; }
+  .people .person--photo[data-index="1"] .person__back { left: 24%; top: 8%; }   /* 이재은 */
+  .people .person--photo[data-index="2"] .person__back { left: 9%; }              /* 안세은 · 아인학교 */
   .people .person--photo[data-index="3"] .person__back { left: 15%; top: 8%; }
   .people .person--photo[data-index="4"] .person__back { left: 15%; top: 8%; }
 }
