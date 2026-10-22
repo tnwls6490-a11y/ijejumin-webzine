@@ -34,7 +34,7 @@ def col(h):
     return np.array([int(h[i:i + 2], 16) for i in (0, 2, 4)], np.float32)
 
 
-HZ = int(H * .70)                     # 수평선 높이
+HZ = int(H * .655)                    # 수평선 높이 (글자 '살러 왔다, 살아남기'가 수평선 아래 밝은 바다 위에 오도록)
 
 # ---------- 하늘: 위는 맑은 하늘색, 수평선 쪽으로 옅게. 수채 얼룩 ----------
 t = np.clip(yy / HZ, 0, 1)[..., None]
@@ -50,9 +50,9 @@ sea = lerp(col('#4A8CC9'), col('#A6D0EC'), st ** .9)
 streak = noise(3, 46, 4, .55)[..., None]
 sea = sea + (streak - .5) * (14 + 30 * st) * np.array([.9, .85, .7])
 # 가운데 수평선 근처 햇빛 반사: 글자('살러 왔다, 살아남기')가 놓이는 자리라 밝게 해서 잘 읽히게
-glare = np.exp(-((xx - .5 * W) / (.24 * W)) ** 2) * np.exp(-((yy - HZ - .05 * H) / (.09 * H)) ** 2)
-glare = glare * (.75 + .5 * (streak[..., 0] - .5))
-sea = lerp(sea, col('#EEF6FA'), np.clip(glare * .78, 0, 1)[..., None])
+glare = np.exp(-((xx - .5 * W) / (.30 * W)) ** 2) * np.exp(-((yy - HZ - .08 * H) / (.11 * H)) ** 2)
+glare = glare * (.85 + .3 * (streak[..., 0] - .5))
+sea = lerp(sea, col('#F4F9FC'), np.clip(glare * .9, 0, 1)[..., None])
 img = np.where((yy >= HZ)[..., None], sea, img)
 img[HZ - 1:HZ + 1] = img[HZ - 1:HZ + 1] * .92
 

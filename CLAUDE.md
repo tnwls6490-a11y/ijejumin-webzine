@@ -139,6 +139,8 @@ ijejumin-webzine/
        주황 로고(흰 로고 그림을 모양틀로 써서 `--orange`로 칠함), 그 아래 주황 팀 이름 '살러 왔다, 살아남기' (2026-10-23)
        - 그림: 옅은 하늘, 수평선 아래 파란 바다·앞쪽 흰 물거품, 오른쪽 검은 현무암 바위 위 흰 등대, 왼쪽 갈매기 세 마리
          - 글자 뒤 수평선 근처 바다는 햇빛 반사로 밝게 해 주황 글자가 읽히게 했다
+         - '살러 왔다, 살아남기'가 잘 보이게 (사용자 요청): 수평선을 65.5%로 올려 글자가 수평선 아래 밝은 바다 위에 오고,
+           글자는 굵게(800)·조금 크게, 둘레에 은은한 흰 빛(`text-shadow`)
          - `reference/tools/make-cover-sea.py`로 만든다 (`py reference/tools/make-cover-sea.py public/images/postcard-cover-sea.webp`)
        - 바로 전: 민무늬 크림(`#F6F0E7`) → 그 전: 맑은 하늘·뭉게구름 `images/postcard-cover-sky.webp` (파일은 남겨 둠)
        - 구름 그림은 `reference/tools/make-cover-sky.py`로 만든다: 둥근 봉우리(반구)를 이음매 없이 합치고, 왼쪽 위 햇빛으로 밝은 면·그늘을 계산
