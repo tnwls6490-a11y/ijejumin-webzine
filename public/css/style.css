@@ -717,7 +717,15 @@ a { color: inherit; }
    (위 정보 → 뒷 제목 → 사진 → 앞 제목 → 설명 → 버튼). 화면이 낮거나 휴대폰 글자 크기를 키워도
    사진 자리만 줄어들고 글자끼리는 겹치지 않는다. 아래 이름 버튼 높이(--chips-h)는 site.js가 잰다 */
 @media (max-width: 899px) {
-  .js .people__stage { min-height: 0; }
+  /* 무대 높이는 site.js가 지금까지 본 가장 낮은 화면 높이(--people-vh)로 고정한다.
+     앱 안 브라우저가 위아래 막대를 숨겨 화면이 길어지면 무대 아래로 남는 칸은 무대 아래쪽과 같은 색 */
+  .js .people__stage { min-height: 0; height: calc(var(--people-vh, 100svh) - var(--hdr-h, 0px)); }
+  .js .people { background: #0A0E14; }
+  /* 제목과 설명이 겹칠 만큼 낮으면(site.js가 붙임): 이름 버튼을 숨기고 위쪽 번호를 줄인다 → 그래도 좁으면 제목도 줄인다 */
+  .people__stage.is-tight .people__chips, .people__stage.is-tight .person__kicker { display: none; }
+  .people__stage.is-tight .person__no-big { font-size: 34px; }
+  .people__stage.is-tighter .person--photo .person__back { font-size: clamp(28px, 8.4vw, 56px); }
+  .people__stage.is-tighter .person--photo .person__front { font-size: clamp(22px, 6.6vw, 42px); }
   .js .people .person {
     display: flex; flex-direction: column;
     padding: var(--pad-y) var(--pad-x) calc(var(--pad-y) + var(--chips-h) + 12px);

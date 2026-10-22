@@ -195,18 +195,48 @@
     stage.addEventListener('pointercancel', endDrag);
     stage.addEventListener('click', function (e) { if (Math.abs(e.detail) && stage.classList.contains('is-dragging')) e.preventDefault(); }, true);
 
-    /* 휴대폰: 아래 이름 버튼이 몇 줄로 놓였는지(글자 크기에 따라 달라짐) 재서, 그만큼 위 글자·버튼을 띄운다 */
+    /* ---------- 휴대폰 배치 맞추기 ----------
+       1) 높이 고정: 카카오톡 같은 앱 안 브라우저는 스크롤할 때 위아래 막대가 나왔다 들어가며 화면 높이가 바뀐다.
+          그때마다 무대가 줄었다 늘면 글자가 겹치니, 지금까지 본 가장 낮은 높이로 무대를 고정한다 (폭이 바뀌면 다시 잰다)
+       2) 아래 이름 버튼이 몇 줄로 놓였는지(글자 크기에 따라 달라짐) 재서, 그만큼 위 글자·버튼을 띄운다
+       3) 그래도 제목과 설명이 겹치면(낮은 화면, 휴대폰 글자 크기 설정) 이름 버튼을 숨기고 번호를 줄인다(is-tight).
+          그래도 겹치면 제목을 줄인다(is-tighter). 넘기기는 좌우 화살표로 한다 */
     var chipsBox = section.querySelector('.people__chips');
     var narrowQuery = window.matchMedia ? window.matchMedia('(max-width: 899px)') : null;
+    var lockW = 0, lockH = 0;
     function setChipsH() {
-      if (chipsBox && narrowQuery && narrowQuery.matches) section.style.setProperty('--chips-h', (chipsBox.offsetHeight + 8) + 'px');
-      else section.style.removeProperty('--chips-h');
+      section.style.setProperty('--chips-h', ((chipsBox ? chipsBox.offsetHeight : 0) + 8) + 'px');
     }
-    window.addEventListener('resize', setChipsH);
-    if (document.fonts && document.fonts.ready) document.fonts.ready.then(setChipsH);
+    function crowded() {
+      for (var i = 0; i < n; i++) {
+        var front = persons[i].querySelector('.person__front');
+        var desc = persons[i].querySelector('.person__desc');
+        if (front && desc && front.getBoundingClientRect().bottom + 8 > desc.getBoundingClientRect().top) return true;
+      }
+      return false;
+    }
+    function layoutMobile() {
+      stage.classList.remove('is-tight', 'is-tighter');
+      if (!narrowQuery || !narrowQuery.matches) {
+        section.style.removeProperty('--people-vh');
+        section.style.removeProperty('--chips-h');
+        lockW = 0;
+        return;
+      }
+      var w = window.innerWidth, h = window.innerHeight;
+      if (w !== lockW) { lockW = w; lockH = h; } else lockH = Math.min(lockH, h);
+      section.style.setProperty('--people-vh', lockH + 'px');
+      setChipsH();
+      if (!crowded()) return;
+      stage.classList.add('is-tight');
+      setChipsH();
+      if (crowded()) stage.classList.add('is-tighter');
+    }
+    window.addEventListener('resize', layoutMobile);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(layoutMobile);
 
     section.classList.add('is-ready');
-    setChipsH();
+    layoutMobile();
     for (var k = 0; k < n; k++) { persons[k].classList.add('no-anim'); setSide(persons[k], 1); }
     show(0, 1);
     fromScroll();
