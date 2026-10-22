@@ -90,6 +90,14 @@ a { color: inherit; }
 @media (min-width: 900px) {
   .wz-nav { width: auto; margin-left: auto; }
 }
+/* 서브메인: 첫 화면(비행기 창 → 제주)에서는 헤더를 위로 숨겼다가, 인터뷰 화면이 올라오면 내려온다.
+   헤더는 자리를 차지하지 않게 화면 맨 위에 띄운다. 키보드로 헤더 메뉴에 오면 바로 내려온다
+   (site.js가 html에 has-intro와, 숨길 높이 --hdr-hide를 스크롤에 맞춰 넣는다) */
+.has-intro .wz-header {
+  position: fixed; left: 0; right: 0; top: 0;
+  transform: translateY(calc(var(--hdr-hide, 0px) * -1));
+}
+.has-intro .wz-header:focus-within { transform: none; }
 /* 휴대폰: 메뉴 세 개를 한 줄에, 오른쪽 끝에 모아 둔다. 넘치면(좁은 화면, 휴대폰 글자 크기 설정) site.js가 --nav-fit으로 글자를 더 줄인다 */
 @media (max-width: 899px) {
   .wz-nav { flex-wrap: nowrap; justify-content: flex-end; gap: 4px; width: calc(100% + 20px); margin-right: -10px; font-size: calc(15px * var(--nav-fit, 1)); white-space: nowrap; }
@@ -127,6 +135,7 @@ a { color: inherit; }
   overflow: hidden;
   background: #BFAE9B;   /* 창 사진의 평균 벽 색 */
 }
+.has-intro .intro__stage { top: 0; height: 100vh; height: 100svh; }   /* 헤더가 숨은 동안은 화면 가득 */
 @media (max-width: 600px) {
   .intro__stage { --cy: 42%; }
 }

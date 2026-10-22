@@ -923,7 +923,20 @@
   /* 큰 글자 글꼴이 늦게 들어오면 폭이 달라지니 한 번 더 잰다 */
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(measure);
 
-  window.addEventListener('scroll', requestUpdate, { passive: true });
-  window.addEventListener('resize', function () { measure(); requestUpdate(); });
+  /* 첫 화면(비행기 창 → 제주)을 보는 동안은 헤더를 위로 숨긴다.
+     다음 화면(인터뷰)이 아래에서 올라와 헤더 자리에 닿기 직전(헤더 높이만큼 남았을 때)부터
+     스크롤에 맞춰 헤더가 내려온다. 그래서 헤더가 제주 사진 위에 오래 겹치지 않는다 */
+  var root = document.documentElement;
+  var after = intro.nextElementSibling;
+  function syncHeader() {
+    var hh = parseFloat(getComputedStyle(root).getPropertyValue('--hdr-h')) || 0;
+    var top = after ? after.getBoundingClientRect().top : intro.getBoundingClientRect().bottom;
+    root.style.setProperty('--hdr-hide', clamp(top - hh, 0, hh).toFixed(1) + 'px');
+  }
+  root.classList.add('has-intro');
+  syncHeader();
+
+  window.addEventListener('scroll', function () { syncHeader(); requestUpdate(); }, { passive: true });
+  window.addEventListener('resize', function () { measure(); syncHeader(); requestUpdate(); });
   if (reduceQuery && reduceQuery.addEventListener) reduceQuery.addEventListener('change', requestUpdate);
 })();
