@@ -866,8 +866,8 @@
   var shownP = 0, lastTs = null;
   function targetP() {
     var rect = intro.getBoundingClientRect();
-    /* 도착 뒤 350px은 제주 화면에 머무는 구간이라 진행도에서 뺀다 */
-    var span = rect.height - stage.offsetHeight - 350 - window.innerHeight;
+    /* 도착 뒤 700px은 제주 화면에 머무는 구간이라 진행도에서 뺀다 (style.css의 .intro 높이와 맞춘다) */
+    var span = rect.height - stage.offsetHeight - 700 - window.innerHeight;
     /* 상단 바·헤더를 지나는 스크롤부터 진행도에 넣는다 (페이지 맨 위 = 0) */
     var startTop = rect.top + window.scrollY;
     var total = span + startTop;
