@@ -1,1 +1,49 @@
 파일 이름 | 출처 | 라이선스 | 원본 주소
+
+# 상세페이지 나의 제주찾기 (articles/find-my-jeju.html): 동네 명소 사진. 화면에 맞게 크기·형식을 바꿈
+place-01-1.webp | Grapesurgeon · Wikimedia Commons (Dodubong 09.jpg) (크기·형식 변환, 가공본도 같은 라이선스) | CC BY-SA 4.0 | https://commons.wikimedia.org/wiki/File:Dodubong_09.jpg
+place-01-2.webp | song songroov · Wikimedia Commons (Ihoil-dong, Jeju-si, Jeju-do, South Korea - panoramio - song songroov (107).jpg) (크기·형식 변환) | CC BY 3.0 | https://commons.wikimedia.org/wiki/File:Ihoil-dong,_Jeju-si,_Jeju-do,_South_Korea_-_panoramio_-_song_songroov_(107).jpg
+place-01-3.webp | Mar del Este · Wikimedia Commons (Arboretum of Halla1.jpg) (크기·형식 변환) | CC BY 3.0 | https://commons.wikimedia.org/wiki/File:Arboretum_of_Halla1.jpg
+place-02-1.webp | thddbwnd · Wikimedia Commons (Jeju dongmun market 1.JPG) (크기·형식 변환) | CC BY 3.0 | https://commons.wikimedia.org/wiki/File:Jeju_dongmun_market_1.JPG
+place-02-2.webp | Thddbwnd · Wikimedia Commons (Gwandeokjeong Pavilion 2.JPG) (크기·형식 변환, 가공본도 같은 라이선스) | CC BY-SA 3.0 | https://commons.wikimedia.org/wiki/File:Gwandeokjeong_Pavilion_2.JPG
+place-02-3.webp | 제주관광공사 · Visitjeju.net (산지천 낮 빛내림) (크기·형식 변환) | 사용제한 없음 · 출처표기 | https://visitjeju.net/photojeju/category?cntId=10622
+place-02-4.webp | 螺钉 · Wikimedia Commons (Dragon Head Rock.jpg) (크기·형식 변환, 가공본도 같은 라이선스) | CC BY-SA 3.0 | https://commons.wikimedia.org/wiki/File:Dragon_Head_Rock.jpg
+place-02-5.webp | 제주관광공사 · Visitjeju.net (사라봉) (크기·형식 변환) | CC BY | https://visitjeju.net/photojeju/category?cntId=10321
+place-03-1.webp | Thddbwnd · Wikimedia Commons (Jeju Hamdeok Beach.jpg) (크기·형식 변환, 가공본도 같은 라이선스) | CC BY-SA 3.0 | https://commons.wikimedia.org/wiki/File:Jeju_Hamdeok_Beach.jpg
+place-03-2.webp | 제주관광공사 · Visitjeju.net (서우봉 유채꽃) (크기·형식 변환) | 사용제한 없음 · 출처표기 | https://visitjeju.net/photojeju/category?cntId=10615
+place-03-3.webp | 제주관광공사 · Visitjeju.net (닭머르해안) (크기·형식 변환) | CC BY | https://visitjeju.net/photojeju/category?cntId=10268
+place-03-4.webp | Nt · Wikimedia Commons (Yeonbukjeong 2.jpg) (크기·형식 변환) | CC0 | https://commons.wikimedia.org/wiki/File:Yeonbukjeong_2.jpg
+place-04-1.webp | Sgroey · Wikimedia Commons (Jeju woljeongri beach 2.jpg) (크기·형식 변환, 가공본도 같은 라이선스) | CC BY-SA 4.0 | https://commons.wikimedia.org/wiki/File:Jeju_woljeongri_beach_2.jpg
+place-04-2.webp | Bohyunlee · Wikimedia Commons (세화해수욕장.JPG) (크기·형식 변환, 가공본도 같은 라이선스) | CC BY-SA 4.0 | https://commons.wikimedia.org/wiki/File:%EC%84%B8%ED%99%94%ED%95%B4%EC%88%98%EC%9A%95%EC%9E%A5.JPG
+place-04-3.webp | Vanbasten 23 · Wikimedia Commons (Haenyeo Museum.jpg) (크기·형식 변환, 가공본도 같은 라이선스) | CC BY-SA 3.0 | https://commons.wikimedia.org/wiki/File:Haenyeo_Museum.jpg
+place-04-4.webp | TKostolany · Wikimedia Commons (제주 비자림 Jeju Bijarim-cropped.jpg) (크기·형식 변환, 가공본도 같은 라이선스) | CC BY-SA 4.0 | https://commons.wikimedia.org/wiki/File:%EC%A0%9C%EC%A3%BC_%EB%B9%84%EC%9E%90%EB%A6%BC_Jeju_Bijarim-cropped.jpg
+place-04-5.webp | 제주관광공사 · Visitjeju.net (지미봉) (크기·형식 변환) | CC BY | https://visitjeju.net/photojeju/category?cntId=10309
+place-05-1.webp | Jocelyndurrey · Wikimedia Commons (표선해비치해변 (1).jpg) (크기·형식 변환, 가공본도 같은 라이선스) | CC BY-SA 4.0 | https://commons.wikimedia.org/wiki/File:%ED%91%9C%EC%84%A0%ED%95%B4%EB%B9%84%EC%B9%98%ED%95%B4%EB%B3%80_(1).jpg
+place-05-2.webp | Trainholic · Wikimedia Commons (Seongeup Historic Village.jpg) (크기·형식 변환, 가공본도 같은 라이선스) | CC BY-SA 4.0 | https://commons.wikimedia.org/wiki/File:Seongeup_Historic_Village.jpg
+place-05-3.webp | Jeju Olle Foundation · Wikimedia Commons (Jejuolle-route-05(5).jpg) (크기·형식 변환, 가공본도 같은 라이선스) | CC BY-SA 4.0 | https://commons.wikimedia.org/wiki/File:Jejuolle-route-05(5).jpg
+place-05-4.webp | Thomas Housieaux · Wikimedia Commons (Camellia Forest sign.png) (크기·형식 변환, 가공본도 같은 라이선스) | CC BY-SA 4.0 | https://commons.wikimedia.org/wiki/File:Camellia_Forest_sign.png
+place-05-5.webp | 제주관광공사 · Visitjeju.net (머체왓숲길) (크기·형식 변환) | 사용제한 없음 · 출처표기 | https://visitjeju.net/photojeju/category?cntId=10720
+place-06-1.webp | Yhnn0065 · Wikimedia Commons (Cheonjiyeon Waterfall 20160616 092608.jpg) (크기·형식 변환, 가공본도 같은 라이선스) | CC BY-SA 3.0 | https://commons.wikimedia.org/wiki/File:Cheonjiyeon_Waterfall_20160616_092608.jpg
+place-06-2.webp | Badara25.ba · Wikimedia Commons (Jeongbang Falls.jpg) (크기·형식 변환, 가공본도 같은 라이선스) | CC BY-SA 3.0 | https://commons.wikimedia.org/wiki/File:Jeongbang_Falls.jpg
+place-06-3.webp | Naturehead · Wikimedia Commons (Saeyeon-gyo.jpg) (크기·형식 변환, 가공본도 같은 라이선스) | CC BY-SA 3.0 | https://commons.wikimedia.org/wiki/File:Saeyeon-gyo.jpg
+place-06-5.webp | Seefooddiet · Wikimedia Commons (Seogwipo Maeil Olle Market 03.jpg) (크기·형식 변환, 가공본도 같은 라이선스) | CC BY-SA 4.0 | https://commons.wikimedia.org/wiki/File:Seogwipo_Maeil_Olle_Market_03.jpg
+place-07-1.webp | Bernard Gagnon · Wikimedia Commons (Sanbangsan Mountain 01.jpg) (크기·형식 변환) | CC0 | https://commons.wikimedia.org/wiki/File:Sanbangsan_Mountain_01.jpg
+place-07-2.webp | Jeju Olle Foundation · Wikimedia Commons (Jejuolle-route-10(4).jpg) (크기·형식 변환, 가공본도 같은 라이선스) | CC BY-SA 4.0 | https://commons.wikimedia.org/wiki/File:Jejuolle-route-10(4).jpg
+place-07-3.webp | Christian Bolz · Wikimedia Commons (O'Sulloc Tea Museum.jpg) (크기·형식 변환, 가공본도 같은 라이선스) | CC BY-SA 4.0 | https://commons.wikimedia.org/wiki/File:O%27Sulloc_Tea_Museum.jpg
+place-07-4.webp | 골뱅이 · Wikimedia Commons (Waterfall, Camellia Hill, Jeju (폭포, 제주 카멜리아힐) - panoramio.jpg) (크기·형식 변환, 가공본도 같은 라이선스) | CC BY-SA 3.0 | https://commons.wikimedia.org/wiki/File:Waterfall,_Camellia_Hill,_Jeju_(%ED%8F%AD%ED%8F%AC,_%EC%A0%9C%EC%A3%BC_%EC%B9%B4%EB%A9%9C%EB%A6%AC%EC%95%84%ED%9E%90)_-_panoramio.jpg
+place-07-5.webp | Naturehead · Wikimedia Commons (Gapado scenery.JPG) (크기·형식 변환, 가공본도 같은 라이선스) | CC BY-SA 3.0 | https://commons.wikimedia.org/wiki/File:Gapado_scenery.JPG
+place-08-1.webp | 멍한오리 · Wikimedia Commons (협재해수욕장.jpg) (크기·형식 변환, 가공본도 같은 라이선스) | CC BY-SA 3.0 | https://commons.wikimedia.org/wiki/File:%ED%98%91%EC%9E%AC%ED%95%B4%EC%88%98%EC%9A%95%EC%9E%A5.jpg
+place-08-2.webp | Jeju Olle Foundation · Wikimedia Commons (Jeju Olle Route 14 (2).jpg) (크기·형식 변환, 가공본도 같은 라이선스) | CC BY-SA 4.0 | https://commons.wikimedia.org/wiki/File:Jeju_Olle_Route_14_(2).jpg
+place-08-3.webp | pictures Jettcom · Wikimedia Commons (September Asia Jeju Island Corea Chinese Sea - Master Asia Photography 2012 - panoramio (9).jpg) (크기·형식 변환) | CC BY 3.0 | https://commons.wikimedia.org/wiki/File:September_Asia_Jeju_Island_Corea_Chinese_Sea_-_Master_Asia_Photography_2012_-_panoramio_(9).jpg
+place-08-4.webp | 베르니사주 · Wikimedia Commons (제주도 비양도 220130.jpg) (크기·형식 변환) | CC BY 4.0 | https://commons.wikimedia.org/wiki/File:%EC%A0%9C%EC%A3%BC%EB%8F%84_%EB%B9%84%EC%96%91%EB%8F%84_220130.jpg
+place-08-5.webp | 봄삐 · Wikimedia Commons (금오름.jpg) (크기·형식 변환) | CC BY 2.0 kr | https://commons.wikimedia.org/wiki/File:%EA%B8%88%EC%98%A4%EB%A6%84.jpg
+place-09-2.webp | Jeong seolah · Wikimedia Commons (Gwakji Beach in Jeju Island, 2022.jpg) (크기·형식 변환) | CC0 | https://commons.wikimedia.org/wiki/File:Gwakji_Beach_in_Jeju_Island,_2022.jpg
+place-09-4.webp | 제주관광공사 · Visitjeju.net (새별오름) (크기·형식 변환) | CC BY | https://visitjeju.net/photojeju/category?cntId=10250
+place-09-5.webp | Nt · Wikimedia Commons (Jeju Deoreok Branch School.jpg) (크기·형식 변환, 가공본도 같은 라이선스) | CC BY-SA 4.0 | https://commons.wikimedia.org/wiki/File:Jeju_Deoreok_Branch_School.jpg
+place-10-1.webp | 제주관광공사 · Visitjeju.net (사려니숲길) (크기·형식 변환) | 사용제한 없음 · 출처표기 | https://visitjeju.net/photojeju/category?cntId=10630
+place-10-2.webp | Integral · Wikimedia Commons (San-Gumburi Volcano 01.jpg) (크기·형식 변환, 가공본도 같은 라이선스) | CC BY-SA 2.0 kr | https://commons.wikimedia.org/wiki/File:San-Gumburi_Volcano_01.jpg
+place-10-3.webp | 제주관광공사 · Visitjeju.net (다랑쉬오름) (크기·형식 변환) | CC BY | https://visitjeju.net/photojeju/category?cntId=10266
+place-10-4.webp | Thddbwnd · Wikimedia Commons (DDarabi.jpg) (크기·형식 변환, 가공본도 같은 라이선스) | CC BY-SA 3.0 | https://commons.wikimedia.org/wiki/File:DDarabi.jpg
+place-10-5.webp | 제주관광공사 · Visitjeju.net (녹산로) (크기·형식 변환) | 사용제한 없음 · 출처표기 | https://visitjeju.net/photojeju/category?cntId=10602
+find-hero.webp | 제주관광공사 · Visitjeju.net (녹산로) (크기·형식 변환) | 사용제한 없음 · 출처표기 | https://visitjeju.net/photojeju/category?cntId=10602
+og-find-my-jeju.jpg | 제주관광공사 · Visitjeju.net (녹산로) (1200×630으로 자름) | 사용제한 없음 · 출처표기 | https://visitjeju.net/photojeju/category?cntId=10602

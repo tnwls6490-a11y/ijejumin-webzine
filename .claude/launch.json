@@ -6,6 +6,13 @@
       "runtimeExecutable": "python",
       "runtimeArgs": ["-m", "http.server", "8737", "--directory", "public"],
       "port": 8737
+    },
+    {
+      "name": "webzine-2",
+      "runtimeExecutable": "python",
+      "runtimeArgs": ["-m", "http.server", "8739", "--directory", "public"],
+      "port": 8739,
+      "autoPort": false
     }
   ]
 }

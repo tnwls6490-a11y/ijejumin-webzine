@@ -473,6 +473,154 @@
     });
   })();
 
+  /* ---------- 상세 '나의 제주찾기': 살고 싶은 동네 (동네 고르기 + 명소 카드 넘기기) ---------- */
+  (function () {
+    var section = document.querySelector('.towns');
+    if (!section) return;
+    var btns = section.querySelectorAll('.towns__btn');
+    var panels = section.querySelectorAll('.town');
+    var prevBtn = section.querySelector('.towns__arrow--prev');
+    var nextBtn = section.querySelector('.towns__arrow--next');
+    var status = section.querySelector('.towns__status');
+    var reduce = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+    var current = 0;
+    var ticking = false;
+
+    function track() { return panels[current].querySelector('.spots'); }
+    function pad(n) { return (n < 10 ? '0' : '') + n; }
+    /* i번째 카드가 목록 맨 앞 자리(앞 여백 바로 뒤)에 오는 스크롤 위치 */
+    function cardLeft(list, i) { return list.children[i].offsetLeft - parseFloat(window.getComputedStyle(list).paddingLeft); }
+    /* 지금 화면에 다 보이는 카드들 (첫 번호 ~ 끝 번호) */
+    function visible(list) {
+      var first = -1, last = -1;
+      for (var i = 0; i < list.children.length; i++) {
+        var left = list.children[i].offsetLeft - list.scrollLeft;
+        if (left >= -2 && left + list.children[i].offsetWidth <= list.clientWidth + 2) {
+          if (first < 0) first = i;
+          last = i;
+        }
+      }
+      if (first < 0) {   // 다 보이는 카드가 없으면 맨 앞에 가장 가까운 카드
+        first = 0;
+        for (var j = 1; j < list.children.length; j++) {
+          if (Math.abs(cardLeft(list, j) - list.scrollLeft) < Math.abs(cardLeft(list, first) - list.scrollLeft)) first = j;
+        }
+        last = first;
+      }
+      return { first: first, last: last };
+    }
+
+    function update() {
+      ticking = false;
+      var list = track();
+      var v = visible(list);
+      var max = list.scrollWidth - list.clientWidth;
+      prevBtn.disabled = list.scrollLeft <= 2;
+      nextBtn.disabled = list.scrollLeft >= max - 2;
+      status.textContent = v.first === v.last
+        ? pad(v.first + 1) + ' / ' + pad(list.children.length) + ' · ' + list.children[v.first].querySelector('.spot__name').textContent
+        : pad(v.first + 1) + '–' + pad(v.last + 1) + ' / ' + pad(list.children.length);
+    }
+    function request() { if (!ticking) { ticking = true; window.requestAnimationFrame(update); } }
+
+    function go(step) {
+      var list = track();
+      var i = Math.max(0, Math.min(list.children.length - 1, visible(list).first + step));
+      list.scrollTo({ left: cardLeft(list, i), behavior: reduce ? 'auto' : 'smooth' });
+    }
+
+    function select(i) {
+      if (i === current) return;
+      panels[current].classList.remove('is-active');
+      btns[current].setAttribute('aria-pressed', 'false');
+      current = i;
+      panels[i].classList.add('is-active');
+      btns[i].setAttribute('aria-pressed', 'true');
+      track().scrollLeft = 0;   // 동네를 바꾸면 첫 번째 카드부터
+      update();
+    }
+
+    Array.prototype.forEach.call(btns, function (b) {
+      b.addEventListener('click', function () { select(Number(b.getAttribute('data-town'))); });
+    });
+    Array.prototype.forEach.call(panels, function (p) {
+      p.querySelector('.spots').addEventListener('scroll', request, { passive: true });
+    });
+    prevBtn.addEventListener('click', function () { go(-1); });
+    nextBtn.addEventListener('click', function () { go(1); });
+    window.addEventListener('resize', request);
+    update();
+  })();
+
+  /* ---------- 상세 '나의 제주찾기': 제주살이 체크리스트 (이 브라우저에만 저장, 서버로 보내지 않음) ---------- */
+  (function () {
+    var section = document.querySelector('.check');
+    if (!section) return;
+    var KEY = 'ijejumin.checklist.v1';
+    var items = section.querySelectorAll('.check__item');
+    var groups = section.querySelectorAll('.check__group');
+    var board = section.querySelector('.check__board');
+    var doneEl = section.querySelector('.check__done');
+    var expandBtn = section.querySelector('[data-check-expand]');
+    var resetBtn = section.querySelector('[data-check-reset]');
+    var state = load();
+    var undo = null;   // 지운 바로 뒤에는 '되돌리기'로 바뀐다
+
+    function load() {
+      try {
+        var s = JSON.parse(window.localStorage.getItem(KEY));
+        return s && typeof s === 'object' ? s : {};
+      } catch (e) { return {}; }
+    }
+    function save() {
+      try { window.localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) { /* 저장이 막힌 브라우저: 화면에서만 표시한다 */ }
+    }
+    function render() {
+      var done = 0;
+      Array.prototype.forEach.call(items, function (b) {
+        var on = !!state[b.getAttribute('data-check')];
+        b.setAttribute('aria-pressed', String(on));
+        if (on) done++;
+      });
+      Array.prototype.forEach.call(groups, function (g) {
+        g.querySelector('.check__group-count').textContent =
+          g.querySelectorAll('.check__item[aria-pressed="true"]').length + ' / ' + g.querySelectorAll('.check__item').length;
+      });
+      doneEl.textContent = done;
+      board.style.setProperty('--done', (done / items.length).toFixed(3));
+      resetBtn.textContent = undo ? '되돌리기' : '기록 지우기';
+    }
+    function syncExpand() {
+      var someClosed = Array.prototype.some.call(groups, function (g) { return !g.open; });
+      expandBtn.textContent = someClosed ? '모두 펼치기' : '모두 접기';
+    }
+
+    section.addEventListener('click', function (e) {
+      var b = e.target.closest('.check__item');
+      if (!b) return;
+      var id = b.getAttribute('data-check');
+      if (state[id]) delete state[id]; else state[id] = 1;
+      undo = null;
+      save();
+      render();
+    });
+    resetBtn.addEventListener('click', function () {
+      if (undo) { state = undo; undo = null; }
+      else if (Object.keys(state).length) { undo = state; state = {}; }
+      else return;
+      save();
+      render();
+    });
+    expandBtn.addEventListener('click', function () {
+      var open = Array.prototype.some.call(groups, function (g) { return !g.open; });
+      Array.prototype.forEach.call(groups, function (g) { g.open = open; });
+      syncExpand();
+    });
+    Array.prototype.forEach.call(groups, function (g) { g.addEventListener('toggle', syncExpand); });
+    render();
+    syncExpand();
+  })();
+
   /* ---------- 서브메인 첫 화면: 비행기 창 ---------- */
   var intro = document.querySelector('.intro');
   if (!intro) return;

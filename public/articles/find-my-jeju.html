@@ -1,0 +1,818 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>나의 제주찾기: 살고 싶은 동네 | 이제주민 · 한경 웹진</title>
+<meta name="description" content="바다 앞 산책부터 시장 골목의 일상까지. 제주 10개 동네의 명소를 둘러보고, 24개 질문으로 제주살이 준비를 점검해 보세요.">
+<!-- TODO: teamN을 실제 팀 번호로 바꾸기 (예: team3) -->
+<link rel="canonical" href="https://lxwebzine.hankyung.com/teamN/articles/find-my-jeju.html">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="이제주민 · 한경 웹진">
+<meta property="og:title" content="나의 제주찾기: 살고 싶은 동네 | 이제주민">
+<meta property="og:description" content="바다 앞 산책부터 시장 골목의 일상까지. 제주 10개 동네의 명소를 둘러보고, 24개 질문으로 제주살이 준비를 점검해 보세요.">
+<meta property="og:url" content="https://lxwebzine.hankyung.com/teamN/articles/find-my-jeju.html">
+<meta property="og:image" content="https://lxwebzine.hankyung.com/teamN/images/og-find-my-jeju.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+<div class="topbar"><div class="container"><a href="../../index.html">한경 웹진 메인으로</a></div></div>
+<header class="wz-header"><div class="container"><a class="wz-name" href="../index.html">이제주민</a><span class="wz-tagline">육지에서 나고, 섬에서 자라는 중</span><nav class="wz-nav" aria-label="카테고리"><a href="../index.html#cat-1">이주민 인터뷰</a><a href="../index.html#cat-2">제주생존한마디</a><a href="../index.html#cat-3">나의 제주찾기</a></nav></div></header>
+
+<main class="guide">
+  <!-- 첫 화면: 녹산로 사진 위에 제목 (서브메인 첫 화면처럼 유리 캡슐 + 흰 글자) -->
+  <section class="guide-hero" aria-labelledby="guide-title">
+    <img class="guide-hero__photo" src="../images/find-hero.webp" width="1280" height="720" alt="유채꽃과 벚꽃이 길 양옆으로 늘어선 제주 녹산로" fetchpriority="high">
+    <div class="container guide-hero__inner">
+      <p class="landing__eyebrow">03 나의 제주찾기</p>
+      <h1 class="guide-hero__title" id="guide-title">살고 싶은 동네,<br>먼저 둘러볼까요?</h1>
+      <p class="guide-hero__lead">바다 앞 산책부터 시장 골목의 일상까지.<br>나의 제주가 될 10개 동네를 만나 보세요.</p>
+      <p class="guide-hero__note">‘나는 제주 어디 주민?’ 후속 기획</p>
+      <nav class="guide-hero__jump" aria-label="이 페이지 차례">
+        <a class="landing__next" href="./find-my-jeju.html#towns">01 살고 싶은 동네 <span aria-hidden="true">↓</span></a>
+        <a class="landing__next" href="./find-my-jeju.html#checklist">02 제주살이 체크리스트 <span aria-hidden="true">↓</span></a>
+        <a class="landing__next" href="./find-my-jeju.html#policy">03 정책모음 <span aria-hidden="true">↓</span></a>
+      </nav>
+    </div>
+    <p class="guide-hero__credit">사진 · 녹산로 · 제주관광공사 · Visitjeju.net · 사용제한 없음 · 출처표기</p>
+  </section>
+
+  <!-- 01 살고 싶은 동네: 동네 10곳 × 명소 5곳. 동네를 고르면 그 동네 카드만 보이고, 카드는 옆으로 넘긴다 -->
+  <section class="guide-sec towns" id="towns" aria-labelledby="towns-title">
+    <div class="container">
+      <p class="cat__label">01 — <span lang="en">NEIGHBORHOODS</span></p>
+      <h2 class="cat__title" id="towns-title">살고 싶은 동네</h2>
+      <p class="cat__text">궁금한 동네를 고르면 그 동네의 명소 5곳을 보여 드려요.</p>
+      <div class="towns__picker" role="group" aria-label="동네 고르기"><button class="towns__btn" type="button" data-town="0" aria-pressed="true" aria-controls="town-1"><span class="towns__btn-no">01</span>신제주</button><button class="towns__btn" type="button" data-town="1" aria-pressed="false" aria-controls="town-2"><span class="towns__btn-no">02</span>원도심</button><button class="towns__btn" type="button" data-town="2" aria-pressed="false" aria-controls="town-3"><span class="towns__btn-no">03</span>함덕</button><button class="towns__btn" type="button" data-town="3" aria-pressed="false" aria-controls="town-4"><span class="towns__btn-no">04</span>구좌</button><button class="towns__btn" type="button" data-town="4" aria-pressed="false" aria-controls="town-5"><span class="towns__btn-no">05</span>표선·남원</button><button class="towns__btn" type="button" data-town="5" aria-pressed="false" aria-controls="town-6"><span class="towns__btn-no">06</span>서귀포 시내</button><button class="towns__btn" type="button" data-town="6" aria-pressed="false" aria-controls="town-7"><span class="towns__btn-no">07</span>안덕·대정</button><button class="towns__btn" type="button" data-town="7" aria-pressed="false" aria-controls="town-8"><span class="towns__btn-no">08</span>한림</button><button class="towns__btn" type="button" data-town="8" aria-pressed="false" aria-controls="town-9"><span class="towns__btn-no">09</span>애월</button><button class="towns__btn" type="button" data-town="9" aria-pressed="false" aria-controls="town-10"><span class="towns__btn-no">10</span>중산간</button></div>
+      <div class="town is-active" id="town-1" aria-labelledby="town-1-name">
+        <div class="town__info">
+          <p class="town__area">제주시 노형·연동 · 공항 쪽</p>
+          <h3 class="town__name" id="town-1-name">신제주</h3>
+          <p class="town__desc">공항 가까이, 일상과 여행이 만나는 동네</p>
+          <p class="town__type">든든한 생활 인프라파</p>
+        </div>
+        <ol class="spots" aria-label="신제주 명소 5곳">
+          <li class="spot">
+            <div class="spot__photo"><img src="../images/place-01-1.webp" width="800" height="1067" alt="도두봉 사진" loading="lazy" decoding="async"><span class="spot__no" aria-hidden="true">01</span></div>
+            <div class="spot__body">
+              <p class="spot__type">오름 · <span lang="en">LOCAL SPOT 01</span></p>
+              <h4 class="spot__name">도두봉</h4>
+              <p class="spot__desc">비행기 이착륙과 바다를 함께 바라볼 수 있는 오름.</p>
+              <a class="spot__map" href="https://map.naver.com/p/search/%EC%A0%9C%EC%A3%BC%20%EB%8F%84%EB%91%90%EB%B4%89" target="_blank" rel="noopener noreferrer">지도에서 위치 찾기 <span aria-hidden="true">↗</span></a>
+              <p class="spot__credit">사진 · Grapesurgeon · Wikimedia Commons · CC BY-SA 4.0</p>
+            </div>
+          </li>
+          <li class="spot">
+            <div class="spot__photo"><img src="../images/place-01-2.webp" width="800" height="450" alt="이호테우해변 사진" loading="lazy" decoding="async"><span class="spot__no" aria-hidden="true">02</span></div>
+            <div class="spot__body">
+              <p class="spot__type">바다 · <span lang="en">LOCAL SPOT 02</span></p>
+              <h4 class="spot__name">이호테우해변</h4>
+              <p class="spot__desc">빨강·하양 말 등대로 잘 알려진 공항 옆 해변.</p>
+              <a class="spot__map" href="https://map.naver.com/p/search/%EC%A0%9C%EC%A3%BC%20%EC%9D%B4%ED%98%B8%ED%85%8C%EC%9A%B0%ED%95%B4%EB%B3%80" target="_blank" rel="noopener noreferrer">지도에서 위치 찾기 <span aria-hidden="true">↗</span></a>
+              <p class="spot__credit">사진 · song songroov · Wikimedia Commons · CC BY 3.0</p>
+            </div>
+          </li>
+          <li class="spot">
+            <div class="spot__photo"><img src="../images/place-01-3.webp" width="480" height="853" alt="한라수목원 사진" loading="lazy" decoding="async"><span class="spot__no" aria-hidden="true">03</span></div>
+            <div class="spot__body">
+              <p class="spot__type">숲 · <span lang="en">LOCAL SPOT 03</span></p>
+              <h4 class="spot__name">한라수목원</h4>
+              <p class="spot__desc">도심 속 숲 산책로에서 일상 가까운 초록을 만나는 곳.</p>
+              <a class="spot__map" href="https://map.naver.com/p/search/%EC%A0%9C%EC%A3%BC%20%ED%95%9C%EB%9D%BC%EC%88%98%EB%AA%A9%EC%9B%90" target="_blank" rel="noopener noreferrer">지도에서 위치 찾기 <span aria-hidden="true">↗</span></a>
+              <p class="spot__credit">사진 · Mar del Este · Wikimedia Commons · CC BY 3.0</p>
+            </div>
+          </li>
+          <li class="spot">
+            <div class="spot__photo"><p class="spot__none"><span lang="en">PHOTO ARCHIVE</span>사진 준비 중</p><span class="spot__no" aria-hidden="true">04</span></div>
+            <div class="spot__body">
+              <p class="spot__type">골목 · <span lang="en">LOCAL SPOT 04</span></p>
+              <h4 class="spot__name">누웨마루거리</h4>
+              <p class="spot__desc">연동의 쇼핑과 먹거리를 둘러보는 거리. 옛 바오젠거리입니다.</p>
+              <a class="spot__map" href="https://map.naver.com/p/search/%EC%A0%9C%EC%A3%BC%20%EB%88%84%EC%9B%A8%EB%A7%88%EB%A3%A8%EA%B1%B0%EB%A6%AC" target="_blank" rel="noopener noreferrer">지도에서 위치 찾기 <span aria-hidden="true">↗</span></a>
+            </div>
+          </li>
+          <li class="spot">
+            <div class="spot__photo"><p class="spot__none"><span lang="en">PHOTO ARCHIVE</span>사진 준비 중</p><span class="spot__no" aria-hidden="true">05</span></div>
+            <div class="spot__body">
+              <p class="spot__type">풍경 · <span lang="en">LOCAL SPOT 05</span></p>
+              <h4 class="spot__name">도깨비도로</h4>
+              <p class="spot__desc">내리막인데 오르막처럼 보이는 착시로 알려진 도로.</p>
+              <a class="spot__map" href="https://map.naver.com/p/search/%EC%A0%9C%EC%A3%BC%20%EB%8F%84%EA%B9%A8%EB%B9%84%EB%8F%84%EB%A1%9C" target="_blank" rel="noopener noreferrer">지도에서 위치 찾기 <span aria-hidden="true">↗</span></a>
+            </div>
+          </li>
+        </ol>
+      </div>
+      <div class="town" id="town-2" aria-labelledby="town-2-name">
+        <div class="town__info">
+          <p class="town__area">제주시 삼도·일도·탑동</p>
+          <h3 class="town__name" id="town-2-name">원도심</h3>
+          <p class="town__desc">걸어서 만나는 제주의 옛 중심</p>
+          <p class="town__type">골목 산책 뚜벅이</p>
+        </div>
+        <ol class="spots" aria-label="원도심 명소 5곳">
+          <li class="spot">
+            <div class="spot__photo"><img src="../images/place-02-1.webp" width="800" height="600" alt="동문재래시장 사진" loading="lazy" decoding="async"><span class="spot__no" aria-hidden="true">01</span></div>
+            <div class="spot__body">
+              <p class="spot__type">시장 · <span lang="en">LOCAL SPOT 01</span></p>
+              <h4 class="spot__name">동문재래시장</h4>
+              <p class="spot__desc">제주의 먹거리와 일상을 가까이서 둘러보는 상설시장.</p>
+              <a class="spot__map" href="https://map.naver.com/p/search/%EC%A0%9C%EC%A3%BC%20%EB%8F%99%EB%AC%B8%EC%9E%AC%EB%9E%98%EC%8B%9C%EC%9E%A5" target="_blank" rel="noopener noreferrer">지도에서 위치 찾기 <span aria-hidden="true">↗</span></a>
+              <p class="spot__credit">사진 · thddbwnd · Wikimedia Commons · CC BY 3.0</p>
+            </div>
+          </li>
+          <li class="spot">
+            <div class="spot__photo"><img src="../images/place-02-2.webp" width="800" height="600" alt="관덕정 사진" loading="lazy" decoding="async"><span class="spot__no" aria-hidden="true">02</span></div>
+            <div class="spot__body">
+              <p class="spot__type">역사 · <span lang="en">LOCAL SPOT 02</span></p>
+              <h4 class="spot__name">제주목 관아·관덕정</h4>
+              <p class="spot__desc">조선시대 제주 관아 터와 원도심의 역사를 만나는 공간.</p>
+              <a class="spot__map" href="https://map.naver.com/p/search/%EC%A0%9C%EC%A3%BC%20%EC%A0%9C%EC%A3%BC%EB%AA%A9%20%EA%B4%80%EC%95%84" target="_blank" rel="noopener noreferrer">지도에서 위치 찾기 <span aria-hidden="true">↗</span></a>
+              <p class="spot__credit">사진 · Thddbwnd · Wikimedia Commons · CC BY-SA 3.0</p>
+            </div>
+          </li>
+          <li class="spot">
+            <div class="spot__photo"><img src="../images/place-02-3.webp" width="800" height="533" alt="산지천 낮 빛내림 사진" loading="lazy" decoding="async"><span class="spot__no" aria-hidden="true">03</span></div>
+            <div class="spot__body">
+              <p class="spot__type">산책 · <span lang="en">LOCAL SPOT 03</span></p>
+              <h4 class="spot__name">산지천</h4>
+              <p class="spot__desc">원도심을 가로지르는 하천을 따라 걷는 산책길.</p>
+              <a class="spot__map" href="https://map.naver.com/p/search/%EC%A0%9C%EC%A3%BC%20%EC%82%B0%EC%A7%80%EC%B2%9C" target="_blank" rel="noopener noreferrer">지도에서 위치 찾기 <span aria-hidden="true">↗</span></a>
+              <p class="spot__credit">사진 · 제주관광공사 · Visitjeju.net · 사용제한 없음 · 출처표기</p>
+            </div>
+          </li>
+          <li class="spot">
+            <div class="spot__photo"><img src="../images/place-02-4.webp" width="800" height="600" alt="용두암 사진" loading="lazy" decoding="async"><span class="spot__no" aria-hidden="true">04</span></div>
+            <div class="spot__body">
+              <p class="spot__type">바다 · <span lang="en">LOCAL SPOT 04</span></p>
+              <h4 class="spot__name">용두암·용연구름다리</h4>
+              <p class="spot__desc">용머리 모양 바위와 계곡 위 다리를 함께 둘러보는 코스.</p>
+              <a class="spot__map" href="https://map.naver.com/p/search/%EC%A0%9C%EC%A3%BC%20%EC%9A%A9%EB%91%90%EC%95%94" target="_blank" rel="noopener noreferrer">지도에서 위치 찾기 <span aria-hidden="true">↗</span></a>
+              <p class="spot__credit">사진 · 螺钉 · Wikimedia Commons · CC BY-SA 3.0</p>
+            </div>
+          </li>
+          <li class="spot">
+            <div class="spot__photo"><img src="../images/place-02-5.webp" width="800" height="533" alt="사라봉 사진" loading="lazy" decoding="async"><span class="spot__no" aria-hidden="true">05</span></div>
+            <div class="spot__body">
+              <p class="spot__type">오름 · <span lang="en">LOCAL SPOT 05</span></p>
+              <h4 class="spot__name">사라봉</h4>
+              <p class="spot__desc">제주항과 노을을 바라보며 걸어볼 수 있는 오름.</p>
+              <a class="spot__map" href="https://map.naver.com/p/search/%EC%A0%9C%EC%A3%BC%20%EC%82%AC%EB%9D%BC%EB%B4%89" target="_blank" rel="noopener noreferrer">지도에서 위치 찾기 <span aria-hidden="true">↗</span></a>
+              <p class="spot__credit">사진 · 제주관광공사 · Visitjeju.net · CC BY</p>
+            </div>
+          </li>
+        </ol>
+      </div>
+      <div class="town" id="town-3" aria-labelledby="town-3-name">
+        <div class="town__info">
+          <p class="town__area">제주시 조천읍</p>
+          <h3 class="town__name" id="town-3-name">함덕</h3>
+          <p class="town__desc">동쪽 바다 가까이 머무는 하루</p>
+          <p class="town__type">바다 앞 워케이셔너</p>
+        </div>
+        <ol class="spots" aria-label="함덕 명소 5곳">
+          <li class="spot">
+            <div class="spot__photo"><img src="../images/place-03-1.webp" width="800" height="600" alt="함덕해수욕장 사진" loading="lazy" decoding="async"><span class="spot__no" aria-hidden="true">01</span></div>
+            <div class="spot__body">
+              <p class="spot__type">바다 · <span lang="en">LOCAL SPOT 01</span></p>
+              <h4 class="spot__name">함덕해수욕장</h4>
+              <p class="spot__desc">에메랄드빛 바다와 해변의 카페를 함께 만나는 곳.</p>
+              <a class="spot__map" href="https://map.naver.com/p/search/%EC%A0%9C%EC%A3%BC%20%ED%95%A8%EB%8D%95%ED%95%B4%EC%88%98%EC%9A%95%EC%9E%A5" target="_blank" rel="noopener noreferrer">지도에서 위치 찾기 <span aria-hidden="true">↗</span></a>
+              <p class="spot__credit">사진 · Thddbwnd · Wikimedia Commons · CC BY-SA 3.0</p>
+            </div>
+          </li>
+          <li class="spot">
+            <div class="spot__photo"><img src="../images/place-03-2.webp" width="800" height="533" alt="서우봉 유채꽃 사진" loading="lazy" decoding="async"><span class="spot__no" aria-hidden="true">02</span></div>
+            <div class="spot__body">
+              <p class="spot__type">오름 · <span lang="en">LOCAL SPOT 02</span></p>
+              <h4 class="spot__name">서우봉</h4>
+              <p class="spot__desc">함덕 해변 옆 오름. 봄 유채와 해안 산책 풍경으로 알려져 있습니다.</p>
+              <a class="spot__map" href="https://map.naver.com/p/search/%EC%A0%9C%EC%A3%BC%20%EC%84%9C%EC%9A%B0%EB%B4%89" target="_blank" rel="noopener noreferrer">지도에서 위치 찾기 <span aria-hidden="true">↗</span></a>
+              <p class="spot__credit">사진 · 제주관광공사 · Visitjeju.net · 사용제한 없음 · 출처표기</p>
+            </div>
+          </li>
+          <li class="spot">
+            <div class="spot__photo"><img src="../images/place-03-3.webp" width="800" height="1200" alt="닭머르해안 사진" loading="lazy" decoding="async"><span class="spot__no" aria-hidden="true">03</span></div>
+            <div class="spot__body">
+              <p class="spot__type">산책 · <span lang="en">LOCAL SPOT 03</span></p>
+              <h4 class="spot__name">닭머르 해안길</h4>
+              <p class="spot__desc">신촌리의 해안 산책로와 정자에서 바다를 바라보는 길.</p>
+              <a class="spot__map" href="https://map.naver.com/p/search/%EC%A0%9C%EC%A3%BC%20%EB%8B%AD%EB%A8%B8%EB%A5%B4%20%ED%95%B4%EC%95%88%EA%B8%B8" target="_blank" rel="noopener noreferrer">지도에서 위치 찾기 <span aria-hidden="true">↗</span></a>
+              <p class="spot__credit">사진 · 제주관광공사 · Visitjeju.net · CC BY</p>
+            </div>
+          </li>
+          <li class="spot">
+            <div class="spot__photo"><img src="../images/place-03-4.webp" width="800" height="533" alt="조천 연북정 사진" loading="lazy" decoding="async"><span class="spot__no" aria-hidden="true">04</span></div>
+            <div class="spot__body">
+              <p class="spot__type">역사 · <span lang="en">LOCAL SPOT 04</span></p>
+              <h4 class="spot__name">조천 연북정</h4>
+              <p class="spot__desc">조천포구 바닷가에서 만나는 옛 정자.</p>
+              <a class="spot__map" href="https://map.naver.com/p/search/%EC%A0%9C%EC%A3%BC%20%EC%A1%B0%EC%B2%9C%20%EC%97%B0%EB%B6%81%EC%A0%95" target="_blank" rel="noopener noreferrer">지도에서 위치 찾기 <span aria-hidden="true">↗</span></a>
+              <p class="spot__credit">사진 · Nt · Wikimedia Commons · CC0</p>
+            </div>
+          </li>
+          <li class="spot">
+            <div class="spot__photo"><p class="spot__none"><span lang="en">PHOTO ARCHIVE</span>사진 준비 중</p><span class="spot__no" aria-hidden="true">05</span></div>
+            <div class="spot__body">
+              <p class="spot__type">역사 · <span lang="en">LOCAL SPOT 05</span></p>
+              <h4 class="spot__name">너븐숭이 4·3기념관</h4>
+              <p class="spot__desc">북촌리에서 제주 4·3의 아픔과 역사를 배우는 공간.</p>
+              <a class="spot__map" href="https://map.naver.com/p/search/%EC%A0%9C%EC%A3%BC%20%EB%84%88%EB%B8%90%EC%88%AD%EC%9D%B4%204" target="_blank" rel="noopener noreferrer">지도에서 위치 찾기 <span aria-hidden="true">↗</span></a>
+            </div>
+          </li>
+        </ol>
+      </div>
+      <div class="town" id="town-4" aria-labelledby="town-4-name">
+        <div class="town__info">
+          <p class="town__area">구좌읍 세화·종달·월정</p>
+          <h3 class="town__name" id="town-4-name">구좌</h3>
+          <p class="town__desc">오일장 가는 날이 기다려지는 마을</p>
+          <p class="town__type">느린 밭마을 주민</p>
+        </div>
+        <ol class="spots" aria-label="구좌 명소 5곳">
+          <li class="spot">
+            <div class="spot__photo"><img src="../images/place-04-1.webp" width="800" height="600" alt="월정리해변 사진" loading="lazy" decoding="async"><span class="spot__no" aria-hidden="true">01</span></div>
+            <div class="spot__body">
+              <p class="spot__type">바다 · <span lang="en">LOCAL SPOT 01</span></p>
+              <h4 class="spot__name">월정리해변</h4>
+              <p class="spot__desc">하얀 모래와 투명한 바다, 해변 카페가 있는 해안.</p>
+              <a class="spot__map" href="https://map.naver.com/p/search/%EC%A0%9C%EC%A3%BC%20%EC%9B%94%EC%A0%95%EB%A6%AC%ED%95%B4%EB%B3%80" target="_blank" rel="noopener noreferrer">지도에서 위치 찾기 <span aria-hidden="true">↗</span></a>
+              <p class="spot__credit">사진 · Sgroey · Wikimedia Commons · CC BY-SA 4.0</p>
+            </div>
+          </li>
+          <li class="spot">
+            <div class="spot__photo"><img src="../images/place-04-2.webp" width="640" height="640" alt="세화해변 사진" loading="lazy" decoding="async"><span class="spot__no" aria-hidden="true">02</span></div>
+            <div class="spot__body">
+              <p class="spot__type">마을 · <span lang="en">LOCAL SPOT 02</span></p>
+              <h4 class="spot__name">세화해변·세화오일장</h4>
+              <p class="spot__desc">잔잔한 해변과 마을의 장을 함께 둘러보는 곳. 장날은 방문 전 확인해 주세요.</p>
+              <a class="spot__map" href="https://map.naver.com/p/search/%EC%A0%9C%EC%A3%BC%20%EC%84%B8%ED%99%94%ED%95%B4%EB%B3%80" target="_blank" rel="noopener noreferrer">지도에서 위치 찾기 <span aria-hidden="true">↗</span></a>
+              <p class="spot__credit">사진 · Bohyunlee · Wikimedia Commons · CC BY-SA 4.0</p>
+            </div>
+          </li>
+          <li class="spot">
+            <div class="spot__photo"><img src="../images/place-04-3.webp" width="800" height="600" alt="해녀박물관 사진" loading="lazy" decoding="async"><span class="spot__no" aria-hidden="true">03</span></div>
+            <div class="spot__body">
+              <p class="spot__type">문화 · <span lang="en">LOCAL SPOT 03</span></p>
+              <h4 class="spot__name">해녀박물관</h4>
+              <p class="spot__desc">하도리에서 제주 해녀의 삶과 일을 살펴보는 박물관.</p>
+              <a class="spot__map" href="https://map.naver.com/p/search/%EC%A0%9C%EC%A3%BC%20%ED%95%B4%EB%85%80%EB%B0%95%EB%AC%BC%EA%B4%80" target="_blank" rel="noopener noreferrer">지도에서 위치 찾기 <span aria-hidden="true">↗</span></a>
+              <p class="spot__credit">사진 · Vanbasten 23 · Wikimedia Commons · CC BY-SA 3.0</p>
+            </div>
+          </li>
+          <li class="spot">
+            <div class="spot__photo"><img src="../images/place-04-4.webp" width="767" height="577" alt="비자림 사진" loading="lazy" decoding="async"><span class="spot__no" aria-hidden="true">04</span></div>
+            <div class="spot__body">
+              <p class="spot__type">숲 · <span lang="en">LOCAL SPOT 04</span></p>
+              <h4 class="spot__name">비자림</h4>
+              <p class="spot__desc">수백 년 된 비자나무가 있는 평대리의 숲길.</p>
+              <a class="spot__map" href="https://map.naver.com/p/search/%EC%A0%9C%EC%A3%BC%20%EB%B9%84%EC%9E%90%EB%A6%BC" target="_blank" rel="noopener noreferrer">지도에서 위치 찾기 <span aria-hidden="true">↗</span></a>
+              <p class="spot__credit">사진 · TKostolany · Wikimedia Commons · CC BY-SA 4.0</p>
+            </div>
+          </li>
+          <li class="spot">
+            <div class="spot__photo"><img src="../images/place-04-5.webp" width="800" height="533" alt="지미봉 사진" loading="lazy" decoding="async"><span class="spot__no" aria-hidden="true">05</span></div>
+            <div class="spot__body">
+              <p class="spot__type">오름 · <span lang="en">LOCAL SPOT 05</span></p>
+              <h4 class="spot__name">지미봉·종달리</h4>
+              <p class="spot__desc">제주 동쪽의 오름과 종달리 마을 골목을 함께 걷는 코스.</p>
+              <a class="spot__map" href="https://map.naver.com/p/search/%EC%A0%9C%EC%A3%BC%20%EC%A7%80%EB%AF%B8%EB%B4%89" target="_blank" rel="noopener noreferrer">지도에서 위치 찾기 <span aria-hidden="true">↗</span></a>
+              <p class="spot__credit">사진 · 제주관광공사 · Visitjeju.net · CC BY</p>
+            </div>
+          </li>
+        </ol>
+      </div>
+      <div class="town" id="town-5" aria-labelledby="town-5-name">
+        <div class="town__info">
+          <p class="town__area">서귀포시 표선면·남원읍</p>
+          <h3 class="town__name" id="town-5-name">표선·남원</h3>
+          <p class="town__desc">아무것도 안 해도 되는 남동쪽</p>
+          <p class="town__type">느긋한 쉼표형</p>
+        </div>
+        <ol class="spots" aria-label="표선·남원 명소 5곳">
+          <li class="spot">
+            <div class="spot__photo"><img src="../images/place-05-1.webp" width="800" height="450" alt="표선해수욕장 사진" loading="lazy" decoding="async"><span class="spot__no" aria-hidden="true">01</span></div>
+            <div class="spot__body">
+              <p class="spot__type">바다 · <span lang="en">LOCAL SPOT 01</span></p>
+              <h4 class="spot__name">표선해수욕장</h4>
+              <p class="spot__desc">썰물 때 드넓게 드러나는 백사장을 만나는 해변.</p>
+              <a class="spot__map" href="https://map.naver.com/p/search/%EC%A0%9C%EC%A3%BC%20%ED%91%9C%EC%84%A0%ED%95%B4%EC%88%98%EC%9A%95%EC%9E%A5" target="_blank" rel="noopener noreferrer">지도에서 위치 찾기 <span aria-hidden="true">↗</span></a>
+              <p class="spot__credit">사진 · Jocelyndurrey · Wikimedia Commons · CC BY-SA 4.0</p>
+            </div>
+          </li>
+          <li class="spot">
+            <div class="spot__photo"><img src="../images/place-05-2.webp" width="800" height="533" alt="성읍민속마을 사진" loading="lazy" decoding="async"><span class="spot__no" aria-hidden="true">02</span></div>
+            <div class="spot__body">
+              <p class="spot__type">역사 · <span lang="en">LOCAL SPOT 02</span></p>
+              <h4 class="spot__name">성읍민속마을</h4>
+              <p class="spot__desc">초가집과 돌담이 남아 있는 옛 정의현 마을.</p>
+              <a class="spot__map" href="https://map.naver.com/p/search/%EC%A0%9C%EC%A3%BC%20%EC%84%B1%EC%9D%8D%EB%AF%BC%EC%86%8D%EB%A7%88%EC%9D%84" target="_blank" rel="noopener noreferrer">지도에서 위치 찾기 <span aria-hidden="true">↗</span></a>
+              <p class="spot__credit">사진 · Trainholic · Wikimedia Commons · CC BY-SA 4.0</p>
+            </div>
+          </li>
+          <li class="spot">
+            <div class="spot__photo"><img src="../images/place-05-3.webp" width="800" height="575" alt="큰엉해안경승지 사진" loading="lazy" decoding="async"><span class="spot__no" aria-hidden="true">03</span></div>
+            <div class="spot__body">
+              <p class="spot__type">산책 · <span lang="en">LOCAL SPOT 03</span></p>
+              <h4 class="spot__name">큰엉해안경승지</h4>
+              <p class="spot__desc">해안 절벽을 따라 걸으며 나무 사이로 바다를 보는 산책로.</p>
+              <a class="spot__map" href="https://map.naver.com/p/search/%EC%A0%9C%EC%A3%BC%20%ED%81%B0%EC%97%89%ED%95%B4%EC%95%88%EA%B2%BD%EC%8A%B9%EC%A7%80" target="_blank" rel="noopener noreferrer">지도에서 위치 찾기 <span aria-hidden="true">↗</span></a>
+              <p class="spot__credit">사진 · Jeju Olle Foundation · Wikimedia Commons · CC BY-SA 4.0</p>
+            </div>
+          </li>
+          <li class="spot">
+            <div class="spot__photo"><img src="../images/place-05-4.webp" width="800" height="600" alt="위미 동백군락지 안내판 사진" loading="lazy" decoding="async"><span class="spot__no" aria-hidden="true">04</span></div>
+            <div class="spot__body">
+              <p class="spot__type">숲 · <span lang="en">LOCAL SPOT 04</span></p>
+              <h4 class="spot__name">위미 동백군락지</h4>
+              <p class="spot__desc">겨울 동백 풍경으로 알려진 위미리의 마을 숲.</p>
+              <a class="spot__map" href="https://map.naver.com/p/search/%EC%A0%9C%EC%A3%BC%20%EC%9C%84%EB%AF%B8%20%EB%8F%99%EB%B0%B1%EA%B5%B0%EB%9D%BD%EC%A7%80" target="_blank" rel="noopener noreferrer">지도에서 위치 찾기 <span aria-hidden="true">↗</span></a>
+              <p class="spot__credit">사진 · Thomas Housieaux · Wikimedia Commons · CC BY-SA 4.0</p>
+            </div>
+          </li>
+          <li class="spot">
+            <div class="spot__photo"><img src="../images/place-05-5.webp" width="800" height="533" alt="머체왓숲길 사진" loading="lazy" decoding="async"><span class="spot__no" aria-hidden="true">05</span></div>
+            <div class="spot__body">
+              <p class="spot__type">숲 · <span lang="en">LOCAL SPOT 05</span></p>
+              <h4 class="spot__name">머체왓숲길</h4>
+              <p class="spot__desc">한남리에서 조용히 걸어보는 숲 산책길.</p>
+              <a class="spot__map" href="https://map.naver.com/p/search/%EC%A0%9C%EC%A3%BC%20%EB%A8%B8%EC%B2%B4%EC%99%93%EC%88%B2%EA%B8%B8" target="_blank" rel="noopener noreferrer">지도에서 위치 찾기 <span aria-hidden="true">↗</span></a>
+              <p class="spot__credit">사진 · 제주관광공사 · Visitjeju.net · 사용제한 없음 · 출처표기</p>
+            </div>
+          </li>
+        </ol>
+      </div>
+      <div class="town" id="town-6" aria-labelledby="town-6-name">
+        <div class="town__info">
+          <p class="town__area">서귀포시 시내</p>
+          <h3 class="town__name" id="town-6-name">서귀포 시내</h3>
+          <p class="town__desc">폭포와 시장을 잇는 동네 산책길</p>
+          <p class="town__type">따뜻한 남쪽 생활러</p>
+        </div>
+        <ol class="spots" aria-label="서귀포 시내 명소 5곳">
+          <li class="spot">
+            <div class="spot__photo"><img src="../images/place-06-1.webp" width="800" height="533" alt="천지연폭포 사진" loading="lazy" decoding="async"><span class="spot__no" aria-hidden="true">01</span></div>
+            <div class="spot__body">
+              <p class="spot__type">폭포 · <span lang="en">LOCAL SPOT 01</span></p>
+              <h4 class="spot__name">천지연폭포</h4>
+              <p class="spot__desc">서귀포 시내 가까이에서 만나는 폭포와 산책로.</p>
+              <a class="spot__map" href="https://map.naver.com/p/search/%EC%A0%9C%EC%A3%BC%20%EC%B2%9C%EC%A7%80%EC%97%B0%ED%8F%AD%ED%8F%AC" target="_blank" rel="noopener noreferrer">지도에서 위치 찾기 <span aria-hidden="true">↗</span></a>
+              <p class="spot__credit">사진 · Yhnn0065 · Wikimedia Commons · CC BY-SA 3.0</p>
+            </div>
+          </li>
+          <li class="spot">
+            <div class="spot__photo"><img src="../images/place-06-2.webp" width="800" height="1067" alt="정방폭포 사진" loading="lazy" decoding="async"><span class="spot__no" aria-hidden="true">02</span></div>
+            <div class="spot__body">
+              <p class="spot__type">폭포 · <span lang="en">LOCAL SPOT 02</span></p>
+              <h4 class="spot__name">정방폭포</h4>
+              <p class="spot__desc">바다로 바로 떨어지는 물줄기를 바라볼 수 있는 폭포.</p>
+              <a class="spot__map" href="https://map.naver.com/p/search/%EC%A0%9C%EC%A3%BC%20%EC%A0%95%EB%B0%A9%ED%8F%AD%ED%8F%AC" target="_blank" rel="noopener noreferrer">지도에서 위치 찾기 <span aria-hidden="true">↗</span></a>
+              <p class="spot__credit">사진 · Badara25.ba · Wikimedia Commons · CC BY-SA 3.0</p>
+            </div>
+          </li>
+          <li class="spot">
+            <div class="spot__photo"><img src="../images/place-06-3.webp" width="800" height="536" alt="새연교 사진" loading="lazy" decoding="async"><span class="spot__no" aria-hidden="true">03</span></div>
+            <div class="spot__body">
+              <p class="spot__type">산책 · <span lang="en">LOCAL SPOT 03</span></p>
+              <h4 class="spot__name">새연교·새섬</h4>
+              <p class="spot__desc">서귀포항에서 다리를 건너 섬을 둘러보는 산책 코스.</p>
+              <a class="spot__map" href="https://map.naver.com/p/search/%EC%A0%9C%EC%A3%BC%20%EC%83%88%EC%97%B0%EA%B5%90" target="_blank" rel="noopener noreferrer">지도에서 위치 찾기 <span aria-hidden="true">↗</span></a>
+              <p class="spot__credit">사진 · Naturehead · Wikimedia Commons · CC BY-SA 3.0</p>
+            </div>
+          </li>
+          <li class="spot">
+            <div class="spot__photo"><p class="spot__none"><span lang="en">PHOTO ARCHIVE</span>사진 준비 중</p><span class="spot__no" aria-hidden="true">04</span></div>
+            <div class="spot__body">
+              <p class="spot__type">문화 · <span lang="en">LOCAL SPOT 04</span></p>
+              <h4 class="spot__name">이중섭거리·이중섭미술관</h4>
+              <p class="spot__desc">이중섭이 머물렀던 골목과 예술의 흔적을 만나는 곳. 미술관 관람 가능 여부는 별도 확인해 주세요.</p>
+              <a class="spot__map" href="https://map.naver.com/p/search/%EC%A0%9C%EC%A3%BC%20%EC%9D%B4%EC%A4%91%EC%84%AD%EA%B1%B0%EB%A6%AC" target="_blank" rel="noopener noreferrer">지도에서 위치 찾기 <span aria-hidden="true">↗</span></a>
+            </div>
+          </li>
+          <li class="spot">
+            <div class="spot__photo"><img src="../images/place-06-5.webp" width="800" height="600" alt="매일올레시장 사진" loading="lazy" decoding="async"><span class="spot__no" aria-hidden="true">05</span></div>
+            <div class="spot__body">
+              <p class="spot__type">시장 · <span lang="en">LOCAL SPOT 05</span></p>
+              <h4 class="spot__name">매일올레시장</h4>
+              <p class="spot__desc">장보기와 간식을 함께 즐길 수 있는 서귀포의 상설시장.</p>
+              <a class="spot__map" href="https://map.naver.com/p/search/%EC%A0%9C%EC%A3%BC%20%EB%A7%A4%EC%9D%BC%EC%98%AC%EB%A0%88%EC%8B%9C%EC%9E%A5" target="_blank" rel="noopener noreferrer">지도에서 위치 찾기 <span aria-hidden="true">↗</span></a>
+              <p class="spot__credit">사진 · Seefooddiet · Wikimedia Commons · CC BY-SA 4.0</p>
+            </div>
+          </li>
+        </ol>
+      </div>
+      <div class="town" id="town-7" aria-labelledby="town-7-name">
+        <div class="town__info">
+          <p class="town__area">서귀포시 안덕면·대정읍</p>
+          <h3 class="town__name" id="town-7-name">안덕·대정</h3>
+          <p class="town__desc">산방산이 보이는 조용한 서남쪽</p>
+          <p class="town__type">한적한 서남쪽 은둔러</p>
+        </div>
+        <ol class="spots" aria-label="안덕·대정 명소 5곳">
+          <li class="spot">
+            <div class="spot__photo"><img src="../images/place-07-1.webp" width="800" height="481" alt="산방산 사진" loading="lazy" decoding="async"><span class="spot__no" aria-hidden="true">01</span></div>
+            <div class="spot__body">
+              <p class="spot__type">해안 · <span lang="en">LOCAL SPOT 01</span></p>
+              <h4 class="spot__name">산방산·용머리해안</h4>
+              <p class="spot__desc">종 모양의 산과 겹겹의 해안 절벽을 만나는 곳. 용머리해안은 물때와 날씨에 따라 통제될 수 있습니다.</p>
+              <a class="spot__map" href="https://map.naver.com/p/search/%EC%A0%9C%EC%A3%BC%20%EC%82%B0%EB%B0%A9%EC%82%B0" target="_blank" rel="noopener noreferrer">지도에서 위치 찾기 <span aria-hidden="true">↗</span></a>
+              <p class="spot__credit">사진 · Bernard Gagnon · Wikimedia Commons · CC0</p>
+            </div>
+          </li>
+          <li class="spot">
+            <div class="spot__photo"><img src="../images/place-07-2.webp" width="800" height="573" alt="송악산 둘레길 사진" loading="lazy" decoding="async"><span class="spot__no" aria-hidden="true">02</span></div>
+            <div class="spot__body">
+              <p class="spot__type">산책 · <span lang="en">LOCAL SPOT 02</span></p>
+              <h4 class="spot__name">송악산 둘레길</h4>
+              <p class="spot__desc">형제섬과 가파도·마라도 쪽 풍경을 바라보며 걷는 바닷길.</p>
+              <a class="spot__map" href="https://map.naver.com/p/search/%EC%A0%9C%EC%A3%BC%20%EC%86%A1%EC%95%85%EC%82%B0%20%EB%91%98%EB%A0%88%EA%B8%B8" target="_blank" rel="noopener noreferrer">지도에서 위치 찾기 <span aria-hidden="true">↗</span></a>
+              <p class="spot__credit">사진 · Jeju Olle Foundation · Wikimedia Commons · CC BY-SA 4.0</p>
+            </div>
+          </li>
+          <li class="spot">
+            <div class="spot__photo"><img src="../images/place-07-3.webp" width="800" height="451" alt="오설록 티뮤지엄 사진" loading="lazy" decoding="async"><span class="spot__no" aria-hidden="true">03</span></div>
+            <div class="spot__body">
+              <p class="spot__type">문화 · <span lang="en">LOCAL SPOT 03</span></p>
+              <h4 class="spot__name">오설록 티뮤지엄</h4>
+              <p class="spot__desc">서광리 녹차밭과 차 문화를 함께 둘러보는 공간.</p>
+              <a class="spot__map" href="https://map.naver.com/p/search/%EC%A0%9C%EC%A3%BC%20%EC%98%A4%EC%84%A4%EB%A1%9D%20%ED%8B%B0%EB%AE%A4%EC%A7%80%EC%97%84" target="_blank" rel="noopener noreferrer">지도에서 위치 찾기 <span aria-hidden="true">↗</span></a>
+              <p class="spot__credit">사진 · Christian Bolz · Wikimedia Commons · CC BY-SA 4.0</p>
+            </div>
+          </li>
+          <li class="spot">
+            <div class="spot__photo"><img src="../images/place-07-4.webp" width="800" height="416" alt="카멜리아힐 사진" loading="lazy" decoding="async"><span class="spot__no" aria-hidden="true">04</span></div>
+            <div class="spot__body">
+              <p class="spot__type">정원 · <span lang="en">LOCAL SPOT 04</span></p>
+              <h4 class="spot__name">카멜리아힐</h4>
+              <p class="spot__desc">동백과 계절의 정원을 만나는 수목원.</p>
+              <a class="spot__map" href="https://map.naver.com/p/search/%EC%A0%9C%EC%A3%BC%20%EC%B9%B4%EB%A9%9C%EB%A6%AC%EC%95%84%ED%9E%90" target="_blank" rel="noopener noreferrer">지도에서 위치 찾기 <span aria-hidden="true">↗</span></a>
+              <p class="spot__credit">사진 · 골뱅이 · Wikimedia Commons · CC BY-SA 3.0</p>
+            </div>
+          </li>
+          <li class="spot">
+            <div class="spot__photo"><img src="../images/place-07-5.webp" width="800" height="536" alt="가파도 사진" loading="lazy" decoding="async"><span class="spot__no" aria-hidden="true">05</span></div>
+            <div class="spot__body">
+              <p class="spot__type">섬 · <span lang="en">LOCAL SPOT 05</span></p>
+              <h4 class="spot__name">모슬포항·가파도</h4>
+              <p class="spot__desc">항구의 풍경과 섬의 산책을 함께 떠올리는 코스. 가파도 배편은 별도 확인해 주세요.</p>
+              <a class="spot__map" href="https://map.naver.com/p/search/%EC%A0%9C%EC%A3%BC%20%EB%AA%A8%EC%8A%AC%ED%8F%AC%ED%95%AD" target="_blank" rel="noopener noreferrer">지도에서 위치 찾기 <span aria-hidden="true">↗</span></a>
+              <p class="spot__credit">사진 · Naturehead · Wikimedia Commons · CC BY-SA 3.0</p>
+            </div>
+          </li>
+        </ol>
+      </div>
+      <div class="town" id="town-8" aria-labelledby="town-8-name">
+        <div class="town__info">
+          <p class="town__area">한림읍 협재·금능</p>
+          <h3 class="town__name" id="town-8-name">한림</h3>
+          <p class="town__desc">매일 아침 바다 색을 확인하는 동네</p>
+          <p class="town__type">에메랄드 바다 산책러</p>
+        </div>
+        <ol class="spots" aria-label="한림 명소 5곳">
+          <li class="spot">
+            <div class="spot__photo"><img src="../images/place-08-1.webp" width="740" height="416" alt="협재해수욕장 사진" loading="lazy" decoding="async"><span class="spot__no" aria-hidden="true">01</span></div>
+            <div class="spot__body">
+              <p class="spot__type">바다 · <span lang="en">LOCAL SPOT 01</span></p>
+              <h4 class="spot__name">협재해수욕장</h4>
+              <p class="spot__desc">비양도를 바라보며 에메랄드빛 바다를 만나는 해변.</p>
+              <a class="spot__map" href="https://map.naver.com/p/search/%EC%A0%9C%EC%A3%BC%20%ED%98%91%EC%9E%AC%ED%95%B4%EC%88%98%EC%9A%95%EC%9E%A5" target="_blank" rel="noopener noreferrer">지도에서 위치 찾기 <span aria-hidden="true">↗</span></a>
+              <p class="spot__credit">사진 · 멍한오리 · Wikimedia Commons · CC BY-SA 3.0</p>
+            </div>
+          </li>
+          <li class="spot">
+            <div class="spot__photo"><img src="../images/place-08-2.webp" width="800" height="580" alt="금능해수욕장 사진" loading="lazy" decoding="async"><span class="spot__no" aria-hidden="true">02</span></div>
+            <div class="spot__body">
+              <p class="spot__type">바다 · <span lang="en">LOCAL SPOT 02</span></p>
+              <h4 class="spot__name">금능해수욕장</h4>
+              <p class="spot__desc">협재 옆에서 모래사장과 바다를 천천히 즐기는 해변.</p>
+              <a class="spot__map" href="https://map.naver.com/p/search/%EC%A0%9C%EC%A3%BC%20%EA%B8%88%EB%8A%A5%ED%95%B4%EC%88%98%EC%9A%95%EC%9E%A5" target="_blank" rel="noopener noreferrer">지도에서 위치 찾기 <span aria-hidden="true">↗</span></a>
+              <p class="spot__credit">사진 · Jeju Olle Foundation · Wikimedia Commons · CC BY-SA 4.0</p>
+            </div>
+          </li>
+          <li class="spot">
+            <div class="spot__photo"><img src="../images/place-08-3.webp" width="800" height="606" alt="한림공원 사진" loading="lazy" decoding="async"><span class="spot__no" aria-hidden="true">03</span></div>
+            <div class="spot__body">
+              <p class="spot__type">정원 · <span lang="en">LOCAL SPOT 03</span></p>
+              <h4 class="spot__name">한림공원</h4>
+              <p class="spot__desc">식물과 동굴 등 여러 공간을 둘러보는 정원형 공원.</p>
+              <a class="spot__map" href="https://map.naver.com/p/search/%EC%A0%9C%EC%A3%BC%20%ED%95%9C%EB%A6%BC%EA%B3%B5%EC%9B%90" target="_blank" rel="noopener noreferrer">지도에서 위치 찾기 <span aria-hidden="true">↗</span></a>
+              <p class="spot__credit">사진 · pictures Jettcom · Wikimedia Commons · CC BY 3.0</p>
+            </div>
+          </li>
+          <li class="spot">
+            <div class="spot__photo"><img src="../images/place-08-4.webp" width="800" height="473" alt="비양도 사진" loading="lazy" decoding="async"><span class="spot__no" aria-hidden="true">04</span></div>
+            <div class="spot__body">
+              <p class="spot__type">섬 · <span lang="en">LOCAL SPOT 04</span></p>
+              <h4 class="spot__name">비양도</h4>
+              <p class="spot__desc">한림항에서 배로 들어가는 작은 섬. 운항 정보를 먼저 확인해 주세요.</p>
+              <a class="spot__map" href="https://map.naver.com/p/search/%EC%A0%9C%EC%A3%BC%20%EB%B9%84%EC%96%91%EB%8F%84" target="_blank" rel="noopener noreferrer">지도에서 위치 찾기 <span aria-hidden="true">↗</span></a>
+              <p class="spot__credit">사진 · 베르니사주 · Wikimedia Commons · CC BY 4.0</p>
+            </div>
+          </li>
+          <li class="spot">
+            <div class="spot__photo"><img src="../images/place-08-5.webp" width="509" height="406" alt="금오름 사진" loading="lazy" decoding="async"><span class="spot__no" aria-hidden="true">05</span></div>
+            <div class="spot__body">
+              <p class="spot__type">오름 · <span lang="en">LOCAL SPOT 05</span></p>
+              <h4 class="spot__name">성이시돌목장·금오름</h4>
+              <p class="spot__desc">목장의 풍경과 오름의 분화구를 함께 둘러보는 코스.</p>
+              <a class="spot__map" href="https://map.naver.com/p/search/%EC%A0%9C%EC%A3%BC%20%EC%84%B1%EC%9D%B4%EC%8B%9C%EB%8F%8C%EB%AA%A9%EC%9E%A5" target="_blank" rel="noopener noreferrer">지도에서 위치 찾기 <span aria-hidden="true">↗</span></a>
+              <p class="spot__credit">사진 · 봄삐 · Wikimedia Commons · CC BY 2.0 kr</p>
+            </div>
+          </li>
+        </ol>
+      </div>
+      <div class="town" id="town-9" aria-labelledby="town-9-name">
+        <div class="town__info">
+          <p class="town__area">제주시 애월읍</p>
+          <h3 class="town__name" id="town-9-name">애월</h3>
+          <p class="town__desc">노을 시간에 떠오르는 해안길</p>
+          <p class="town__type">노을 카페 감성러</p>
+        </div>
+        <ol class="spots" aria-label="애월 명소 5곳">
+          <li class="spot">
+            <div class="spot__photo"><p class="spot__none"><span lang="en">PHOTO ARCHIVE</span>사진 준비 중</p><span class="spot__no" aria-hidden="true">01</span></div>
+            <div class="spot__body">
+              <p class="spot__type">산책 · <span lang="en">LOCAL SPOT 01</span></p>
+              <h4 class="spot__name">한담해안산책로</h4>
+              <p class="spot__desc">애월에서 곽지 방향으로 이어지는 바닷길.</p>
+              <a class="spot__map" href="https://map.naver.com/p/search/%EC%A0%9C%EC%A3%BC%20%ED%95%9C%EB%8B%B4%ED%95%B4%EC%95%88%EC%82%B0%EC%B1%85%EB%A1%9C" target="_blank" rel="noopener noreferrer">지도에서 위치 찾기 <span aria-hidden="true">↗</span></a>
+            </div>
+          </li>
+          <li class="spot">
+            <div class="spot__photo"><img src="../images/place-09-2.webp" width="800" height="600" alt="곽지해수욕장 사진" loading="lazy" decoding="async"><span class="spot__no" aria-hidden="true">02</span></div>
+            <div class="spot__body">
+              <p class="spot__type">바다 · <span lang="en">LOCAL SPOT 02</span></p>
+              <h4 class="spot__name">곽지해수욕장</h4>
+              <p class="spot__desc">넓은 백사장과 용천수 노천탕 과물로 알려진 해변.</p>
+              <a class="spot__map" href="https://map.naver.com/p/search/%EC%A0%9C%EC%A3%BC%20%EA%B3%BD%EC%A7%80%ED%95%B4%EC%88%98%EC%9A%95%EC%9E%A5" target="_blank" rel="noopener noreferrer">지도에서 위치 찾기 <span aria-hidden="true">↗</span></a>
+              <p class="spot__credit">사진 · Jeong seolah · Wikimedia Commons · CC0</p>
+            </div>
+          </li>
+          <li class="spot">
+            <div class="spot__photo"><p class="spot__none"><span lang="en">PHOTO ARCHIVE</span>사진 준비 중</p><span class="spot__no" aria-hidden="true">03</span></div>
+            <div class="spot__body">
+              <p class="spot__type">골목 · <span lang="en">LOCAL SPOT 03</span></p>
+              <h4 class="spot__name">애월 카페거리</h4>
+              <p class="spot__desc">바다를 바라보는 카페가 모여 있는 거리.</p>
+              <a class="spot__map" href="https://map.naver.com/p/search/%EC%A0%9C%EC%A3%BC%20%EC%95%A0%EC%9B%94%20%EC%B9%B4%ED%8E%98%EA%B1%B0%EB%A6%AC" target="_blank" rel="noopener noreferrer">지도에서 위치 찾기 <span aria-hidden="true">↗</span></a>
+            </div>
+          </li>
+          <li class="spot">
+            <div class="spot__photo"><img src="../images/place-09-4.webp" width="800" height="450" alt="새별오름 사진" loading="lazy" decoding="async"><span class="spot__no" aria-hidden="true">04</span></div>
+            <div class="spot__body">
+              <p class="spot__type">오름 · <span lang="en">LOCAL SPOT 04</span></p>
+              <h4 class="spot__name">새별오름</h4>
+              <p class="spot__desc">가을 억새 풍경으로 알려진 오름.</p>
+              <a class="spot__map" href="https://map.naver.com/p/search/%EC%A0%9C%EC%A3%BC%20%EC%83%88%EB%B3%84%EC%98%A4%EB%A6%84" target="_blank" rel="noopener noreferrer">지도에서 위치 찾기 <span aria-hidden="true">↗</span></a>
+              <p class="spot__credit">사진 · 제주관광공사 · Visitjeju.net · CC BY</p>
+            </div>
+          </li>
+          <li class="spot">
+            <div class="spot__photo"><img src="../images/place-09-5.webp" width="800" height="600" alt="더럭분교 사진" loading="lazy" decoding="async"><span class="spot__no" aria-hidden="true">05</span></div>
+            <div class="spot__body">
+              <p class="spot__type">마을 · <span lang="en">LOCAL SPOT 05</span></p>
+              <h4 class="spot__name">하가리 더럭분교·연화지</h4>
+              <p class="spot__desc">알록달록한 학교 외관과 연못 풍경. 학교는 교육 공간이므로 출입 안내를 지켜주세요.</p>
+              <a class="spot__map" href="https://map.naver.com/p/search/%EC%A0%9C%EC%A3%BC%20%ED%95%98%EA%B0%80%EB%A6%AC%20%EB%8D%94%EB%9F%AD%EB%B6%84%EA%B5%90" target="_blank" rel="noopener noreferrer">지도에서 위치 찾기 <span aria-hidden="true">↗</span></a>
+              <p class="spot__credit">사진 · Nt · Wikimedia Commons · CC BY-SA 4.0</p>
+            </div>
+          </li>
+        </ol>
+      </div>
+      <div class="town" id="town-10" aria-labelledby="town-10-name">
+        <div class="town__info">
+          <p class="town__area">송당·가시리·교래 일대</p>
+          <h3 class="town__name" id="town-10-name">중산간</h3>
+          <p class="town__desc">바다 대신 오름이 보이는 집</p>
+          <p class="town__type">오름·숲 탐험가</p>
+        </div>
+        <ol class="spots" aria-label="중산간 명소 5곳">
+          <li class="spot">
+            <div class="spot__photo"><img src="../images/place-10-1.webp" width="800" height="450" alt="사려니숲길 사진" loading="lazy" decoding="async"><span class="spot__no" aria-hidden="true">01</span></div>
+            <div class="spot__body">
+              <p class="spot__type">숲 · <span lang="en">LOCAL SPOT 01</span></p>
+              <h4 class="spot__name">사려니숲길</h4>
+              <p class="spot__desc">삼나무 숲 사이로 이어지는 길을 걷는 시간.</p>
+              <a class="spot__map" href="https://map.naver.com/p/search/%EC%A0%9C%EC%A3%BC%20%EC%82%AC%EB%A0%A4%EB%8B%88%EC%88%B2%EA%B8%B8" target="_blank" rel="noopener noreferrer">지도에서 위치 찾기 <span aria-hidden="true">↗</span></a>
+              <p class="spot__credit">사진 · 제주관광공사 · Visitjeju.net · 사용제한 없음 · 출처표기</p>
+            </div>
+          </li>
+          <li class="spot">
+            <div class="spot__photo"><img src="../images/place-10-2.webp" width="800" height="598" alt="산굼부리 사진" loading="lazy" decoding="async"><span class="spot__no" aria-hidden="true">02</span></div>
+            <div class="spot__body">
+              <p class="spot__type">오름 · <span lang="en">LOCAL SPOT 02</span></p>
+              <h4 class="spot__name">산굼부리</h4>
+              <p class="spot__desc">교래리의 분화구와 가을 억새 풍경을 만나는 곳.</p>
+              <a class="spot__map" href="https://map.naver.com/p/search/%EC%A0%9C%EC%A3%BC%20%EC%82%B0%EA%B5%BC%EB%B6%80%EB%A6%AC" target="_blank" rel="noopener noreferrer">지도에서 위치 찾기 <span aria-hidden="true">↗</span></a>
+              <p class="spot__credit">사진 · Integral · Wikimedia Commons · CC BY-SA 2.0 kr</p>
+            </div>
+          </li>
+          <li class="spot">
+            <div class="spot__photo"><img src="../images/place-10-3.webp" width="800" height="534" alt="다랑쉬오름 사진" loading="lazy" decoding="async"><span class="spot__no" aria-hidden="true">03</span></div>
+            <div class="spot__body">
+              <p class="spot__type">오름 · <span lang="en">LOCAL SPOT 03</span></p>
+              <h4 class="spot__name">다랑쉬오름·아부오름</h4>
+              <p class="spot__desc">송당 일대의 서로 다른 오름 풍경을 둘러보는 코스.</p>
+              <a class="spot__map" href="https://map.naver.com/p/search/%EC%A0%9C%EC%A3%BC%20%EB%8B%A4%EB%9E%91%EC%89%AC%EC%98%A4%EB%A6%84" target="_blank" rel="noopener noreferrer">지도에서 위치 찾기 <span aria-hidden="true">↗</span></a>
+              <p class="spot__credit">사진 · 제주관광공사 · Visitjeju.net · CC BY</p>
+            </div>
+          </li>
+          <li class="spot">
+            <div class="spot__photo"><img src="../images/place-10-4.webp" width="800" height="600" alt="따라비오름 사진" loading="lazy" decoding="async"><span class="spot__no" aria-hidden="true">04</span></div>
+            <div class="spot__body">
+              <p class="spot__type">오름 · <span lang="en">LOCAL SPOT 04</span></p>
+              <h4 class="spot__name">따라비오름</h4>
+              <p class="spot__desc">가시리에서 부드럽게 이어지는 능선을 만나는 오름.</p>
+              <a class="spot__map" href="https://map.naver.com/p/search/%EC%A0%9C%EC%A3%BC%20%EB%94%B0%EB%9D%BC%EB%B9%84%EC%98%A4%EB%A6%84" target="_blank" rel="noopener noreferrer">지도에서 위치 찾기 <span aria-hidden="true">↗</span></a>
+              <p class="spot__credit">사진 · Thddbwnd · Wikimedia Commons · CC BY-SA 3.0</p>
+            </div>
+          </li>
+          <li class="spot">
+            <div class="spot__photo"><img src="../images/place-10-5.webp" width="800" height="450" alt="녹산로 사진" loading="lazy" decoding="async"><span class="spot__no" aria-hidden="true">05</span></div>
+            <div class="spot__body">
+              <p class="spot__type">풍경 · <span lang="en">LOCAL SPOT 05</span></p>
+              <h4 class="spot__name">녹산로</h4>
+              <p class="spot__desc">가시리의 봄 유채꽃과 벚꽃 풍경으로 알려진 길.</p>
+              <a class="spot__map" href="https://map.naver.com/p/search/%EC%A0%9C%EC%A3%BC%20%EB%85%B9%EC%82%B0%EB%A1%9C" target="_blank" rel="noopener noreferrer">지도에서 위치 찾기 <span aria-hidden="true">↗</span></a>
+              <p class="spot__credit">사진 · 제주관광공사 · Visitjeju.net · 사용제한 없음 · 출처표기</p>
+            </div>
+          </li>
+        </ol>
+      </div>
+      <div class="towns__nav">
+        <button class="towns__arrow towns__arrow--prev" type="button" aria-label="이전 명소">←</button>
+        <p class="towns__status" aria-live="polite">01 / 05</p>
+        <button class="towns__arrow towns__arrow--next" type="button" aria-label="다음 명소">→</button>
+      </div>
+    </div>
+  </section>
+
+  <aside class="guide-next" aria-label="다음 순서">
+    <div class="container guide-next__inner">
+      <p class="guide-next__kicker">여행의 다음, 생활의 시작</p>
+      <p class="guide-next__text">마음에 드는 풍경을 찾았다면,<br>그곳의 생활도 들여다보세요.</p>
+      <a class="guide-next__btn" href="./find-my-jeju.html#checklist">체크리스트 보기 <span aria-hidden="true">↓</span></a>
+    </div>
+  </aside>
+
+  <!-- 02 제주살이 체크리스트: 누르면 확인 표시. 이 브라우저에만 저장한다 (서버로 보내지 않음) -->
+  <section class="guide-sec check" id="checklist" aria-labelledby="checklist-title">
+    <div class="container">
+      <p class="cat__label">02 — <span lang="en">CHECKLIST</span></p>
+      <h2 class="cat__title" id="checklist-title">제주살이 체크리스트</h2>
+      <p class="cat__text">집부터 일, 이동과 관계까지 6개 주제·24개 질문. 직접 확인한 것을 눌러 표시해 보세요.</p>
+      <div class="check__board">
+        <div class="check__summary">
+          <p class="check__count" aria-live="polite"><strong class="check__done">0</strong> / 24개 확인</p>
+          <div class="check__bar" aria-hidden="true"><span class="check__fill"></span></div>
+          <p class="check__note">이주 적합성을 판단하는 점수가 아니라, 나의 준비 기록이에요.</p>
+          <div class="check__tools">
+            <button class="check__tool" type="button" data-check-expand>모두 펼치기</button>
+            <button class="check__tool" type="button" data-check-reset>기록 지우기</button>
+          </div>
+          <p class="check__save">표시한 내용은 이 브라우저에만 저장돼요. 서버로 보내지 않아요.</p>
+        </div>
+        <div class="check__groups">
+          <details class="check__group" open>
+            <summary><span class="check__group-no">01</span><span class="check__group-title">집과 동네</span><span class="check__group-count">0 / 4</span></summary>
+            <ul class="check__list">
+              <li><button class="check__item" type="button" aria-pressed="false" data-check="0-0"><span class="check__box" aria-hidden="true"></span><span class="check__text">보증금·월세·연세·관리비를 나누어 비교했다.</span></button></li>
+              <li><button class="check__item" type="button" aria-pressed="false" data-check="0-1"><span class="check__box" aria-hidden="true"></span><span class="check__text">집을 직접 방문해 습기·곰팡이·누수·채광·환기 상태를 살폈다.</span></button></li>
+              <li><button class="check__item" type="button" aria-pressed="false" data-check="0-2"><span class="check__box" aria-hidden="true"></span><span class="check__text">주차·쓰레기 배출·택배 수령 방식과 인터넷 설치 가능 여부를 확인했다.</span></button></li>
+              <li><button class="check__item" type="button" aria-pressed="false" data-check="0-3"><span class="check__box" aria-hidden="true"></span><span class="check__text">낮과 밤, 평일과 주말에 동네를 걸어 소음과 생활 분위기를 확인했다.</span></button></li>
+            </ul>
+          </details>
+          <details class="check__group">
+            <summary><span class="check__group-no">02</span><span class="check__group-title">일과 수입</span><span class="check__group-count">0 / 4</span></summary>
+            <ul class="check__list">
+              <li><button class="check__item" type="button" aria-pressed="false" data-check="1-0"><span class="check__box" aria-hidden="true"></span><span class="check__text">이주 후 수입원과 일을 시작할 수 있는 시점을 적었다.</span></button></li>
+              <li><button class="check__item" type="button" aria-pressed="false" data-check="1-1"><span class="check__box" aria-hidden="true"></span><span class="check__text">채용 조건 또는 창업 공간·고정비·고객 수요를 실제 현장에서 확인했다.</span></button></li>
+              <li><button class="check__item" type="button" aria-pressed="false" data-check="1-2"><span class="check__box" aria-hidden="true"></span><span class="check__text">비수기나 수입이 없는 달에 쓸 생활비와 대안을 마련했다.</span></button></li>
+              <li><button class="check__item" type="button" aria-pressed="false" data-check="1-3"><span class="check__box" aria-hidden="true"></span><span class="check__text">출퇴근 시간 또는 원격근무 공간·통신 환경을 확인했다.</span></button></li>
+            </ul>
+          </details>
+          <details class="check__group">
+            <summary><span class="check__group-no">03</span><span class="check__group-title">생활비와 이사</span><span class="check__group-count">0 / 4</span></summary>
+            <ul class="check__list">
+              <li><button class="check__item" type="button" aria-pressed="false" data-check="2-0"><span class="check__box" aria-hidden="true"></span><span class="check__text">보증금·이사·차량 이동·가전 구입 등 초기 비용을 따로 계산했다.</span></button></li>
+              <li><button class="check__item" type="button" aria-pressed="false" data-check="2-1"><span class="check__box" aria-hidden="true"></span><span class="check__text">주거·식비·교통·통신 등 매달 반복되는 지출을 적었다.</span></button></li>
+              <li><button class="check__item" type="button" aria-pressed="false" data-check="2-2"><span class="check__box" aria-hidden="true"></span><span class="check__text">육지 왕래 항공료·택배 추가 비용·갑작스러운 지출을 예산에 넣었다.</span></button></li>
+              <li><button class="check__item" type="button" aria-pressed="false" data-check="2-3"><span class="check__box" aria-hidden="true"></span><span class="check__text">이사 일정·짐 운송·공과금 정리·주소 변경 등 할 일을 정리했다.</span></button></li>
+            </ul>
+          </details>
+          <details class="check__group">
+            <summary><span class="check__group-no">04</span><span class="check__group-title">이동과 생활시설</span><span class="check__group-count">0 / 4</span></summary>
+            <ul class="check__list">
+              <li><button class="check__item" type="button" aria-pressed="false" data-check="3-0"><span class="check__box" aria-hidden="true"></span><span class="check__text">집에서 직장·마트·병원까지 실제로 이동해 봤다.</span></button></li>
+              <li><button class="check__item" type="button" aria-pressed="false" data-check="3-1"><span class="check__box" aria-hidden="true"></span><span class="check__text">차가 없을 때 이용할 버스 노선·배차 간격·막차를 확인했다.</span></button></li>
+              <li><button class="check__item" type="button" aria-pressed="false" data-check="3-2"><span class="check__box" aria-hidden="true"></span><span class="check__text">차량 유지비·주차비와 악천후 때 이동 대안을 확인했다.</span></button></li>
+              <li><button class="check__item" type="button" aria-pressed="false" data-check="3-3"><span class="check__box" aria-hidden="true"></span><span class="check__text">필요한 진료과·약국·응급 시 방문할 의료기관의 위치와 운영 정보를 찾아뒀다.</span></button></li>
+            </ul>
+          </details>
+          <details class="check__group">
+            <summary><span class="check__group-no">05</span><span class="check__group-title">가족과 반려동물</span><span class="check__group-count">0 / 4</span></summary>
+            <ul class="check__list">
+              <li><button class="check__item" type="button" aria-pressed="false" data-check="4-0"><span class="check__box" aria-hidden="true"></span><span class="check__text">자녀의 학교·전학 절차·통학 방법을 해당 학교에 문의했다.</span></button></li>
+              <li><button class="check__item" type="button" aria-pressed="false" data-check="4-1"><span class="check__box" aria-hidden="true"></span><span class="check__text">평일 저녁·주말·방학 돌봄의 신청 조건과 이용 가능 시간을 확인했다.</span></button></li>
+              <li><button class="check__item" type="button" aria-pressed="false" data-check="4-2"><span class="check__box" aria-hidden="true"></span><span class="check__text">반려동물 동반 입주 조건과 이동 수단의 이용 규정을 확인했다.</span></button></li>
+              <li><button class="check__item" type="button" aria-pressed="false" data-check="4-3"><span class="check__box" aria-hidden="true"></span><span class="check__text">동물병원·산책 동선·배변 처리와 공동주택 생활 규칙을 알아봤다.</span></button></li>
+            </ul>
+          </details>
+          <details class="check__group">
+            <summary><span class="check__group-no">06</span><span class="check__group-title">관계와 정착 계획</span><span class="check__group-count">0 / 4</span></summary>
+            <ul class="check__list">
+              <li><button class="check__item" type="button" aria-pressed="false" data-check="5-0"><span class="check__box" aria-hidden="true"></span><span class="check__text">급한 상황에 연락할 사람이나 지역 기관을 정리했다.</span></button></li>
+              <li><button class="check__item" type="button" aria-pressed="false" data-check="5-1"><span class="check__box" aria-hidden="true"></span><span class="check__text">참여하고 싶은 모임의 활동 시간·비용·이동 거리를 확인했다.</span></button></li>
+              <li><button class="check__item" type="button" aria-pressed="false" data-check="5-2"><span class="check__box" aria-hidden="true"></span><span class="check__text">동거인과 가사·생활비·일자리·이주 기대에 관해 이야기했다.</span></button></li>
+              <li><button class="check__item" type="button" aria-pressed="false" data-check="5-3"><span class="check__box" aria-hidden="true"></span><span class="check__text">단기 체류로 생활을 시험하고, 정착 후 다시 점검할 시점을 정했다.</span></button></li>
+            </ul>
+          </details>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 03 정책모음: 자료를 받으면 채운다 (원고에 없는 내용은 쓰지 않는다) -->
+  <section class="guide-sec policy" id="policy" aria-labelledby="policy-title">
+    <div class="container">
+      <p class="cat__label">03 — <span lang="en">POLICY</span></p>
+      <h2 class="cat__title" id="policy-title">정책모음</h2>
+      <p class="cat__text">제주에서 기회를 찾아보기</p>
+      <div class="policy__empty">
+        <div class="pick__final-mark" aria-hidden="true"></div>
+        <p class="policy__empty-title">정책 자료를 준비하고 있어요</p>
+        <p class="policy__empty-text">정리가 끝나는 대로 이 자리에 모아 둘게요.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="guide-about" aria-labelledby="about-title">
+    <div class="container">
+      <h2 class="guide-about__title" id="about-title">이 페이지에 관하여</h2>
+      <ul class="guide-about__list">
+        <li>동네 구분은 이 콘텐츠에서 둘러보기 위해 나눈 것이라 행정구역 경계와 다를 수 있어요.</li>
+        <li>운영 시간·입장료·관람 가능 여부는 이 페이지에서 확인한 정보가 아니에요. 방문 전 해당 시설의 공식 안내를 확인해 주세요. 특히 용머리해안은 물때와 기상에 따라 통제될 수 있어요.</li>
+        <li>사진은 제주관광공사 Photo JEJU와 Wikimedia Commons의 공개 자료예요. 화면에 맞게 크기·형식을 바꾸고 잘랐어요. 촬영 시기에 따라 지금 모습과 다를 수 있어요.</li>
+      </ul>
+      <details class="credits">
+        <summary>사진 출처 모두 보기</summary>
+        <ul class="credits__list">
+          <li><span class="credits__place">녹산로 (첫 화면)</span> <span class="credits__who">제주관광공사 · Visitjeju.net</span><a href="https://visitjeju.net/photojeju/category?cntId=10602" target="_blank" rel="noopener noreferrer">원본 <span aria-hidden="true">↗</span></a><a href="https://visitjeju.net/photojeju/ccl" target="_blank" rel="noopener noreferrer">사용제한 없음 · 출처표기 <span aria-hidden="true">↗</span></a></li>
+          <li><span class="credits__place">도두봉</span> <span class="credits__who">Grapesurgeon · Wikimedia Commons</span><a href="https://commons.wikimedia.org/wiki/File:Dodubong_09.jpg" target="_blank" rel="noopener noreferrer">원본 <span aria-hidden="true">↗</span></a><a href="https://creativecommons.org/licenses/by-sa/4.0" target="_blank" rel="noopener noreferrer">CC BY-SA 4.0 <span aria-hidden="true">↗</span></a></li>
+          <li><span class="credits__place">이호테우해변</span> <span class="credits__who">song songroov · Wikimedia Commons</span><a href="https://commons.wikimedia.org/wiki/File:Ihoil-dong,_Jeju-si,_Jeju-do,_South_Korea_-_panoramio_-_song_songroov_(107).jpg" target="_blank" rel="noopener noreferrer">원본 <span aria-hidden="true">↗</span></a><a href="https://creativecommons.org/licenses/by/3.0" target="_blank" rel="noopener noreferrer">CC BY 3.0 <span aria-hidden="true">↗</span></a></li>
+          <li><span class="credits__place">한라수목원</span> <span class="credits__who">Mar del Este · Wikimedia Commons</span><a href="https://commons.wikimedia.org/wiki/File:Arboretum_of_Halla1.jpg" target="_blank" rel="noopener noreferrer">원본 <span aria-hidden="true">↗</span></a><a href="https://creativecommons.org/licenses/by/3.0" target="_blank" rel="noopener noreferrer">CC BY 3.0 <span aria-hidden="true">↗</span></a></li>
+          <li><span class="credits__place">동문재래시장</span> <span class="credits__who">thddbwnd · Wikimedia Commons</span><a href="https://commons.wikimedia.org/wiki/File:Jeju_dongmun_market_1.JPG" target="_blank" rel="noopener noreferrer">원본 <span aria-hidden="true">↗</span></a><a href="https://creativecommons.org/licenses/by/3.0" target="_blank" rel="noopener noreferrer">CC BY 3.0 <span aria-hidden="true">↗</span></a></li>
+          <li><span class="credits__place">제주목 관아·관덕정</span> <span class="credits__who">Thddbwnd · Wikimedia Commons</span><a href="https://commons.wikimedia.org/wiki/File:Gwandeokjeong_Pavilion_2.JPG" target="_blank" rel="noopener noreferrer">원본 <span aria-hidden="true">↗</span></a><a href="https://creativecommons.org/licenses/by-sa/3.0" target="_blank" rel="noopener noreferrer">CC BY-SA 3.0 <span aria-hidden="true">↗</span></a></li>
+          <li><span class="credits__place">산지천</span> <span class="credits__who">제주관광공사 · Visitjeju.net</span><a href="https://visitjeju.net/photojeju/category?cntId=10622" target="_blank" rel="noopener noreferrer">원본 <span aria-hidden="true">↗</span></a><a href="https://visitjeju.net/photojeju/ccl" target="_blank" rel="noopener noreferrer">사용제한 없음 · 출처표기 <span aria-hidden="true">↗</span></a></li>
+          <li><span class="credits__place">용두암·용연구름다리</span> <span class="credits__who">螺钉 · Wikimedia Commons</span><a href="https://commons.wikimedia.org/wiki/File:Dragon_Head_Rock.jpg" target="_blank" rel="noopener noreferrer">원본 <span aria-hidden="true">↗</span></a><a href="https://creativecommons.org/licenses/by-sa/3.0" target="_blank" rel="noopener noreferrer">CC BY-SA 3.0 <span aria-hidden="true">↗</span></a></li>
+          <li><span class="credits__place">사라봉</span> <span class="credits__who">제주관광공사 · Visitjeju.net</span><a href="https://visitjeju.net/photojeju/category?cntId=10321" target="_blank" rel="noopener noreferrer">원본 <span aria-hidden="true">↗</span></a><a href="https://visitjeju.net/photojeju/ccl" target="_blank" rel="noopener noreferrer">CC BY <span aria-hidden="true">↗</span></a></li>
+          <li><span class="credits__place">함덕해수욕장</span> <span class="credits__who">Thddbwnd · Wikimedia Commons</span><a href="https://commons.wikimedia.org/wiki/File:Jeju_Hamdeok_Beach.jpg" target="_blank" rel="noopener noreferrer">원본 <span aria-hidden="true">↗</span></a><a href="https://creativecommons.org/licenses/by-sa/3.0" target="_blank" rel="noopener noreferrer">CC BY-SA 3.0 <span aria-hidden="true">↗</span></a></li>
+          <li><span class="credits__place">서우봉</span> <span class="credits__who">제주관광공사 · Visitjeju.net</span><a href="https://visitjeju.net/photojeju/category?cntId=10615" target="_blank" rel="noopener noreferrer">원본 <span aria-hidden="true">↗</span></a><a href="https://visitjeju.net/photojeju/ccl" target="_blank" rel="noopener noreferrer">사용제한 없음 · 출처표기 <span aria-hidden="true">↗</span></a></li>
+          <li><span class="credits__place">닭머르 해안길</span> <span class="credits__who">제주관광공사 · Visitjeju.net</span><a href="https://visitjeju.net/photojeju/category?cntId=10268" target="_blank" rel="noopener noreferrer">원본 <span aria-hidden="true">↗</span></a><a href="https://visitjeju.net/photojeju/ccl" target="_blank" rel="noopener noreferrer">CC BY <span aria-hidden="true">↗</span></a></li>
+          <li><span class="credits__place">조천 연북정</span> <span class="credits__who">Nt · Wikimedia Commons</span><a href="https://commons.wikimedia.org/wiki/File:Yeonbukjeong_2.jpg" target="_blank" rel="noopener noreferrer">원본 <span aria-hidden="true">↗</span></a><a href="http://creativecommons.org/publicdomain/zero/1.0/deed.en" target="_blank" rel="noopener noreferrer">CC0 <span aria-hidden="true">↗</span></a></li>
+          <li><span class="credits__place">월정리해변</span> <span class="credits__who">Sgroey · Wikimedia Commons</span><a href="https://commons.wikimedia.org/wiki/File:Jeju_woljeongri_beach_2.jpg" target="_blank" rel="noopener noreferrer">원본 <span aria-hidden="true">↗</span></a><a href="https://creativecommons.org/licenses/by-sa/4.0" target="_blank" rel="noopener noreferrer">CC BY-SA 4.0 <span aria-hidden="true">↗</span></a></li>
+          <li><span class="credits__place">세화해변·세화오일장</span> <span class="credits__who">Bohyunlee · Wikimedia Commons</span><a href="https://commons.wikimedia.org/wiki/File:%EC%84%B8%ED%99%94%ED%95%B4%EC%88%98%EC%9A%95%EC%9E%A5.JPG" target="_blank" rel="noopener noreferrer">원본 <span aria-hidden="true">↗</span></a><a href="https://creativecommons.org/licenses/by-sa/4.0" target="_blank" rel="noopener noreferrer">CC BY-SA 4.0 <span aria-hidden="true">↗</span></a></li>
+          <li><span class="credits__place">해녀박물관</span> <span class="credits__who">Vanbasten 23 · Wikimedia Commons</span><a href="https://commons.wikimedia.org/wiki/File:Haenyeo_Museum.jpg" target="_blank" rel="noopener noreferrer">원본 <span aria-hidden="true">↗</span></a><a href="https://creativecommons.org/licenses/by-sa/3.0" target="_blank" rel="noopener noreferrer">CC BY-SA 3.0 <span aria-hidden="true">↗</span></a></li>
+          <li><span class="credits__place">비자림</span> <span class="credits__who">TKostolany · Wikimedia Commons</span><a href="https://commons.wikimedia.org/wiki/File:%EC%A0%9C%EC%A3%BC_%EB%B9%84%EC%9E%90%EB%A6%BC_Jeju_Bijarim-cropped.jpg" target="_blank" rel="noopener noreferrer">원본 <span aria-hidden="true">↗</span></a><a href="https://creativecommons.org/licenses/by-sa/4.0" target="_blank" rel="noopener noreferrer">CC BY-SA 4.0 <span aria-hidden="true">↗</span></a></li>
+          <li><span class="credits__place">지미봉·종달리</span> <span class="credits__who">제주관광공사 · Visitjeju.net</span><a href="https://visitjeju.net/photojeju/category?cntId=10309" target="_blank" rel="noopener noreferrer">원본 <span aria-hidden="true">↗</span></a><a href="https://visitjeju.net/photojeju/ccl" target="_blank" rel="noopener noreferrer">CC BY <span aria-hidden="true">↗</span></a></li>
+          <li><span class="credits__place">표선해수욕장</span> <span class="credits__who">Jocelyndurrey · Wikimedia Commons</span><a href="https://commons.wikimedia.org/wiki/File:%ED%91%9C%EC%84%A0%ED%95%B4%EB%B9%84%EC%B9%98%ED%95%B4%EB%B3%80_(1).jpg" target="_blank" rel="noopener noreferrer">원본 <span aria-hidden="true">↗</span></a><a href="https://creativecommons.org/licenses/by-sa/4.0" target="_blank" rel="noopener noreferrer">CC BY-SA 4.0 <span aria-hidden="true">↗</span></a></li>
+          <li><span class="credits__place">성읍민속마을</span> <span class="credits__who">Trainholic · Wikimedia Commons</span><a href="https://commons.wikimedia.org/wiki/File:Seongeup_Historic_Village.jpg" target="_blank" rel="noopener noreferrer">원본 <span aria-hidden="true">↗</span></a><a href="https://creativecommons.org/licenses/by-sa/4.0" target="_blank" rel="noopener noreferrer">CC BY-SA 4.0 <span aria-hidden="true">↗</span></a></li>
+          <li><span class="credits__place">큰엉해안경승지</span> <span class="credits__who">Jeju Olle Foundation · Wikimedia Commons</span><a href="https://commons.wikimedia.org/wiki/File:Jejuolle-route-05(5).jpg" target="_blank" rel="noopener noreferrer">원본 <span aria-hidden="true">↗</span></a><a href="https://creativecommons.org/licenses/by-sa/4.0" target="_blank" rel="noopener noreferrer">CC BY-SA 4.0 <span aria-hidden="true">↗</span></a></li>
+          <li><span class="credits__place">위미 동백군락지</span> <span class="credits__who">Thomas Housieaux · Wikimedia Commons</span><a href="https://commons.wikimedia.org/wiki/File:Camellia_Forest_sign.png" target="_blank" rel="noopener noreferrer">원본 <span aria-hidden="true">↗</span></a><a href="https://creativecommons.org/licenses/by-sa/4.0" target="_blank" rel="noopener noreferrer">CC BY-SA 4.0 <span aria-hidden="true">↗</span></a></li>
+          <li><span class="credits__place">머체왓숲길</span> <span class="credits__who">제주관광공사 · Visitjeju.net</span><a href="https://visitjeju.net/photojeju/category?cntId=10720" target="_blank" rel="noopener noreferrer">원본 <span aria-hidden="true">↗</span></a><a href="https://visitjeju.net/photojeju/ccl" target="_blank" rel="noopener noreferrer">사용제한 없음 · 출처표기 <span aria-hidden="true">↗</span></a></li>
+          <li><span class="credits__place">천지연폭포</span> <span class="credits__who">Yhnn0065 · Wikimedia Commons</span><a href="https://commons.wikimedia.org/wiki/File:Cheonjiyeon_Waterfall_20160616_092608.jpg" target="_blank" rel="noopener noreferrer">원본 <span aria-hidden="true">↗</span></a><a href="https://creativecommons.org/licenses/by-sa/3.0" target="_blank" rel="noopener noreferrer">CC BY-SA 3.0 <span aria-hidden="true">↗</span></a></li>
+          <li><span class="credits__place">정방폭포</span> <span class="credits__who">Badara25.ba · Wikimedia Commons</span><a href="https://commons.wikimedia.org/wiki/File:Jeongbang_Falls.jpg" target="_blank" rel="noopener noreferrer">원본 <span aria-hidden="true">↗</span></a><a href="https://creativecommons.org/licenses/by-sa/3.0" target="_blank" rel="noopener noreferrer">CC BY-SA 3.0 <span aria-hidden="true">↗</span></a></li>
+          <li><span class="credits__place">새연교·새섬</span> <span class="credits__who">Naturehead · Wikimedia Commons</span><a href="https://commons.wikimedia.org/wiki/File:Saeyeon-gyo.jpg" target="_blank" rel="noopener noreferrer">원본 <span aria-hidden="true">↗</span></a><a href="https://creativecommons.org/licenses/by-sa/3.0" target="_blank" rel="noopener noreferrer">CC BY-SA 3.0 <span aria-hidden="true">↗</span></a></li>
+          <li><span class="credits__place">매일올레시장</span> <span class="credits__who">Seefooddiet · Wikimedia Commons</span><a href="https://commons.wikimedia.org/wiki/File:Seogwipo_Maeil_Olle_Market_03.jpg" target="_blank" rel="noopener noreferrer">원본 <span aria-hidden="true">↗</span></a><a href="https://creativecommons.org/licenses/by-sa/4.0" target="_blank" rel="noopener noreferrer">CC BY-SA 4.0 <span aria-hidden="true">↗</span></a></li>
+          <li><span class="credits__place">산방산·용머리해안</span> <span class="credits__who">Bernard Gagnon · Wikimedia Commons</span><a href="https://commons.wikimedia.org/wiki/File:Sanbangsan_Mountain_01.jpg" target="_blank" rel="noopener noreferrer">원본 <span aria-hidden="true">↗</span></a><a href="http://creativecommons.org/publicdomain/zero/1.0/deed.en" target="_blank" rel="noopener noreferrer">CC0 <span aria-hidden="true">↗</span></a></li>
+          <li><span class="credits__place">송악산 둘레길</span> <span class="credits__who">Jeju Olle Foundation · Wikimedia Commons</span><a href="https://commons.wikimedia.org/wiki/File:Jejuolle-route-10(4).jpg" target="_blank" rel="noopener noreferrer">원본 <span aria-hidden="true">↗</span></a><a href="https://creativecommons.org/licenses/by-sa/4.0" target="_blank" rel="noopener noreferrer">CC BY-SA 4.0 <span aria-hidden="true">↗</span></a></li>
+          <li><span class="credits__place">오설록 티뮤지엄</span> <span class="credits__who">Christian Bolz · Wikimedia Commons</span><a href="https://commons.wikimedia.org/wiki/File:O%27Sulloc_Tea_Museum.jpg" target="_blank" rel="noopener noreferrer">원본 <span aria-hidden="true">↗</span></a><a href="https://creativecommons.org/licenses/by-sa/4.0" target="_blank" rel="noopener noreferrer">CC BY-SA 4.0 <span aria-hidden="true">↗</span></a></li>
+          <li><span class="credits__place">카멜리아힐</span> <span class="credits__who">골뱅이 · Wikimedia Commons</span><a href="https://commons.wikimedia.org/wiki/File:Waterfall,_Camellia_Hill,_Jeju_(%ED%8F%AD%ED%8F%AC,_%EC%A0%9C%EC%A3%BC_%EC%B9%B4%EB%A9%9C%EB%A6%AC%EC%95%84%ED%9E%90)_-_panoramio.jpg" target="_blank" rel="noopener noreferrer">원본 <span aria-hidden="true">↗</span></a><a href="https://creativecommons.org/licenses/by-sa/3.0" target="_blank" rel="noopener noreferrer">CC BY-SA 3.0 <span aria-hidden="true">↗</span></a></li>
+          <li><span class="credits__place">모슬포항·가파도</span> <span class="credits__who">Naturehead · Wikimedia Commons</span><a href="https://commons.wikimedia.org/wiki/File:Gapado_scenery.JPG" target="_blank" rel="noopener noreferrer">원본 <span aria-hidden="true">↗</span></a><a href="https://creativecommons.org/licenses/by-sa/3.0" target="_blank" rel="noopener noreferrer">CC BY-SA 3.0 <span aria-hidden="true">↗</span></a></li>
+          <li><span class="credits__place">협재해수욕장</span> <span class="credits__who">멍한오리 · Wikimedia Commons</span><a href="https://commons.wikimedia.org/wiki/File:%ED%98%91%EC%9E%AC%ED%95%B4%EC%88%98%EC%9A%95%EC%9E%A5.jpg" target="_blank" rel="noopener noreferrer">원본 <span aria-hidden="true">↗</span></a><a href="https://creativecommons.org/licenses/by-sa/3.0" target="_blank" rel="noopener noreferrer">CC BY-SA 3.0 <span aria-hidden="true">↗</span></a></li>
+          <li><span class="credits__place">금능해수욕장</span> <span class="credits__who">Jeju Olle Foundation · Wikimedia Commons</span><a href="https://commons.wikimedia.org/wiki/File:Jeju_Olle_Route_14_(2).jpg" target="_blank" rel="noopener noreferrer">원본 <span aria-hidden="true">↗</span></a><a href="https://creativecommons.org/licenses/by-sa/4.0" target="_blank" rel="noopener noreferrer">CC BY-SA 4.0 <span aria-hidden="true">↗</span></a></li>
+          <li><span class="credits__place">한림공원</span> <span class="credits__who">pictures Jettcom · Wikimedia Commons</span><a href="https://commons.wikimedia.org/wiki/File:September_Asia_Jeju_Island_Corea_Chinese_Sea_-_Master_Asia_Photography_2012_-_panoramio_(9).jpg" target="_blank" rel="noopener noreferrer">원본 <span aria-hidden="true">↗</span></a><a href="https://creativecommons.org/licenses/by/3.0" target="_blank" rel="noopener noreferrer">CC BY 3.0 <span aria-hidden="true">↗</span></a></li>
+          <li><span class="credits__place">비양도</span> <span class="credits__who">베르니사주 · Wikimedia Commons</span><a href="https://commons.wikimedia.org/wiki/File:%EC%A0%9C%EC%A3%BC%EB%8F%84_%EB%B9%84%EC%96%91%EB%8F%84_220130.jpg" target="_blank" rel="noopener noreferrer">원본 <span aria-hidden="true">↗</span></a><a href="https://creativecommons.org/licenses/by/4.0" target="_blank" rel="noopener noreferrer">CC BY 4.0 <span aria-hidden="true">↗</span></a></li>
+          <li><span class="credits__place">성이시돌목장·금오름</span> <span class="credits__who">봄삐 · Wikimedia Commons</span><a href="https://commons.wikimedia.org/wiki/File:%EA%B8%88%EC%98%A4%EB%A6%84.jpg" target="_blank" rel="noopener noreferrer">원본 <span aria-hidden="true">↗</span></a><a href="https://creativecommons.org/licenses/by/2.0/kr/deed.en" target="_blank" rel="noopener noreferrer">CC BY 2.0 kr <span aria-hidden="true">↗</span></a></li>
+          <li><span class="credits__place">곽지해수욕장</span> <span class="credits__who">Jeong seolah · Wikimedia Commons</span><a href="https://commons.wikimedia.org/wiki/File:Gwakji_Beach_in_Jeju_Island,_2022.jpg" target="_blank" rel="noopener noreferrer">원본 <span aria-hidden="true">↗</span></a><a href="http://creativecommons.org/publicdomain/zero/1.0/deed.en" target="_blank" rel="noopener noreferrer">CC0 <span aria-hidden="true">↗</span></a></li>
+          <li><span class="credits__place">새별오름</span> <span class="credits__who">제주관광공사 · Visitjeju.net</span><a href="https://visitjeju.net/photojeju/category?cntId=10250" target="_blank" rel="noopener noreferrer">원본 <span aria-hidden="true">↗</span></a><a href="https://visitjeju.net/photojeju/ccl" target="_blank" rel="noopener noreferrer">CC BY <span aria-hidden="true">↗</span></a></li>
+          <li><span class="credits__place">하가리 더럭분교·연화지</span> <span class="credits__who">Nt · Wikimedia Commons</span><a href="https://commons.wikimedia.org/wiki/File:Jeju_Deoreok_Branch_School.jpg" target="_blank" rel="noopener noreferrer">원본 <span aria-hidden="true">↗</span></a><a href="https://creativecommons.org/licenses/by-sa/4.0" target="_blank" rel="noopener noreferrer">CC BY-SA 4.0 <span aria-hidden="true">↗</span></a></li>
+          <li><span class="credits__place">사려니숲길</span> <span class="credits__who">제주관광공사 · Visitjeju.net</span><a href="https://visitjeju.net/photojeju/category?cntId=10630" target="_blank" rel="noopener noreferrer">원본 <span aria-hidden="true">↗</span></a><a href="https://visitjeju.net/photojeju/ccl" target="_blank" rel="noopener noreferrer">사용제한 없음 · 출처표기 <span aria-hidden="true">↗</span></a></li>
+          <li><span class="credits__place">산굼부리</span> <span class="credits__who">Integral · Wikimedia Commons</span><a href="https://commons.wikimedia.org/wiki/File:San-Gumburi_Volcano_01.jpg" target="_blank" rel="noopener noreferrer">원본 <span aria-hidden="true">↗</span></a><a href="https://creativecommons.org/licenses/by-sa/2.0/kr/deed.en" target="_blank" rel="noopener noreferrer">CC BY-SA 2.0 kr <span aria-hidden="true">↗</span></a></li>
+          <li><span class="credits__place">다랑쉬오름·아부오름</span> <span class="credits__who">제주관광공사 · Visitjeju.net</span><a href="https://visitjeju.net/photojeju/category?cntId=10266" target="_blank" rel="noopener noreferrer">원본 <span aria-hidden="true">↗</span></a><a href="https://visitjeju.net/photojeju/ccl" target="_blank" rel="noopener noreferrer">CC BY <span aria-hidden="true">↗</span></a></li>
+          <li><span class="credits__place">따라비오름</span> <span class="credits__who">Thddbwnd · Wikimedia Commons</span><a href="https://commons.wikimedia.org/wiki/File:DDarabi.jpg" target="_blank" rel="noopener noreferrer">원본 <span aria-hidden="true">↗</span></a><a href="https://creativecommons.org/licenses/by-sa/3.0" target="_blank" rel="noopener noreferrer">CC BY-SA 3.0 <span aria-hidden="true">↗</span></a></li>
+          <li><span class="credits__place">녹산로</span> <span class="credits__who">제주관광공사 · Visitjeju.net</span><a href="https://visitjeju.net/photojeju/category?cntId=10602" target="_blank" rel="noopener noreferrer">원본 <span aria-hidden="true">↗</span></a><a href="https://visitjeju.net/photojeju/ccl" target="_blank" rel="noopener noreferrer">사용제한 없음 · 출처표기 <span aria-hidden="true">↗</span></a></li>
+        </ul>
+        <p class="credits__note">CC BY-SA 사진은 바꾼 사진에도 같은 라이선스가 적용돼요.</p>
+      </details>
+      <a class="find__btn" href="../index.html#cat-3"><span aria-hidden="true">←</span> 나의 제주찾기로 돌아가기</a>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer"><div class="container"><span>이제주민 · 한경 웹진</span><a href="#">개인정보처리방침</a></div></footer>
+
+<script src="../js/site.js"></script>
+</body>
+</html>
