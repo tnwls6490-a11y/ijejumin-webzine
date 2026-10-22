@@ -47,3 +47,26 @@ place-10-4.webp | Thddbwnd · Wikimedia Commons (DDarabi.jpg) (크기·형식 �
 place-10-5.webp | 제주관광공사 · Visitjeju.net (녹산로) (크기·형식 변환) | 사용제한 없음 · 출처표기 | https://visitjeju.net/photojeju/category?cntId=10602
 find-hero.webp | 제주관광공사 · Visitjeju.net (녹산로) (크기·형식 변환) | 사용제한 없음 · 출처표기 | https://visitjeju.net/photojeju/category?cntId=10602
 og-find-my-jeju.jpg | 제주관광공사 · Visitjeju.net (녹산로) (1200×630으로 자름) | 사용제한 없음 · 출처표기 | https://visitjeju.net/photojeju/category?cntId=10602
+
+# 서브메인 제주생존한마디 엽서 (index.html .pcard): 팀이 받은 추천 장소 사진 (웹진 엽서/3팀웹진이미지 모음). 3:2로 자르고 크기·형식 변환
+# 2026-10-22 사용자 요청으로 워터마크가 있는 사진을 그대로 씀. 올리기 전에 라이선스와 원본 주소를 확인해 채울 것
+postcard-01.webp | 한국관광공사 (사진에 로고 워터마크, 받은 파일 01구두미포구.jpg) | 확인 필요 | 확인 필요
+postcard-02.webp | 팀이 받은 사진 · 찍은 사람 확인 필요 (받은 파일 02비양도.jpg) | 확인 필요 | 확인 필요
+postcard-03.webp | 팀이 받은 사진 · 찍은 사람 확인 필요 (받은 파일 03협재해수욕장.jpg) | 확인 필요 | 확인 필요
+postcard-04.webp | 한국관광공사 (사진에 로고 워터마크, 받은 파일 04신창풍차해안도로.jpg) | 확인 필요 | 확인 필요
+postcard-05.webp | 한국관광공사 (사진에 로고 워터마크, 받은 파일 05평화로.jpg) | 확인 필요 | 확인 필요
+postcard-06.webp | 한국관광공사 대한민국구석구석 www.visitkorea.or.kr (사진에 주소 워터마크) · 촬영 JI HO KIM (사진 정보에 "All Right Reserved", 받은 파일 06이호테우.jpg) | 확인 필요 | 확인 필요
+postcard-07.webp | 한국관광공사 (사진에 로고 워터마크, 받은 파일 07우도.jpg) | 확인 필요 | 확인 필요
+postcard-08.webp | 한국관광공사 대한민국구석구석 www.visitkorea.or.kr (사진에 주소 워터마크) · 촬영 JI HO KIM (사진 정보에 "All Right Reserved", 받은 파일 08다랑쉬오름.jpg) | 확인 필요 | 확인 필요
+postcard-09.webp | 한국관광공사 대한민국구석구석 www.visitkorea.or.kr (사진에 주소 워터마크) · 촬영 JI HO KIM (사진 정보에 "All Right Reserved", 받은 파일 09이호테우.jpg) | 확인 필요 | 확인 필요
+postcard-10.webp | 한국관광공사 (사진에 로고 워터마크, 받은 파일 10사계.jpg) | 확인 필요 | 확인 필요
+postcard-11.webp | 한국관광공사 (사진에 로고 워터마크, 받은 파일 11우도.jpg) | 확인 필요 | 확인 필요
+postcard-12.webp | 한국관광공사 (사진에 로고 워터마크, 받은 파일 12대정노을해안도로.jpg) | 확인 필요 | 확인 필요
+postcard-13.webp | 한국관광공사 (사진에 로고 워터마크, 받은 파일 13해안도로산책길.jpg) | 확인 필요 | 확인 필요
+postcard-14.webp | 한국관광공사 (사진에 로고 워터마크, 받은 파일 14보목포구.jpg) | 확인 필요 | 확인 필요
+postcard-15.webp | 한국관광공사 (사진에 로고 워터마크, 받은 파일 15표선해수욕장.jpg) | 확인 필요 | 확인 필요
+postcard-16.webp | 한국관광공사 (사진에 로고 워터마크, 받은 파일 16김녕바다.jpg) | 확인 필요 | 확인 필요
+postcard-17.webp | 팀이 받은 사진 · 찍은 사람 확인 필요 (받은 파일 17송악산.jpg) | 확인 필요 | 확인 필요
+postcard-18.webp | 한국관광공사 (사진에 로고 워터마크, 받은 파일 18가파도.jpg) | 확인 필요 | 확인 필요
+postcard-19.webp | 한국관광공사 (사진에 로고 워터마크, 받은 파일 19엉또폭포.jpg) | 확인 필요 | 확인 필요
+postcard-20.webp | 팀이 받은 사진 · 찍은 사람 확인 필요 (받은 파일 20성산일출봉.jpg) | 확인 필요 | 확인 필요

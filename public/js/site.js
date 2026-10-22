@@ -531,6 +531,9 @@
     var popWhy = pop.querySelector('.pick-pop__why');
     var popWord = pop.querySelector('.pick-pop__word-text');
     var popInner = pop.querySelector('.pick-pop__inner');
+    var popPhoto = document.createElement('img');            // 팝업 그림면에 누른 엽서의 사진을 크게 보여 준다
+    popPhoto.className = 'pick-pop__photo';
+    popPhoto.decoding = 'async';
     var opener = null;
     world.addEventListener('click', function (e) {
       var card = e.target.closest('.pcard');
@@ -539,6 +542,12 @@
       opener = card;
       var type = (card.className.match(/pcard--([a-z]+)/) || [])[1] || '';
       popCard.className = 'pick-pop__card ' + (type === 'note' ? 'is-note' : 'pcard pcard--' + type);
+      var photo = card.querySelector('.pcard__photo');
+      if (photo) {
+        popPhoto.src = photo.currentSrc || photo.src;
+        popPhoto.alt = photo.alt;
+        popCard.appendChild(popPhoto);
+      } else if (popPhoto.parentNode) popPhoto.parentNode.removeChild(popPhoto);
       /* 엽서에 담긴 설문 내용(장소 · 추천 이유 · 한마디)을 팝업에 옮긴다 */
       popNo.textContent = card.getAttribute('data-no') || '';
       popTitle.textContent = card.getAttribute('data-place') || '';
