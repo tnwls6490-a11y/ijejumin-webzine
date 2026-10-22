@@ -118,39 +118,63 @@ a { color: inherit; }
 }
 
 /* ---------- 공통 틀: 푸터 ----------
-   위: 푸터 위 안내(.wz-outro, 사용자가 준 시안): 왼쪽 로고·한 줄 소개·팀 이름, 오른쪽 메뉴·인터뷰 목록
-   아래: 공통 기준 푸터(.site-footer, 코드 그대로)를 같은 바탕에 가는 선으로 나눠 붙인다.
-   바탕·글자는 헤더와 같은 주황·흰색 (사용자 요청, 전에는 파랑 #2C64A0). 주황 위 흰 글자 대비는 헤더처럼 2.8:1이라
-   옅은 흰 글자는 쓰지 않는다 (올리기 전 확인 목록에 적어 둠) */
-.wz-outro, .site-footer { background: var(--hdr-bg); color: var(--hdr-ink); }
+   사용자가 준 시안대로 (2026-10-22): 크림 바탕 위에 옅은 살구색 둥근 카드 하나
+   위: 푸터 위 안내(.wz-outro): 왼쪽 주황 로고 + 주황 '육지에서 나고, 섬에서 자라는 중'·회색 팀 이름,
+       오른쪽 '메뉴'·'인터뷰' 두 칸(사이에 세로 선, 이름은 주황, 링크는 회색)
+   아래: 공통 기준 푸터(.site-footer, 코드 그대로): 가는 선 아래 왼쪽 '이제주민 · 한경 웹진', 오른쪽 '개인정보처리방침 →'
+   두 부분은 .container 두 개라 같은 폭이다. 위는 카드 윗부분, 아래는 카드 아랫부분으로 칠해 한 장처럼 보이게 한다.
+   주황 글자는 대비 4.5:1을 넘게 짙은 주황(--orange-ink)을 쓴다. 로고(그림)만 밝은 주황.
+   (그 전: 헤더와 같은 주황 바탕·흰 글자 → 그보다 전: 파랑 #2C64A0 바탕) */
+.wz-outro, .site-footer { background: #F7F3EC; color: var(--muted); }
+.wz-outro { padding-top: clamp(24px, 5vh, 56px); }
+.site-footer { padding-bottom: clamp(24px, 5vh, 56px); }
+.wz-outro__inner, .site-footer .container {
+  width: calc(100% - 32px); max-width: 1168px;
+  background: #FFF6EC; border: 1px solid #F1DCC6;
+}
 .wz-outro__inner {
-  display: grid; grid-template-columns: 1fr auto auto; gap: 32px clamp(48px, 7vw, 120px);
-  padding-top: 56px; padding-bottom: 56px;
+  display: grid; grid-template-columns: 1fr auto auto; align-items: start; gap: 24px 0;
+  padding: 28px 36px 18px; border-bottom: 0; border-radius: 18px 18px 0 0;
 }
-.wz-outro__brand { display: flex; flex-direction: column; align-items: flex-start; gap: 14px; }
-.wz-outro__logo { display: block; width: 64px; height: 74px; background: url(../images/logo-ijejumin-white.webp) center / contain no-repeat; }
-.wz-outro__tagline { margin: 0; font-size: clamp(22px, 2.4vw, 30px); font-weight: 700; line-height: 1.35; letter-spacing: -0.02em; }
-.wz-outro__team { margin: 0; font-size: 16px; }
-.wz-outro__col { display: flex; flex-direction: column; align-items: flex-start; min-width: 160px; }
-.wz-outro__head { margin: 0 0 4px; font-size: 16px; font-weight: 500; }
-.wz-outro__col a { display: inline-flex; align-items: center; min-height: 44px; font-size: 18px; font-weight: 700; line-height: 1.35; color: var(--hdr-ink); text-decoration: none; }
-.wz-outro__col a:hover { text-decoration: underline; text-underline-offset: 4px; }
-.wz-outro :focus-visible, .site-footer :focus-visible { outline-color: var(--hdr-ink); }
-@media (max-width: 760px) {
-  /* 휴대폰: 로고·소개를 위에 한 줄로 두고, 그 아래 메뉴·인터뷰 두 칸 */
-  .wz-outro__inner { grid-template-columns: 1fr 1fr; gap: 28px 20px; padding-top: 40px; padding-bottom: 36px; }
-  .wz-outro__brand { grid-column: 1 / -1; }
-  .wz-outro__logo { width: 52px; height: 60px; }
-  .wz-outro__tagline { font-size: 22px; }
-  .wz-outro__col { min-width: 0; }
-  .wz-outro__col a { font-size: 16px; }
+.wz-outro__brand {
+  display: grid; grid-template-columns: auto 1fr; align-items: center; column-gap: 22px; align-self: center;
 }
+.wz-outro__logo {
+  grid-row: 1 / span 2; display: block; width: 76px; height: 88px;
+  background: var(--orange);
+  -webkit-mask: url(../images/logo-ijejumin-white.webp) center / contain no-repeat;
+  mask: url(../images/logo-ijejumin-white.webp) center / contain no-repeat;
+}
+.wz-outro__tagline { margin: 0 0 6px; align-self: end; font-size: clamp(18px, 1.7vw, 21px); font-weight: 700; line-height: 1.4; letter-spacing: -0.01em; color: var(--orange-ink); }
+.wz-outro__team { margin: 0; align-self: start; font-size: 16px; color: var(--muted); }
+.wz-outro__col { display: flex; flex-direction: column; align-items: flex-start; min-width: 150px; padding: 0 28px; }
+.wz-outro__col + .wz-outro__col { border-left: 1px solid #F1DCC6; padding-right: 0; }
+.wz-outro__head { margin: 0 0 2px; font-size: 16px; font-weight: 700; color: var(--orange-ink); }
+.wz-outro__col a { display: inline-flex; align-items: center; min-height: 44px; font-size: 16px; font-weight: 500; line-height: 1.35; color: var(--muted); text-decoration: none; }
+.wz-outro__col a:hover { color: var(--orange-ink); text-decoration: underline; text-underline-offset: 4px; }
+.wz-outro :focus-visible, .site-footer :focus-visible { outline-color: var(--orange-ink); }
 .site-footer .container {
+  position: relative;
   display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
-  gap: 8px 16px; padding-top: 16px; padding-bottom: 16px; font-size: 16px;
-  border-top: 1px solid rgba(255, 255, 255, .3);
+  gap: 4px 16px; padding: 8px 36px 10px; font-size: 16px; color: var(--orange-ink);
+  border-top: 0; border-radius: 0 0 18px 18px;
 }
-.site-footer a { display: inline-flex; align-items: center; min-height: 44px; color: var(--hdr-ink); }
+/* 위 안내와 아래 줄 사이 가는 선 (카드 안쪽 여백만큼 들여서) */
+.site-footer .container::before { content: ""; position: absolute; left: 36px; right: 36px; top: 0; height: 1px; background: #F1DCC6; }
+.site-footer a { display: inline-flex; align-items: center; gap: 10px; min-height: 44px; color: var(--orange-ink); text-decoration: none; }
+.site-footer a::after { content: "→"; }
+.site-footer a:hover { text-decoration: underline; text-underline-offset: 4px; }
+@media (max-width: 760px) {
+  /* 휴대폰: 로고·소개를 위에 두고, 그 아래 메뉴·인터뷰 두 칸 */
+  .wz-outro__inner { grid-template-columns: 1fr 1fr; gap: 22px 0; padding: 24px 18px 14px; }
+  .wz-outro__brand { grid-column: 1 / -1; column-gap: 16px; }
+  .wz-outro__logo { width: 56px; height: 65px; }
+  .wz-outro__tagline { font-size: 18px; }
+  .wz-outro__col { min-width: 0; padding: 0 14px 0 0; }
+  .wz-outro__col + .wz-outro__col { padding: 0 0 0 16px; }
+  .site-footer .container { padding: 6px 18px 8px; }
+  .site-footer .container::before { left: 18px; right: 18px; }
+}
 
 /* =========================================================
    서브메인 첫 화면 — 비행기 창 → 제주
