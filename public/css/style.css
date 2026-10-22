@@ -358,6 +358,33 @@ a { color: inherit; }
   0%, 100% { opacity: .1; }
   50% { opacity: .9; }
 }
+/* 손잡이 위 주황 겹화살표(위쪽): 가리개를 위로 올리면 된다는 표시. 아래 화살표부터 차례로 빛나며 살짝 위로 오른다 */
+.shade-arrow {
+  position: absolute; left: 50.3%; top: 86%;
+  display: flex; flex-direction: column; align-items: center;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  filter: drop-shadow(0 0 calc(var(--fw, 600px) * .008) rgba(249, 115, 22, .85));
+  opacity: 0; transition: opacity .4s ease;
+}
+.shade-arrow i {
+  width: calc(var(--fw, 600px) * .026); height: calc(var(--fw, 600px) * .026);
+  border-top: max(1.5px, calc(var(--fw, 600px) * .0034)) solid #F97316;
+  border-left: max(1.5px, calc(var(--fw, 600px) * .0034)) solid #F97316;
+  transform: scale(1.2, .72) rotate(45deg);   /* 납작하고 넓은 꺾쇠 (시안처럼) */
+}
+.shade-arrow i + i { margin-top: calc(var(--fw, 600px) * -.012); }
+.js .intro__stage:not(.is-open):not(.is-dragging) .shade-arrow { opacity: 1; animation: arrow-rise 1.8s ease-in-out infinite; }
+.js .intro__stage:not(.is-open):not(.is-dragging) .shade-arrow i { animation: arrow-blink 1.8s ease-in-out infinite; }
+.js .intro__stage:not(.is-open):not(.is-dragging) .shade-arrow i:first-child { animation-delay: .25s; }   /* 위 화살표가 조금 늦게 */
+@keyframes arrow-rise {
+  0%, 100% { transform: translate(-50%, -40%); }
+  50% { transform: translate(-50%, -62%); }
+}
+@keyframes arrow-blink {
+  0%, 100% { opacity: .35; }
+  40% { opacity: 1; }
+}
 .shade {
   margin: 0; padding: 0; border: 0; border-radius: 26% / 20%;
   background: transparent; font: inherit; color: inherit; cursor: grab;
@@ -513,6 +540,8 @@ a { color: inherit; }
 
 @media (prefers-reduced-motion: reduce) {
   .groundfog img, .intro__arrow, .intro__mouse::before, .intro__chev, .intro__line::before { animation: none; }
+  .js .intro__stage:not(.is-open):not(.is-dragging) .shade-arrow,
+  .js .intro__stage:not(.is-open):not(.is-dragging) .shade-arrow i { animation: none; }
   .intro__line::before { transform: translateY(14px); }
   .js .intro__stage:not(.is-open):not(.is-dragging) .shade-panel::after,
   .js .intro__stage:not(.is-open):not(.is-dragging) .porthole::after { animation: none; opacity: .6; }   /* 깜빡이지 않고 은은하게 켜 둔다 */
