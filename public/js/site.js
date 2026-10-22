@@ -628,6 +628,7 @@
   var stage = intro.querySelector('.intro__stage');
   var pane = intro.querySelector('.porthole__pane');
   var shade = intro.querySelector('.shade');
+  var word = intro.querySelector('.jeju__word');
   var reduceQuery = window.matchMedia ? window.matchMedia('(prefers-reduced-motion: reduce)') : null;
 
   var isOpen = false;
@@ -729,6 +730,9 @@
     var vh = stage.clientHeight;
     dims = { w: w, h: h, vw: vw, vh: vh };
     maxZoom = 1.45 * Math.max(vw / (0.6 * w), vh / (0.6 * h));
+    /* 큰 글자 "이제,주민": 휴대폰에서 글자 크기를 키워 두면 화면 밖으로 넘치고 분화구에 더 가려진다.
+       원래 폭(휴대폰에서 화면의 약 80%)을 넘으면 그만큼 줄인다 (보통은 1) */
+    if (word) setVar('--word-fit', Math.min(1, 0.84 * vw / (word.offsetWidth || 1)).toFixed(4));
   }
 
   /* 스크롤 → 창 속으로 빨려 들어가기
@@ -810,6 +814,8 @@
   });
   measure();
   update();
+  /* 큰 글자 글꼴이 늦게 들어오면 폭이 달라지니 한 번 더 잰다 */
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(measure);
 
   window.addEventListener('scroll', requestUpdate, { passive: true });
   window.addEventListener('resize', function () { measure(); requestUpdate(); });
