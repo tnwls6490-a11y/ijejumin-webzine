@@ -497,7 +497,7 @@
         it.el.style.transform = view + 'translate3d(' + X.toFixed(1) + 'px,' + Y.toFixed(1) + 'px,' + Z.toFixed(1) + 'px) rotateZ(' + (tz * 180 / Math.PI).toFixed(2) + 'deg) rotateX(' + (tx * 180 / Math.PI).toFixed(2) + 'deg) rotateY(' + (deg * k).toFixed(2) + 'deg) rotateZ(' + fanR.toFixed(2) + 'deg) scale(' + (1 + .55 * m).toFixed(3) + ')';
         it.el.style.opacity = (edge + (1 - edge) * m).toFixed(3);
         it.el.style.setProperty('--shade', ((1 - Math.cos(ang)) / 2 * .42 * k).toFixed(3));
-        var back = it.note && Math.abs(deg * k) > 90;        // 뒤돌아 있는 흰 카드는 글자를 숨긴다
+        var back = Math.abs(deg * k) > 90;                   // 뒤돌아 있는 엽서는 글자(장소 이름)를 숨긴다
         if (back !== it.back) { it.el.classList.toggle('is-back', back); it.back = back; }
       }
       section.style.setProperty('--merge', m.toFixed(3));
@@ -513,6 +513,9 @@
     if (!pop || !pop.showModal) return;                     // 팝업을 못 여는 아주 오래된 브라우저는 그냥 둔다
     var popCard = pop.querySelector('.pick-pop__card');
     var popTitle = pop.querySelector('.pick-pop__title');
+    var popNo = pop.querySelector('.pick-pop__no');
+    var popWhy = pop.querySelector('.pick-pop__why');
+    var popWord = pop.querySelector('.pick-pop__word-text');
     var popInner = pop.querySelector('.pick-pop__inner');
     var opener = null;
     world.addEventListener('click', function (e) {
@@ -522,10 +525,14 @@
       opener = card;
       var type = (card.className.match(/pcard--([a-z]+)/) || [])[1] || '';
       popCard.className = 'pick-pop__card ' + (type === 'note' ? 'is-note' : 'pcard pcard--' + type);
-      var name = card.getAttribute('data-name');
-      popTitle.textContent = '한마디 ' + card.getAttribute('data-no') + (name && name !== '한마디' ? ' · ' + name : '');
+      /* 엽서에 담긴 설문 내용(장소 · 추천 이유 · 한마디)을 팝업에 옮긴다 */
+      popNo.textContent = card.getAttribute('data-no') || '';
+      popTitle.textContent = card.getAttribute('data-place') || '';
+      popWhy.textContent = card.getAttribute('data-why') || '';
+      popWord.textContent = card.getAttribute('data-word') || '';
       isOpen = true;
       pop.showModal();
+      popInner.scrollTop = 0;
       /* 누른 카드 자리에서 화면 가운데로 커지며 나온다 */
       var a = card.getBoundingClientRect(), b = popInner.getBoundingClientRect();
       if (!reduce && b.width) {

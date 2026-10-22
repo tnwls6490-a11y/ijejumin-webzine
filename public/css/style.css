@@ -1120,6 +1120,14 @@ a { color: inherit; }
 }
 .pcard--note::before { top: 9%; right: 7%; width: 15%; height: 28%; }
 .pcard--note.is-back > * { visibility: hidden; }
+/* 엽서 아래 번호·장소 이름 (뒤돌아 있을 때는 거울글자가 되니 숨긴다) */
+.pcard__place {
+  position: absolute; left: 6%; bottom: 7%; max-width: 74%;
+  padding: .18em .6em; border-radius: 999px;
+  font-size: max(9px, calc(var(--cw) * .085)); font-weight: 700; line-height: 1.35; color: var(--ink);
+  background: rgba(255, 253, 248, .92); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.pcard.is-back .pcard__place { visibility: hidden; }
 .pcard__mark { width: calc(var(--cw) * .13); height: calc(var(--cw) * .13); border-radius: 30%; background: conic-gradient(#F97316 0 50%, #FDBA74 0); }
 .pcard__kicker { font-size: max(8px, calc(var(--cw) * .062)); color: var(--muted); white-space: nowrap; }
 .pcard__big { font-size: max(11px, calc(var(--cw) * .105)); font-weight: 800; line-height: 1.2; letter-spacing: -0.02em; }
@@ -1151,8 +1159,9 @@ a { color: inherit; }
 }
 .pick-pop::backdrop { background: rgba(18, 35, 58, .55); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
 .pick-pop__inner {
-  /* 엽서 한 장: 왼쪽 그림면, 오른쪽 글쓰는 면 */
-  position: relative; overflow: hidden; border-radius: 10px;
+  /* 엽서 한 장: 왼쪽 그림면, 오른쪽 글쓰는 면. 한마디가 길면 엽서 안에서 스크롤된다 */
+  position: relative; overflow: hidden auto; border-radius: 10px;
+  max-height: calc(100vh - 32px); max-height: calc(100svh - 32px);
   display: grid; grid-template-columns: 1.1fr 1fr;
   background: #FFFDF8;
   box-shadow: 0 30px 80px rgba(8, 20, 40, .4);
@@ -1164,27 +1173,28 @@ a { color: inherit; }
 .pick-pop__card.pcard { position: relative; left: auto; top: auto; width: auto; height: auto; margin: 14px 0 14px 14px; border-width: 0; cursor: default; }
 .pick-pop__card.is-note { margin: 14px 0 14px 14px; border-radius: 6px; background: linear-gradient(120deg, #F97316 0%, #FDBA74 55%, #FFE7C2 100%); }
 .pick-pop__body {
-  position: relative; padding: 30px 28px 34px;
+  position: relative; padding: 30px 28px 30px;
   border-left: 1px solid #D8CFC1; margin: 24px 24px 24px 22px;
-  background:
-    linear-gradient(#D8CFC1, #D8CFC1) 100% 72% / 70% 1px no-repeat,
-    linear-gradient(#D8CFC1, #D8CFC1) 100% 84% / 70% 1px no-repeat,
-    linear-gradient(#D8CFC1, #D8CFC1) 100% 96% / 70% 1px no-repeat;
 }
 .pick-pop__body::before { top: 26px; right: 4px; width: 54px; height: 64px; }
 .pick-pop__kicker, .pick-pop__title { margin-right: 72px; }
 @media (max-width: 599px) {
   .pick-pop__inner { grid-template-columns: 1fr; }
-  .pick-pop__card.pcard, .pick-pop__card.is-note { margin: 12px 12px 0; min-height: 200px; }
-  .pick-pop__body { border-left: 0; border-top: 1px solid #D8CFC1; margin: 18px 18px 6px; padding: 22px 4px 70px; background-position: 100% 70%, 100% 82%, 100% 94%; }
+  .pick-pop__card.pcard, .pick-pop__card.is-note { margin: 12px 12px 0; min-height: 150px; }
+  .pick-pop__body { border-left: 0; border-top: 1px solid #D8CFC1; margin: 18px 18px 6px; padding: 22px 4px 26px; }
   .pick-pop__body::before { top: 20px; right: 4px; width: 44px; height: 52px; }
   .pick-pop__kicker, .pick-pop__title { margin-right: 60px; }
   .pick__final { padding: 34px 28px 120px; min-height: 0; background-size: 0 0, 70% 1px, 70% 1px, 70% 1px; background-position: 0 0, 50% 76%, 50% 84%, 50% 92%; }
   .pick__final::before { top: 18px; right: 18px; width: 50px; height: 60px; }
 }
-.pick-pop__kicker { margin: 0; font-size: 16px; font-weight: 800; color: var(--orange-ink); letter-spacing: .04em; }
-.pick-pop__title { margin: 6px 0 10px; font-size: clamp(26px, 6vw, 34px); line-height: 1.25; letter-spacing: -0.03em; }
-.pick-pop__text { margin: 0; font-size: 16px; color: var(--muted); }
+/* 위아래 여백만 준다 (오른쪽 여백은 우표 자리라 위에서 따로 정한다) */
+.pick-pop__kicker { margin-top: 0; margin-bottom: 0; font-size: 16px; font-weight: 800; color: var(--orange-ink); letter-spacing: .04em; }
+.pick-pop__title { margin-top: 6px; margin-bottom: 10px; font-size: clamp(26px, 6vw, 34px); line-height: 1.25; letter-spacing: -0.03em; text-wrap: balance; }
+/* 추천 이유 · 한마디 */
+.pick-pop__label { margin: 18px 0 4px; font-size: 16px; font-weight: 700; color: var(--muted); }
+.pick-pop__why { margin: 0; font-size: 18px; font-weight: 600; line-height: 1.6; color: var(--ink); }
+.pick-pop__word { margin: 0; padding-left: 14px; border-left: 3px solid var(--orange); }
+.pick-pop__word-text { margin: 0; font-size: 17px; line-height: 1.7; color: var(--ink); }
 .pick-pop__close {
   position: absolute; top: 12px; right: 12px; z-index: 2;
   width: 44px; height: 44px; border: 0; border-radius: 50%; cursor: pointer;
