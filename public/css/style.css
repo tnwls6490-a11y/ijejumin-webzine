@@ -1162,12 +1162,13 @@ a { color: inherit; }
    ========================================================= */
 .pick {
   --gap: clamp(150px, 26vh, 280px);   /* 인터뷰 화면과의 여백 */
-  position: relative; padding-top: var(--gap);
+  --tail: clamp(96px, 16vh, 180px);   /* 엽서 무대가 끝난 뒤 '나의 제주찾기' 전까지 이어지는 검정 (사용자 요청 "살짝 더 길게") */
+  position: relative; padding-top: var(--gap); padding-bottom: var(--tail);
   /* 검은 무대: 인터뷰 사진 아래쪽의 어두운 남색에서 이어져 검정으로 */
   background: linear-gradient(180deg, #0A0E14 0, #000000 var(--gap), #000000 100%);
   color: #FFFFFF;
 }
-.js .pick { height: calc(100vh + 3400px + var(--gap)); height: calc(100svh + 3400px + var(--gap)); }   /* ① 카드가 모이며 소개 글이 나오고 ② 더 내리면 모인 카드 한 장이 나온다 */
+.js .pick { height: calc(100vh + 3400px + var(--gap) + var(--tail)); height: calc(100svh + 3400px + var(--gap) + var(--tail)); }   /* ① 카드가 모이며 소개 글이 나오고 ② 더 내리면 모인 카드 한 장이 나온다 */
 .pick__stage {
   position: relative; overflow: hidden;
   min-height: calc(100vh - var(--hdr-h, 0px)); min-height: calc(100svh - var(--hdr-h, 0px));
@@ -1496,6 +1497,24 @@ a { color: inherit; }
   backface-visibility: hidden;
 }
 .pick.is-merged .pick__final { pointer-events: auto; }
+/* 마지막 엽서가 나오면 무대 아래에 '더 내려가요' 표시 (사용자 요청). 첫 화면 스크롤 표시(마우스·꺾쇠·SCROLL)와 같은 모양,
+   검은 바탕이라 옅은 흰색. 엽서와 겹칠 만큼 화면이 낮으면 site.js가 엽서를 그만큼 위로 올린다(lift) */
+.pick__next {
+  --sc: rgba(255, 255, 255, .78);
+  position: absolute; left: 50%; bottom: clamp(12px, 2.5vh, 32px); z-index: 4;
+  display: flex; flex-direction: column; align-items: center; gap: 8px;
+  margin: 0; transform: translateX(-50%);
+  font-size: 13px; font-weight: 600; line-height: 1; letter-spacing: .34em; text-indent: .34em; color: var(--sc);
+  pointer-events: none;
+  opacity: 0; transition: opacity .5s ease;
+}
+.pick.is-merged .pick__next { opacity: 1; }
+html:not(.js) .pick__next { display: none; }
+/* 아주 낮은 휴대폰 화면(카톡 막대가 보일 때 312×520): 엽서와 표시가 함께 들어가도록 마우스 그림은 빼고 꺾쇠·SCROLL만 */
+@media (max-width: 599px) and (max-height: 560px) {
+  .pick__next { bottom: 6px; gap: 6px; }
+  .pick__next .intro__mouse { display: none; }
+}
 
 /* 카드가 모이면서 나오는 소개 글 */
 .pick__intro {

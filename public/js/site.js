@@ -423,16 +423,21 @@
     function target() {
       var r = section.getBoundingClientRect();
       var hdr = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--hdr-h')) || 0;
-      var pad = parseFloat(getComputedStyle(section).paddingTop) || 0;   // 인터뷰 화면과의 여백
-      var len = section.offsetHeight - pad - stage.offsetHeight - 200;   // 마지막 200px은 다 모인 카드에 머문다
+      var cs = getComputedStyle(section);
+      var pad = parseFloat(cs.paddingTop) || 0;      // 인터뷰 화면과의 여백
+      var tail = parseFloat(cs.paddingBottom) || 0;  // 무대가 끝난 뒤 이어지는 검정
+      var len = section.offsetHeight - pad - tail - stage.offsetHeight - 200;   // 마지막 200px은 다 모인 카드에 머문다
       return clamp((hdr - r.top - pad) / Math.max(len, 1), 0, 1);
     }
-    /* 뒷면 엽서가 무대 아래로 넘치면(낮은 휴대폰 화면) 뒤집히면서 그만큼 위로 올린다 */
+    /* 뒷면 엽서가 무대 아래로 넘치거나 아래 스크롤 표시(.pick__next)와 겹치면(낮은 휴대폰 화면) 뒤집히면서 그만큼 위로 올린다 */
     var lift = 0;
+    var nextCue = section.querySelector('.pick__next');
     function measureLift() {
       if (!finalCard) return;
       var h = finalCard.offsetHeight, c = finalCard.offsetTop;   // c: 엽서 가운데 높이 (translate -50% 전)
-      lift = clamp(c + h / 2 + 12 - stage.clientHeight, 0, Math.max(0, c - h / 2 - 8));
+      var room = 12;                                              // 엽서 아래로 비워 둘 높이
+      if (nextCue) room += nextCue.offsetHeight + (parseFloat(getComputedStyle(nextCue).bottom) || 0);
+      lift = clamp(c + h / 2 + room - stage.clientHeight, 0, Math.max(0, c - h / 2 - 8));
     }
     measureLift();
     window.addEventListener('resize', measureLift);
@@ -503,8 +508,8 @@
       var cx = Math.cos(tx), sx = Math.sin(tx), cz = Math.cos(tz), sz = Math.sin(tz);
       for (var i = 0; i < n; i++) {
         var it = items[i];
-        var ang = it.a + spin + yaw;
-        var x = Math.sin(ang) * R, z = Math.cos(ang) * R;
+        var th = it.a + spin + yaw;   // 나선 위 각도 (위의 뒤집기 각도 ang과 이름이 겹치지 않게)
+        var x = Math.sin(th) * R, z = Math.cos(th) * R;
         /* 나선 모양은 제자리에 두고, 카드가 나선을 따라 흘러간다 (돌려도 중심 높이가 바뀌지 않음).
            맨 위로 올라간 카드는 맨 아래에서 다시 나온다 */
         var hh = it.h0 + spin / (TURNS * Math.PI * 2);
@@ -517,11 +522,11 @@
         /* 모였을 때: 부채꼴로 살짝 엇갈려 쌓인 엽서 묶음 */
         var fanR = 0, fanX = 0, fanY = 0;   // 모였을 때 한 장처럼 딱 맞게 겹친다
         var X = x2 * k + fanX, Y = y2 * k + fanY, Z = (z1 - R * .35) * k - i * .5 * m;
-        var deg = ((ang * 180 / Math.PI) % 360 + 540) % 360 - 180;   // 바깥을 향한 각도 (-180~180)
+        var deg = ((th * 180 / Math.PI) % 360 + 540) % 360 - 180;   // 바깥을 향한 각도 (-180~180)
         it.el.style.zIndex = 1000 + Math.round(Z * 4);   // 모인 묶음(0.5px 간격)도 앞뒤가 갈리게
         it.el.style.transform = view + 'translate3d(' + X.toFixed(1) + 'px,' + Y.toFixed(1) + 'px,' + Z.toFixed(1) + 'px) rotateZ(' + (tz * 180 / Math.PI).toFixed(2) + 'deg) rotateX(' + (tx * 180 / Math.PI).toFixed(2) + 'deg) rotateY(' + (deg * k).toFixed(2) + 'deg) rotateZ(' + fanR.toFixed(2) + 'deg) scale(' + (1 + .55 * m).toFixed(3) + ')';
         it.el.style.opacity = (edge + (1 - edge) * m).toFixed(3);
-        it.el.style.setProperty('--shade', ((1 - Math.cos(ang)) / 2 * .42 * k).toFixed(3));
+        it.el.style.setProperty('--shade', ((1 - Math.cos(th)) / 2 * .42 * k).toFixed(3));
         var back = Math.abs(deg * k) > 90;                   // 뒤돌아 있는 엽서는 글자(장소 이름)를 숨긴다
         if (back !== it.back) { it.el.classList.toggle('is-back', back); it.back = back; }
       }
