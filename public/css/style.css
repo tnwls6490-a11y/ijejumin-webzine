@@ -1257,7 +1257,7 @@ a { color: inherit; }
   padding: 0; border: 0; border-radius: 0; background: none;
   -webkit-line-clamp: 3; line-clamp: 3;
   /* 잘 읽히게: 손글씨 대신 둥근 고딕 굵게 (사용자 요청) */
-  font-family: "Ijeju Card", var(--font); font-size: calc(var(--pw) * .054); font-weight: 700; line-height: 1.34; letter-spacing: -0.02em; color: #1E1B18;
+  font-family: "Ijeju Card", var(--font); font-size: calc(var(--pw) * .047); font-weight: 700; line-height: 1.38; letter-spacing: -0.02em; color: #1E1B18;
 }
 .pcard.is-back .pcard__label { visibility: hidden; }
 /* 팝업 그림면: 추천 장소 사진 (돌아가는 엽서 앞면에는 무늬만). 사진이 오기 전에는 뒤의 무늬가 보인다 */
@@ -1292,7 +1292,7 @@ a { color: inherit; }
 @media (max-width: 600px) {
   .pcard__word { -webkit-line-clamp: 2; line-clamp: 2; padding: 0 .5em; border-block-width: .35em; font-size: max(10px, calc(var(--cw) * .1)); }   /* 휴대폰: 두 줄까지 (우표가 가려지지 않게) */
   /* 엽서 앞면: 휴대폰 엽서는 작아서 글자를 키우고 글 자리를 넓혀 두 줄까지만 (넘치면 …, 전체는 팝업에서) */
-  .pcard--post .pcard__word { -webkit-line-clamp: 2; line-clamp: 2; left: 18%; right: 22%; top: 32%; font-size: max(10.5px, calc(var(--pw) * .075)); line-height: 1.3; }
+  .pcard--post .pcard__word { -webkit-line-clamp: 2; line-clamp: 2; left: 18%; right: 22%; top: 32%; font-size: max(9px, calc(var(--pw) * .066)); line-height: 1.34; }
   .pcard__label { top: 11%; font-size: max(7px, calc(var(--pw) * .036)); }
 }
 .pcard__mark { width: calc(var(--cw) * .13); height: calc(var(--cw) * .13); border-radius: 30%; background: conic-gradient(#F97316 0 50%, #FDBA74 0); }
