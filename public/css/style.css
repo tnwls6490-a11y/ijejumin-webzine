@@ -1203,7 +1203,7 @@ a { color: inherit; }
 }
 /* 우표: 톱니 모양 흰 테두리 안의 주황 */
 .pcard:not(.pcard--note)::before,
-.pcard--note::before, .pick-pop__body::before, .pick__final::before {
+.pcard--note::before, .pick-pop__body::before {
   content: ""; position: absolute; z-index: 1; pointer-events: none;
   background: linear-gradient(160deg, #F97316, #FDBA74);
   border: 2px dotted #FFFDF8; box-shadow: 0 0 0 2px #FFFDF8, 0 2px 6px rgba(18, 35, 58, .25);
@@ -1356,29 +1356,20 @@ a { color: inherit; }
 .pcard__kicker { font-size: max(8px, calc(var(--cw) * .062)); color: var(--muted); white-space: nowrap; }
 .pcard__big { font-size: max(11px, calc(var(--cw) * .105)); font-weight: 800; line-height: 1.2; letter-spacing: -0.02em; }
 .pcard__small { margin-top: auto; font-size: max(8px, calc(var(--cw) * .056)); line-height: 1.35; color: var(--muted); }
-/* 모두 모였을 때 남는 한 장 (엽서 뒷면): 왼쪽 소개 글, 가운데 세로줄, 오른쪽 우표와 주소 줄 (사용자가 준 글, 2026-10-22) */
+/* 엽서가 뒤집히면 나오는 소개 글 (사용자가 준 글, 2026-10-22).
+   엽서 모양(흰 판·우표·줄) 없이 검은 무대 가운데에 글만 가운데 정렬로 (사용자 요청) */
 .pick__final {
-  --fw: min(700px, calc(100vw - 32px));
   position: absolute; left: 50%; top: 56%; z-index: 5;
-  width: var(--fw); min-height: min(400px, 62vw); translate: -50% -50%;
-  padding: 38px calc(var(--fw) * .37) 38px 36px; border-radius: 10px; text-align: left;
-  border: 12px solid #FFFDF8;
-  background:
-    linear-gradient(#D8CFC1, #D8CFC1) 65% 50% / 1px 76% no-repeat,
-    linear-gradient(#D8CFC1, #D8CFC1) 95% 62% / 26% 1px no-repeat,
-    linear-gradient(#D8CFC1, #D8CFC1) 95% 75% / 26% 1px no-repeat,
-    linear-gradient(#D8CFC1, #D8CFC1) 95% 88% / 26% 1px no-repeat,
-    #FFFDF8;
-  color: var(--ink);
-  box-shadow: 0 0 0 1px rgba(18, 35, 58, .06), 0 24px 60px rgba(18, 35, 58, .22);
+  width: min(760px, calc(100vw - 32px)); translate: -50% -50%;
+  text-align: center; color: #FFFFFF;
   opacity: 0; transform: scale(.9);
   pointer-events: none;
 }
-.pick__final-kicker { margin: 0; font-size: 16px; font-weight: 800; line-height: 1.4; letter-spacing: .04em; color: var(--orange-ink); }
+.pick__final-kicker { margin: 0; font-size: 16px; font-weight: 800; line-height: 1.4; letter-spacing: .04em; color: var(--orange); }
 .pick__final-kicker span { margin-right: .3em; }
-.pick__final-title { margin: 8px 0 18px; font-size: clamp(24px, 2.8vw, 30px); font-weight: 800; line-height: 1.35; letter-spacing: -0.03em; }
-.pick__final-text p { margin: 0; font-size: 17px; line-height: 1.7; color: var(--muted); }
-.pick__final-text p + p { margin-top: 12px; }
+.pick__final-title { margin: 10px 0 24px; font-size: clamp(26px, 3.6vw, 40px); font-weight: 800; line-height: 1.35; letter-spacing: -0.03em; }
+.pick__final-text p { margin: 0; font-size: 18px; line-height: 1.8; color: rgba(255, 255, 255, .78); }
+.pick__final-text p + p { margin-top: 16px; }
 
 /* 카드 팝업 */
 .pick-pop {
@@ -1414,13 +1405,10 @@ a { color: inherit; }
   .pick-pop__body { border-left: 0; border-top: 1px solid #D8CFC1; margin: 18px 18px 6px; padding: 22px 4px 26px; }
   .pick-pop__body::before { top: 20px; right: 4px; width: 44px; height: 52px; }
   .pick-pop__kicker, .pick-pop__title { margin-right: 60px; }
-  /* 휴대폰: 글이 길어 세로줄·주소 줄은 빼고 글을 엽서 폭 가득. 우표 자리만 위 오른쪽에 비운다 (우표 크기는 아래 .pick__final::before 뒤에)
-     카카오톡 막대가 보이는 낮은 화면(312×520)에서도 무대 안에 들어가도록 여백을 줄였다 */
-  .pick__final { padding: 18px 16px 20px; border-width: 8px; min-height: 0; background: #FFFDF8; }
-  .pick__final-kicker, .pick__final-title { margin-right: 44px; }
-  .pick__final-title { margin-top: 4px; margin-bottom: 10px; font-size: 21px; }
-  .pick__final-text p { font-size: 16px; line-height: 1.55; }
-  .pick__final-text p + p { margin-top: 8px; }
+  /* 휴대폰: 카카오톡 막대가 보이는 낮은 화면(312×520)에서도 무대 안에 들어가도록 조금 촘촘하게 */
+  .pick__final-title { margin: 8px 0 16px; font-size: 24px; }
+  .pick__final-text p { font-size: 16px; line-height: 1.7; }
+  .pick__final-text p + p { margin-top: 12px; }
 }
 /* 위아래 여백만 준다 (오른쪽 여백은 우표 자리라 위에서 따로 정한다) */
 .pick-pop__kicker { margin-top: 0; margin-bottom: 0; font-size: 16px; font-weight: 800; color: var(--orange-ink); letter-spacing: .04em; }
@@ -1502,8 +1490,6 @@ a { color: inherit; }
   .pick__cols li { padding-top: 12px; }
 }
 html:not(.js) .pick__intro { position: relative; left: auto; top: auto; translate: none; margin: 0 auto; padding: 48px 0; }
-.pick__final::before { top: 26px; right: 26px; width: 74px; height: 88px; }
-@media (max-width: 599px) { .pick__final::before { top: 12px; right: 12px; width: 38px; height: 46px; } }
 .pick__final-mark { width: 48px; height: 48px; margin: 0 0 14px; border-radius: 30%; background: conic-gradient(#F97316 0 50%, #FDBA74 0); }
 /* 자바스크립트가 없으면: 카드는 숨기고 마지막 카드만 보인다 */
 html:not(.js) .pick__world, html:not(.js) .pick__headline { display: none; }
