@@ -1421,17 +1421,39 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 
     /* 저절로 재생: 영상 자리가 화면에 반 이상 보이면 소리 없이 틀고, 거의 다 벗어나면 멈춘다
        - 브라우저가 소리 있는 자동 재생을 막아서 소리 없이 튼다. 플레이어의 소리 아이콘을 누르면 소리가 나온다
-       - 소리를 켜고 본 영상(engaged)은 화면 밖으로 나가도 멈추지 않고 오른쪽 아래 작은 창으로 따라온다
-       - 직접 멈추거나 끝까지 보면 다시 저절로 틀지 않는다. 움직임 줄이기 설정이면 처음부터 저절로 틀지 않는다 */
-    var ready = false, seen = 0, engaged = false, ourPause = 0;
+       - 보고 있던 영상(engaged)은 화면 밖으로 나가도 멈추지 않고 오른쪽 아래 작은 창으로 따라온다. 소리가 꺼져 있어도 된다
+         보고 있던 영상 = 화면 안에서 3초 넘게 재생됐거나(WATCH_MS), 직접 누른(재생·소리 켜기·플레이어를 누름) 영상 (사용자 요청 2026-10-23)
+         그냥 스쳐 지나가면(3초 안 되게 재생) 멈춘다
+       - 직접 멈추거나 끝까지 보면 다시 저절로 틀지 않는다. 움직임 줄이기 설정이면 처음부터 저절로 틀지 않는다
+       - 브라우저가 소리 없는 자동 재생까지 막으면(카톡 등 앱 안 브라우저) 소리를 다시 켜 두어, 재생 버튼을 누르면 소리와 함께 나온다 */
+    var WATCH_MS = 3000;
+    var ready = false, seen = 0, engaged = false, ourPause = 0, autoPlaying = false, autoTimer = 0, watchFrom = 0;
     var stopped = !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
     var isPlaying = function () { return frame.ytState === 1 || frame.ytState === 3; };
     var syncPip = function () {};
+    /* 화면 안에서 재생이 이어진 시간을 잰다. 3초를 넘기고 멈추거나 벗어나면 보고 있던 영상 */
+    var watchTick = function () {
+      var on = isPlaying() && seen >= 0.1;
+      if (on && !watchFrom) watchFrom = Date.now();
+      if (!on && watchFrom) {
+        if (Date.now() - watchFrom >= WATCH_MS) engaged = true;
+        watchFrom = 0;
+      }
+    };
     var sync = function () {
       if (!ready) return;
-      if (seen >= 0.5 && !stopped && !isPlaying()) {
+      watchTick();
+      if (seen >= 0.5 && !stopped && !isPlaying() && !autoPlaying) {
+        autoPlaying = true;
         ytCommand(frame, "mute");
         ytCommand(frame, "playVideo");
+        clearTimeout(autoTimer);
+        autoTimer = setTimeout(function () {
+          if (!autoPlaying || isPlaying()) return;
+          autoPlaying = false;   // 브라우저가 막았다: 소리를 되돌려 두고 더는 저절로 틀지 않는다
+          stopped = true;
+          ytCommand(frame, "unMute");
+        }, 4000);
       } else if (seen < 0.1 && isPlaying() && !engaged) {
         ourPause = Date.now();
         ytCommand(frame, "pauseVideo");
@@ -1439,12 +1461,23 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
       syncPip();
     };
     frame.onYt = function (state) {
-      if (state === 1) stopped = false;   // 직접 다시 틀었다
+      if (state === 1) {
+        if (autoPlaying) autoPlaying = false;   // 저절로 튼 재생이 시작됐다
+        else engaged = true;                    // 직접 틀었다
+        stopped = false;
+      }
       if (state === 2 && Date.now() - ourPause > 1500) stopped = true;   // 직접 멈췄다 (스크롤로 멈춘 것은 빼고)
       if (state === 0) { stopped = true; engaged = false; }   // 끝까지 봤다
-      if (isPlaying() && frame.ytMuted === false) engaged = true;
+      if (isPlaying() && frame.ytMuted === false) engaged = true;   // 소리를 켰다
+      watchTick();
       if (!ready) { ready = true; sync(); } else syncPip();
     };
+    /* 플레이어 안을 누르면(재생·소리·자막 버튼 등) 페이지가 포커스를 잃고 포커스가 플레이어로 간다 → 직접 누른 영상 */
+    window.addEventListener("blur", function () {
+      setTimeout(function () {
+        if (document.activeElement === frame) { engaged = true; syncPip(); }
+      }, 0);
+    });
     if ("IntersectionObserver" in window) {
       new IntersectionObserver(function (entries) {
         seen = entries[0].isIntersecting ? entries[0].intersectionRatio : 0;
@@ -1476,7 +1509,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         if (e.key === "Escape" && box.classList.contains("is-pip-large")) setLarge(false);
       };
       document.addEventListener("keydown", onKey);
-      /* 작은 창은 소리를 켜고 본 영상만, 영상 자리가 화면 밖으로 나가면 뜬다 (소리 없이 저절로 재생되던 영상은 그냥 멈춘다) */
+      /* 작은 창은 보고 있던 영상(engaged)만, 영상 자리가 화면 밖으로 나가면 뜬다 (스쳐 지나간 영상은 그냥 멈춘다) */
       syncPip = function () {
         var on = seen < 0.1 && engaged;
         box.classList.toggle("is-pip", on);
@@ -1487,6 +1520,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         ytCommand(frame, "pauseVideo");
         stopped = true;
         engaged = false;
+        watchFrom = 0;
         syncPip();
       });
     }
