@@ -126,9 +126,9 @@ a { color: inherit; }
 /* ---------- 공통 틀: 푸터 ----------
    사용자가 준 시안(다른 웹진 푸터)의 짜임대로 정리 (2026-10-23)
    바탕은 헤더와 같은 주황, 글자는 흰색 (사용자 요청 "이전의 주황색으로". 잠깐 검정이었다가 사용자 요청으로 다시 주황, 2026-10-23)
-   위(.wz-outro): 왼쪽 흰 로고 + 큰 글씨 '육지에서 나고, / 섬에서 자라는 중' + 인스타그램 (사용자가 다시 보낸 시안, 예전 주황 푸터의 왼쪽 모양)
+   위(.wz-outro): 왼쪽 흰 로고 + 글씨 '육지에서 나고, / 섬에서 자라는 중' (사용자가 다시 보낸 시안, 예전 주황 푸터의 왼쪽 모양)
        | '만든 사람들' | '인터뷰 스토리'(네 곳 링크) | '출처' (사용자 요청으로 만든 사람들을 앞으로). 칸 이름 옆 선은 없다 (점선 → 실선 → 사용자 요청으로 지움)
-       팀 이름 〈살러 왔다, 살아남기〉는 사용자 요청으로 지우고, 그 자리에 '만든 사람들'에 있던 인스타그램을 옮겼다 (2026-10-23)
+       팀 이름 〈살러 왔다, 살아남기〉는 사용자 요청으로 지웠다. 인스타그램은 잠깐 왼쪽에 있다가 다시 '만든 사람들' 아래로 (2026-10-23)
    아래: 공통 기준 푸터(.site-footer, 코드 그대로): 실선 아래 왼쪽 '개인정보처리방침'(굵게·밑줄), 오른쪽 '이제주민 · 한경 웹진'
    높이: 줄였다가(사용자 요청 "높이를 줄여줘", PC 350→257px) "살짝 더 높이고"와 왼쪽 큰 글씨로 약 333px. 공통 기준에 푸터 크기 기준은 없다
    주황 위 흰 글자는 대비 2.8:1로 공통 기준(4.5:1)에 못 미친다 (헤더와 같음, 올리기 전 확인 목록에 적어 둠)
@@ -146,7 +146,7 @@ a { color: inherit; }
   -webkit-mask: url(../images/logo-ijejumin-white.webp) center / contain no-repeat;
   mask: url(../images/logo-ijejumin-white.webp) center / contain no-repeat;
 }
-.wz-outro__tagline { margin: 0; font-size: clamp(22px, 2.4vw, 30px); font-weight: 700; line-height: 1.35; letter-spacing: -0.02em; }
+.wz-outro__tagline { margin: 0; font-size: clamp(20px, 1.8vw, 24px); font-weight: 700; line-height: 1.35; letter-spacing: -0.02em; }   /* 푸터 높이를 줄이려고 작게 (사용자 요청, 전 22~30px) */
 .wz-outro__col { min-width: 0; max-width: 360px; }   /* 긴 글은 이 폭에서 줄을 바꾼다. 출처는 <br>로 줄을 나눠 칸이 글 폭만큼만 차지하고 오른쪽 끝에 붙는다 (사용자 요청 "좀 더 오른쪽으로") */
 .wz-outro__head { margin: 0 0 8px; font-size: 16px; font-weight: 700; letter-spacing: .16em; }
 .wz-outro__line { margin: 0 0 4px; font-size: 16px; line-height: 1.5; }   /* 줄 간격 살짝 좁게 (사용자 요청, 1.6 → 1.5) */
@@ -184,7 +184,7 @@ a { color: inherit; }
   .wz-outro__inner { grid-template-columns: 1fr; gap: 24px; padding-top: 30px; padding-bottom: 20px; }
   .wz-outro__brand { gap: 10px; }
   .wz-outro__logo { width: 52px; height: 60px; }
-  .wz-outro__tagline { font-size: 22px; }
+  .wz-outro__tagline { font-size: 20px; }
   .site-footer .container { padding-bottom: 8px; }
 }
 
