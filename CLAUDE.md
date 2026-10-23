@@ -81,6 +81,11 @@ ijejumin-webzine/
   - 거쳐 온 모양: 파랑 `#2C64A0` 바탕 → 헤더와 같은 주황 바탕·흰 글자 → 시안(둥근 카드) → 전체 폭 옅은 살구색 띠·주황 글자 → 주황 바탕, 시안 짜임 → 지금(검정 바탕)
   - 모든 페이지에 같이 넣는다 (지금은 `index.html`, `articles/find-my-jeju.html`). 상세페이지는 경로만 `../`로
 - 채널 색: 메인 하늘색 `#A9D4F5`, 포인트 주황 `#F97316`, 그 외 피치·크림·화이트 계열
+- Google 태그 관리자 `GTM-NR6G6B9M` (사용자 요청 2026-10-23). **새 페이지를 만들면 같이 넣는다**
+  - 불러오는 코드는 `site.js` 맨 위에 있다. Google 안내는 `<head>`에 직접 넣으라고 하지만, 공통 기준(스크립트는 site.js 하나)에 맞춰 옮겼다
+    - 그래서 head에 둘 때보다 조금 늦게(페이지 끝에서) 시작한다. 한경·강의 쪽에서 head에 꼭 넣으라고 하면 그때 옮긴다
+  - 각 페이지 `<body>` 바로 뒤에 noscript 코드를 넣는다. Google 안내의 `style="display:none;visibility:hidden"` 대신 `hidden` 속성을 쓴다 (style 속성 금지)
+  - 지금 들어간 페이지: `index.html`, `articles/find-my-jeju.html`
 
 ### 첫 화면 (`.intro`)
 - 첫 화면에서는 헤더가 위로 숨는다 (사용자 요청, 2026-10-22)

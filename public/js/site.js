@@ -1,4 +1,13 @@
 /* 이제주민 · site.js (모든 페이지 공용) */
+/* ---------- Google 태그 관리자 (GTM-NR6G6B9M, 사용자 요청 2026-10-23) ----------
+   Google 안내는 <head>에 바로 넣는 것이지만, 공통 기준(스크립트는 site.js 하나, 페이지 안 스크립트 금지)에 맞춰 여기서 불러온다.
+   site.js는 페이지 끝에서 읽히므로 head에 둘 때보다 조금 늦게 시작한다. 코드는 Google이 준 그대로 */
+(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-NR6G6B9M');
+
 (function () {
   'use strict';
 
