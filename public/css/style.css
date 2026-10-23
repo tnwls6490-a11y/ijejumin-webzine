@@ -176,6 +176,28 @@ a { color: inherit; }
   .site-footer .container { padding-bottom: 8px; }
 }
 
+/* ---------- 공통 틀: 맨 위로 버튼 (.to-top) ----------
+   사용자가 준 레퍼런스대로: 오른쪽 아래 흰 동그라미에 위쪽 꺾쇠. 화면에 붙어(fixed) 스크롤을 따라다닌다 (2026-10-23)
+   site.js가 페이지 아래쪽(끝까지 화면 1.6개 이하)부터 is-shown을 붙여 보이게 하고,
+   푸터가 올라오면 --lift만큼 올려 푸터 위 끝에 살짝 걸쳐 멈추게 한다 (푸터 글자를 가리지 않게) */
+.to-top {
+  position: fixed; z-index: 60; right: clamp(16px, 3vw, 40px); bottom: clamp(16px, 3vh, 32px);
+  display: grid; place-items: center; width: 56px; height: 56px; border-radius: 50%;
+  background: #FFFFFF; color: var(--ink);
+  border: 1px solid rgba(18, 35, 58, .08); box-shadow: 0 6px 20px rgba(18, 35, 58, .18);
+  translate: 0 calc(var(--lift, 0px) * -1);
+  opacity: 0; visibility: hidden; transform: translateY(14px) scale(.9);
+  transition: opacity .3s ease, visibility .3s ease, transform .3s ease, box-shadow .2s ease;
+}
+.to-top.is-shown, html:not(.js) .to-top { opacity: 1; visibility: visible; transform: none; }
+.to-top:hover { box-shadow: 0 10px 26px rgba(18, 35, 58, .26); }
+.to-top svg { width: 26px; height: 26px; }
+@media (max-width: 640px) {
+  .to-top { width: 48px; height: 48px; }
+  .to-top svg { width: 22px; height: 22px; }
+}
+@media (prefers-reduced-motion: reduce) { .to-top { transition: opacity .2s ease, visibility .2s ease; transform: none; } }
+
 /* =========================================================
    서브메인 첫 화면 — 비행기 창 → 제주
    ========================================================= */

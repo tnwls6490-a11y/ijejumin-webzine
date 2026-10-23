@@ -1002,3 +1002,38 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   window.addEventListener('wheel', holdScroll, { passive: false });
   window.addEventListener('touchmove', holdScroll, { passive: false });
 })();
+
+/* ---------- 맨 위로 버튼 (.to-top, 모든 페이지 공용) ----------
+   페이지 아래쪽(끝까지 남은 길이가 화면 1.6개 이하)부터 오른쪽 아래에 나타나 스크롤을 따라다닌다 (사용자가 준 레퍼런스, 2026-10-23).
+   푸터(.wz-outro)가 올라오면 버튼을 그만큼 올려(--lift) 푸터 위 끝에 살짝 걸쳐 멈춘다. 누르면 맨 위로 부드럽게 올라간다 */
+(function () {
+  'use strict';
+  var btn = document.querySelector('.to-top');
+  if (!btn) return;
+  var outro = document.querySelector('.wz-outro') || document.querySelector('.site-footer');
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var ticking = false;
+  function update() {
+    ticking = false;
+    var vh = window.innerHeight;
+    var left = document.documentElement.scrollHeight - (window.scrollY + vh);   // 페이지 끝까지 남은 길이
+    btn.classList.toggle('is-shown', left < vh * 1.6);
+    var lift = 0;
+    if (outro) {
+      var gap = parseFloat(getComputedStyle(btn).bottom) || 0;     // 화면 아래와 버튼 사이
+      var overlap = btn.offsetHeight * .4;                          // 푸터 위 끝에 걸치는 만큼
+      lift = Math.max(0, (vh - gap) - (outro.getBoundingClientRect().top + overlap));
+    }
+    btn.style.setProperty('--lift', lift.toFixed(0) + 'px');
+  }
+  function request() { if (!ticking) { ticking = true; window.requestAnimationFrame(update); } }
+  window.addEventListener('scroll', request, { passive: true });
+  window.addEventListener('resize', request);
+  window.addEventListener('load', request);
+  update();
+  btn.addEventListener('click', function (e) {
+    e.preventDefault();
+    window.scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' });
+    btn.blur();
+  });
+})();
