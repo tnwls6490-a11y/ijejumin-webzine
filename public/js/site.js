@@ -1369,88 +1369,96 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     var state = d && d.event === "onStateChange" ? d.info : d && d.info && d.info.playerState;
     if (typeof state !== "number") return;
     document.querySelectorAll(".video-card.is-playing iframe").forEach(function (f) {
-      if (f.contentWindow === e.source) f.ytState = state;
+      if (f.contentWindow !== e.source) return;
+      f.ytState = state;
+      if (f.onYtState) f.onYtState(state);
     });
   });
 
-  /* 9. 영상 카드: 누르면 그 자리에서 바로 재생 (스크립트가 없거나 재생이 안 되면 YouTube로 이동) */
+  /* 9. 영상 카드: 페이지를 열면 그 자리에 바로 YouTube 플레이어를 보여 주고, 재생 버튼을 한 번 누르면 바로 재생 (사용자 요청 2026-10-23)
+     전에는 썸네일 카드를 먼저 보여 주고 누르면 플레이어를 불러왔는데, 휴대폰에서는 플레이어가 멈춘 채 떠서 한 번 더 눌러야 했다
+     (스크립트가 없으면 카드는 YouTube로 가는 링크로 남는다) */
   document.querySelectorAll(".video-card[data-video-id]").forEach(function (card) {
-    card.addEventListener("click", function (e) {
-      if (e.metaKey || e.ctrlKey || e.shiftKey) return;
-      e.preventDefault();
-      var cap = card.querySelector(".video-card-cap");
-      var title = cap ? cap.textContent.replace(/\s*·\s*YouTube에서 보기\s*$/, "") : "";
-      var box = document.createElement("div");
-      box.className = card.className + " is-playing";
-      if (card.id) box.id = card.id;
-      var thumb = document.createElement("div");
-      thumb.className = "video-card-thumb";
-      var frame = document.createElement("iframe");
-      frame.src = YT_ORIGIN + "/embed/" + encodeURIComponent(card.getAttribute("data-video-id")) + "?autoplay=1&rel=0&enablejsapi=1" +
-        (/^https?:$/.test(location.protocol) ? "&origin=" + encodeURIComponent(location.origin) : "");
-      frame.addEventListener("load", function () { ytSend(frame, { event: "listening", id: 1, channel: "widget" }); });
-      frame.title = title || "인터뷰 영상";
-      frame.allow = "autoplay; encrypted-media; picture-in-picture; fullscreen";
-      frame.setAttribute("allowfullscreen", "");
-      frame.setAttribute("referrerpolicy", "strict-origin-when-cross-origin");
-      thumb.appendChild(frame);
-      var link = document.createElement("a");
-      link.className = "video-card-cap";
-      link.href = card.href;
-      link.target = "_blank";
-      link.rel = "noopener";
-      link.textContent = cap ? cap.textContent : "YouTube에서 보기";
-      var pip = card.hasAttribute("data-pip") && "IntersectionObserver" in window;
-      if (pip) {
-        /* 영상 자리(stage)는 제자리에 남겨 두고, 영상 틀만 화면 오른쪽 아래로 옮겨 따라다니게 함 (영상이 다시 로드되지 않음) */
-        var stage = document.createElement("div");
-        stage.className = "video-card-stage";
-        stage.appendChild(thumb);
-        box.appendChild(stage);
-      } else {
-        box.appendChild(thumb);
-      }
-      box.appendChild(link);
-      card.replaceWith(box);
-      frame.focus();
-      if (pip) {
-        var pipClose = document.createElement("button");
-        pipClose.type = "button";
-        pipClose.className = "video-pip-close";
-        pipClose.setAttribute("aria-label", "작은 영상 닫기");
-        pipClose.textContent = "✕";
-        thumb.appendChild(pipClose);
-        /* 작은 창에서 영상 자리까지 내려가지 않고 화면 가운데로 크게 키워 보기 (같은 영상이라 끊기지 않음) */
-        var pipExpand = document.createElement("button");
-        pipExpand.type = "button";
-        pipExpand.className = "video-pip-expand";
-        thumb.appendChild(pipExpand);
-        var setLarge = function (on) {
-          box.classList.toggle("is-pip-large", on);
-          pipExpand.textContent = on ? "⤡" : "⤢";
-          pipExpand.setAttribute("aria-label", on ? "작은 창으로 줄이기" : "영상 크게 보기");
-        };
-        setLarge(false);
-        pipExpand.addEventListener("click", function () { setLarge(!box.classList.contains("is-pip-large")); });
-        stage.addEventListener("click", function (e) { if (e.target === stage) setLarge(false); });
-        var onKey = function (e) {
-          if (e.key === "Escape" && box.classList.contains("is-pip-large")) setLarge(false);
-        };
-        document.addEventListener("keydown", onKey);
-        var io = new IntersectionObserver(function (entries) {
-          var away = !entries[0].isIntersecting;
-          box.classList.toggle("is-pip", away);
-          if (!away) setLarge(false);
-        }, { threshold: 0.1 });
-        io.observe(stage);
-        pipClose.addEventListener("click", function () {
-          io.disconnect();
-          document.removeEventListener("keydown", onKey);
-          box.classList.remove("is-pip", "is-pip-large");
-          box.replaceWith(card);
-        });
-      }
-    });
+    var cap = card.querySelector(".video-card-cap");
+    var title = cap ? cap.textContent.replace(/\s*·\s*YouTube에서 보기\s*$/, "") : "";
+    var box = document.createElement("div");
+    box.className = card.className + " is-playing";
+    if (card.id) box.id = card.id;
+    var thumb = document.createElement("div");
+    thumb.className = "video-card-thumb";
+    var frame = document.createElement("iframe");
+    frame.src = YT_ORIGIN + "/embed/" + encodeURIComponent(card.getAttribute("data-video-id")) + "?rel=0&playsinline=1&enablejsapi=1" +
+      (/^https?:$/.test(location.protocol) ? "&origin=" + encodeURIComponent(location.origin) : "");
+    frame.addEventListener("load", function () { ytSend(frame, { event: "listening", id: 1, channel: "widget" }); });
+    frame.title = title || "인터뷰 영상";
+    frame.allow = "autoplay; encrypted-media; picture-in-picture; fullscreen";
+    frame.setAttribute("allowfullscreen", "");
+    frame.setAttribute("referrerpolicy", "strict-origin-when-cross-origin");
+    frame.setAttribute("loading", "lazy");
+    thumb.appendChild(frame);
+    var link = document.createElement("a");
+    link.className = "video-card-cap";
+    link.href = card.href;
+    link.target = "_blank";
+    link.rel = "noopener";
+    link.textContent = cap ? cap.textContent : "YouTube에서 보기";
+    var pip = card.hasAttribute("data-pip") && "IntersectionObserver" in window;
+    if (pip) {
+      /* 영상 자리(stage)는 제자리에 남겨 두고, 영상 틀만 화면 오른쪽 아래로 옮겨 따라다니게 함 (영상이 다시 로드되지 않음) */
+      var stage = document.createElement("div");
+      stage.className = "video-card-stage";
+      stage.appendChild(thumb);
+      box.appendChild(stage);
+    } else {
+      box.appendChild(thumb);
+    }
+    box.appendChild(link);
+    card.replaceWith(box);
+    if (pip) {
+      var pipClose = document.createElement("button");
+      pipClose.type = "button";
+      pipClose.className = "video-pip-close";
+      pipClose.setAttribute("aria-label", "작은 영상 닫기");
+      pipClose.textContent = "✕";
+      thumb.appendChild(pipClose);
+      /* 작은 창에서 영상 자리까지 내려가지 않고 화면 가운데로 크게 키워 보기 (같은 영상이라 끊기지 않음) */
+      var pipExpand = document.createElement("button");
+      pipExpand.type = "button";
+      pipExpand.className = "video-pip-expand";
+      thumb.appendChild(pipExpand);
+      var setLarge = function (on) {
+        box.classList.toggle("is-pip-large", on);
+        pipExpand.textContent = on ? "⤡" : "⤢";
+        pipExpand.setAttribute("aria-label", on ? "작은 창으로 줄이기" : "영상 크게 보기");
+      };
+      setLarge(false);
+      pipExpand.addEventListener("click", function () { setLarge(!box.classList.contains("is-pip-large")); });
+      stage.addEventListener("click", function (e) { if (e.target === stage) setLarge(false); });
+      var onKey = function (e) {
+        if (e.key === "Escape" && box.classList.contains("is-pip-large")) setLarge(false);
+      };
+      document.addEventListener("keydown", onKey);
+      /* 작은 창은 한 번이라도 재생한 뒤에만, 영상 자리가 화면 밖으로 나가면 뜬다 (재생 전에는 그냥 지나간다) */
+      var away = false, started = false;
+      var syncPip = function () {
+        var on = away && started;
+        box.classList.toggle("is-pip", on);
+        if (!on) setLarge(false);
+      };
+      frame.onYtState = function (s) {
+        if (s === 1 && !started) { started = true; syncPip(); }
+      };
+      new IntersectionObserver(function (entries) {
+        away = !entries[0].isIntersecting;
+        syncPip();
+      }, { threshold: 0.1 }).observe(stage);
+      /* 작은 창 닫기: 영상을 멈추고 제자리로 돌려놓는다. 다시 재생하면 작은 창도 다시 뜬다 */
+      pipClose.addEventListener("click", function () {
+        ytCommand(frame, "pauseVideo");
+        started = false;
+        syncPip();
+      });
+    }
   });
 
   /* 10. 쇼츠 카드: 누르면 같은 페이지 위에 창이 떠서 바로 재생 (스크립트가 없거나 주소에 영상 번호가 없으면 YouTube로 이동) */
@@ -1530,7 +1538,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         if (small) small.click();
       });
       document.querySelectorAll(".video-card.is-playing iframe").forEach(function (f) {
-        if (f.ytState === 1 || f.ytState === 3 || f.ytState === undefined) { ytCommand(f, "pauseVideo"); pausedFrames.push(f); }
+        /* 재생 중(1)·불러오는 중(3)인 것만. 본문 영상은 처음부터 플레이어로 떠 있어서, 재생한 적 없는 영상을 닫을 때 저절로 틀지 않게 한다 */
+        if (f.ytState === 1 || f.ytState === 3) { ytCommand(f, "pauseVideo"); pausedFrames.push(f); }
       });
       modal.hidden = false;
       document.documentElement.classList.add("is-modal-open");
