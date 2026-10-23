@@ -750,11 +750,14 @@ a { color: inherit; }
 .person__kicker { margin: 0; font-size: 14px; font-weight: 700; letter-spacing: .02em; }
 .person__hook { margin: 2px 0 0; max-width: 16em; font-size: 18px; font-weight: 800; line-height: 1.35; }
 .is-todo { font-style: italic; font-weight: 500 !important; color: rgba(18, 35, 58, .62); }
-.person__no { margin: 0; display: grid; justify-items: end; text-align: right; }
+/* 오른쪽 위 '인터뷰 0N / 04'와 큰 '(N)'은 서로 가운데를 맞춰 한 덩어리로 보이게 한다. 덩어리는 오른쪽 끝에 붙는다
+   (사용자 요청 2026-10-23. 전에는 둘 다 오른쪽 끝에 맞춰, 넓은 괄호가 왼쪽으로 삐져나와 보였다) */
+.person__no { margin: 0; display: grid; justify-items: center; text-align: center; }
 .person__no-label { font-size: 14px; font-weight: 700; white-space: nowrap; }
 .person__no-big {
   font-family: var(--display); font-weight: 700;
   font-size: clamp(48px, 7vw, 96px); line-height: .95; letter-spacing: -0.02em;
+  translate: .03em 0;   /* ')' 오른쪽 빈자리 때문에 글자가 왼쪽으로 치우쳐 보여, 그만큼 밀어 위 글자와 눈으로 보이는 가운데를 맞춘다 */
 }
 
 /* 가운데: 이름 뒷줄 → 인물 → 이름 앞줄 순서로 겹친다 */
@@ -995,7 +998,7 @@ a { color: inherit; }
   .person__kicker { font-size: clamp(16px, 1vw, 20px); }
   .person__hook { margin-top: 4px; font-size: clamp(18px, 1.4vw, 28px); }
   .person__no-label { font-size: clamp(16px, 1vw, 20px); }
-  .person__no-big { font-size: clamp(56px, 7vw, 124px); margin-right: -.04em; }   /* 괄호 오른쪽 빈자리만큼 당겨 위 글자와 오른쪽 끝을 맞춘다 */
+  .person__no-big { font-size: clamp(56px, 7vw, 124px); }
   .people__stage[data-tone="photo"] .people__slogan { font-size: clamp(18px, 1.6vw, 30px); padding-top: clamp(16px, 1.1vw, 22px); }
   .people__stage[data-tone="photo"] .people__slogan::before { width: clamp(44px, 3vw, 60px); }
 }
