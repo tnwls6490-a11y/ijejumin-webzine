@@ -315,6 +315,9 @@ ijejumin-webzine/
 - 첫 화면(`.story-intro`) 크기는 네 기사 모두 같다 (사용자 요청 2026-10-23)
   - 사진은 칸을 채우기만 하고 칸 높이를 늘리지 않는다(`style.css` 맨 끝 블록). 전에는 세로 사진을 쓴 엠아이티도그만 1920px 화면에서 1190px까지 길어졌다
   - PC: 화면 높이의 88%(최대 860px). 휴대폰: 사진 칸 4:5 + 글 칸 최소 510px(가장 긴 제목에 맞춤)
+  - 파랑오브레코즈샵 첫 화면 사진은 가깝게 찍혀 인물이 크게 보여서, 사진 위쪽을 200px 부드럽게 늘린 `interview-03-cover-tall.jpg`(1600×1100)를 쓴다 (사용자 요청 "좀만 더 축소")
+    - 인물이 약 82%로 작아진다. 원본 `interview-03-cover.jpg`는 그대로 둔다. 다시 만들기: `py reference/tools/make-cover-tall.py public/images/interview-03-cover.jpg public/images/interview-03-cover-tall.jpg 200` (숫자가 클수록 인물이 작아진다)
+    - CSS로 위를 흐린 사진으로 채우는 방법은 흐린 얼굴이 한 번 더 비쳐 쓰지 않았다
 - 사진 출처는 `credits.txt` 맨 뒤 "이주민 인터뷰 기사 4편" 목록. 아래 '올리기 전 확인할 것'에 남은 일을 적었다
 
 - 계획했던 `articles/jeju-checklist.html`·`jeju-village-info.html`은 만들지 않고 아래 상세페이지 하나로 합쳤다
