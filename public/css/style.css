@@ -127,7 +127,7 @@ a { color: inherit; }
    사용자가 준 시안(다른 웹진 푸터)의 짜임대로 정리 (2026-10-23)
    바탕은 헤더와 같은 주황, 글자는 흰색 (사용자 요청 "이전의 주황색으로". 잠깐 검정이었다가 사용자 요청으로 다시 주황, 2026-10-23)
    위(.wz-outro): 왼쪽 흰 로고 + 큰 글씨 '육지에서 나고, / 섬에서 자라는 중' + 인스타그램 (사용자가 다시 보낸 시안, 예전 주황 푸터의 왼쪽 모양)
-       | '인터뷰 스토리'(네 곳 링크) | '만든 사람들' | '출처'. 칸 이름 옆 선은 없다 (점선 → 실선 → 사용자 요청으로 지움)
+       | '만든 사람들' | '인터뷰 스토리'(네 곳 링크) | '출처' (사용자 요청으로 만든 사람들을 앞으로). 칸 이름 옆 선은 없다 (점선 → 실선 → 사용자 요청으로 지움)
        팀 이름 〈살러 왔다, 살아남기〉는 사용자 요청으로 지우고, 그 자리에 '만든 사람들'에 있던 인스타그램을 옮겼다 (2026-10-23)
    아래: 공통 기준 푸터(.site-footer, 코드 그대로): 실선 아래 왼쪽 '개인정보처리방침'(굵게·밑줄), 오른쪽 '이제주민 · 한경 웹진'
    높이: 줄였다가(사용자 요청 "높이를 줄여줘", PC 350→257px) "살짝 더 높이고"와 왼쪽 큰 글씨로 약 333px. 공통 기준에 푸터 크기 기준은 없다
@@ -135,7 +135,7 @@ a { color: inherit; }
    (그 전: 옅은 살구색 띠에 주황 글자, 오른쪽 메뉴·인터뷰 두 칸 → 둥근 카드 → 헤더와 같은 주황 바탕·흰 글자 → 파랑 #2C64A0 바탕) */
 .wz-outro, .site-footer { background: var(--hdr-bg); color: var(--hdr-ink); }
 .wz-outro__inner {
-  /* 시안처럼 로고·글씨는 왼쪽, '인터뷰 스토리'·'만든 사람들'·'출처'는 오른쪽에 모아 둔다 (사용자 요청) */
+  /* 시안처럼 로고·글씨는 왼쪽, '만든 사람들'·'인터뷰 스토리'·'출처'는 오른쪽에 모아 둔다 (사용자 요청) */
   display: grid; grid-template-columns: 1fr auto auto auto; align-items: start; gap: 32px clamp(40px, 5vw, 72px);
   padding-top: clamp(30px, 3.4vw, 42px); padding-bottom: clamp(20px, 2.2vw, 26px);
 }
@@ -149,7 +149,7 @@ a { color: inherit; }
 .wz-outro__tagline { margin: 0; font-size: clamp(22px, 2.4vw, 30px); font-weight: 700; line-height: 1.35; letter-spacing: -0.02em; }
 .wz-outro__col { min-width: 0; max-width: 360px; }   /* 긴 글은 이 폭에서 줄을 바꾼다. 출처는 <br>로 줄을 나눠 칸이 글 폭만큼만 차지하고 오른쪽 끝에 붙는다 (사용자 요청 "좀 더 오른쪽으로") */
 .wz-outro__head { margin: 0 0 8px; font-size: 16px; font-weight: 700; letter-spacing: .16em; }
-.wz-outro__line { margin: 0 0 4px; font-size: 16px; line-height: 1.6; }
+.wz-outro__line { margin: 0 0 4px; font-size: 16px; line-height: 1.5; }   /* 줄 간격 살짝 좁게 (사용자 요청, 1.6 → 1.5) */
 .wz-outro__line:last-child { margin-bottom: 0; }
 .wz-outro__line a {
   display: inline-flex; align-items: center; min-height: 44px; vertical-align: middle;
@@ -168,8 +168,10 @@ a { color: inherit; }
   order: -1; display: inline-flex; align-items: center; min-height: 44px;
   color: inherit; font-weight: 700; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 4px;
 }
-/* '인터뷰 스토리' 링크: 한 줄에 하나, 누르기 쉽게 44px */
-.wz-outro__link { display: flex; align-items: center; min-height: 44px; font-size: 16px; font-weight: 500; line-height: 1.3; color: inherit; text-decoration: none; }
+/* '인터뷰 스토리' 링크: 한 줄에 하나. 누르는 칸은 공통 기준대로 44px이지만, 아래 칸과 10px 겹쳐
+   글 줄이 34px마다 오게 한다 (사용자 요청 "줄 간격이 너무 넓다", 전에는 44px마다 한 줄) */
+.wz-outro__link { display: flex; align-items: center; min-height: 44px; margin: 0 0 -10px; font-size: 16px; font-weight: 500; line-height: 1.3; color: inherit; text-decoration: none; }
+.wz-outro__head + .wz-outro__link { margin-top: -10px; }   /* 칸 이름과 첫 링크 사이도 다른 칸(글 첫 줄)과 비슷하게 */
 .wz-outro__link:hover { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 4px; }
 .site-footer a:hover, .wz-outro__line a:hover { text-decoration-thickness: 2px; }
 @media (max-width: 1000px) {
