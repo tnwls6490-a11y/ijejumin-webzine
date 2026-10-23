@@ -880,3 +880,455 @@
   window.addEventListener('resize', function () { measure(); requestUpdate(); });
   if (reduceQuery && reduceQuery.addEventListener) reduceQuery.addEventListener('change', requestUpdate);
 })();
+
+
+/* =========================================================================
+   이주민 인터뷰 기사 (articles/*.html) 전용 스크립트
+   - 위쪽 서브메인 스크립트와 변수 이름이 섞이지 않도록 따로 감싸 두었습니다.
+   - 해당 요소가 없는 페이지(서브메인 등)에서는 아무 일도 하지 않습니다.
+   ========================================================================= */
+/* 이제주민 · 한경 웹진 — 공통 스크립트 (이 파일 하나만 사용)
+   스크립트가 꺼져 있어도 모든 내용과 링크는 그대로 보이고 작동한다. */
+(function () {
+  "use strict";
+
+  document.documentElement.classList.add("js");
+  var reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  /* 0. 글자 하나씩 움직일 제목: 글자를 span으로 나누고, 읽기 도구에는 원래 문장을 전달 */
+  if (!reduceMotion) {
+    document.querySelectorAll(".split").forEach(function (el) {
+      var text = el.textContent.trim();
+      el.setAttribute("aria-label", text);
+      el.textContent = "";
+      Array.prototype.forEach.call(text, function (ch) {
+        var s = document.createElement("span");
+        s.className = "char";
+        s.setAttribute("aria-hidden", "true");
+        s.textContent = ch;
+        el.appendChild(s);
+      });
+    });
+  }
+
+  /* 1. 서브메인 지도: 목록 항목에 올리면 같은 번호 핀 강조 */
+  var stops = document.querySelectorAll(".stops a[data-stop]");
+  function setActive(num) {
+    document.querySelectorAll(".map-pin, .stops a").forEach(function (el) {
+      el.classList.toggle("is-active", el.getAttribute("data-stop") === num);
+    });
+  }
+  stops.forEach(function (link) {
+    var num = link.getAttribute("data-stop");
+    link.addEventListener("mouseenter", function () { setActive(num); });
+    link.addEventListener("focus", function () { setActive(num); });
+    link.addEventListener("mouseleave", function () { setActive(null); });
+    link.addEventListener("blur", function () { setActive(null); });
+  });
+
+  /* 2. 타이핑 문장: 화면에 들어오면 한 글자씩 (전체 문장은 처음부터 읽기 도구에 전달) */
+  function prepareTyping(el) {
+    var text = el.textContent.trim();
+    el.setAttribute("aria-label", text);
+    el.textContent = "";
+    var ghost = document.createElement("span");
+    ghost.className = "typing-ghost";
+    ghost.setAttribute("aria-hidden", "true");
+    ghost.textContent = text;
+    var live = document.createElement("span");
+    live.className = "typing-live";
+    live.setAttribute("aria-hidden", "true");
+    el.appendChild(ghost);
+    el.appendChild(live);
+    el._typingText = text;
+  }
+  function runTyping(el) {
+    var text = el._typingText, live = el.querySelector(".typing-live"), i = 0;
+    (function step() {
+      i += 1;
+      live.textContent = text.slice(0, i);
+      if (i < text.length) { setTimeout(step, 70); } else { el.classList.add("is-done"); }
+    })();
+  }
+  var typings = reduceMotion ? [] : Array.prototype.slice.call(document.querySelectorAll(".typing"));
+  typings.forEach(prepareTyping);
+
+  /* 3. 스크롤하면 나타나기 + 타이핑 시작 */
+  var watched = Array.prototype.slice.call(document.querySelectorAll(".reveal")).concat(typings);
+  if ("IntersectionObserver" in window && watched.length) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        var el = entry.target;
+        if (el.classList.contains("typing")) { runTyping(el); } else { el.classList.add("is-visible"); }
+        io.unobserve(el);
+      });
+    }, { threshold: 0.3 });
+    watched.forEach(function (el) { io.observe(el); });
+  } else {
+    watched.forEach(function (el) {
+      el.classList.add("is-visible");
+      if (el._typingText) { el.querySelector(".typing-live").textContent = el._typingText; el.classList.add("is-done"); }
+    });
+  }
+
+  /* 5. 쇼츠 넘기기: 카드가 한 줄을 넘칠 때만 화살표를 보여주고, 끝에 닿으면 흐리게 */
+  document.querySelectorAll(".shorts-wrap").forEach(function (wrap) {
+    var track = wrap.querySelector(".reels");
+    var nav = wrap.querySelector(".reels-nav");
+    if (!track || !nav) return;
+    var prev = nav.querySelector('[data-dir="-1"]');
+    var next = nav.querySelector('[data-dir="1"]');
+
+    function update() {
+      var max = track.scrollWidth - track.clientWidth;
+      nav.hidden = max <= 2;
+      prev.disabled = track.scrollLeft <= 2;
+      next.disabled = track.scrollLeft >= max - 2;
+    }
+    nav.querySelectorAll(".reels-btn").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        var dir = Number(btn.getAttribute("data-dir"));
+        track.scrollBy({ left: dir * track.clientWidth * 0.9, behavior: reduceMotion ? "auto" : "smooth" });
+      });
+    });
+    track.addEventListener("scroll", update, { passive: true });
+    window.addEventListener("resize", update);
+    update();
+  });
+
+  /* 6. 지도 커서 반응: 커서를 따라 빛이 움직이고, 가까운 마을·불빛이 밝아짐
+     (SVG 원의 위치 속성만 바꾸고 페이지에 style을 쓰지 않음) */
+  document.querySelectorAll(".map, .places-map").forEach(function (box) {
+    var svg = box.querySelector(".map-layer");
+    var glow = svg && svg.querySelector(".map-glow");
+    if (!svg || !glow || !svg.createSVGPoint) return;
+    var targets = Array.prototype.map.call(box.querySelectorAll(".map-town, .map-pin, .place-pin"), function (el) {
+      var c = el.querySelector(".town-dot, .light-dot");
+      return c ? { el: el, x: Number(c.getAttribute("cx")), y: Number(c.getAttribute("cy")) } : null;
+    }).filter(Boolean);
+    var pt = svg.createSVGPoint(), frame = 0, last = null;
+
+    function update() {
+      frame = 0;
+      var ctm = svg.getScreenCTM();
+      if (!ctm || !last) return;
+      pt.x = last.x; pt.y = last.y;
+      var p = pt.matrixTransform(ctm.inverse());
+      glow.setAttribute("cx", p.x.toFixed(1));
+      glow.setAttribute("cy", p.y.toFixed(1));
+      targets.forEach(function (t) {
+        t.el.classList.toggle("is-near", Math.hypot(t.x - p.x, t.y - p.y) < 110);
+      });
+    }
+    box.addEventListener("pointermove", function (e) {
+      if (e.pointerType === "touch") return;
+      last = { x: e.clientX, y: e.clientY };
+      box.classList.add("is-pointer");
+      if (!frame) frame = requestAnimationFrame(update);
+    });
+    box.addEventListener("pointerleave", function () {
+      box.classList.remove("is-pointer");
+      targets.forEach(function (t) { t.el.classList.remove("is-near"); });
+    });
+  });
+
+  /* 7. 섬 프레임 슬라이드: 버튼·점·화살표 키·마우스 끌기로 넘기고, 아래 설명을 바꿈 */
+  document.querySelectorAll(".isle").forEach(function (box) {
+    var track = box.querySelector(".isle-track");
+    var slides = Array.prototype.slice.call(track.children);
+    var dots = Array.prototype.slice.call(box.querySelectorAll(".isle-dot"));
+    var cap = box.querySelector(".isle-caption");
+    var n = slides.length, current = 0, raf = 0, drag = null;
+    function pad(v) { return (v < 10 ? "0" : "") + v; }
+    function go(i, instant) {
+      i = (i + n) % n;
+      track.scrollTo({ left: i * track.clientWidth, behavior: instant || reduceMotion ? "auto" : "smooth" });
+    }
+    function render(i) {
+      if (i === current || !slides[i]) return;
+      current = i;
+      slides.forEach(function (s, k) { s.classList.toggle("is-current", k === i); });
+      dots.forEach(function (d, k) { d.setAttribute("aria-current", String(k === i)); });
+      cap.querySelector(".isle-cap-num").textContent = pad(i + 1) + ".";
+      cap.querySelector(".isle-cap-name").textContent = slides[i].getAttribute("data-name");
+      cap.querySelector(".isle-cap-sub").textContent = slides[i].getAttribute("data-sub");
+      cap.querySelector(".isle-cap-desc").textContent = slides[i].getAttribute("data-desc");
+      var credit = cap.querySelector(".isle-cap-credit");
+      if (credit) credit.textContent = slides[i].getAttribute("data-credit") || "";
+      cap.classList.remove("is-changing"); void cap.offsetWidth; cap.classList.add("is-changing");
+    }
+    track.addEventListener("scroll", function () {
+      if (raf) return;
+      raf = requestAnimationFrame(function () { raf = 0; render(Math.round(track.scrollLeft / Math.max(1, track.clientWidth))); });
+    }, { passive: true });
+    box.querySelectorAll(".isle-nav").forEach(function (b) {
+      b.addEventListener("click", function () { go(current + Number(b.getAttribute("data-dir"))); });
+    });
+    dots.forEach(function (d) { d.addEventListener("click", function () { go(Number(d.getAttribute("data-i"))); }); });
+    track.addEventListener("keydown", function (e) {
+      if (e.key === "ArrowRight") { e.preventDefault(); go(current + 1); }
+      if (e.key === "ArrowLeft") { e.preventDefault(); go(current - 1); }
+    });
+    window.addEventListener("resize", function () { go(current, true); });
+    track.addEventListener("pointerdown", function (e) {
+      if (e.pointerType !== "mouse" || e.button !== 0) return;
+      drag = { x: e.clientX, left: track.scrollLeft };
+      track.classList.add("is-dragging");
+      track.setPointerCapture(e.pointerId);
+    });
+    track.addEventListener("pointermove", function (e) { if (drag) track.scrollLeft = drag.left - (e.clientX - drag.x); });
+    function endDrag() {
+      if (!drag) return;
+      var dx = track.scrollLeft - drag.left, w = track.clientWidth, start = Math.round(drag.left / w);
+      drag = null;
+      track.classList.remove("is-dragging");
+      var target = Math.abs(dx) > w * 0.15 ? start + (dx > 0 ? 1 : -1) : start;
+      go(Math.max(0, Math.min(n - 1, target)));
+    }
+    track.addEventListener("pointerup", endDrag);
+    track.addEventListener("pointercancel", endDrag);
+  });
+
+  /* 8. 인터뷰 탭: 휴대폰에서 지금 보고 있는 페이지 탭이 보이도록 줄을 옮김 */
+  document.querySelectorAll(".ivnav .container").forEach(function (row) {
+    var cur = row.querySelector('[aria-current="page"]');
+    if (cur && row.scrollWidth > row.clientWidth) row.scrollLeft = cur.offsetLeft - row.offsetLeft - 16;
+  });
+
+  /* 4. 추천 장소: 지도 핀을 누르면 팝업으로 설명 (스크립트가 없으면 아래 목록으로 이동) */
+  document.querySelectorAll(".places").forEach(function (box) {
+    var popup = box.querySelector(".place-popup");
+    var body = popup && popup.querySelector(".place-popup-body");
+    var closeBtn = popup && popup.querySelector(".popup-close");
+    if (!popup || !body) return;
+    var lastPin = null;
+
+    function close() {
+      popup.hidden = true;
+      box.querySelectorAll(".is-active").forEach(function (el) { el.classList.remove("is-active"); });
+      if (lastPin) lastPin.focus();
+    }
+    function open(pin) {
+      var id = (pin.getAttribute("href") || "").replace("#", "");
+      var item = id && document.getElementById(id);
+      if (!item) return;
+      box.querySelectorAll(".is-active").forEach(function (el) { el.classList.remove("is-active"); });
+      pin.classList.add("is-active");
+      item.classList.add("is-active");
+      body.innerHTML = "";
+      var title = item.querySelector("h3"), tag = item.querySelector(".place-tag");
+      if (tag) body.appendChild(tag.cloneNode(true));
+      if (title) body.appendChild(title.cloneNode(true));
+      item.querySelectorAll("p").forEach(function (p) { body.appendChild(p.cloneNode(true)); });
+      popup.hidden = false;
+      lastPin = pin;
+      closeBtn.focus();
+    }
+    box.querySelectorAll(".place-pin").forEach(function (pin) {
+      pin.addEventListener("click", function (e) { e.preventDefault(); open(pin); });
+    });
+    closeBtn.addEventListener("click", close);
+    popup.addEventListener("keydown", function (e) { if (e.key === "Escape") close(); });
+  });
+
+  /* 유튜브 플레이어에 명령을 보내고(일시정지·재생), 지금 재생 중인지 기억함. 쇼츠 창을 열 때 본문 영상을 잠시 멈추는 데 씀 */
+  var YT_ORIGIN = "https://www.youtube-nocookie.com";
+  function ytSend(frame, data) {
+    if (frame && frame.contentWindow) frame.contentWindow.postMessage(JSON.stringify(data), YT_ORIGIN);
+  }
+  function ytCommand(frame, func) { ytSend(frame, { event: "command", func: func, args: "" }); }
+  window.addEventListener("message", function (e) {
+    if (e.origin !== YT_ORIGIN) return;
+    var d;
+    try { d = JSON.parse(e.data); } catch (err) { return; }
+    var state = d && d.event === "onStateChange" ? d.info : d && d.info && d.info.playerState;
+    if (typeof state !== "number") return;
+    document.querySelectorAll(".video-card.is-playing iframe").forEach(function (f) {
+      if (f.contentWindow === e.source) f.ytState = state;
+    });
+  });
+
+  /* 9. 영상 카드: 누르면 그 자리에서 바로 재생 (스크립트가 없거나 재생이 안 되면 YouTube로 이동) */
+  document.querySelectorAll(".video-card[data-video-id]").forEach(function (card) {
+    card.addEventListener("click", function (e) {
+      if (e.metaKey || e.ctrlKey || e.shiftKey) return;
+      e.preventDefault();
+      var cap = card.querySelector(".video-card-cap");
+      var title = cap ? cap.textContent.replace(/\s*·\s*YouTube에서 보기\s*$/, "") : "";
+      var box = document.createElement("div");
+      box.className = card.className + " is-playing";
+      if (card.id) box.id = card.id;
+      var thumb = document.createElement("div");
+      thumb.className = "video-card-thumb";
+      var frame = document.createElement("iframe");
+      frame.src = YT_ORIGIN + "/embed/" + encodeURIComponent(card.getAttribute("data-video-id")) + "?autoplay=1&rel=0&enablejsapi=1" +
+        (/^https?:$/.test(location.protocol) ? "&origin=" + encodeURIComponent(location.origin) : "");
+      frame.addEventListener("load", function () { ytSend(frame, { event: "listening", id: 1, channel: "widget" }); });
+      frame.title = title || "인터뷰 영상";
+      frame.allow = "autoplay; encrypted-media; picture-in-picture; fullscreen";
+      frame.setAttribute("allowfullscreen", "");
+      frame.setAttribute("referrerpolicy", "strict-origin-when-cross-origin");
+      thumb.appendChild(frame);
+      var link = document.createElement("a");
+      link.className = "video-card-cap";
+      link.href = card.href;
+      link.target = "_blank";
+      link.rel = "noopener";
+      link.textContent = cap ? cap.textContent : "YouTube에서 보기";
+      var pip = card.hasAttribute("data-pip") && "IntersectionObserver" in window;
+      if (pip) {
+        /* 영상 자리(stage)는 제자리에 남겨 두고, 영상 틀만 화면 오른쪽 아래로 옮겨 따라다니게 함 (영상이 다시 로드되지 않음) */
+        var stage = document.createElement("div");
+        stage.className = "video-card-stage";
+        stage.appendChild(thumb);
+        box.appendChild(stage);
+      } else {
+        box.appendChild(thumb);
+      }
+      box.appendChild(link);
+      card.replaceWith(box);
+      frame.focus();
+      if (pip) {
+        var pipClose = document.createElement("button");
+        pipClose.type = "button";
+        pipClose.className = "video-pip-close";
+        pipClose.setAttribute("aria-label", "작은 영상 닫기");
+        pipClose.textContent = "✕";
+        thumb.appendChild(pipClose);
+        /* 작은 창에서 영상 자리까지 내려가지 않고 화면 가운데로 크게 키워 보기 (같은 영상이라 끊기지 않음) */
+        var pipExpand = document.createElement("button");
+        pipExpand.type = "button";
+        pipExpand.className = "video-pip-expand";
+        thumb.appendChild(pipExpand);
+        var setLarge = function (on) {
+          box.classList.toggle("is-pip-large", on);
+          pipExpand.textContent = on ? "⤡" : "⤢";
+          pipExpand.setAttribute("aria-label", on ? "작은 창으로 줄이기" : "영상 크게 보기");
+        };
+        setLarge(false);
+        pipExpand.addEventListener("click", function () { setLarge(!box.classList.contains("is-pip-large")); });
+        stage.addEventListener("click", function (e) { if (e.target === stage) setLarge(false); });
+        var onKey = function (e) {
+          if (e.key === "Escape" && box.classList.contains("is-pip-large")) setLarge(false);
+        };
+        document.addEventListener("keydown", onKey);
+        var io = new IntersectionObserver(function (entries) {
+          var away = !entries[0].isIntersecting;
+          box.classList.toggle("is-pip", away);
+          if (!away) setLarge(false);
+        }, { threshold: 0.1 });
+        io.observe(stage);
+        pipClose.addEventListener("click", function () {
+          io.disconnect();
+          document.removeEventListener("keydown", onKey);
+          box.classList.remove("is-pip", "is-pip-large");
+          box.replaceWith(card);
+        });
+      }
+    });
+  });
+
+  /* 10. 쇼츠 카드: 누르면 같은 페이지 위에 창이 떠서 바로 재생 (스크립트가 없거나 주소에 영상 번호가 없으면 YouTube로 이동) */
+  (function () {
+    var cards = document.querySelectorAll(".reels a[href]");
+    if (!cards.length) return;
+    var modal = null, frameBox, closeBtn, link, lastCard = null, pausedFrames = [];
+
+    function videoId(href) {
+      var m = /^https:\/\/(?:youtu\.be\/|(?:www\.|m\.)?youtube\.com\/(?:shorts\/|watch\?v=))([\w-]{11})/.exec(href);
+      return m ? m[1] : "";
+    }
+    function build() {
+      modal = document.createElement("div");
+      modal.className = "video-modal";
+      modal.setAttribute("role", "dialog");
+      modal.setAttribute("aria-modal", "true");
+      modal.setAttribute("aria-label", "쇼츠 재생");
+      modal.hidden = true;
+      var box = document.createElement("div");
+      box.className = "video-modal-box";
+      closeBtn = document.createElement("button");
+      closeBtn.type = "button";
+      closeBtn.className = "video-modal-close";
+      closeBtn.setAttribute("aria-label", "영상 닫기");
+      closeBtn.textContent = "✕";
+      frameBox = document.createElement("div");
+      frameBox.className = "video-modal-frame";
+      link = document.createElement("a");
+      link.className = "video-modal-link";
+      link.target = "_blank";
+      link.rel = "noopener";
+      link.textContent = "YouTube에서 보기";
+      box.appendChild(closeBtn);
+      box.appendChild(frameBox);
+      box.appendChild(link);
+      modal.appendChild(box);
+      document.body.appendChild(modal);
+      closeBtn.addEventListener("click", close);
+      modal.addEventListener("click", function (e) { if (e.target === modal) close(); });
+      modal.addEventListener("keydown", function (e) {
+        if (e.key === "Escape") { close(); return; }
+        if (e.key !== "Tab") return;
+        var first = closeBtn, last = link;
+        if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+        else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+      });
+    }
+    function open(card, id) {
+      if (!modal) build();
+      frameBox.textContent = "";
+      var frame = document.createElement("iframe");
+      frame.src = "https://www.youtube-nocookie.com/embed/" + id + "?autoplay=1&rel=0&playsinline=1";
+      frame.title = "이제주민 쇼츠";
+      frame.allow = "autoplay; encrypted-media; picture-in-picture; fullscreen";
+      frame.setAttribute("allowfullscreen", "");
+      frame.setAttribute("referrerpolicy", "strict-origin-when-cross-origin");
+      frameBox.appendChild(frame);
+      /* 창 아래 버튼: 그 인터뷰이의 웹진 원고 페이지로 (원고 주소가 없는 카드는 YouTube로) */
+      var article = card.getAttribute("data-article");
+      if (article) {
+        link.href = article;
+        link.removeAttribute("target");
+        link.removeAttribute("rel");
+        link.textContent = "인터뷰 원문 보러 가기";
+      } else {
+        link.href = card.href;
+        link.target = "_blank";
+        link.rel = "noopener";
+        link.textContent = "YouTube에서 보기";
+      }
+      lastCard = card;
+      /* 재생 중인 본문 영상(작은 창 포함)은 잠시 멈추고, 쇼츠 창을 닫으면 이어서 재생 */
+      pausedFrames = [];
+      document.querySelectorAll(".video-card.is-pip-large").forEach(function (b) {
+        var small = b.querySelector(".video-pip-expand");
+        if (small) small.click();
+      });
+      document.querySelectorAll(".video-card.is-playing iframe").forEach(function (f) {
+        if (f.ytState === 1 || f.ytState === 3 || f.ytState === undefined) { ytCommand(f, "pauseVideo"); pausedFrames.push(f); }
+      });
+      modal.hidden = false;
+      document.documentElement.classList.add("is-modal-open");
+      closeBtn.focus();
+    }
+    function close() {
+      if (!modal || modal.hidden) return;
+      modal.hidden = true;
+      frameBox.textContent = "";
+      document.documentElement.classList.remove("is-modal-open");
+      pausedFrames.forEach(function (f) { if (document.contains(f)) ytCommand(f, "playVideo"); });
+      pausedFrames = [];
+      if (lastCard) lastCard.focus();
+    }
+    cards.forEach(function (card) {
+      card.addEventListener("click", function (e) {
+        if (e.metaKey || e.ctrlKey || e.shiftKey) return;
+        var id = videoId(card.href);
+        if (!id) return;
+        e.preventDefault();
+        open(card, id);
+      });
+    });
+  })();
+})();
