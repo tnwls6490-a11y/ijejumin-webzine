@@ -147,6 +147,7 @@ a { color: inherit; }
   mask: url(../images/logo-ijejumin-white.webp) center / contain no-repeat;
 }
 .wz-outro__tagline { margin: 0; font-size: clamp(20px, 1.8vw, 24px); font-weight: 700; line-height: 1.35; letter-spacing: -0.02em; }   /* 푸터 높이를 줄이려고 작게 (사용자 요청, 전 22~30px) */
+.wz-outro__name { margin: -4px 0 0; font-size: 16px; font-weight: 500; }   /* 글씨 바로 아래 '이제주민 · 한경 웹진' (사용자 요청 2026-10-23) */
 .wz-outro__col { min-width: 0; max-width: 360px; }   /* 긴 글은 이 폭에서 줄을 바꾼다. 출처는 <br>로 줄을 나눠 칸이 글 폭만큼만 차지하고 오른쪽 끝에 붙는다 (사용자 요청 "좀 더 오른쪽으로") */
 .wz-outro__head { margin: 0 0 8px; font-size: 16px; font-weight: 700; letter-spacing: .16em; }
 .wz-outro__line { margin: 0 0 4px; font-size: 16px; line-height: 1.5; }   /* 줄 간격 살짝 좁게 (사용자 요청, 1.6 → 1.5) */
