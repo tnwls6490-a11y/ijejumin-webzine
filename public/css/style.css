@@ -56,6 +56,12 @@ a { color: inherit; }
 :focus-visible { outline: 3px solid var(--orange-ink); outline-offset: 3px; }
 
 .container { width: 100%; max-width: 1200px; margin: 0 auto; padding: 0 16px; }
+/* 공통 틀(상단 바·헤더·푸터)과 첫 화면 윗줄은 본문(1200px)보다 넓게, 화면 양쪽으로 길게 편다 (사용자 요청 "좌우 양측으로 길게", 2026-10-23)
+   양쪽 여백은 화면 폭의 4%(16~80px), 아주 넓은 화면에서는 1920px까지만. 1280px 화면에서는 전과 거의 같다 */
+:root { --frame-max: 1920px; --frame-pad: clamp(16px, 4vw, 80px); }
+.topbar .container, .wz-header .container, .wz-outro .container, .site-footer .container {
+  max-width: var(--frame-max); padding-left: var(--frame-pad); padding-right: var(--frame-pad);
+}
 
 /* ---------- 공통 틀: 상단 바 ---------- */
 .topbar { background: var(--ink); }
@@ -155,7 +161,7 @@ a { color: inherit; }
   gap: 0 24px; padding-top: 6px; padding-bottom: 10px; font-size: 16px;
 }
 /* 위 안내와 아래 줄 사이 실선 (칸 안쪽 여백만큼 들여서) */
-.site-footer .container::before { content: ""; position: absolute; left: 16px; right: 16px; top: 0; border-top: 1px solid rgba(255, 255, 255, .6); }
+.site-footer .container::before { content: ""; position: absolute; left: var(--frame-pad); right: var(--frame-pad); top: 0; border-top: 1px solid rgba(255, 255, 255, .6); }
 /* 시안처럼 '개인정보처리방침'은 왼쪽, '이제주민 · 한경 웹진'은 오른쪽 (마크업은 공통 기준 그대로, 순서만 CSS로) */
 .site-footer a {
   order: -1; display: inline-flex; align-items: center; min-height: 44px;
@@ -526,7 +532,7 @@ a { color: inherit; }
 .landing {
   position: absolute; inset: 0;
   display: flex; flex-direction: column; align-items: center; justify-content: space-between;
-  padding: clamp(10px, 1.8vh, 20px) 16px clamp(20px, 6vh, 56px);   /* 위쪽 줄(로고·문구) 위 여백: 화면 위에 가깝게, 너무 붙지는 않게 (사용자 요청) */
+  padding: clamp(10px, 1.8vh, 20px) var(--frame-pad) clamp(20px, 6vh, 56px);   /* 위쪽 줄(로고·문구) 위 여백: 화면 위에 가깝게, 너무 붙지는 않게 (사용자 요청). 양옆은 헤더와 같은 여백 */
   text-align: center;
   opacity: var(--ui, 0);
   transform: translateY(calc((1 - var(--ui, 0)) * 16px));
@@ -534,10 +540,10 @@ a { color: inherit; }
 }
 .is-landed .landing { pointer-events: auto; }
 /* 위쪽 줄 (사용자가 준 시안): 왼쪽에 헤더와 같은 흰 로고와 '육지에서 나고, 섬에서 자라는 중',
-   오른쪽에 '제주 이주민 인터뷰 웹진'. 헤더 로고와 같은 가운데 1200px 칸에 맞춘다 */
+   오른쪽에 '제주 이주민 인터뷰 웹진'. 헤더 로고와 같은 칸(화면 양쪽으로 넓게, --frame-*)에 맞춘다 */
 .landing__top {
   --logo-w: 50px; --logo-h: 58px;
-  position: relative; align-self: center; width: 100%; max-width: 1168px;
+  position: relative; align-self: center; width: 100%; max-width: calc(var(--frame-max) - 2 * var(--frame-pad));
   display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 24px;
   text-align: left;
 }
