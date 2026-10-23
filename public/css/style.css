@@ -138,6 +138,46 @@ a { color: inherit; }
   }
 }
 
+/* 헤더 '인터뷰 스토리' 펼침 메뉴 (사용자 요청 2026-10-23)
+   PC(마우스가 있는 900px 이상 화면)에서 마우스를 올리거나 키보드로 오면 아래로 기사 4편이 펼쳐진다.
+   휴대폰·태블릿처럼 손가락으로 누르는 화면에서는 펼치지 않고, 누르면 바로 01 기사로 간다 (기사 위 목록 줄에서 02~04로 넘어간다) */
+.wz-drop { position: relative; display: flex; flex: none; }
+.wz-drop__menu { display: none; }
+@media (min-width: 900px) and (hover: hover) {
+  .wz-drop > a::after {   /* 펼쳐진다는 표시: 작은 아래 꺾쇠 */
+    content: ""; width: 6px; height: 6px; margin: -3px 0 0 7px;
+    border-right: 2px solid currentColor; border-bottom: 2px solid currentColor;
+    transform: rotate(45deg); transition: transform .18s;
+  }
+  .wz-drop:hover > a::after, .wz-drop:focus-within > a::after { transform: translateY(3px) rotate(225deg); }
+  .wz-drop__menu {
+    display: block; position: absolute; top: calc(100% + 11px); right: 0; z-index: 60;   /* 헤더 아래 끝에 붙는다 */
+    min-width: 220px; padding: 8px; border-radius: 16px;
+    background: #FFFFFF; box-shadow: 0 14px 34px rgba(18, 35, 58, .2);
+    opacity: 0; visibility: hidden; transform: translateY(-6px);
+    transition: opacity .18s, transform .18s, visibility 0s .18s;
+  }
+  .wz-drop__menu::before {   /* 글자와 메뉴 사이 빈틈: 마우스가 지나가도 닫히지 않게 */
+    content: ""; position: absolute; left: 0; right: 0; top: -12px; height: 12px;
+  }
+  .wz-drop:hover .wz-drop__menu, .wz-drop:focus-within .wz-drop__menu {
+    opacity: 1; visibility: visible; transform: none;
+    transition: opacity .18s, transform .18s;
+  }
+  .wz-nav .wz-drop__menu a {
+    display: flex; gap: 10px; min-height: 44px; padding: 0 14px; border-radius: 10px;
+    font-size: 16px; font-weight: 600; color: var(--ink); white-space: nowrap;
+  }
+  .wz-nav .wz-drop__menu a:hover { background: #FFF1E6; color: var(--ink); }
+  .wz-nav .wz-drop__menu a[aria-current="page"] { background: var(--ink); color: #FFFFFF; }   /* 지금 보고 있는 기사 */
+  .wz-header .wz-drop__menu :focus-visible { outline-color: var(--ink); }
+  .wz-drop__num { font: 700 13px ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace; color: var(--orange-ink); }
+  .wz-drop__menu a[aria-current="page"] .wz-drop__num { color: var(--peach); }
+}
+@media (min-width: 900px) and (hover: hover) and (prefers-reduced-motion: reduce) {
+  .wz-drop__menu, .wz-drop:hover .wz-drop__menu, .wz-drop:focus-within .wz-drop__menu { transform: none; transition: none; }
+}
+
 /* ---------- 공통 틀: 푸터 ----------
    사용자가 준 시안(다른 웹진 푸터)의 짜임대로 정리 (2026-10-23)
    바탕은 헤더와 같은 주황, 글자는 흰색 (사용자 요청 "이전의 주황색으로". 잠깐 검정이었다가 사용자 요청으로 다시 주황, 2026-10-23)

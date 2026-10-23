@@ -31,7 +31,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
       if (!nav) return;
       nav.style.removeProperty('--nav-fit');
       if (narrowQuery && narrowQuery.matches) {
-        var links = nav.children, text = 0, pad = 0;
+        var links = nav.querySelectorAll(':scope > a, :scope > .wz-drop > a'), text = 0, pad = 0;   // 펼침 메뉴 속 기사 4편은 휴대폰에서 안 보이므로 빼고 잰다
         for (var i = 0; i < links.length; i++) {
           var cs = getComputedStyle(links[i]);
           var p = parseFloat(cs.paddingLeft) + parseFloat(cs.paddingRight);
