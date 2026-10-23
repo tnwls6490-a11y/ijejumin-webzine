@@ -20,21 +20,30 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     if (!header) return;
     var nav = header.querySelector('.wz-nav');
     var narrowQuery = window.matchMedia ? window.matchMedia('(max-width: 899px)') : null;
-    /* 휴대폰: 메뉴가 한 줄에 안 들어가면 들어갈 만큼 글자를 줄인다 (양옆 여백은 그대로 두고 글자 폭만 계산) */
+    /* 휴대폰: 메뉴가 한 줄에 안 들어가면 들어갈 만큼 글자를 줄인다 (양옆 여백은 그대로 두고 글자 폭만 계산)
+       13px(15px의 0.87배)보다 작게는 줄이지 않고, 그래도 넘치면 줄을 옆으로 밀어 넘긴다 (오른쪽 끝 흐림은 is-more) */
+    var NAV_MIN_FIT = 0.87;
+    function navMore() {
+      if (!nav) return;
+      nav.classList.toggle('is-more', nav.scrollLeft + nav.clientWidth < nav.scrollWidth - 2);
+    }
     function fitNav() {
       if (!nav) return;
       nav.style.removeProperty('--nav-fit');
-      if (!narrowQuery || !narrowQuery.matches) return;
-      var links = nav.children, text = 0, pad = 0;
-      for (var i = 0; i < links.length; i++) {
-        var cs = getComputedStyle(links[i]);
-        var p = parseFloat(cs.paddingLeft) + parseFloat(cs.paddingRight);
-        pad += p;
-        text += links[i].offsetWidth - p;
+      if (narrowQuery && narrowQuery.matches) {
+        var links = nav.children, text = 0, pad = 0;
+        for (var i = 0; i < links.length; i++) {
+          var cs = getComputedStyle(links[i]);
+          var p = parseFloat(cs.paddingLeft) + parseFloat(cs.paddingRight);
+          pad += p;
+          text += links[i].offsetWidth - p;
+        }
+        var room = nav.clientWidth - pad - (parseFloat(getComputedStyle(nav).columnGap) || 0) * (links.length - 1);
+        if (text > room) nav.style.setProperty('--nav-fit', Math.max(NAV_MIN_FIT, room / text * 0.98).toFixed(3));
       }
-      var room = nav.clientWidth - pad - (parseFloat(getComputedStyle(nav).columnGap) || 0) * (links.length - 1);
-      if (text > room) nav.style.setProperty('--nav-fit', (room / text * 0.98).toFixed(3));
+      navMore();
     }
+    if (nav) nav.addEventListener('scroll', navMore, { passive: true });
     function setH() { fitNav(); document.documentElement.style.setProperty('--hdr-h', header.offsetHeight + 'px'); }
     setH();
     window.addEventListener('resize', setH);

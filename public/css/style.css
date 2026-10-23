@@ -59,9 +59,10 @@ a { color: inherit; }
 /* 공통 틀(상단 바·헤더·푸터)과 첫 화면 윗줄은 본문(1200px)보다 넓게, 화면 양쪽으로 길게 편다 (사용자 요청 "좌우 양측으로 길게", 2026-10-23)
    양쪽 여백은 화면 폭의 4%(16~80px), 아주 넓은 화면에서는 1920px까지만. 1280px 화면에서는 전과 거의 같다 */
 :root { --frame-max: 1920px; --frame-pad: clamp(16px, 4vw, 80px); }
-.topbar .container, .wz-header .container, .wz-outro .container, .site-footer .container {
+.topbar .container, .wz-header .container, .wz-outro .container, .site-footer .container, .ivnav .container {
   max-width: var(--frame-max); padding-left: var(--frame-pad); padding-right: var(--frame-pad);
 }
+/* 인터뷰 기사 위 목록 줄(.ivnav)도 같은 칸에 맞춰, 맨 앞 '이주민 인터뷰'가 헤더 로고와 같은 세로줄에서 시작한다 (사용자 요청 2026-10-23) */
 
 /* ---------- 공통 틀: 상단 바 ---------- */
 .topbar { background: var(--ink); }
@@ -119,10 +120,22 @@ a { color: inherit; }
 /* 상단 바 "한경 웹진 메인으로"는 모든 페이지에서 뺀다 (사용자 요청, 2026-10-23. 전에는 서브메인에서만 뺐다)
    공통 기준 코드라 마크업은 그대로 두고 이 한 줄로만 숨긴다. 이 줄을 지우면 모든 페이지에 돌아온다 */
 .topbar { display: none; }
-/* 휴대폰: 메뉴 세 개를 한 줄에, 오른쪽 끝에 모아 둔다. 넘치면(좁은 화면, 휴대폰 글자 크기 설정) site.js가 --nav-fit으로 글자를 더 줄인다 */
+/* 휴대폰: 메뉴 네 개를 한 줄에, 오른쪽 끝에 모아 둔다. 넘치면(좁은 화면, 휴대폰 글자 크기 설정) site.js가 --nav-fit으로 글자를 줄인다
+   글자는 13px까지만 줄이고, 그래도 넘치면(312px 카톡 화면 등) 줄을 옆으로 밀어 넘긴다. 이때 오른쪽 끝을 흐리게 해 더 있다는 것을 보여 준다
+   ('인터뷰 스토리'를 넣어 메뉴가 네 개가 되며, 사용자 요청 2026-10-23) */
 @media (max-width: 899px) {
-  .wz-nav { flex-wrap: nowrap; justify-content: flex-end; gap: 4px; width: calc(100% + 20px); margin-right: -10px; font-size: calc(15px * var(--nav-fit, 1)); white-space: nowrap; }
-  .wz-nav a { padding: 0 8px; font-size: inherit; }
+  .wz-nav {
+    flex-wrap: nowrap; gap: 4px; width: calc(100% + 20px); margin-right: -10px;
+    font-size: calc(15px * var(--nav-fit, 1)); white-space: nowrap;
+    overflow-x: auto; scrollbar-width: none;
+  }
+  .wz-nav::-webkit-scrollbar { display: none; }
+  .wz-nav > :first-child { margin-left: auto; }   /* 오른쪽 끝에 모으되, 넘칠 때는 왼쪽부터 보이게 (justify-content: flex-end는 넘친 앞쪽을 못 넘긴다) */
+  .wz-nav a { flex: none; padding: 0 6px; font-size: inherit; }
+  .wz-nav.is-more {
+    -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 36px), transparent);
+    mask-image: linear-gradient(to right, #000 calc(100% - 36px), transparent);
+  }
 }
 
 /* ---------- 공통 틀: 푸터 ----------
