@@ -749,7 +749,7 @@ a { color: inherit; }
 }
 .people__chips {
   position: absolute; z-index: 5; right: var(--pad-x); bottom: var(--pad-y);
-  display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px; max-width: 420px;
+  display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px;   /* 인물 이름 대신 가게·학교 이름(2026-10-23)이라 한 줄이 약 470px */
 }
 .people__chip {
   min-height: 44px; padding: 0 16px; border-radius: 999px; border: 0; cursor: pointer;
@@ -775,6 +775,12 @@ a { color: inherit; }
   .person__hook { font-size: 16px; }
 }
 @media (min-width: 900px) { .people { --chips-h: 44px; } }
+/* PC 중 좁은 폭(900~1199px): 오른쪽 아래 고르기 버튼 줄(약 470px)이 가운데 '인터뷰 읽기'와 겹치므로,
+   '인터뷰 읽기'를 설명 글 높이로 올리고 설명 글은 조금 좁힌다 */
+@media (min-width: 900px) and (max-width: 1199px) {
+  .person__cta { bottom: calc(var(--pad-y) + 60px); }
+  .person__desc { width: min(330px, calc(100% - 2 * var(--pad-x))); }
+}
 
 /* 옆으로 넘기는 움직임 (site.js가 is-active / is-left / is-right를 붙인다) */
 .js .person__top > *, .js .person__desc, .js .person__cta,
@@ -860,7 +866,7 @@ a { color: inherit; }
 .person--photo-side .person__back { top: 15%; }
 .person--photo-side .person__front { top: calc(15% + 1.08em); }
 @media (min-width: 900px) {
-  /* 에밀리 사진은 가슴께에서 끝나 아래 여유가 없다. 배경·누끼를 함께 아래쪽 기준으로 18% 키워 인물을 위로 올린다
+  /* 엠아이티도그(전 '에밀리') 사진은 가슴께에서 끝나 아래 여유가 없다. 배경·누끼를 함께 아래쪽 기준으로 18% 키워 인물을 위로 올린다
      (1280px 화면에서도 원본 1600px 안) */
   .person--photo-side .person__photo { scale: 1.18; transform-origin: 58% 100%; }
 }
@@ -887,7 +893,7 @@ a { color: inherit; }
 .people .person--photo .person__front { font-size: clamp(42px, 5.6vw, 98px); }
 .people .person--photo .person__back { left: calc(var(--pad-x) + 4px); top: 13%; }
 .people .person--photo .person__front { left: 48%; top: 44%; }
-/* 얼굴이 한가운데 있는 사진(에밀리): 둘째 줄을 얼굴 오른쪽 아래로 */
+/* 얼굴이 한가운데 있는 사진(엠아이티도그): 둘째 줄을 얼굴 오른쪽 아래로 */
 .people .person--photo-side .person__front { left: 59%; top: 44%; }
 .person--photo .person__line--back {
   color: transparent; -webkit-text-stroke: 1.2px #FFFFFF; text-shadow: none;
@@ -955,7 +961,7 @@ a { color: inherit; }
   .people .person__top { position: relative; inset: auto; }
   .people .person__center { position: static; flex: 1; min-height: 0; display: flex; flex-direction: column; }
   .people .person--photo .person__center { z-index: 4; }   /* 앞 제목이 아래로 내려와도 무대 아래쪽 어둡게 덮는 층(::after)보다 위에 */
-  /* 에밀리: 세로 화면에서는 사진 높이가 무대에 꼭 맞는다. 사진(손까지 나오는 넓은 사진, 2026-10-22 교체)은 줄이지 않아
+  /* 엠아이티도그: 세로 화면에서는 사진 높이가 무대에 꼭 맞는다. 사진(손까지 나오는 넓은 사진, 2026-10-22 교체)은 줄이지 않아
      양옆이 꽉 차고, 배경·누끼를 함께 위로 12% 당겨 얼굴을 무대 높이 약 35%에 둔다 (사용자 요청 "인물 더 올려줘").
      머리끝이 뒤 제목 끝에 살짝 걸리고, 얼굴은 앞 제목('제주 살이의')보다 위에 온다.
      사진 아래 끝(무대 약 88%)은 서서히 흐려 무대 아래쪽 어두운 색으로 이어진다 */
@@ -964,7 +970,7 @@ a { color: inherit; }
     -webkit-mask-image: linear-gradient(180deg, #000 0, #000 80%, transparent 100%);
     mask-image: linear-gradient(180deg, #000 0, #000 80%, transparent 100%);
   }
-  /* 안세은 · 아인학교(둘째 슬라이드): 두 사람이 사진 가로 약 47%에 서 있어 왼쪽으로 치우쳐 보인다. 화면 가운데로 (배경·누끼 함께) */
+  /* 아인학교(둘째 슬라이드): 두 사람이 사진 가로 약 47%에 서 있어 왼쪽으로 치우쳐 보인다. 화면 가운데로 (배경·누끼 함께) */
   .people .person--photo[data-index="2"] .person__photo { object-position: 46% 40%; }
   .people .person__name { position: static; flex: 1; display: flex; flex-direction: column; justify-content: space-between; gap: 12px; }
   .js .people .person--photo .person__back { position: relative; top: auto; left: auto; right: auto; margin-top: 10px; align-self: flex-start; }
@@ -1001,8 +1007,8 @@ a { color: inherit; }
 }
 /* 첫 줄이 인물에 살짝 걸치도록 슬라이드마다 자리를 맞춘다 (PC) */
 @media (min-width: 900px) {
-  .people .person--photo[data-index="1"] .person__back { left: 24%; top: 8%; }   /* 이재은 */
-  .people .person--photo[data-index="2"] .person__back { left: 9%; }              /* 안세은 · 아인학교 */
+  .people .person--photo[data-index="1"] .person__back { left: 24%; top: 8%; }   /* 백록마케팅 */
+  .people .person--photo[data-index="2"] .person__back { left: 9%; }              /* 아인학교 */
   .people .person--photo[data-index="3"] .person__back { left: 15%; top: 8%; }
   .people .person--photo[data-index="4"] .person__back { left: 15%; top: 8%; }
 }
@@ -1651,7 +1657,7 @@ html:not(.js) .pick__final { opacity: 1; transform: none; }
 
 .is-reduced .fly { display: none; }
 
-/* ---------- 커서를 바라보는 인물 (이재은 강사님) ----------
+/* ---------- 커서를 바라보는 인물 (백록마케팅) ----------
    person-turn: 3D 모델을 좌우·위아래 각도별로 찍은 사진 133장.
    마우스 커서 쪽으로 몸을 돌리고, 위에서 내려다보거나 아래에서 올려다본 각도로 바뀐다 (site.js의 인물 방향 부분) */
 .person__figure--turn { background: none; margin: 0; }
