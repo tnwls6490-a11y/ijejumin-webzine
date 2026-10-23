@@ -1366,17 +1366,21 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     if (e.origin !== YT_ORIGIN) return;
     var d;
     try { d = JSON.parse(e.data); } catch (err) { return; }
-    var state = d && d.event === "onStateChange" ? d.info : d && d.info && d.info.playerState;
-    if (typeof state !== "number") return;
+    if (!d) return;
+    var info = d.info && typeof d.info === "object" ? d.info : {};
+    var state = d.event === "onStateChange" ? d.info : info.playerState;
+    if (typeof state !== "number") state = null;
     document.querySelectorAll(".video-card.is-playing iframe").forEach(function (f) {
       if (f.contentWindow !== e.source) return;
-      f.ytState = state;
-      if (f.onYtState) f.onYtState(state);
+      if (state !== null) f.ytState = state;
+      if (typeof info.muted === "boolean") f.ytMuted = info.muted;   // 소리를 껐는지 (소리 아이콘을 누르면 바뀐다)
+      if (f.onYt) f.onYt(state);
     });
   });
 
   /* 9. 영상 카드: 페이지를 열면 그 자리에 바로 YouTube 플레이어를 보여 주고, 재생 버튼을 한 번 누르면 바로 재생 (사용자 요청 2026-10-23)
      전에는 썸네일 카드를 먼저 보여 주고 누르면 플레이어를 불러왔는데, 휴대폰에서는 플레이어가 멈춘 채 떠서 한 번 더 눌러야 했다
+     스크롤해서 영상이 화면에 반쯤 들어오면 소리 없이 저절로 재생한다 (사용자 요청 2026-10-23, 아래 sync)
      (스크립트가 없으면 카드는 YouTube로 가는 링크로 남는다) */
   document.querySelectorAll(".video-card[data-video-id]").forEach(function (card) {
     var cap = card.querySelector(".video-card-cap");
@@ -1414,6 +1418,40 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     }
     box.appendChild(link);
     card.replaceWith(box);
+
+    /* 저절로 재생: 영상 자리가 화면에 반 이상 보이면 소리 없이 틀고, 거의 다 벗어나면 멈춘다
+       - 브라우저가 소리 있는 자동 재생을 막아서 소리 없이 튼다. 플레이어의 소리 아이콘을 누르면 소리가 나온다
+       - 소리를 켜고 본 영상(engaged)은 화면 밖으로 나가도 멈추지 않고 오른쪽 아래 작은 창으로 따라온다
+       - 직접 멈추거나 끝까지 보면 다시 저절로 틀지 않는다. 움직임 줄이기 설정이면 처음부터 저절로 틀지 않는다 */
+    var ready = false, seen = 0, engaged = false, ourPause = 0;
+    var stopped = !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+    var isPlaying = function () { return frame.ytState === 1 || frame.ytState === 3; };
+    var syncPip = function () {};
+    var sync = function () {
+      if (!ready) return;
+      if (seen >= 0.5 && !stopped && !isPlaying()) {
+        ytCommand(frame, "mute");
+        ytCommand(frame, "playVideo");
+      } else if (seen < 0.1 && isPlaying() && !engaged) {
+        ourPause = Date.now();
+        ytCommand(frame, "pauseVideo");
+      }
+      syncPip();
+    };
+    frame.onYt = function (state) {
+      if (state === 1) stopped = false;   // 직접 다시 틀었다
+      if (state === 2 && Date.now() - ourPause > 1500) stopped = true;   // 직접 멈췄다 (스크롤로 멈춘 것은 빼고)
+      if (state === 0) { stopped = true; engaged = false; }   // 끝까지 봤다
+      if (isPlaying() && frame.ytMuted === false) engaged = true;
+      if (!ready) { ready = true; sync(); } else syncPip();
+    };
+    if ("IntersectionObserver" in window) {
+      new IntersectionObserver(function (entries) {
+        seen = entries[0].isIntersecting ? entries[0].intersectionRatio : 0;
+        sync();
+      }, { threshold: [0, 0.1, 0.5] }).observe(pip ? stage : thumb);
+    }
+
     if (pip) {
       var pipClose = document.createElement("button");
       pipClose.type = "button";
@@ -1438,24 +1476,17 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         if (e.key === "Escape" && box.classList.contains("is-pip-large")) setLarge(false);
       };
       document.addEventListener("keydown", onKey);
-      /* 작은 창은 한 번이라도 재생한 뒤에만, 영상 자리가 화면 밖으로 나가면 뜬다 (재생 전에는 그냥 지나간다) */
-      var away = false, started = false;
-      var syncPip = function () {
-        var on = away && started;
+      /* 작은 창은 소리를 켜고 본 영상만, 영상 자리가 화면 밖으로 나가면 뜬다 (소리 없이 저절로 재생되던 영상은 그냥 멈춘다) */
+      syncPip = function () {
+        var on = seen < 0.1 && engaged;
         box.classList.toggle("is-pip", on);
         if (!on) setLarge(false);
       };
-      frame.onYtState = function (s) {
-        if (s === 1 && !started) { started = true; syncPip(); }
-      };
-      new IntersectionObserver(function (entries) {
-        away = !entries[0].isIntersecting;
-        syncPip();
-      }, { threshold: 0.1 }).observe(stage);
-      /* 작은 창 닫기: 영상을 멈추고 제자리로 돌려놓는다. 다시 재생하면 작은 창도 다시 뜬다 */
+      /* 작은 창 닫기: 영상을 멈추고 제자리로 돌려놓는다. 다시 틀면 작은 창도 다시 뜬다 */
       pipClose.addEventListener("click", function () {
         ytCommand(frame, "pauseVideo");
-        started = false;
+        stopped = true;
+        engaged = false;
         syncPip();
       });
     }
