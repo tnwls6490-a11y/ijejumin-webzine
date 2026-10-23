@@ -918,7 +918,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     if (run) {
       var k = clamp((now - run.start) / run.dur, 0, 1);
       shownP = run.from + (run.to - run.from) * easeInOut(k);
-      if (k >= 1) { shownP = run.to; run = null; }
+      if (k >= 1) { shownP = run.to; if (run.to === 1) restY = window.scrollY; run = null; }   // 제주 화면에 도착한 자리를 기억한다 (아래 '인터뷰 화면 한 번에')
       else requestUpdate();
     }
     var p = shownP;
@@ -994,11 +994,69 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   root.classList.add('has-intro');
   syncHeader();
 
-  window.addEventListener('scroll', function () { syncHeader(); requestUpdate(); }, { passive: true });
+  /* 제주 화면 → 인터뷰 화면: 스크롤하면 인터뷰 화면이 한 번에 쓱 올라온다 (사용자 요청 "한번에 슉 뜨는 걸로, 너무 빠르지 않게", 2026-10-23)
+     제주 화면에 도착한 뒤 아래로 조금(24px) 내리면, 인터뷰 화면이 올라오기 시작하는 곳으로 바로 옮긴 다음(제주 화면은 그대로라 티가 안 난다)
+     SNAP_MS(1.2초) 동안 인터뷰 화면이 다 올라온 곳(헤더 아래)까지 저절로 스크롤한다. 인터뷰 첫 화면에서 위로 올리면 같은 방식으로 제주 화면으로 돌아간다.
+     손으로 스크롤할 때만(휠·손가락·키보드) 움직이고, 메뉴·맨 위로 버튼처럼 저절로 스크롤할 때는 끼어들지 않는다. 움직임 줄이기 설정이면 하지 않는다.
+     (전에는 스크롤한 만큼 조금씩 올라왔다) */
+  var SNAP_MS = 1200;
+  var snap = null;            // 지금 재생 중인 저절로 스크롤 { from, to, then, start }
+  var restY = null;           // 제주 화면에 머무는 자리 (도착한 곳)
+  var userAt = -1e9;          // 사람이 마지막으로 스크롤한 때
+  var lastY = window.scrollY;
+  function pageY(el) { return el.getBoundingClientRect().top + window.scrollY; }
+  function marks() {
+    var hh = parseFloat(getComputedStyle(root).getPropertyValue('--hdr-h')) || 0;
+    var y = pageY(after);
+    return { rise: y - window.innerHeight, full: y - hh, rest: pageY(intro) + 40 };
+  }
+  function snapStep(ts) {
+    if (!snap) return;
+    if (snap.start === null) snap.start = ts;
+    var k = clamp((ts - snap.start) / SNAP_MS, 0, 1);
+    window.scrollTo(0, snap.from + (snap.to - snap.from) * easeInOut(k));
+    if (k < 1) { window.requestAnimationFrame(snapStep); return; }
+    var then = snap.then;
+    snap = null;
+    if (then !== null) { window.scrollTo(0, then); restY = then; }
+    root.style.scrollBehavior = '';
+    lastY = window.scrollY;
+  }
+  function startSnap(from, to, then) {
+    root.style.scrollBehavior = 'auto';   // 한 칸씩 바로 옮기도록 (html의 부드러운 스크롤을 잠깐 끈다)
+    window.scrollTo(0, from);
+    snap = { from: from, to: to, then: then, start: null };
+    window.requestAnimationFrame(snapStep);
+  }
+  function snapCheck() {
+    var y = window.scrollY, dy = y - lastY;
+    lastY = y;
+    if (snap || run || shownP !== 1 || reduced() || !after) return;
+    if (performance.now() - userAt > 350) return;                    // 사람이 직접 스크롤할 때만
+    var m = marks();
+    var rest = restY === null ? m.rest : restY;
+    if (dy > 0 && y > rest + 24 && y < m.full - 2) startSnap(Math.max(y, m.rise), m.full, null);   // 아래로: 인터뷰 화면이 올라온다
+    else if (dy < 0 && y > m.rise && y < m.full - 24) startSnap(y, m.rise, m.rest);                // 위로: 제주 화면으로 돌아간다
+  }
+  function markUser() { userAt = performance.now(); }
+  window.addEventListener('wheel', markUser, { passive: true });
+  window.addEventListener('touchmove', markUser, { passive: true });
+  window.addEventListener('keydown', function (e) { if (/^(ArrowDown|ArrowUp|PageDown|PageUp| |Spacebar)$/.test(e.key)) markUser(); });
+
+  window.addEventListener('scroll', function () { syncHeader(); requestUpdate(); snapCheck(); }, { passive: true });
   window.addEventListener('resize', function () { measure(); syncHeader(); requestUpdate(); });
   if (reduceQuery && reduceQuery.addEventListener) reduceQuery.addEventListener('change', requestUpdate);
-  /* 제주로 빨려 들어가는 동안은 휠·손가락 스크롤을 막는다 (끝나면 바로 풀린다) */
-  function holdScroll(e) { if (run && run.to === 1) e.preventDefault(); }
+  /* 제주로 빨려 들어가는 동안, 인터뷰 화면이 저절로 올라오는(내려가는) 동안은 휠·손가락 스크롤을 막는다.
+     끝난 뒤에도 같은 휠 흐름(트랙패드 관성)이 이어지는 동안은 계속 막아, 남은 힘으로 다음 화면까지 넘어가지 않게 한다 (휠이 0.16초 쉬면 풀린다) */
+  var holdWheel = false, lastWheel = 0;
+  function holdScroll(e) {
+    var now = performance.now();
+    if ((run && run.to === 1) || snap) { e.preventDefault(); holdWheel = true; lastWheel = now; return; }
+    if (holdWheel && e.type === 'wheel') {
+      if (now - lastWheel < 160) { e.preventDefault(); lastWheel = now; return; }
+      holdWheel = false;
+    }
+  }
   window.addEventListener('wheel', holdScroll, { passive: false });
   window.addEventListener('touchmove', holdScroll, { passive: false });
 })();

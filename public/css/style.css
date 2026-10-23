@@ -424,8 +424,14 @@ a { color: inherit; }
   position: absolute;
   left: 23.297%; top: 17.541%; width: 53.131%; height: 58.840%;
 }
-/* 위로 올라간 가리개 판이 창틀 바깥으로 비치지 않도록 창 안쪽만 보여 준다 */
-.shade-clip { overflow: hidden; pointer-events: none; }
+/* 위로 올라간 가리개 판이 창틀 바깥으로 비치지 않도록 창 안쪽만 보여 준다.
+   네모 칸만 자르면, 창틀 사진 가장자리를 둥글게 흐린 곳(위쪽 두 모서리)으로 올라간 판이 희미하게 비쳐 네모 모서리가 보였다 (사용자 요청 "미세하게 겹쳐 보여", 2026-10-23).
+   그래서 닫힌 창 사진의 구멍 모양(2px 넓힘)대로 잘라 낸 모양틀(shade-clip-mask.png)로 구멍 안만 보여 준다. 닫힌 모습은 그대로다 */
+.shade-clip {
+  overflow: hidden; pointer-events: none;
+  -webkit-mask: url(../images/shade-clip-mask.png) 0 0 / 100% 100% no-repeat;
+  mask: url(../images/shade-clip-mask.png) 0 0 / 100% 100% no-repeat;
+}
 .shade-panel {
   position: absolute; inset: 0;
   pointer-events: none;
