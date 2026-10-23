@@ -32,6 +32,15 @@
 - 첫 화면 사진은 500KB 이하, 기사 사진·공유 미리보기는 300KB 이하
 - 페이지마다 title·description·OG·canonical을 넣고, og:image와 canonical은 실제 주소 전체로 쓴다
 
+## 백업 (세부페이지 합치기 전, 2026-10-23)
+- 세부페이지를 합치기 전 서브메인 완성본을 두 가지로 남겨 두었다 (사용자 요청)
+  1. git 표시(태그) `backup-before-subpages-20261023`: 그때의 모든 파일. 기록이 남아 있는 한 언제든 돌아갈 수 있다
+  2. zip 파일 `클로드 코드 2/ijejumin-webzine-backup-20261023.zip`: 프로젝트 폴더 통째로(.git 포함). git이 꼬여도 이 파일만 풀면 된다
+- 되돌리기
+  - 파일 하나만: `git checkout backup-before-subpages-20261023 -- public/index.html` (css·js도 같은 식)
+  - 전체 비교: `git diff backup-before-subpages-20261023 -- public/` 로 무엇이 바뀌었는지 먼저 본다
+  - 사용자가 "백업으로 돌려줘"라고 하면 위 방법으로 되돌리고, 되돌리기 전에 지금 상태를 먼저 커밋해 둔다
+
 ## 폴더 구조
 ```
 ijejumin-webzine/
