@@ -74,3 +74,6 @@ postcard-20.webp | 팀이 받은 사진 · 찍은 사람 확인 필요 (받은 �
 # 서브메인 제주생존한마디 엽서 앞면 (index.html .pcard--post): 11번은 사용자가 준 엽서 시안(05 그래픽 패턴형)에서 엽서를 펴서 잘라 내고 글자를 지움.
 # 나머지 19장(postcard-front-01~20.svg)은 시안을 본떠 직접 그린 그림 (reference/tools/make-postcard-fronts.py)
 postcard-front-11.webp | 팀이 준 엽서 디자인 시안 이미지 (그림을 만든 도구·사람 확인 필요) | 확인 필요 | 확인 필요
+
+# 서브메인 제주생존한마디 로고 엽서 (index.html .pick__cover): 팀이 준 팀원 그림 (원본 reference/team-illustration-original.webp, 엽서 비율로 양옆을 자르고 크기·형식 변환)
+postcard-cover-team.webp | 팀이 준 그림 (제주청년센터 앞 팀원 다섯 명, 그림을 만든 도구·사람 확인 필요) | 확인 필요 | 확인 필요
