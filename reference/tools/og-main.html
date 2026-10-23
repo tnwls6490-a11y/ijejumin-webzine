@@ -1,0 +1,74 @@
+<!doctype html>
+<!-- 웹진 메인 카드 그림(공유 미리보기) public/images/og-main.jpg 를 만드는 판 (1200×630)
+     서브메인 첫 화면의 제주 장면(성산일출봉 항공 사진 + 큰 글자 "이제,주민" + 위쪽 로고 줄)을 그대로 옮기고,
+     아래에 헤더·푸터와 같은 주황 띠를 붙였다 (사용자 요청 "지금 디자인에 맞게", 2026-10-23)
+     이 파일은 웹진에 올리지 않는다 (reference/). 그림·글꼴은 미리보기 서버(8737)에서 가져온다
+     다시 만들기: 미리보기 서버를 켠 뒤
+       msedge --headless=new --hide-scrollbars --window-size=1200,630 --screenshot=og.png file:///…/reference/tools/og-main.html
+       → og.png를 JPG(품질 85)로 바꿔 public/images/og-main.jpg 에 넣는다 (300KB 이하) -->
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="http://localhost:8737/css/style.css">
+<style>
+  html, body { margin: 0; padding: 0; width: 1200px; height: 630px; overflow: hidden; background: #0B2F5A; }
+  .og { position: relative; width: 1200px; height: 630px; overflow: hidden; font-family: Pretendard, "Noto Sans KR", sans-serif; }
+
+  /* 서브메인 PC 첫 화면과 같은 비율: 사진 폭 = 화면 폭의 125% (1500×750), 가운데 */
+  .og-photo { position: absolute; left: -150px; top: -88px; width: 1500px; height: 750px; }
+  .og-photo img.bg { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .og-photo::after {
+    content: ""; position: absolute; inset: 0; z-index: 1;
+    background: linear-gradient(180deg, rgba(6, 22, 44, .34) 0%, rgba(6, 22, 44, .08) 30%, rgba(6, 22, 44, 0) 55%, rgba(6, 22, 44, .5) 100%);
+  }
+  .og-word {
+    position: absolute; left: 50%; z-index: 2; margin: 0;
+    top: calc(48.59% - 168px * .74);
+    transform: translateX(-50%);
+    font-family: "Ijeju Display", "Noto Sans KR", sans-serif;
+    font-size: 168px; font-weight: 700; line-height: .8; letter-spacing: -0.045em;
+    color: #FFFFFF; white-space: nowrap;
+  }
+  .og-comma { position: relative; top: -.16em; margin: 0 .02em; }
+  .og-front { position: absolute; z-index: 3; left: 27.852%; top: 48.054%; width: 41.879%; height: 37.584%; }
+
+  /* 위쪽 줄: 흰 로고 + '육지에서 나고, 섬에서 자라는 중' / 오른쪽 '제주 이주민 인터뷰 웹진', 로고 옆부터 가는 흰 선 */
+  .og-top {
+    position: absolute; z-index: 4; left: 56px; right: 56px; top: 34px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .og-top::after {
+    content: ""; position: absolute; left: 80px; right: 0; top: 66px; height: 2px; background: rgba(255, 255, 255, .8);
+  }
+  .og-brand { display: flex; align-items: center; gap: 20px; }
+  .og-brand img { width: 64px; height: 74px; filter: drop-shadow(0 1px 4px rgba(6, 22, 44, .5)); }
+  .og-top span {
+    font-size: 26px; line-height: 1.3; color: #FFFFFF;
+    text-shadow: 0 1px 4px rgba(0, 0, 0, .55), 0 0 14px rgba(6, 22, 44, .55);
+  }
+
+  /* 아래 주황 띠: 헤더·푸터와 같은 주황(#F97316), 흰 글자 */
+  .og-band {
+    position: absolute; z-index: 5; left: 0; right: 0; bottom: 0; height: 96px;
+    display: flex; align-items: center; justify-content: space-between; padding: 0 56px;
+    background: #F97316; color: #FFFFFF;
+  }
+  .og-band b { font-size: 34px; font-weight: 800; letter-spacing: -0.01em; }
+  .og-band span { font-size: 26px; font-weight: 600; }
+</style>
+</head>
+<body>
+<div class="og">
+  <div class="og-photo">
+    <img class="bg" src="http://localhost:8737/images/jeju-seongsan-4.jpg" alt="">
+    <p class="og-word">이제<span class="og-comma">,</span>주민</p>
+    <img class="og-front" src="http://localhost:8737/images/jeju-seongsan-4-front.webp" alt="">
+  </div>
+  <div class="og-top">
+    <div class="og-brand"><img src="http://localhost:8737/images/logo-ijejumin-white.webp" alt=""><span>육지에서 나고, 섬에서 자라는 중</span></div>
+    <span>제주 이주민 인터뷰 웹진</span>
+  </div>
+  <div class="og-band"><b>스스로 섬사람이 되어버린 이주민들의 제주 생존기</b><span>한경 웹진</span></div>
+</div>
+</body>
+</html>
