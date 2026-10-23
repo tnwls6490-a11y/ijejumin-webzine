@@ -48,7 +48,7 @@ ijejumin-webzine/
 ├── 시작하기.md             사람용 사용법
 ├── public/                → 실제로 올라가는 웹진
 │   ├── index.html         서브메인 (완성된 첫 화면 + 섹션 3개)
-│   ├── articles/          상세페이지 (지금은 find-my-jeju.html 하나)
+│   ├── articles/          상세페이지 (find-my-jeju + 인터뷰 기사 4편)
 │   ├── images/            사진 + credits.txt
 │   ├── media/             무음 클립·배경음악 (아직 비어 있음)
 │   ├── css/style.css
@@ -293,11 +293,26 @@ ijejumin-webzine/
 ## 아직 없는 페이지 (index.html이 이미 링크하고 있음)
 | 링크 | 내용 |
 |---|---|
-| `articles/lee-jaeeun.html` | 인터뷰 01 백록마케팅 (이재은 강사님) |
-| `articles/ain-school.html` | 인터뷰 02 아인학교 (안세은 선생님) |
-| `articles/parang-of-records.html` | 인터뷰 03 파랑오브레코즈샵 |
-| `articles/emily.html` | 인터뷰 04 엠아이티도그 (에밀리) |
 | `articles/jeju-village-test.html` | 나의 제주 마을 테스트 (지금은 링크하지 않고 테스트 아티팩트로 바로 간다) |
+
+## 만든 상세페이지: 이주민 인터뷰 기사 4편 (2026-10-23 합침)
+| 파일 | 내용 (서브메인 순서) | 기사 안 이미지 번호 |
+|---|---|---|
+| `articles/lee-jaeeun.html` | 01 백록마케팅 · 이재은 대표 | `interview-02-*` |
+| `articles/ain-school.html` | 02 아인학교 · 안세은 선생님 | `interview-01-*` |
+| `articles/parang-of-records.html` | 03 파랑오브레코즈샵 · 임하람 작가 | `interview-03-*` |
+| `articles/emily.html` | 04 엠아이티도그 · 에밀리 | `interview-04-*` |
+- 다른 창(대화)이 `C:/Users/tnwls/dev/ijejumin-webzine`의 `interviews` 가지에서 만든 것을 이 폴더로 가져와 합쳤다 (사용자 요청)
+  - 그 폴더는 GitHub의 예전 메인(파란 헤더 시절, 2eb5b1a)에서 시작해 이 폴더보다 105커밋 뒤에 있었다. **이제 그 폴더는 낡았으니 여기서만 고친다**
+  - 합치기 전 상태는 백업 태그 `backup-before-subpages-20261023`. 합친 기록은 `interviews-merge` 가지에 있고 main에 그대로 들어갔다
+- 파일 이름은 서브메인이 걸어 둔 이름(A안)으로 바꿨다 (원래 `interview-01~04.html`). 기사 안 링크 36곳도 같이 바꿨다
+  - 기사 안 이미지 번호는 원래대로다: 01 = 아인학교, 02 = 백록마케팅 (서브메인 사진 `interview-01-photo.jpg`도 아인학교라 번호가 서로 맞다)
+- 위쪽 인터뷰 목록(`.ivnav`)은 서브메인 순서·이름으로: 01 백록마케팅 · 02 아인학교 · 03 파랑오브레코즈샵 · 04 엠아이티도그 (원래 01 아인학교부터, 사람 이름)
+- 공통 틀은 서브메인과 같다: 상단 바·주황 헤더·`.wz-outro` 푸터·맨 위로 버튼·태그 관리자(noscript). `<body class="page-interview">`
+  - 기사에서만 헤더 글자를 짙은 색으로 바꾸던 규칙은 뺐다. `site.js`는 `<head>`에서 `defer`로 읽는다(원래 기사 방식 그대로)
+- CSS·JS: `style.css` 맨 뒤의 "이주민 인터뷰 기사" 블록, `site.js` 맨 뒤의 "이주민 인터뷰 기사 전용 스크립트" 블록. 대부분 `.page-interview`나 `iv-`·`story-`·`isle-` 같은 기사 전용 이름이다
+  - 그 블록 안 주석: "뒤쪽 블록이 앞 규칙을 덮어쓰는 구조라 블록 순서를 바꾸지 마세요"
+- 사진 출처는 `credits.txt` 맨 뒤 "이주민 인터뷰 기사 4편" 목록. 아래 '올리기 전 확인할 것'에 남은 일을 적었다
 
 - 계획했던 `articles/jeju-checklist.html`·`jeju-village-info.html`은 만들지 않고 아래 상세페이지 하나로 합쳤다
 
@@ -330,6 +345,12 @@ ijejumin-webzine/
 - [ ] 엽서 앞면 그림 `postcard-front-11.webp`: 시안 이미지를 누가 무엇으로 만들었는지 확인해 `credits.txt`를 채운다
 - [ ] 로고 엽서 팀 그림 `postcard-cover-team.webp`: 누가 무엇으로 만들었는지 확인해 `credits.txt`를 채운다
 - [ ] 인터뷰 문구가 원고와 맞는지 확인
+- [ ] 인터뷰 기사 4편 사진 (`credits.txt` 맨 뒤 목록의 [확인 필요])
+  - 네이버 지도 로드뷰 캡처 5장(`interview-02-place-1~3`, `interview-03-place-2~3`): 약관상 게시 가능한지, 아니면 교체
+  - 이미지 생성 도구로 만든 것으로 보이는 2장(`interview-03-photo-2`, `interview-03-place-1`): 출처 확인, AI라면 표기
+  - `place-sangumburi.jpg`(출처 미확인)를 CSS `.isle-fill-sangumburi`가 아직 배경으로 쓴다. `place-isidore.jpg`, 지도 프레임 그림 `jeju-frame-*` 출처도 확인
+  - 사진 속 인물 초상권 동의(에밀리 등), 임시 사진 교체(`interview-03-photo-1·4`, `interview-04-photo-3`)
+  - 기사 속 YouTube 영상·쇼츠가 실제로 재생되는지, 휴대폰에서 확인
 - [ ] 아인학교 두 번째 인물 이름 확인
 - [ ] 휴대폰·PC 화면 점검 (가로 스크롤, 글자 크기, 버튼 크기, 대비)
 - [ ] 서브메인에서 숨긴 상단 바 "한경 웹진 메인으로": 공통 기준("고치지 않는다")과 어긋난다. 올리기 전에 그대로 둘지 정한다
