@@ -1005,12 +1005,13 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 
 /* ---------- 맨 위로 버튼 (.to-top, 모든 페이지 공용) ----------
    페이지 아래쪽(끝까지 남은 길이가 화면 1.6개 이하)부터 오른쪽 아래에 나타나 스크롤을 따라다닌다 (사용자가 준 레퍼런스, 2026-10-23).
-   푸터(.wz-outro)가 올라오면 버튼을 그만큼 올려(--lift) 푸터 위 끝에 살짝 걸쳐 멈춘다. 누르면 맨 위로 부드럽게 올라간다 */
+   주황 푸터 위로도 따라 내려가고, 맨 아래 공통 푸터 줄(.site-footer)이 올라오면 그만큼 올려(--lift) 그 줄 위에서 멈춘다.
+   (처음엔 주황 푸터 위 끝에서 멈췄는데, 사용자 요청 "푸터 위로도 올라올 수 있게"로 바꿈) 누르면 맨 위로 부드럽게 올라간다 */
 (function () {
   'use strict';
   var btn = document.querySelector('.to-top');
   if (!btn) return;
-  var outro = document.querySelector('.wz-outro') || document.querySelector('.site-footer');
+  var foot = document.querySelector('.site-footer');
   var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var ticking = false;
   function update() {
@@ -1019,10 +1020,9 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     var left = document.documentElement.scrollHeight - (window.scrollY + vh);   // 페이지 끝까지 남은 길이
     btn.classList.toggle('is-shown', left < vh * 1.6);
     var lift = 0;
-    if (outro) {
+    if (foot) {
       var gap = parseFloat(getComputedStyle(btn).bottom) || 0;     // 화면 아래와 버튼 사이
-      var overlap = btn.offsetHeight * .4;                          // 푸터 위 끝에 걸치는 만큼
-      lift = Math.max(0, (vh - gap) - (outro.getBoundingClientRect().top + overlap));
+      lift = Math.max(0, (vh - gap) - (foot.getBoundingClientRect().top - 12));   // 맨 아래 줄 위 선에서 12px 위
     }
     btn.style.setProperty('--lift', lift.toFixed(0) + 'px');
   }
