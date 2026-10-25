@@ -208,7 +208,7 @@ a { color: inherit; }
    모양은 그 화면 가운데 버튼과 같게 (사용자 요청 "중앙의 버튼과 동일한 스타일", 2026-10-26. 처음엔 둘 다 어두운 반투명 캡슐)
    - .intro-lang: 비행기 창 화면. 가운데 안내 문구(.intro__hint)처럼 크림색 캡슐·옅은 그림자·갈색 글자, 지금 언어는 주황 글자에 살구색 동그라미
      PC 오른쪽 위, 휴대폰은 위 안내 문구와 겹치지 않게 오른쪽 아래(스크롤 표시와 같은 높이). 날아가기 시작하면(is-moving) 사라진다
-   - .landing-lang: 제주 화면. 가운데 '이야기 보러 가기'(.landing__next)처럼 흰 테두리·어두운 반투명 바탕·흰 글자, 지금 언어는 흰 동그라미
+   - .landing-lang: 제주 화면. 흰 테두리·흰 글자, 지금 언어는 흰 동그라미 (처음엔 '이야기 보러 가기'처럼 어두운 반투명 바탕이었는데 사용자 요청으로 뺐다)
      윗줄 맨 오른쪽. 휴대폰에서는 '제주 이주민 인터뷰 웹진' 줄(또는 그 아래) 오른쪽 */
 .intro-lang, .landing-lang { margin: 0; padding: 2px; border-radius: 999px; }
 .intro-lang::before, .landing-lang::before { content: none; }
@@ -216,11 +216,9 @@ a { color: inherit; }
 .wz-lang.intro-lang a { font-weight: 600; color: var(--muted); }
 .wz-lang.intro-lang a:hover { background: rgba(60, 45, 30, .08); }
 .wz-lang.intro-lang a[aria-current="true"], .wz-lang.intro-lang a[aria-current="true"]:hover { background: #FDEBDD; color: var(--orange-ink); }   /* 살구색 위 주황 글자 대비 약 4.8:1 */
-.landing-lang {
-  padding: 1px; border: 1.5px solid #FFFFFF; background: rgba(8, 24, 44, .4);
-  -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
-}
-.wz-lang.landing-lang a { font-weight: 600; }
+.landing-lang { padding: 1px; border: 1.5px solid #FFFFFF; background: none; box-shadow: 0 1px 6px rgba(6, 22, 44, .3); }   /* 어두운 바탕 없이 흰 테두리만 (사용자 요청 2026-10-26) */
+.wz-lang.landing-lang a { font-weight: 600; text-shadow: 0 1px 3px rgba(0, 0, 0, .55), 0 0 12px rgba(6, 22, 44, .55); }   /* 옆 흰 글자들과 같은 그림자로 사진 위에서도 읽히게 */
+.wz-lang.landing-lang a[aria-current="true"] { text-shadow: none; }
 .intro-lang {
   position: absolute; z-index: 6; top: clamp(12px, 2.4vh, 24px); right: var(--frame-pad);
   transition: opacity .3s ease, visibility 0s;
