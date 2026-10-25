@@ -235,7 +235,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
       return false;
     }
     function layoutMobile() {
-      stage.classList.remove('is-tight', 'is-tighter');
+      stage.classList.remove('is-tight', 'is-tighter', 'is-tightest');
       section.style.removeProperty('--people-vh');
       if (!narrowQuery || !narrowQuery.matches) {
         section.style.removeProperty('--chips-h');
@@ -250,7 +250,11 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
       if (crowded()) {
         stage.classList.add('is-tight');
         setChipsH();
-        if (crowded()) stage.classList.add('is-tighter');
+        if (crowded()) {
+          stage.classList.add('is-tighter');
+          setChipsH();
+          if (crowded()) stage.classList.add('is-tightest');   // 카톡 막대가 보이는 312×520 같은 아주 낮은 화면 (설명이 네 줄일 때)
+        }
       }
       section.style.removeProperty('--people-vh');
       setChipsH();
