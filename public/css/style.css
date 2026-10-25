@@ -205,15 +205,22 @@ a { color: inherit; }
 }
 
 /* 서브메인 첫 화면(비행기 창·제주 화면)에서도 언어 바꾸기 (사용자 요청 2026-10-26). 이때는 헤더가 위로 숨어 있다
-   사진·창 위에서도 보이게 어두운 반투명 캡슐에 흰 글자. 지금 언어는 흰 동그라미 (헤더와 같음)
-   - .intro-lang: 비행기 창 화면. PC 오른쪽 위, 휴대폰은 위 안내 문구와 겹치지 않게 오른쪽 아래(스크롤 표시와 같은 높이). 날아가기 시작하면(is-moving) 사라진다
-   - .landing-lang: 제주 화면 윗줄 맨 오른쪽. 휴대폰에서는 '제주 이주민 인터뷰 웹진' 줄(또는 그 아래) 오른쪽 */
-.intro-lang, .landing-lang {
-  margin: 0; padding: 2px; border-radius: 999px;
-  background: rgba(18, 35, 58, .62); box-shadow: 0 2px 10px rgba(0, 0, 0, .16);   /* 밝은 베이지 객실 벽 위에서도 흰 글자 대비 4.5:1 넘게 (약 5.8:1) */
-  -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
-}
+   모양은 그 화면 가운데 버튼과 같게 (사용자 요청 "중앙의 버튼과 동일한 스타일", 2026-10-26. 처음엔 둘 다 어두운 반투명 캡슐)
+   - .intro-lang: 비행기 창 화면. 가운데 안내 문구(.intro__hint)처럼 크림색 캡슐·옅은 그림자·갈색 글자, 지금 언어는 주황 글자에 살구색 동그라미
+     PC 오른쪽 위, 휴대폰은 위 안내 문구와 겹치지 않게 오른쪽 아래(스크롤 표시와 같은 높이). 날아가기 시작하면(is-moving) 사라진다
+   - .landing-lang: 제주 화면. 가운데 '이야기 보러 가기'(.landing__next)처럼 흰 테두리·어두운 반투명 바탕·흰 글자, 지금 언어는 흰 동그라미
+     윗줄 맨 오른쪽. 휴대폰에서는 '제주 이주민 인터뷰 웹진' 줄(또는 그 아래) 오른쪽 */
+.intro-lang, .landing-lang { margin: 0; padding: 2px; border-radius: 999px; }
 .intro-lang::before, .landing-lang::before { content: none; }
+.intro-lang { background: rgba(255, 252, 246, .9); box-shadow: 0 2px 12px rgba(60, 45, 30, .18); }
+.wz-lang.intro-lang a { font-weight: 600; color: var(--muted); }
+.wz-lang.intro-lang a:hover { background: rgba(60, 45, 30, .08); }
+.wz-lang.intro-lang a[aria-current="true"], .wz-lang.intro-lang a[aria-current="true"]:hover { background: #FDEBDD; color: var(--orange-ink); }   /* 살구색 위 주황 글자 대비 약 4.8:1 */
+.landing-lang {
+  padding: 1px; border: 1.5px solid #FFFFFF; background: rgba(8, 24, 44, .4);
+  -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+}
+.wz-lang.landing-lang a { font-weight: 600; }
 .intro-lang {
   position: absolute; z-index: 6; top: clamp(12px, 2.4vh, 24px); right: var(--frame-pad);
   transition: opacity .3s ease, visibility 0s;
