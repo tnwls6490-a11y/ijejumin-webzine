@@ -8,6 +8,11 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
 })(window,document,'script','dataLayer','GTM-NR6G6B9M');
 
+/* ---------- 언어판 (한국어·영어·일본어, 2026-10-25) ----------
+   스크립트가 화면에 쓰는 글(버튼 이름·안내)을 페이지 언어(<html lang>)에 맞춘다. wzT('한국어', 'English', '日本語') */
+var wzLang = (document.documentElement.getAttribute('lang') || 'ko').slice(0, 2);
+function wzT(ko, en, ja) { return wzLang === 'en' ? en : wzLang === 'ja' ? ja : ko; }
+
 (function () {
   'use strict';
 
@@ -119,6 +124,13 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
       setSide(incoming, 0);
 
       for (var c = 0; c < chips.length; c++) chips[c].setAttribute('aria-pressed', c === i ? 'true' : 'false');
+      /* 이름 버튼 줄이 옆으로 넘어가는 화면(영어판 좁은 휴대폰)에서는 지금 사람 버튼이 보이게 줄을 옮긴다 */
+      var box = chips[i] && chips[i].parentNode;
+      if (box && box.scrollWidth > box.clientWidth + 1) {
+        var cl = chips[i].getBoundingClientRect().left - box.getBoundingClientRect().left + box.scrollLeft, cr = cl + chips[i].offsetWidth;
+        if (cl < box.scrollLeft) box.scrollLeft = cl - 8;
+        else if (cr > box.scrollLeft + box.clientWidth) box.scrollLeft = cr - box.clientWidth + 28;
+      }
       stage.setAttribute('data-tone', incoming.getAttribute('data-tone') || 'sky');
       if (prevBtn) prevBtn.disabled = i === 0;
       if (nextBtn) nextBtn.disabled = i === n - 1;
@@ -762,11 +774,11 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
       });
       doneEl.textContent = done;
       board.style.setProperty('--done', (done / items.length).toFixed(3));
-      resetBtn.textContent = undo ? '되돌리기' : '기록 지우기';
+      resetBtn.textContent = undo ? wzT('되돌리기', 'Undo', '元に戻す') : wzT('기록 지우기', 'Clear all', '記録を消す');
     }
     function syncExpand() {
       var someClosed = Array.prototype.some.call(groups, function (g) { return !g.open; });
-      expandBtn.textContent = someClosed ? '모두 펼치기' : '모두 접기';
+      expandBtn.textContent = someClosed ? wzT('모두 펼치기', 'Expand all', 'すべて開く') : wzT('모두 접기', 'Collapse all', 'すべて閉じる');
     }
 
     section.addEventListener('click', function (e) {
@@ -856,7 +868,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     setShade(open ? 1 : 0);
     stage.classList.toggle('is-open', open);
     shade.setAttribute('aria-pressed', open ? 'true' : 'false');
-    shade.setAttribute('aria-label', open ? '창문 가리개 닫기' : '창문 가리개 열기');
+    shade.setAttribute('aria-label', open ? wzT('창문 가리개 닫기', 'Close the window shade', '窓のシェードを閉じる') : wzT('창문 가리개 열기', 'Open the window shade', '窓のシェードを開ける'));
   }
 
   var drag = null;
@@ -1388,7 +1400,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
      (스크립트가 없으면 카드는 YouTube로 가는 링크로 남는다) */
   document.querySelectorAll(".video-card[data-video-id]").forEach(function (card) {
     var cap = card.querySelector(".video-card-cap");
-    var title = cap ? cap.textContent.replace(/\s*·\s*YouTube에서 보기\s*$/, "") : "";
+    var title = cap ? cap.textContent.replace(/\s*·\s*(YouTube에서 보기|Watch on YouTube|YouTubeで見る)\s*$/, "") : "";
     var box = document.createElement("div");
     box.className = card.className + " is-playing";
     if (card.id) box.id = card.id;
@@ -1398,7 +1410,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     frame.src = YT_ORIGIN + "/embed/" + encodeURIComponent(card.getAttribute("data-video-id")) + "?rel=0&playsinline=1&enablejsapi=1" +
       (/^https?:$/.test(location.protocol) ? "&origin=" + encodeURIComponent(location.origin) : "");
     frame.addEventListener("load", function () { ytSend(frame, { event: "listening", id: 1, channel: "widget" }); });
-    frame.title = title || "인터뷰 영상";
+    frame.title = title || wzT("인터뷰 영상", "Interview video", "インタビュー動画");
     frame.allow = "autoplay; encrypted-media; picture-in-picture; fullscreen";
     frame.setAttribute("allowfullscreen", "");
     frame.setAttribute("referrerpolicy", "strict-origin-when-cross-origin");
@@ -1409,7 +1421,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     link.href = card.href;
     link.target = "_blank";
     link.rel = "noopener";
-    link.textContent = cap ? cap.textContent : "YouTube에서 보기";
+    link.textContent = cap ? cap.textContent : wzT("YouTube에서 보기", "Watch on YouTube", "YouTubeで見る");
     var pip = card.hasAttribute("data-pip") && "IntersectionObserver" in window;
     if (pip) {
       /* 영상 자리(stage)는 제자리에 남겨 두고, 영상 틀만 화면 오른쪽 아래로 옮겨 따라다니게 함 (영상이 다시 로드되지 않음) */
@@ -1493,7 +1505,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
       var pipClose = document.createElement("button");
       pipClose.type = "button";
       pipClose.className = "video-pip-close";
-      pipClose.setAttribute("aria-label", "작은 영상 닫기");
+      pipClose.setAttribute("aria-label", wzT("작은 영상 닫기", "Close mini player", "ミニプレーヤーを閉じる"));
       pipClose.textContent = "✕";
       thumb.appendChild(pipClose);
       /* 작은 창에서 영상 자리까지 내려가지 않고 화면 가운데로 크게 키워 보기 (같은 영상이라 끊기지 않음) */
@@ -1504,7 +1516,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
       var setLarge = function (on) {
         box.classList.toggle("is-pip-large", on);
         pipExpand.textContent = on ? "⤡" : "⤢";
-        pipExpand.setAttribute("aria-label", on ? "작은 창으로 줄이기" : "영상 크게 보기");
+        pipExpand.setAttribute("aria-label", on ? wzT("작은 창으로 줄이기", "Shrink to mini player", "小さくする") : wzT("영상 크게 보기", "Enlarge video", "動画を大きく見る"));
       };
       setLarge(false);
       pipExpand.addEventListener("click", function () { setLarge(!box.classList.contains("is-pip-large")); });
@@ -1545,14 +1557,14 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
       modal.className = "video-modal";
       modal.setAttribute("role", "dialog");
       modal.setAttribute("aria-modal", "true");
-      modal.setAttribute("aria-label", "쇼츠 재생");
+      modal.setAttribute("aria-label", wzT("쇼츠 재생", "Play short", "ショート動画を再生"));
       modal.hidden = true;
       var box = document.createElement("div");
       box.className = "video-modal-box";
       closeBtn = document.createElement("button");
       closeBtn.type = "button";
       closeBtn.className = "video-modal-close";
-      closeBtn.setAttribute("aria-label", "영상 닫기");
+      closeBtn.setAttribute("aria-label", wzT("영상 닫기", "Close video", "動画を閉じる"));
       closeBtn.textContent = "✕";
       frameBox = document.createElement("div");
       frameBox.className = "video-modal-frame";
@@ -1560,7 +1572,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
       link.className = "video-modal-link";
       link.target = "_blank";
       link.rel = "noopener";
-      link.textContent = "YouTube에서 보기";
+      link.textContent = wzT("YouTube에서 보기", "Watch on YouTube", "YouTubeで見る");
       box.appendChild(closeBtn);
       box.appendChild(frameBox);
       box.appendChild(link);
@@ -1581,7 +1593,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
       frameBox.textContent = "";
       var frame = document.createElement("iframe");
       frame.src = "https://www.youtube-nocookie.com/embed/" + id + "?autoplay=1&rel=0&playsinline=1";
-      frame.title = "이제주민 쇼츠";
+      frame.title = wzT("이제주민 쇼츠", "ejejumin shorts", "ejejumin ショート動画");
       frame.allow = "autoplay; encrypted-media; picture-in-picture; fullscreen";
       frame.setAttribute("allowfullscreen", "");
       frame.setAttribute("referrerpolicy", "strict-origin-when-cross-origin");
@@ -1592,12 +1604,12 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         link.href = article;
         link.removeAttribute("target");
         link.removeAttribute("rel");
-        link.textContent = "인터뷰 원문 보러 가기";
+        link.textContent = wzT("인터뷰 원문 보러 가기", "Read the full interview", "インタビュー全文を読む");
       } else {
         link.href = card.href;
         link.target = "_blank";
         link.rel = "noopener";
-        link.textContent = "YouTube에서 보기";
+        link.textContent = wzT("YouTube에서 보기", "Watch on YouTube", "YouTubeで見る");
       }
       lastCard = card;
       /* 재생 중인 본문 영상(작은 창 포함)은 잠시 멈추고, 쇼츠 창을 닫으면 이어서 재생 */
