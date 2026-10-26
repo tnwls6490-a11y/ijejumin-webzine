@@ -943,7 +943,7 @@ function wzT(ko, en, ja) { return wzLang === 'en' ? en : wzLang === 'ja' ? ja : 
     if (run) {
       var k = clamp((now - run.start) / run.dur, 0, 1);
       shownP = run.from + (run.to - run.from) * easeInOut(k);
-      if (k >= 1) { shownP = run.to; if (run.to === 1) restY = window.scrollY; run = null; }   // 제주 화면에 도착한 자리를 기억한다 (아래 '인터뷰 화면 한 번에')
+      if (k >= 1) { shownP = run.to; if (run.to === 1) restY = window.scrollY; run = null; holding = false; }   // 제주 화면에 도착한 자리를 기억한다 (아래 '인터뷰 화면 한 번에')
       else requestUpdate();
     }
     var p = shownP;
@@ -1068,7 +1068,27 @@ function wzT(ko, en, ja) { return wzLang === 'en' ? en : wzLang === 'ja' ? ja : 
   window.addEventListener('touchmove', markUser, { passive: true });
   window.addEventListener('keydown', function (e) { if (/^(ArrowDown|ArrowUp|PageDown|PageUp| |Spacebar)$/.test(e.key)) markUser(); });
 
-  window.addEventListener('scroll', function () { syncHeader(); requestUpdate(); snapCheck(); }, { passive: true });
+  /* 비행기 창 → 제주로 빨려 들어가는 동안은 페이지를 제자리(m.rest)에 붙잡아 둔다 (사용자 요청 "순서에 맞게 올라오게", 2026-10-26)
+     휠을 세게 굴리거나 손가락으로 튕기면 페이지가 한 번에 수백~수천 px 내려가, 창문 위로 인터뷰 화면이 먼저 올라왔다.
+     연출 화면은 위에 붙어 있어(sticky) 그 사이 어디에 있든 똑같이 보이므로, 더 내려간 만큼 되돌려도 티가 나지 않는다.
+     손으로 스크롤해 출발할 때만 붙잡는다. 주소(#cat-1 등)나 메뉴를 따라 저절로 내려갈 때는 그대로 둔다 */
+  var holding = false;
+  function jumpTo(y) {
+    root.style.scrollBehavior = 'auto';   // html의 부드러운 스크롤 대신 바로 옮긴다
+    try { window.scrollTo({ top: y, behavior: 'instant' }); } catch (err) { window.scrollTo(0, y); }
+    if (!snap) root.style.scrollBehavior = '';
+  }
+  function holdPlace() {
+    if (reduced() || !after || targetP() !== 1 || (shownP === 1 && !run)) { holding = false; return; }
+    if (!holding) {
+      if ((run && run.to === 1) || performance.now() - userAt > 350) return;   // 이미 저절로 출발했거나, 사람이 스크롤한 게 아니면
+      holding = true;
+    }
+    var cap = marks().rest;
+    if (window.scrollY > cap) jumpTo(cap);
+  }
+
+  window.addEventListener('scroll', function () { holdPlace(); syncHeader(); requestUpdate(); snapCheck(); }, { passive: true });
   window.addEventListener('resize', function () { measure(); syncHeader(); requestUpdate(); });
   if (reduceQuery && reduceQuery.addEventListener) reduceQuery.addEventListener('change', requestUpdate);
   /* 제주로 빨려 들어가는 동안, 인터뷰 화면이 저절로 올라오는(내려가는) 동안은 휠·손가락 스크롤을 막는다.
@@ -1077,6 +1097,10 @@ function wzT(ko, en, ja) { return wzLang === 'en' ? en : wzLang === 'ja' ? ja : 
   function holdScroll(e) {
     var now = performance.now();
     if ((run && run.to === 1) || snap) { e.preventDefault(); holdWheel = true; lastWheel = now; return; }
+    /* 비행기 창(제주에 닿기 전)에서 아래로 굴린 첫 휠은 페이지를 그만큼 내리지 않고, 제자리로만 옮겨 빨려 들어가기를 시작한다 */
+    if (e.type === 'wheel' && e.deltaY > 0 && !e.ctrlKey && shownP < 1 && !reduced() && after && window.scrollY < marks().rest) {
+      e.preventDefault(); holdWheel = true; lastWheel = now; jumpTo(marks().rest); return;
+    }
     if (holdWheel && e.type === 'wheel') {
       if (now - lastWheel < 160) { e.preventDefault(); lastWheel = now; return; }
       holdWheel = false;
