@@ -235,9 +235,12 @@ function wzT(ko, en, ja) { return wzLang === 'en' ? en : wzLang === 'ja' ? ja : 
     var chipsBox = section.querySelector('.people__chips');
     var narrowQuery = window.matchMedia ? window.matchMedia('(max-width: 899px)') : null;
     var lockW = 0, minH = 0;
-    function setChipsH() {
-      /* 휴대폰은 이름을 '·'로 잇는다. 줄이 바뀌면 그 줄 맨 앞 이름의 '·'는 숨긴다 */
+    /* 이름은 '·'로 잇는다. 줄이 바뀌면 그 줄 맨 앞 이름의 '·'는 숨긴다 */
+    function markRows() {
       for (var c = 1; c < chips.length; c++) chips[c].classList.toggle('is-row-start', chips[c].offsetTop !== chips[c - 1].offsetTop);
+    }
+    function setChipsH() {
+      markRows();
       section.style.setProperty('--chips-h', ((chipsBox ? chipsBox.offsetHeight : 0) + 8) + 'px');
     }
     function crowded() {
@@ -254,6 +257,7 @@ function wzT(ko, en, ja) { return wzLang === 'en' ? en : wzLang === 'ja' ? ja : 
       if (!narrowQuery || !narrowQuery.matches) {
         section.style.removeProperty('--chips-h');
         lockW = 0;
+        markRows();
         return;
       }
       var w = window.innerWidth, h = window.innerHeight;
