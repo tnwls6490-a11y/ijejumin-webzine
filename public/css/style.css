@@ -2842,11 +2842,12 @@ body.page-interview { background: var(--iv-paper); }
 }
 /* ③ 본문 */
 .article-col { max-width: 680px; }
-.article-body { padding-top: 56px; font-size: 17px; line-height: 1.95; }
+/* 줄 간격: 사용자 요청으로 좁혔다 (2026-10-26. 본문 1.95 → 1.75, 첫 문단 1.85 → 1.7) */
+.article-body { padding-top: 56px; font-size: 17px; line-height: 1.75; }
 @media (min-width: 900px) {
   .article-body { font-size: 18px; }
 }
-.article-body .lead { font-size: 19px; font-weight: 700; line-height: 1.85; }
+.article-body .lead { font-size: 19px; font-weight: 700; line-height: 1.7; }
 .article-body h2 { font-size: 24px; font-weight: 800; }
 .chapter + .chapter { border-top: 1px solid var(--rule); }
 .quote-box {
