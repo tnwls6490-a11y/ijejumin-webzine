@@ -236,6 +236,8 @@ function wzT(ko, en, ja) { return wzLang === 'en' ? en : wzLang === 'ja' ? ja : 
     var narrowQuery = window.matchMedia ? window.matchMedia('(max-width: 899px)') : null;
     var lockW = 0, minH = 0;
     function setChipsH() {
+      /* 휴대폰은 이름을 '·'로 잇는다. 줄이 바뀌면 그 줄 맨 앞 이름의 '·'는 숨긴다 */
+      for (var c = 1; c < chips.length; c++) chips[c].classList.toggle('is-row-start', chips[c].offsetTop !== chips[c - 1].offsetTop);
       section.style.setProperty('--chips-h', ((chipsBox ? chipsBox.offsetHeight : 0) + 8) + 'px');
     }
     function crowded() {
