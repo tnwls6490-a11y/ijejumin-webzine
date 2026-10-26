@@ -280,6 +280,16 @@ function wzT(ko, en, ja) { return wzLang === 'en' ? en : wzLang === 'ja' ? ja : 
     window.addEventListener('resize', layoutMobile);
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(layoutMobile);
 
+    /* 인물 누끼를 다 불러온 슬라이드만 뒤 제목의 주황 선을 보인다 (CSS is-cut-ready).
+       인터넷이 느리면 누끼가 배경 사진보다 늦게 떠서, 그 사이 선이 인물 앞에 보였다 (사용자 요청 2026-10-26) */
+    Array.prototype.forEach.call(persons, function (el) {
+      var cut = el.querySelector('.person__cut');
+      if (!cut) return;
+      function ready() { el.classList.add('is-cut-ready'); }
+      if (cut.complete && cut.naturalWidth) ready();
+      else cut.addEventListener('load', ready);
+    });
+
     section.classList.add('is-ready');
     layoutMobile();
     for (var k = 0; k < n; k++) { persons[k].classList.add('no-anim'); setSide(persons[k], 1); }

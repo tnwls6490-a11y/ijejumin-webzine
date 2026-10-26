@@ -1107,6 +1107,11 @@ a { color: inherit; }
   content: ""; position: absolute; left: calc(100% + .25em); bottom: .3em;
   width: 46vw; height: 3px; background: var(--orange);
 }
+/* 이 선은 늘 인물 뒤에 있어야 한다. 그래서 인물 누끼를 다 불러오고(is-cut-ready, site.js) 사람이 다 나타난 뒤(0.8초)에만 보인다.
+   전에는 다른 컴퓨터에서 가끔 선이 인물 앞에 보였다: 누끼가 늦게 뜨거나, 넘기는 동안 누끼가 반투명할 때 (사용자 요청 2026-10-26).
+   자리는 그대로(뒤 제목 끝에 붙음). 넘길 때 사라지는 건 바로 */
+.js .person--photo .person__back::after { opacity: 0; transition: opacity .3s ease; }
+.js .person--photo.is-active.is-cut-ready .person__back::after { opacity: 1; transition-delay: .8s; }
 .person--photo .person__line--front::after { content: "."; color: var(--orange); }
 .person--photo .person__front::after {
   content: ""; position: absolute; left: -.1em; right: -.5em; top: calc(100% + .12em);
