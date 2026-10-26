@@ -950,6 +950,11 @@ a { color: inherit; }
 @media (min-width: 900px) {
   :is(:lang(en), :lang(ja)) .person__cta { bottom: calc(var(--pad-y) + 60px); left: 42%; }
 }
+/* 왼쪽 아래 문구는 한 줄 (사용자 요청 2026-10-26). 영어·일본어는 길어서 1400px 넘는 화면에서 글자가 커지면 위 버튼에 닿으므로,
+   그때만 버튼 왼쪽 끝(42% − 버튼 폭의 반 약 110px)에서 24px 앞까지 쓰고 말 덩어리(.phrase) 사이에서 두 줄로 나눈다 */
+@media (min-width: 1400px) {
+  :is(:lang(en), :lang(ja)) .people__slogan { max-width: calc(42% - var(--pad-x) - 134px); }
+}
 /* 영어판 좁은 휴대폰(360px 미만): 이름이 두 줄이 되어 낮은 화면(312×520)에서 설명과 제목이 겹친다. 한 줄로 두고 옆으로 밀어 넘기게 한다 (더 있으면 오른쪽 끝 흐림) */
 @media (max-width: 359px) {
   :lang(en) .people__chips {
