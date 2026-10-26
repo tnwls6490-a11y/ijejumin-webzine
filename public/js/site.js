@@ -725,6 +725,56 @@ function wzT(ko, en, ja) { return wzLang === 'en' ? en : wzLang === 'ja' ? ja : 
     window.addEventListener('resize', request);
     update();
 
+    /* PC: 명소 카드 줄을 마우스로 잡고 끌어 넘긴다 (사용자 요청 2026-10-26. 손가락 화면은 원래 밀어서 넘어간다).
+       조금(5px) 넘게 움직였을 때부터 끌기로 보고, 놓으면 가까운 카드 앞에 맞춰 멈춘다(15% 넘게 끌면 그 방향 다음 카드).
+       끌고 난 뒤의 클릭은 막아, 끌다가 '지도에서 위치 찾기' 링크가 열리지 않게 한다. 그냥 누르면 링크는 그대로 열린다 */
+    var drag = null, dragged = false;
+    Array.prototype.forEach.call(panels, function (p) {
+      var list = p.querySelector('.spots');
+      list.addEventListener('pointerdown', function (e) {
+        if (e.pointerType !== 'mouse' || e.button !== 0) return;
+        drag = { list: list, id: e.pointerId, x: e.clientX, left: list.scrollLeft, from: visible(list).first, moved: false };
+        dragged = false;
+      });
+      list.addEventListener('pointermove', function (e) {
+        if (!drag || drag.list !== list) return;
+        var dx = e.clientX - drag.x;
+        if (!drag.moved) {
+          if (Math.abs(dx) < 5) return;
+          drag.moved = true;
+          list.classList.add('is-dragging');
+          list.setPointerCapture(drag.id);
+        }
+        list.scrollLeft = drag.left - dx;
+      });
+      function endDrag() {
+        if (!drag || drag.list !== list) return;
+        var d = drag;
+        drag = null;
+        if (!d.moved) return;
+        dragged = true;
+        var step = list.children.length > 1 ? list.children[1].offsetLeft - list.children[0].offsetLeft : list.clientWidth;
+        var moved = (list.scrollLeft - d.left) / step;
+        var n = Math.round(moved);
+        if (n === 0 && Math.abs(moved) > 0.15) n = moved > 0 ? 1 : -1;
+        var i = Math.max(0, Math.min(list.children.length - 1, d.from + n));
+        /* 카드 맞춤(scroll-snap)은 다 넘어간 뒤에 다시 켠다. 바로 켜면 놓은 자리에서 가장 가까운 카드로 먼저 붙어 버린다
+           (그래서 얼마나 끌었는지도 끌기 표시를 지우기 전에 잰다) */
+        list.classList.add('is-settling');
+        list.classList.remove('is-dragging');
+        list.scrollTo({ left: cardLeft(list, i), behavior: reduce ? 'auto' : 'smooth' });
+        var settled = function () { list.classList.remove('is-settling'); list.removeEventListener('scrollend', settled); };
+        list.addEventListener('scrollend', settled);
+        window.setTimeout(settled, 800);   // scrollend를 모르는 브라우저
+      }
+      list.addEventListener('pointerup', endDrag);
+      list.addEventListener('pointercancel', endDrag);
+      list.addEventListener('click', function (e) {
+        if (dragged) { e.preventDefault(); e.stopPropagation(); dragged = false; }
+      }, true);
+      list.addEventListener('dragstart', function (e) { e.preventDefault(); });   // 사진·링크를 끌어 옮기는 브라우저 기본 동작 끔
+    });
+
     /* 처음 그릴 때는 동네 10곳이 다 펼쳐져 있다가 여기서 하나만 남는다. 그래서 메인 카드로 #checklist·#policy에 들어오면
        브라우저가 먼저 내려간 자리가 어긋난다. 동네를 정리한 뒤 그 자리로 다시 맞춘다 (다 불러온 뒤 한 번 더, 그사이 직접 스크롤하면 그만둔다) */
     var target = window.location.hash && document.getElementById(window.location.hash.slice(1));

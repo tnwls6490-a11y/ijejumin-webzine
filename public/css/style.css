@@ -1997,6 +1997,11 @@ html:not(.js) .town + .town { margin-top: 16px; }
   scrollbar-width: none;
 }
 .spots::-webkit-scrollbar { display: none; }
+/* 마우스로 잡고 끌어 넘기기 (site.js, 사용자 요청 2026-10-26): 손 모양 커서, 끄는 동안은 카드 맞춤·글자 선택을 끈다 */
+@media (hover: hover) and (pointer: fine) { .js .spots { cursor: grab; } }
+.spots.is-dragging { cursor: grabbing; scroll-snap-type: none; user-select: none; -webkit-user-select: none; }
+.spots.is-settling { scroll-snap-type: none; }   /* 놓은 뒤 다음 카드로 미끄러지는 동안 */
+.spots.is-dragging a { cursor: grabbing; }
 .spot {
   display: flex; flex-direction: column; overflow: hidden; scroll-snap-align: start;
   border-radius: 18px; background: #FFFFFF; box-shadow: 0 1px 0 rgba(18, 35, 58, .04);
