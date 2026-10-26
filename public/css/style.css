@@ -1090,8 +1090,9 @@ a { color: inherit; }
 .people .person--photo .person__back, .people .person--photo .person__front {
   font-size: clamp(50px, 6.6vw, 116px); line-height: 1.06; text-align: left; translate: none;
 }
-/* 뒤 글자(외곽선)는 크게, 앞 글자는 조금 작게 */
-.people .person--photo .person__back { font-size: clamp(56px, 7.8vw, 136px); }
+/* 뒤 글자(외곽선)는 크게, 앞 글자는 조금 작게.
+   뒤 글자가 너무 커 보인다는 사용자 말에 앞 글자 크기에 맞춰 살짝 줄였다: 앞 글자의 약 1.4배 → 1.2배 (2026-10-26. 전 clamp(56px, 7.8vw, 136px)) */
+.people .person--photo .person__back { font-size: clamp(50px, 6.6vw, 116px); }
 .people .person--photo .person__front { font-size: clamp(42px, 5.6vw, 98px); }
 .people .person--photo .person__back { left: calc(var(--pad-x) + 4px); top: 13%; }
 .people .person--photo .person__front { left: 48%; top: 44%; }
