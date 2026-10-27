@@ -1500,6 +1500,36 @@ a { color: inherit; }
   font-size: clamp(16px, 1.3vw, 19px); font-weight: 500; line-height: 1.5; color: rgba(255, 255, 255, .88);
   text-shadow: 0 0 6px #000000, 0 0 14px #000000, 0 0 24px rgba(0, 0, 0, .9);
 }
+/* 가운데 안내 '옆으로 넘겨 보세요' (사용자가 준 시안, 2026-10-27): 나선 가운데에 손 그림(위에 주황 ↔) + 두 줄.
+   엽서 앞에 떠 있지만 누르기·끌기·마우스 올리기는 엽서로 통과한다. 엽서가 모이기 시작하면(--merge) 금방 흐려진다 */
+.pick__hint {
+  position: absolute; left: 50%; top: 54%; z-index: 3;   /* 나선(.pick__world) 가운데 높이 */
+  translate: -50% -50%;
+  display: flex; align-items: center; gap: clamp(12px, 1.2vw, 18px);
+  width: max-content; max-width: calc(100% - 32px);
+  pointer-events: none;
+  opacity: calc(1 - var(--merge, 0) * 3);
+  isolation: isolate;
+}
+/* 뒤에 밝은 엽서가 지나가도 읽히게, 시안처럼 어두운 바탕을 가장자리 없이 옅게 깐다 */
+.pick__hint::before {
+  content: ""; position: absolute; inset: -8px -14px; z-index: -1;
+  border-radius: 999px; background: rgba(0, 0, 0, .82); box-shadow: 0 0 36px 22px rgba(0, 0, 0, .82);
+}
+.pick__hint-icon { flex: none; width: clamp(44px, 4.2vw, 60px); height: auto; overflow: visible; filter: drop-shadow(0 0 6px #000000) drop-shadow(0 0 12px rgba(0, 0, 0, .8)); }
+.pick__hint-arrow { fill: none; stroke: var(--orange); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+.pick__hint-hand { fill: rgba(0, 0, 0, .45); stroke: #FFFFFF; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; }
+/* 손이 좌우로 천천히 오간다 (움직임 줄이기 설정에서는 가만히) */
+.pick__hint-move { animation: pick-hint-sway 2.4s ease-in-out infinite; }
+@keyframes pick-hint-sway { 0%, 100% { transform: translateX(-4px); } 50% { transform: translateX(4px); } }
+@media (prefers-reduced-motion: reduce) { .pick__hint-move { animation: none; } }
+.pick__hint-text {
+  margin: 0; display: flex; flex-direction: column; gap: .3em;
+  text-shadow: 0 0 6px #000000, 0 0 14px #000000, 0 0 28px rgba(0, 0, 0, .9);   /* 엽서 위에 겹쳐도 읽히게 (위 부제와 같은 검은 빛) */
+}
+.pick__hint-title { font-size: clamp(22px, 2.3vw, 34px); font-weight: 800; line-height: 1.25; letter-spacing: -0.03em; color: #FFFFFF; }
+.pick__hint-sub { font-size: clamp(16px, 1.25vw, 19px); font-weight: 500; line-height: 1.45; color: rgba(255, 255, 255, .88); }
+html:not(.js) .pick__hint { display: none; }
 .pick__world {
   /* 엽서들은 3D 공간을 같이 쓰지 않는다(flat). 원근은 site.js가 엽서마다 따로 주고, 앞뒤는 z-index로 정한다
      → 모이는 동안 엽서끼리 서로를 뚫고 지나가며 깨져 보이지 않는다 */
@@ -1902,7 +1932,7 @@ html:not(.js) .pick__world, html:not(.js) .pick__headline { display: none; }
 html:not(.js) .pick__final { opacity: 1; transform: none; }
 @media (max-width: 899px) {
   .pcard, .pick__cover { --cw: clamp(84px, 25vw, 112px); }   /* 휴대폰에서도 엽서를 크게 (390px 화면에서 약 141×94px) */
-  .pick__world, .pick__final { top: 57%; }   /* 휴대폰: 위 큰 제목 아래로 조금 내리되, 엽서를 잡기 쉽게 60% → 55% → 57%(살짝 내림) */
+  .pick__world, .pick__final, .pick__hint { top: 57%; }   /* 휴대폰: 위 큰 제목 아래로 조금 내리되, 엽서를 잡기 쉽게 60% → 55% → 57%(살짝 내림) */
 }
 
 /* ---------- 카테고리 ---------- */
