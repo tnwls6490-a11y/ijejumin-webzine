@@ -1125,13 +1125,20 @@ function wzT(ko, en, ja) { return wzLang === 'en' ? en : wzLang === 'ja' ? ja : 
     return window.scrollY - startTop > 8 ? 1 : 0;
   }
   function easeInOut(t) { return t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2; }
+  function coveredUp() {   // 다음 섹션 위 끝이 헤더 아래까지 올라와 첫 화면을 다 가렸다
+    if (!after) return false;
+    var hh = parseFloat(getComputedStyle(root).getPropertyValue('--hdr-h')) || 0;
+    return after.getBoundingClientRect().top <= hh + 1;
+  }
   function update(ts) {
     ticking = false;
     var target = targetP();
     var now = ts || performance.now();
     if (reduced()) { shownP = target; run = null; }
     else if (shownP !== target && (!run || run.to !== target)) {
-      run = { from: shownP, to: target, start: now, dur: RUN_MS * Math.abs(target - shownP) + 1 };
+      /* 첫 화면이 다음 섹션(인터뷰 화면)에 다 가려져 안 보이면 연출 없이 바로 끝 상태로 (주소 #cat-1 등으로 들어올 때, 2026-10-27) */
+      if (coveredUp()) { shownP = target; run = null; }
+      else run = { from: shownP, to: target, start: now, dur: RUN_MS * Math.abs(target - shownP) + 1 };
     }
     if (run) {
       var k = clamp((now - run.start) / run.dur, 0, 1);
@@ -1301,6 +1308,33 @@ function wzT(ko, en, ja) { return wzLang === 'en' ? en : wzLang === 'ja' ? ja : 
   }
   window.addEventListener('wheel', holdScroll, { passive: false });
   window.addEventListener('touchmove', holdScroll, { passive: false });
+
+  /* 상세페이지 헤더 메뉴(../index.html#cat-1·#cat-2·#cat-3)로 돌아오면 비행기 창 없이 그 섹션에서 바로 시작한다 (사용자 요청 2026-10-27).
+     전에는 서브메인이 맨 위(비행기 창)에서 열린 뒤 html의 부드러운 스크롤로 0.5~1.3초 동안 창 → 구름 → 제주를 지나 내려갔다.
+     이 스크립트는 첫 화면을 그리기 전에 돈다(같은 사이트 안 이동이라 브라우저가 앞 페이지를 잠깐 들고 있다). 그래서 여기서 그 자리로 바로 옮기면
+     창문이 그려지지 않는다. 창 → 제주 연출은 화면 밖이라 재생하지 않고 바로 끝 상태로 둔다 (update의 coveredUp).
+     글꼴·사진이 늦게 들어와 자리가 밀릴 수 있어 다 불러온 뒤 한 번 더 맞춘다 (그사이 직접 스크롤하면 그만둔다).
+     브라우저도 다 불러온 뒤 같은 자리로 스크롤하므로, 그때까지는 부드러운 스크롤을 꺼 둔다 */
+  var entry = window.location.hash && document.getElementById(window.location.hash.slice(1));
+  if (entry && !intro.contains(entry)) {
+    var entryTouched = false;
+    var placeEntry = function () {
+      if (entryTouched) return;
+      var hh = parseFloat(getComputedStyle(root).getPropertyValue('--hdr-h')) || 0;
+      jumpTo(Math.max(0, pageY(entry) - hh));
+      root.style.scrollBehavior = 'auto';
+      lastY = window.scrollY;
+      syncHeader(); update();
+    };
+    ['wheel', 'touchstart', 'keydown'].forEach(function (type) {
+      window.addEventListener(type, function () { entryTouched = true; }, { once: true, passive: true });
+    });
+    placeEntry();
+    window.addEventListener('load', function () {
+      placeEntry();
+      window.setTimeout(function () { if (!snap) root.style.scrollBehavior = ''; }, 600);
+    });
+  }
 })();
 
 /* ---------- 맨 위로 버튼 (.to-top, 모든 페이지 공용) ----------

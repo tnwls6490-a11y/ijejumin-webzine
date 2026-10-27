@@ -22,8 +22,11 @@
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <link rel="stylesheet" href="../css/style.css">
+<!-- site.js는 머리에서 defer로 읽고, 다 돌 때까지 화면을 그리지 않는다(blocking="render").
+     상세페이지 메뉴(#cat-1 등)로 돌아올 때 비행기 창이 먼저 그려지지 않게 (2026-10-27. 전에는 body 맨 끝에서 읽었다) -->
+<script src="../js/site.js" defer blocking="render"></script>
 </head>
-<body>
+<body class="page-main">
 <!-- 일본어판 서브메인 (한국어판 index.html을 옮김, 2026-10-25). 사진·CSS·JS는 한국어판 것을 같이 쓴다. 기사는 아직 한국어판으로 연결 -->
 <!-- Google Tag Manager (noscript) -->
 <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-NR6G6B9M" height="0" width="0" hidden></iframe></noscript>
@@ -333,6 +336,5 @@
 
 <a class="to-top" href="#" aria-label="トップへ戻る"><svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path d="M5.5 15.5L12 9l6.5 6.5" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
 
-<script src="../js/site.js"></script>
 </body>
 </html>

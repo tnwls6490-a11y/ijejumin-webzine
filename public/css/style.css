@@ -351,6 +351,16 @@ a { color: inherit; }
    서브메인 첫 화면 — 비행기 창 → 제주
    ========================================================= */
 
+/* 서브메인은 site.js가 시작하기(html에 .js가 붙기) 전에는 그리지 않는다 (2026-10-27).
+   상세페이지 헤더 메뉴(../index.html#cat-2 등)로 돌아올 때 스크립트가 그 섹션으로 옮기기 전에 브라우저가 한 번 먼저 그리면
+   비행기 창이 0.2초쯤 보였다. 같은 사이트 안 이동이면 그동안 앞 페이지가 그대로 보인다.
+   스크립트를 끈 사람(scripting: none)·이 조건을 모르는 오래된 브라우저에는 적용되지 않고, 스크립트가 늦어도 1.5초 뒤에는 보인다.
+   visibility: hidden은 안쪽에서 되돌릴 수 있어(스크립트 전 '맨 위로' 버튼은 visible) 그것만 그려지며 빈 화면이 끼었다. 그래서 투명도로 숨긴다 */
+@media (scripting: enabled) {
+  html:not(.js) body.page-main { opacity: 0; animation: page-show 0s 1.5s forwards; }
+}
+@keyframes page-show { to { opacity: 1; } }
+
 .intro { position: relative; height: 100vh; height: 100svh; }
 .js .intro { height: calc(200vh + 720px); height: calc(200svh + 720px); }   /* 조금만 내려도 한 번에(약 2.4초) 제주까지 빨려 들어간다(site.js). 그다음 약 700px은 제주 화면에 머물고, 마지막 한 화면은 인터뷰 화면이 아래에서 올라와 퍼지는 동안 제주를 붙잡아 두는 구간 */
 
