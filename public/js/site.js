@@ -1102,13 +1102,13 @@ function wzT(ko, en, ja) { return wzLang === 'en' ? en : wzLang === 'ja' ? ja : 
        원래 폭(휴대폰에서 화면의 약 80%)을 넘으면 그만큼 줄인다 (보통은 1) */
     if (word) setVar('--word-fit', Math.min(1, 0.84 * vw / (word.offsetWidth || 1)).toFixed(4));
     /* 세로 화면: 아래 글(.landing__foot)을 사진 바로 아래로 올린다 (사용자 요청 2026-10-27, style.css의 --foot-lift).
-       사진 아래 끝 = 72px + 화면 폭의 110% (style.css .jeju 세로 화면 규칙과 같은 수). 사진 아래쪽 6%는 흐려지므로 그만큼 겹친다 */
+       사진 아래 끝 = 72px + 화면 폭의 110% (style.css .jeju 세로 화면 규칙과 같은 수). 글 칸 위 끝을 사진 아래 끝에 맞춘다
+       (처음엔 사진 아래쪽 흐려지는 6%만큼 겹쳤는데, 사용자 요청 "살짝 더 내려줘"로 겹치지 않게. 360px 화면에서 약 24px 내려감) */
     var foot = intro.querySelector('.landing__foot');
     if (foot) {
       var lift = 0;
       if (window.matchMedia && window.matchMedia('(max-aspect-ratio: 1/1)').matches) {
-        var photoH = 1.1 * vw;
-        lift = Math.max(0, foot.offsetTop - (72 + photoH - 0.06 * photoH));
+        lift = Math.max(0, foot.offsetTop - (72 + 1.1 * vw));
       }
       setVar('--foot-lift', lift.toFixed(1) + 'px');
     }
