@@ -630,6 +630,10 @@ function wzT(ko, en, ja) { return wzLang === 'en' ? en : wzLang === 'ja' ? ja : 
         popPhoto.src = photo;
         popCard.appendChild(popPhoto);
       }
+      /* 글쓰는 면의 우표: 누른 엽서 그림의 우표를 그대로 보여 준다 (CSS가 그림에서 우표 자리만 잘라 보임) */
+      var art = window.getComputedStyle(card).backgroundImage;
+      if (art && art !== 'none') pop.style.setProperty('--stamp-img', art); else pop.style.removeProperty('--stamp-img');
+      pop.setAttribute('data-design', (card.className.match(/pcard--d\d+/) || [''])[0]);
       /* 엽서에 담긴 설문 내용(장소 · 추천 이유 · 한마디)을 팝업에 옮긴다 */
       popNo.textContent = card.getAttribute('data-no') || '';
       popTitle.textContent = card.getAttribute('data-place') || '';

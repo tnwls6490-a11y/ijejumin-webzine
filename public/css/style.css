@@ -1737,13 +1737,26 @@ a { color: inherit; }
   position: relative; padding: 30px 28px 30px;
   border-left: 1px solid #D8CFC1; margin: 24px 24px 24px 22px;
 }
-.pick-pop__body::before { top: 26px; right: 4px; width: 54px; height: 64px; }
+/* 글쓰는 면의 우표: 누른 엽서 그림(614×377)의 우표를 그대로 잘라 보여 준다 (사용자 요청 2026-10-27. 전에는 모든 엽서가 같은 주황 네모).
+   site.js가 엽서 그림을 --stamp-img로 넘긴다. SVG 엽서 19장은 우표가 모두 (500, 24) 86×116 자리, 11번(시안 그림)만 (501, 21) 90×121.
+   작게 줄이면 우표 옆 바탕색이 경계에 섞여 비치므로 둘레를 2씩 안쪽으로 자른다. 우표 자체에 톱니 테두리가 있어 흰 테두리는 빼고 그림자만 */
+.pick-pop__body::before {
+  top: 26px; right: 4px; width: 54px; height: 74px;
+  border: 0; box-shadow: 0 2px 6px rgba(18, 35, 58, .2);
+  background: var(--stamp-img, linear-gradient(160deg, #F97316, #FDBA74)) no-repeat;
+  background-size: calc(614 / 82 * 100%) calc(377 / 112 * 100%);
+  background-position: calc(502 / (614 - 82) * 100%) calc(26 / (377 - 112) * 100%);
+}
+.pick-pop[data-design="pcard--d11"] .pick-pop__body::before {
+  background-size: calc(614 / 86 * 100%) calc(377 / 117 * 100%);
+  background-position: calc(503 / (614 - 86) * 100%) calc(23 / (377 - 117) * 100%);
+}
 .pick-pop__kicker, .pick-pop__title { margin-right: 72px; }
 @media (max-width: 599px) {
   .pick-pop__inner { grid-template-columns: 1fr; }
   .pick-pop__card.pcard, .pick-pop__card.is-note { margin: 12px 12px 0; min-height: 150px; }
   .pick-pop__body { border-left: 0; border-top: 1px solid #D8CFC1; margin: 18px 18px 6px; padding: 22px 4px 26px; }
-  .pick-pop__body::before { top: 20px; right: 4px; width: 44px; height: 52px; }
+  .pick-pop__body::before { top: 20px; right: 4px; width: 44px; height: 60px; }
   .pick-pop__kicker, .pick-pop__title { margin-right: 60px; }
   /* 휴대폰: 여백을 줄이고, 위 줄 글자는 한 줄에 들어가게 조금 작게 */
   .pick__final { padding: 0 14px 16px; border-width: 8px; }
