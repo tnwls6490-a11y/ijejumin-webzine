@@ -192,7 +192,9 @@ ijejumin-webzine/
     - 그래서 head에 둘 때보다 조금 늦게(페이지 끝에서) 시작한다. 한경·강의 쪽에서 head에 꼭 넣으라고 하면 그때 옮긴다
   - 각 페이지 `<body>` 바로 뒤에 noscript 코드를 넣는다. Google 안내의 `style="display:none;visibility:hidden"` 대신 `hidden` 속성을 쓴다 (style 속성 금지)
   - 지금 들어간 페이지: `index.html`, `articles/find-my-jeju.html`
-  - GA4 클릭 이벤트 5개 (사용자 요청 2026-10-27, Claude가 크롬으로 GTM 작업공간에 만듦. **게시는 사용자 확인 전이라 안 함**)
+  - GA4 클릭 이벤트 5개 (사용자 요청 2026-10-27, Claude가 크롬으로 GTM에 만듦. 사용자 확인 뒤 **버전 3 'GA4 클릭 이벤트 5개'로 게시**, 같은 날)
+    - 게시는 사용자가 확인한 뒤에만 한다 (사용자 규칙). 기존 태그·트리거·변수는 고치거나 지우지 않고 새로 만들기만 한다
+    - 이름 규칙(사용자): 태그 `GA4_이벤트_[이벤트명]`, 트리거는 이벤트명 그대로
     - GA4 구성 태그는 원래 있던 'GA4 연동'(측정 ID `G-L49P88ZCBH`). 원래 있던 태그(GA4 연동·메타픽셀)는 손대지 않았다
     - 변수: 기본 제공 클릭 변수 Click Element·Classes·ID·URL·Text를 켰다
     - 트리거(모두 '클릭 - 링크만')와 태그(GA4 이벤트, 매개변수 `link_text`={{Click Text}}, `link_url`={{Click URL}}). 이름은 사용자가 준 표 그대로
