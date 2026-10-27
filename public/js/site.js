@@ -1318,50 +1318,23 @@ function wzT(ko, en, ja) { return wzLang === 'en' ? en : wzLang === 'ja' ? ja : 
     link.addEventListener("blur", function () { setActive(null); });
   });
 
-  /* 2. 타이핑 문장: 화면에 들어오면 한 글자씩 (전체 문장은 처음부터 읽기 도구에 전달) */
-  function prepareTyping(el) {
-    var text = el.textContent.trim();
-    el.setAttribute("aria-label", text);
-    el.textContent = "";
-    var ghost = document.createElement("span");
-    ghost.className = "typing-ghost";
-    ghost.setAttribute("aria-hidden", "true");
-    ghost.textContent = text;
-    var live = document.createElement("span");
-    live.className = "typing-live";
-    live.setAttribute("aria-hidden", "true");
-    el.appendChild(ghost);
-    el.appendChild(live);
-    el._typingText = text;
-  }
-  function runTyping(el) {
-    var text = el._typingText, live = el.querySelector(".typing-live"), i = 0;
-    (function step() {
-      i += 1;
-      live.textContent = text.slice(0, i);
-      if (i < text.length) { setTimeout(step, 70); } else { el.classList.add("is-done"); }
-    })();
-  }
-  var typings = reduceMotion ? [] : Array.prototype.slice.call(document.querySelectorAll(".typing"));
-  typings.forEach(prepareTyping);
+  /* 2. 강조 문장(.typing): 화면에 들어오면 문장 전체가 한 번에 떠오른다 (사용자 요청 2026-10-27).
+     전에는 한 글자씩 써지는 타이핑 연출이었다. 클래스 이름 typing은 그때 이름을 그대로 둔다 */
+  var typings = Array.prototype.slice.call(document.querySelectorAll(".typing"));
 
-  /* 3. 스크롤하면 나타나기 + 타이핑 시작 */
+  /* 3. 스크롤하면 나타나기 (강조 문장도 같이) */
   var watched = Array.prototype.slice.call(document.querySelectorAll(".reveal")).concat(typings);
   if ("IntersectionObserver" in window && watched.length) {
     var io = new IntersectionObserver(function (entries) {
       entries.forEach(function (entry) {
         if (!entry.isIntersecting) return;
-        var el = entry.target;
-        if (el.classList.contains("typing")) { runTyping(el); } else { el.classList.add("is-visible"); }
-        io.unobserve(el);
+        entry.target.classList.add("is-visible");
+        io.unobserve(entry.target);
       });
     }, { threshold: 0.3 });
     watched.forEach(function (el) { io.observe(el); });
   } else {
-    watched.forEach(function (el) {
-      el.classList.add("is-visible");
-      if (el._typingText) { el.querySelector(".typing-live").textContent = el._typingText; el.classList.add("is-done"); }
-    });
+    watched.forEach(function (el) { el.classList.add("is-visible"); });
   }
 
   /* 5. 쇼츠 넘기기: 카드가 한 줄을 넘칠 때만 화살표를 보여주고, 끝에 닿으면 흐리게 */

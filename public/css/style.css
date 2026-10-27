@@ -2566,15 +2566,13 @@ body.page-interview {
   margin: 2.4em 0; padding: 8px 0;
   font-size: 24px; font-weight: 900; line-height: 1.5; letter-spacing: -0.02em;
 }
-.typing-ghost { visibility: hidden; }
-.typing-live { position: absolute; inset: 8px 0 auto 0; }
-.typing-live::after {
-  content: ""; display: inline-block; width: 3px; height: 1.1em; margin-left: 3px;
-  background: var(--iv-orange); vertical-align: -0.15em;
-  animation: caret 1s steps(1) infinite;
+/* 강조 문장은 화면에 들어오면 문장 전체가 한 번에 떠오른다 (위 .reveal과 같은 움직임, 사용자 요청 2026-10-27).
+   전에는 한 글자씩 써지는 타이핑 연출(깜빡이는 주황 커서)이었다 */
+.js .typing { opacity: 0; transform: translateY(24px); transition: opacity .7s ease, transform .7s ease; }
+.js .typing.is-visible { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) {
+  .js .typing { opacity: 1; transform: none; transition: none; }
 }
-.typing.is-done .typing-live::after { animation: none; opacity: 0; }
-@keyframes caret { 50% { opacity: 0; } }
 @media (min-width: 900px) {
   .typing { font-size: 30px; }
 }
@@ -2874,7 +2872,6 @@ body.page-interview { background: var(--iv-paper); }
   font-size: 22px; font-weight: 800; line-height: 1.6;
   padding: 4px 0 4px 18px; border-left: 3px solid var(--iv-orange);
 }
-.typing-live { top: 4px; left: 18px; right: 0; }
 @media (min-width: 900px) {
   .typing { font-size: 25px; }
 }
