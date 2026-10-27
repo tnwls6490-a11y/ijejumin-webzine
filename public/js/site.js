@@ -1036,9 +1036,20 @@ function wzT(ko, en, ja) { return wzLang === 'en' ? en : wzLang === 'ja' ? ja : 
 
   var drag = null;
   var suppressClick = false;
+  var lastPointer = '';   // 마지막으로 누른 것: 'touch'(손가락)·'mouse'·'pen'. 키보드로 누르면 그대로 남지 않게 click 뒤에 지운다
+
+  /* 가리개를 연 뒤 창 속 하늘을 손가락으로 위로 밀거나(스크롤) 누르면 제주로 들어간다 (사용자 요청 2026-10-27).
+     창 유리 자리 전체가 가리개 버튼이고 손가락 스크롤을 막아 두어(touch-action: none), 전에는 하늘을 밀면 가리개만 끌리고
+     누르면 가리개가 다시 닫혔다. 아래로 끌면 지금처럼 가리개를 내려 닫는다. 마우스·키보드로 누르면 전처럼 열고 닫는다 */
+  function goIn() {
+    if (shownP > 0 || run) return;
+    markUser();                 // 손으로 출발한 것으로 보고, 빨려 들어가는 동안 페이지를 제자리에 붙잡는다 (holdPlace)
+    jumpTo(marks().rest);       // 첫 화면 위 40px로 옮기면 그 스크롤로 빨려 들어가기가 시작된다
+  }
 
   shade.addEventListener('pointerdown', function (e) {
     if (e.button !== undefined && e.button !== 0) return;
+    lastPointer = e.pointerType || '';
     drag = { y: e.clientY, start: isOpen ? 1 : 0, value: isOpen ? 1 : 0, moved: false };
     if (shade.setPointerCapture) shade.setPointerCapture(e.pointerId);
   });
@@ -1047,6 +1058,11 @@ function wzT(ko, en, ja) { return wzLang === 'en' ? en : wzLang === 'ja' ? ja : 
     if (!drag) return;
     var dy = e.clientY - drag.y;
     if (!drag.moved && Math.abs(dy) < 6) return;
+    if (!drag.moved && drag.start === 1 && dy < 0) {   // 열린 창에서 위로 밀기 = 스크롤해서 들어가기
+      drag = null; suppressClick = true;
+      goIn();
+      return;
+    }
     if (!drag.moved) { drag.moved = true; stage.classList.add('is-dragging'); }
     var travel = shade.offsetHeight * 0.9061;
     drag.value = clamp(drag.start - dy / travel, 0, 1);
@@ -1067,7 +1083,10 @@ function wzT(ko, en, ja) { return wzLang === 'en' ? en : wzLang === 'ja' ? ja : 
   shade.addEventListener('pointercancel', endDrag);
 
   shade.addEventListener('click', function () {
+    var touched = lastPointer === 'touch' || lastPointer === 'pen';
+    lastPointer = '';
     if (suppressClick) { suppressClick = false; return; }
+    if (isOpen && touched) { goIn(); return; }   // 휴대폰: 열린 창 속 하늘을 누르면 들어간다
     setOpen(!isOpen);
   });
 
