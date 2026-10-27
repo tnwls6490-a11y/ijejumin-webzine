@@ -505,8 +505,8 @@ function wzT(ko, en, ja) { return wzLang === 'en' ? en : wzLang === 'ja' ? ja : 
       var dt = last === null ? 1 / 60 : clamp((ts - last) / 1000, 0, .1);
       last = ts;
       var t = target();
-      /* 스크롤을 천천히 따라온다. 뒤집기를 저절로 넘길 때(flipSnap)는 스크롤 움직임을 바로 따라가, 넘기기가 끝날 때 뒤집기도 끝난다 */
-      shown = reduce ? t : shown + (t - shown) * (1 - Math.exp(-dt / (flipSnap ? .12 : .6)));
+      /* 스크롤을 천천히 따라온다. 뒤집기를 저절로 넘길 때(flipSnap)는 그 시간표의 진행을 그대로 쓴다 */
+      shown = reduce ? t : flipSnap && flipSnap.p !== null ? flipSnap.p : shown + (t - shown) * (1 - Math.exp(-dt / .6));
       /* ① 0~0.4: 카드가 가운데로 모인다  ② 0.34~0.78: 소개 글  ③ 0.8~: 모인 카드 한 장 */
       /* ① 0~0.34: 엽서가 천천히 가운데로 모여 한 장처럼 겹친다
          ② 0.31~0.49: 소개 글이 아래에서 떠오르며 엽서 위를 덮는다 (위아래가 그라데이션으로 흐려진 띠)
@@ -533,8 +533,11 @@ function wzT(ko, en, ja) { return wzLang === 'en' ? en : wzLang === 'ja' ? ja : 
       var grow = finalCard ? finalCard.offsetWidth / (cw0 * 1.55) : 1;   // 묶음 → 엽서 한 장 크기
       var half = clamp(ang / 90, 0, 1);
       world.style.transform = m > .5 ? 'translateY(' + dropY.toFixed(1) + 'px) rotateY(' + Math.min(ang, 90).toFixed(2) + 'deg) scale(' + ((1 + (grow - 1) * half * .85) * (1 - .1 * sink)).toFixed(3) + ')' : '';
+      /* 뒷면 엽서가 나오면 앞면 묶음은 90도로 옆으로 선 채(폭 0이라 보이지 않음) 그대로 둔다.
+         전에는 visibility: hidden으로 숨겼는데, 위로 올려 다시 보일 때 엽서 20장을 새로 그리느라 화면이 0.1~0.2초 멈췄다가 확 따라잡았다 (2026-10-27).
+         그동안 엽서 버튼을 누르거나 키보드로 고를 수 없게 inert를 건다 */
       world.style.opacity = (1 - .35 * sink).toFixed(3);
-      world.style.visibility = fin ? 'hidden' : '';
+      if (world.inert !== !!fin) world.inert = !!fin;
       section.style.setProperty('--fin', fin);
       section.style.setProperty('--fy', (dropY - rise).toFixed(1) + 'px');
       section.style.setProperty('--fr', (ang - 180).toFixed(2));
@@ -610,28 +613,56 @@ function wzT(ko, en, ja) { return wzLang === 'en' ? en : wzLang === 'ja' ? ja : 
     window.requestAnimationFrame(frame);
 
     /* 엽서 뒤집기는 스크롤 한 번이면 끝까지 저절로 넘어간다 (사용자 요청 2026-10-27. 전에는 스크롤한 만큼 조금씩 뒤집혔다).
-       소개 글이 거의 지나간 뒤(진행 FLIP_FROM 이후) 손으로 아래로 조금 내리면, 엽서가 다 뒤집힌 곳(FLIP_TO)까지 FLIP_MS 동안 저절로 스크롤한다.
-       다 뒤집힌 엽서에서 위로 올리면 같은 방식으로 뒤집기 전(FLIP_BACK)으로 돌아간다. 뒤집기 구간은 진행 0.78~0.95 (frame의 flip)
+       소개 글이 반쯤 올라간 뒤(진행 FLIP_FROM 이후) 손으로 아래로 조금 내리면 엽서가 다 뒤집힐 때까지 저절로 진행한다.
+       다 뒤집힌 엽서에서 위로 올리면 같은 방식으로 뒤집기 전(FLIP_BACK)으로 돌아간다. 뒤집기 구간은 진행 F_A~F_B (frame의 flip)
        손으로 스크롤할 때만(휠·손가락·키보드) 움직이고, 메뉴처럼 저절로 스크롤할 때·움직임 줄이기 설정·팝업이 열려 있을 때는 하지 않는다.
-       움직이는 동안과, 끝난 뒤 같은 휠 흐름(트랙패드 관성)이 이어지는 동안은 휠·손가락 스크롤을 막는다 (첫 화면·인터뷰 화면 넘기기와 같음) */
-    /* 0.72: 소개 글이 반쯤 올라간 곳. 넘기기 1.4초 중 엽서가 실제로 뒤집히는 건 가운데 약 0.7초
-       (첫 화면처럼 급하게 빨라졌다 멈추는 곡선을 쓰면 뒤집기가 0.4초로 너무 빨라, 완만한 곡선 smooth를 쓴다) */
-    var FLIP_MS = 1400, FLIP_FROM = .72, FLIP_TO = .97, FLIP_BACK = .70;
+       움직이는 동안과, 끝난 뒤 같은 휠 흐름(트랙패드 관성)이 이어지는 동안은 휠·손가락 스크롤을 막는다 (첫 화면·인터뷰 화면 넘기기와 같음)
+       속도: 처음엔 스크롤을 1.4초 동안 저절로 옮기고 그 위치대로 뒤집었는데, 스크롤 곡선과 뒤집기 곡선이 겹쳐
+       가운데서 확 빨라졌다(가장 빠를 때 초당 500~750도. 사용자 말 "너무 갑자기 빨라지는 느낌"). 그래서 시간표를 직접 짠다:
+       ① 남은 소개 글이 고른 속도로 마저 올라가고(F_A까지) ② 엽서가 TURN_MS 동안 천천히 돌기 시작해 고르게 돌고 천천히 멈춘다
+       (각도가 사인 곡선, 가장 빠를 때 초당 약 240도). ①의 속도는 ②가 시작할 때 진행 속도와 같아 이음매에서 멈칫하지 않는다.
+       스크롤 위치는 그 진행에 맞춰 옮겨 둘 뿐이다 (무대가 화면에 붙어 있어 스크롤 위치는 보이지 않는다) */
+    var TURN_MS = 1200, FLIP_FROM = .72, FLIP_TO = .97, FLIP_BACK = .76;
+    var F_A = .78, F_B = .95;                                                  // frame의 smooth(.78, .95, shown)
+    var LEAD_V = (F_B - F_A) * Math.PI / (2 * Math.sqrt(3)) / TURN_MS;      // ②가 시작할 때 진행 속도 (1ms당)
+    function unsmooth(y) { return .5 - Math.sin(Math.asin(1 - 2 * clamp(y, 0, 1)) / 3); }   // smooth(0, 1, x) = y가 되는 x
+    function turnP(u) { return F_A + (F_B - F_A) * unsmooth((1 - Math.cos(Math.PI * u)) / 2); }   // 도는 시간 u(0~1)일 때의 진행
+    function flipPlan(dir) {
+      var p0 = shown, u0 = Math.acos(1 - 2 * smooth(F_A, F_B, p0)) / Math.PI;   // 지금 뒤집힌 만큼이면 도는 시간 어디쯤인지
+      var segs = [];
+      if (dir > 0) {
+        if (p0 < F_A) segs.push({ ms: (F_A - p0) / LEAD_V, at: function (v) { return p0 + (F_A - p0) * v; } });
+        segs.push({ ms: TURN_MS * (1 - u0), at: function (v) { return turnP(u0 + (1 - u0) * v); } });
+      } else {
+        segs.push({ ms: TURN_MS * u0, at: function (v) { return turnP(u0 * (1 - v)); } });
+        var a = Math.min(p0, F_A);
+        if (a > FLIP_BACK) segs.push({ ms: 2 * (a - FLIP_BACK) / LEAD_V, at: function (v) { return a - (a - FLIP_BACK) * (1 - (1 - v) * (1 - v)); } });   // 소개 글이 내려오다 천천히 멈춘다
+      }
+      return segs;
+    }
     var flipSnap = null, flipUserAt = -1e9, flipLastY = window.scrollY, flipHoldWheel = false, flipLastWheel = 0;
     var root = document.documentElement;
     function flipStep(ts) {
       if (!flipSnap) return;
       if (flipSnap.start === null) flipSnap.start = ts;
-      var u = clamp((ts - flipSnap.start) / FLIP_MS, 0, 1);
-      window.scrollTo(0, flipSnap.from + (flipSnap.to - flipSnap.from) * smooth(0, 1, u));
-      if (u < 1) { window.requestAnimationFrame(flipStep); return; }
+      var left = ts - flipSnap.start, p = shown, done = true;
+      for (var i = 0; i < flipSnap.segs.length; i++) {
+        var s = flipSnap.segs[i];
+        if (left < s.ms) { p = s.at(left / s.ms); done = false; break; }
+        left -= s.ms;
+        p = s.at(1);
+      }
+      flipSnap.p = p;
+      window.scrollTo(0, Math.round(progressY(done ? flipSnap.end : p)));
+      if (!done) { window.requestAnimationFrame(flipStep); return; }
+      shown = p;
       flipSnap = null;
       root.style.scrollBehavior = '';
       flipLastY = window.scrollY;
     }
-    function startFlip(to) {
+    function startFlip(dir) {
       root.style.scrollBehavior = 'auto';   // 한 칸씩 바로 옮기도록 (html의 부드러운 스크롤을 잠깐 끈다)
-      flipSnap = { from: window.scrollY, to: Math.round(to), start: null };
+      flipSnap = { segs: flipPlan(dir), end: dir > 0 ? FLIP_TO : FLIP_BACK, start: null, p: null };
       window.requestAnimationFrame(flipStep);
     }
     function flipCheck() {
@@ -640,8 +671,8 @@ function wzT(ko, en, ja) { return wzLang === 'en' ? en : wzLang === 'ja' ? ja : 
       if (flipSnap || reduce || isOpen) return;
       if (performance.now() - flipUserAt > 350) return;              // 사람이 직접 스크롤할 때만
       var t = target();
-      if (dy > 0 && t > FLIP_FROM && t < FLIP_TO - .01) startFlip(progressY(FLIP_TO));
-      else if (dy < 0 && t > FLIP_BACK + .03 && t < FLIP_TO - .01) startFlip(progressY(FLIP_BACK));
+      if (dy > 0 && t > FLIP_FROM && t < FLIP_TO - .01) startFlip(1);
+      else if (dy < 0 && t > FLIP_BACK + .03 && t < FLIP_TO - .01) startFlip(-1);
     }
     function flipMarkUser() { flipUserAt = performance.now(); }
     window.addEventListener('wheel', flipMarkUser, { passive: true });
