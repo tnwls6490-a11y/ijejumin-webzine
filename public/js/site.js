@@ -1112,6 +1112,26 @@ function wzT(ko, en, ja) { return wzLang === 'en' ? en : wzLang === 'ja' ? ja : 
       }
       setVar('--foot-lift', lift.toFixed(1) + 'px');
     }
+    /* 휴대폰에서 글자를 키워 두면(카톡 '가가' 등) 비행기 창 안내 문구 캡슐이 화면보다 길어져 글자가 넘쳤다 (일본어, 2026-10-27).
+       한 줄에 안 들어가면 들어갈 만큼 글자를 줄인다 (style.css .intro__hint의 --hint-fit, 보통은 1) */
+    Array.prototype.forEach.call(intro.querySelectorAll('.intro__hint'), function (h) {
+      h.style.removeProperty('--hint-fit');
+      if (h.scrollWidth > h.clientWidth + 1) {
+        var cs = getComputedStyle(h), pad = parseFloat(cs.paddingLeft) + parseFloat(cs.paddingRight);
+        h.style.setProperty('--hint-fit', Math.max(0.6, (h.clientWidth - pad) / (h.scrollWidth - pad) * 0.98).toFixed(3));
+      }
+      /* 실제 높이: 글자만 키우면 CSS의 1.6em은 키우기 전 크기로 계산돼 캡슐이 위 언어 버튼에 겹쳤다 (style.css --hint-h) */
+      h.style.setProperty('--hint-h', h.offsetHeight + 'px');
+    });
+    /* 제주 화면 윗줄 문구가 두 줄로 접히면(휴대폰 영어, 글자를 키운 휴대폰의 일본어) 로고 아래 끝 높이의 가는 선이 둘째 줄을 가로질렀다.
+       문구 아래 끝이 선 자리까지 내려오면 선을 문구 바로 아래로 내린다 (style.css .landing__top::after의 --line-top) */
+    var topRow = intro.querySelector('.landing__top'), tagline = intro.querySelector('.landing__tagline'), logo = intro.querySelector('.landing__logo');
+    if (topRow && tagline && logo) {
+      topRow.style.removeProperty('--line-top');
+      var lineAt = logo.offsetHeight * 0.9 - 1;   // style.css 기본 자리와 같다
+      var tagBottom = tagline.getBoundingClientRect().bottom - topRow.getBoundingClientRect().top;
+      if (tagBottom > lineAt - 2) topRow.style.setProperty('--line-top', Math.round(tagBottom + 4) + 'px');
+    }
   }
 
   /* 스크롤 → 창 속으로 빨려 들어가기 (사용자 요청: 한 번에 빨려 들어가듯이, 2026-10-22)
@@ -1205,6 +1225,11 @@ function wzT(ko, en, ja) { return wzLang === 'en' ? en : wzLang === 'ja' ? ja : 
   update();
   /* 큰 글자 글꼴이 늦게 들어오면 폭이 달라지니 한 번 더 잰다 */
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(measure);
+  /* 페이지를 연 뒤에 글자 크기를 바꿔도(카톡 '가가') 화면 크기는 그대로라 resize가 안 온다. 글이 든 칸의 크기가 바뀌면 다시 잰다 */
+  if ('ResizeObserver' in window) {
+    var textRo = new ResizeObserver(function () { measure(); });
+    Array.prototype.forEach.call(intro.querySelectorAll('.landing__tagline, .intro__hint'), function (el) { textRo.observe(el); });
+  }
 
   /* 첫 화면(비행기 창 → 제주)을 보는 동안은 헤더를 위로 숨긴다.
      다음 화면(인터뷰)이 아래에서 올라와 헤더 자리에 닿기 직전(헤더 높이만큼 남았을 때)부터
