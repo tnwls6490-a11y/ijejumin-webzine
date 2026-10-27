@@ -208,6 +208,11 @@ ijejumin-webzine/
     - 미리보기(로컬 8737)에서 다섯 개 모두 1회 실행·GA4 전송·매개변수 값 확인. 이 class·id를 바꾸면 GTM 트리거도 같이 고친다
     - 'cchecklist'·'heder'는 사용자가 준 이름 그대로다 (오타일 수 있어 알려 둠)
     - 실제 사이트(lxwebzine)에는 아직 `find-checklist`·`find-policy` id가 없다 (운영 쪽이 GitHub 최신본을 받아 가야 생김)
+  - 스크롤 깊이 `scroll_depth` (사용자 요청 2026-10-27, 작업공간 4에 저장. **아직 게시 전**)
+    - 사용자 표의 이벤트 이름은 `scroll`이었는데, GA4 향상된 측정의 기본 `scroll`(90%)과 겹쳐 사용자가 `scroll_depth`로 바꾸기를 골랐다
+    - 변수 Scroll Depth Threshold(기본 제공) 켬. 트리거 `scroll_depth`: 스크롤 깊이, 세로 10·25·50·75·90%, 모든 페이지
+    - 태그 `GA4_이벤트_scroll_depth`: 매개변수 `scroll_depth` = `{{Scroll Depth Threshold}}%` (값은 '25%' 같은 글자)
+    - 미리보기(로컬 에밀리 기사)에서 다섯 단계 모두 실행·전송·값 확인
 
 ### 첫 화면 (`.intro`)
 - 첫 화면에서는 헤더가 위로 숨는다 (사용자 요청, 2026-10-22)
