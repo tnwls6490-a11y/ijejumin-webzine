@@ -1508,7 +1508,7 @@ a { color: inherit; }
      소개 글이 떠오르기(진행 0.31) 전에 이 안내는 이미 사라진다(진행 약 0.2) */
   position: absolute; left: 50%; bottom: clamp(24px, 7vh, 72px); z-index: 5;
   translate: -50% 0;
-  display: flex; align-items: center; gap: clamp(12px, 1.2vw, 18px);
+  display: flex; align-items: center; gap: clamp(10px, .9vw, 14px);
   width: max-content; max-width: calc(100% - 32px);
   pointer-events: none;
   opacity: calc(1 - var(--merge, 0) * 3);
@@ -1516,10 +1516,10 @@ a { color: inherit; }
 }
 /* 뒤에 밝은 엽서가 지나가도 읽히게, 시안처럼 어두운 바탕을 가장자리 없이 옅게 깐다 */
 .pick__hint::before {
-  content: ""; position: absolute; inset: -8px -14px; z-index: -1;
-  border-radius: 999px; background: rgba(0, 0, 0, .82); box-shadow: 0 0 36px 22px rgba(0, 0, 0, .82);
+  content: ""; position: absolute; inset: -6px -12px; z-index: -1;
+  border-radius: 999px; background: rgba(0, 0, 0, .82); box-shadow: 0 0 28px 16px rgba(0, 0, 0, .82);
 }
-.pick__hint-icon { flex: none; width: clamp(44px, 4.2vw, 60px); height: auto; overflow: visible; filter: drop-shadow(0 0 6px #000000) drop-shadow(0 0 12px rgba(0, 0, 0, .8)); }
+.pick__hint-icon { flex: none; width: clamp(36px, 3vw, 44px); height: auto; overflow: visible; filter: drop-shadow(0 0 6px #000000) drop-shadow(0 0 12px rgba(0, 0, 0, .8)); }
 .pick__hint-arrow { fill: none; stroke: var(--orange); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
 .pick__hint-hand { fill: rgba(0, 0, 0, .45); stroke: #FFFFFF; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; }
 /* 손이 좌우로 천천히 오간다 (움직임 줄이기 설정에서는 가만히) */
@@ -1530,8 +1530,9 @@ a { color: inherit; }
   margin: 0; display: flex; flex-direction: column; gap: .3em;
   text-shadow: 0 0 6px #000000, 0 0 14px #000000, 0 0 28px rgba(0, 0, 0, .9);   /* 엽서 위에 겹쳐도 읽히게 (위 부제와 같은 검은 빛) */
 }
-.pick__hint-title { font-size: clamp(22px, 2.3vw, 34px); font-weight: 800; line-height: 1.25; letter-spacing: -0.03em; color: #FFFFFF; }
-.pick__hint-sub { font-size: clamp(16px, 1.25vw, 19px); font-weight: 500; line-height: 1.45; color: rgba(255, 255, 255, .88); }
+/* 크기: 사용자 요청 "사이즈 줄이고"로 줄였다 (2026-10-27. 전 제목 22~34px·아래 줄 16~19px·손 44~60px) */
+.pick__hint-title { font-size: clamp(19px, 1.7vw, 24px); font-weight: 800; line-height: 1.25; letter-spacing: -0.03em; color: #FFFFFF; }
+.pick__hint-sub { font-size: 16px; font-weight: 500; line-height: 1.45; color: rgba(255, 255, 255, .88); }
 html:not(.js) .pick__hint { display: none; }
 .pick__world {
   /* 엽서들은 3D 공간을 같이 쓰지 않는다(flat). 원근은 site.js가 엽서마다 따로 주고, 앞뒤는 z-index로 정한다
@@ -3007,6 +3008,25 @@ body.page-interview { background: var(--iv-paper); }
 /* 글자가 이미 들어간 완성 썸네일: 위·아래 어둡게 하는 막을 끔 */
 .reel-frame.reel-frame--thumb::before,
 .reel-frame.reel-frame--thumb::after { display: none; }
+/* 공개 예정 티저 카드: 사람 실루엣만 있는 검은 카드 (링크 없음)
+   10/26 점검의 '미완성 문구'로 지웠다가 사용자 요청으로 되돌렸다 (2026-10-27) */
+.reel--soon { cursor: default; }
+.reel-frame.reel-frame--soon {
+  background: radial-gradient(ellipse at 50% 16%, rgba(255, 255, 255, .13), transparent 58%), #0A0E14;
+  color: #fff;
+}
+.reel-frame.reel-frame--soon::before,
+.reel-frame.reel-frame--soon::after { display: none; }
+.soon-figure { position: absolute; left: 50%; top: 24%; width: 64%; height: 50%; transform: translateX(-50%); }
+.soon-figure::before,
+.soon-figure::after { content: ""; position: absolute; background: linear-gradient(#262F3C, #151B24); }
+.soon-figure::before { top: 0; left: 50%; width: 42%; aspect-ratio: 1; transform: translateX(-50%); border-radius: 50%; }
+.soon-figure::after { left: 0; right: 0; top: 36%; height: 220%; border-radius: 50% 50% 0 0 / 14% 14% 0 0; }
+.soon-label {
+  position: absolute; z-index: 2; left: 0; right: 0; bottom: 15%;
+  text-align: center; font-size: 16px; font-weight: 900; letter-spacing: .16em; color: #fff;
+}
+.soon-sub { position: absolute; z-index: 2; left: 0; right: 0; bottom: 9%; text-align: center; font-size: 16px; font-weight: 600; color: #B8C0CC; }
 .reel-hint { position: absolute; left: 0; right: 0; top: 34%; text-align: center; font-size: 14px; font-weight: 700; color: var(--sea-text); }
 .reel-series {
   position: absolute; z-index: 2; left: 0; right: 0; top: 7%;
