@@ -470,14 +470,21 @@ function wzT(ko, en, ja) { return wzLang === 'en' ? en : wzLang === 'ja' ? ja : 
     });
     stage.addEventListener('pointerleave', function () { aim.x = 0; aim.y = 0; });
 
-    function target() {
-      var r = section.getBoundingClientRect();
+    function geom() {
       var hdr = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--hdr-h')) || 0;
       var cs = getComputedStyle(section);
       var pad = parseFloat(cs.paddingTop) || 0;      // 인터뷰 화면과의 여백
       var tail = parseFloat(cs.paddingBottom) || 0;  // 무대가 끝난 뒤 이어지는 검정
       var len = section.offsetHeight - pad - tail - stage.offsetHeight - 200;   // 마지막 200px은 다 모인 카드에 머문다
-      return clamp((hdr - r.top - pad) / Math.max(len, 1), 0, 1);
+      return { top: section.getBoundingClientRect().top, hdr: hdr, pad: pad, len: Math.max(len, 1) };
+    }
+    function target() {
+      var g = geom();
+      return clamp((g.hdr - g.top - g.pad) / g.len, 0, 1);
+    }
+    function progressY(p) {   // 진행 p가 되는 스크롤 위치 (target()을 거꾸로)
+      var g = geom();
+      return window.scrollY + g.top - g.hdr + g.pad + p * g.len;
     }
     /* 뒷면 엽서가 무대 아래로 넘치거나 아래 스크롤 표시(.pick__next)와 겹치면(낮은 휴대폰 화면) 뒤집히면서 그만큼 위로 올린다 */
     var lift = 0;
@@ -498,7 +505,8 @@ function wzT(ko, en, ja) { return wzLang === 'en' ? en : wzLang === 'ja' ? ja : 
       var dt = last === null ? 1 / 60 : clamp((ts - last) / 1000, 0, .1);
       last = ts;
       var t = target();
-      shown = reduce ? t : shown + (t - shown) * (1 - Math.exp(-dt / .6));   // 스크롤을 천천히 따라온다
+      /* 스크롤을 천천히 따라온다. 뒤집기를 저절로 넘길 때(flipSnap)는 스크롤 움직임을 바로 따라가, 넘기기가 끝날 때 뒤집기도 끝난다 */
+      shown = reduce ? t : shown + (t - shown) * (1 - Math.exp(-dt / (flipSnap ? .12 : .6)));
       /* ① 0~0.4: 카드가 가운데로 모인다  ② 0.34~0.78: 소개 글  ③ 0.8~: 모인 카드 한 장 */
       /* ① 0~0.34: 엽서가 천천히 가운데로 모여 한 장처럼 겹친다
          ② 0.31~0.49: 소개 글이 아래에서 떠오르며 엽서 위를 덮는다 (위아래가 그라데이션으로 흐려진 띠)
@@ -600,6 +608,56 @@ function wzT(ko, en, ja) { return wzLang === 'en' ? en : wzLang === 'ja' ? ja : 
       new IntersectionObserver(function (es) { visible = es[0].isIntersecting; }, { rootMargin: '200px 0px' }).observe(section);
     } else { visible = true; }
     window.requestAnimationFrame(frame);
+
+    /* 엽서 뒤집기는 스크롤 한 번이면 끝까지 저절로 넘어간다 (사용자 요청 2026-10-27. 전에는 스크롤한 만큼 조금씩 뒤집혔다).
+       소개 글이 거의 지나간 뒤(진행 FLIP_FROM 이후) 손으로 아래로 조금 내리면, 엽서가 다 뒤집힌 곳(FLIP_TO)까지 FLIP_MS 동안 저절로 스크롤한다.
+       다 뒤집힌 엽서에서 위로 올리면 같은 방식으로 뒤집기 전(FLIP_BACK)으로 돌아간다. 뒤집기 구간은 진행 0.78~0.95 (frame의 flip)
+       손으로 스크롤할 때만(휠·손가락·키보드) 움직이고, 메뉴처럼 저절로 스크롤할 때·움직임 줄이기 설정·팝업이 열려 있을 때는 하지 않는다.
+       움직이는 동안과, 끝난 뒤 같은 휠 흐름(트랙패드 관성)이 이어지는 동안은 휠·손가락 스크롤을 막는다 (첫 화면·인터뷰 화면 넘기기와 같음) */
+    /* 0.72: 소개 글이 반쯤 올라간 곳. 넘기기 1.4초 중 엽서가 실제로 뒤집히는 건 가운데 약 0.7초
+       (첫 화면처럼 급하게 빨라졌다 멈추는 곡선을 쓰면 뒤집기가 0.4초로 너무 빨라, 완만한 곡선 smooth를 쓴다) */
+    var FLIP_MS = 1400, FLIP_FROM = .72, FLIP_TO = .97, FLIP_BACK = .70;
+    var flipSnap = null, flipUserAt = -1e9, flipLastY = window.scrollY, flipHoldWheel = false, flipLastWheel = 0;
+    var root = document.documentElement;
+    function flipStep(ts) {
+      if (!flipSnap) return;
+      if (flipSnap.start === null) flipSnap.start = ts;
+      var u = clamp((ts - flipSnap.start) / FLIP_MS, 0, 1);
+      window.scrollTo(0, flipSnap.from + (flipSnap.to - flipSnap.from) * smooth(0, 1, u));
+      if (u < 1) { window.requestAnimationFrame(flipStep); return; }
+      flipSnap = null;
+      root.style.scrollBehavior = '';
+      flipLastY = window.scrollY;
+    }
+    function startFlip(to) {
+      root.style.scrollBehavior = 'auto';   // 한 칸씩 바로 옮기도록 (html의 부드러운 스크롤을 잠깐 끈다)
+      flipSnap = { from: window.scrollY, to: Math.round(to), start: null };
+      window.requestAnimationFrame(flipStep);
+    }
+    function flipCheck() {
+      var y = window.scrollY, dy = y - flipLastY;
+      flipLastY = y;
+      if (flipSnap || reduce || isOpen) return;
+      if (performance.now() - flipUserAt > 350) return;              // 사람이 직접 스크롤할 때만
+      var t = target();
+      if (dy > 0 && t > FLIP_FROM && t < FLIP_TO - .01) startFlip(progressY(FLIP_TO));
+      else if (dy < 0 && t > FLIP_BACK + .03 && t < FLIP_TO - .01) startFlip(progressY(FLIP_BACK));
+    }
+    function flipMarkUser() { flipUserAt = performance.now(); }
+    window.addEventListener('wheel', flipMarkUser, { passive: true });
+    window.addEventListener('touchmove', flipMarkUser, { passive: true });
+    window.addEventListener('keydown', function (e) { if (/^(ArrowDown|ArrowUp|PageDown|PageUp| |Spacebar)$/.test(e.key)) flipMarkUser(); });
+    window.addEventListener('scroll', flipCheck, { passive: true });
+    function flipHold(e) {
+      var now = performance.now();
+      if (flipSnap) { e.preventDefault(); flipHoldWheel = true; flipLastWheel = now; return; }
+      if (flipHoldWheel && e.type === 'wheel') {
+        if (now - flipLastWheel < 160) { e.preventDefault(); flipLastWheel = now; return; }
+        flipHoldWheel = false;
+      }
+    }
+    window.addEventListener('wheel', flipHold, { passive: false });
+    window.addEventListener('touchmove', flipHold, { passive: false });
 
     /* ---------- 카드 팝업 ---------- */
     if (!pop || !pop.showModal) return;                     // 팝업을 못 여는 아주 오래된 브라우저는 그냥 둔다
