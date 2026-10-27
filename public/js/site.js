@@ -880,6 +880,10 @@ function wzT(ko, en, ja) { return wzLang === 'en' ? en : wzLang === 'ja' ? ja : 
 
     /* 처음 그릴 때는 동네 10곳이 다 펼쳐져 있다가 여기서 하나만 남는다. 그래서 메인 카드로 #checklist·#policy에 들어오면
        브라우저가 먼저 내려간 자리가 어긋난다. 동네를 정리한 뒤 그 자리로 다시 맞춘다 (다 불러온 뒤 한 번 더, 그사이 직접 스크롤하면 그만둔다) */
+    /* 마을 테스트 결과의 '대표 명소 보러가기'는 #town-1 ~ #town-10(테스트 결과와 같은 순서)으로 온다:
+       그 동네를 골라 둔 뒤 아래에서 그 자리로 맞춘다 (2026-10-27) */
+    var townHash = /^#town-(\d+)$/.exec(window.location.hash);
+    if (townHash && panels[townHash[1] - 1]) select(townHash[1] - 1);
     var target = window.location.hash && document.getElementById(window.location.hash.slice(1));
     if (!target) return;
     var touched = false;
@@ -1802,3 +1806,1029 @@ function wzT(ko, en, ja) { return wzLang === 'en' ? en : wzLang === 'ja' ? ja : 
     });
   })();
 })();
+
+/* ===== 마을 테스트 블록 시작 (scratchpad build.py가 만든다) ===== */
+/* =========================================================
+   나는 제주 어디 주민? (마을 테스트, articles/jeju-village-test.html)
+   사용자가 만든 테스트 아티팩트의 스크립트를 웹진 안으로 옮김 (사용자 요청 2026-10-27). 질문·점수·결과 글은 아티팩트 그대로
+   바꾼 것:
+   - #vt(테스트 칸)가 있는 페이지에서만 동작하고, 찾는 범위도 테스트 칸 안으로 (웹진 헤더·푸터는 건드리지 않음)
+   - 그림 주소 images/village-test/ (파일 이름은 영문 소문자·하이픈: poseA_01 → pose-a-01, title_en → title-en)
+   - 언어(한국어·English·日本語·中文)는 테스트 칸의 lang만 바꾼다. 웹진 헤더 KO·EN·JA도 이 페이지를 그 언어로 다시 연다(?lang=)
+   - '대표 명소 보러가기'는 '나의 제주찾기' 해당 동네(#town-N)로 간다 (전에는 '웹진 준비 중' 안내)
+   - 공유 주소는 실제 웹진 주소. claude.ai 전용 저장 창과 언어별 Google Fonts 불러오기는 뺐다
+   - 아티팩트의 style="…"는 클래스로 (style.css 맨 뒤 .vt 블록)
+   ========================================================= */
+(function () {
+var vtRoot = document.getElementById('vt');
+if (!vtRoot) return;
+const IMG = '../images/village-test/';
+/* ===================== content ===================== */
+const TOPICS = ['i-flag', 'i-people', 'i-car', 'i-coin', 'i-sun'];
+
+// each option: [label, short label for the summary chips, { region: points }]
+const QUESTIONS = [
+  { q: '이번 한 달, 제주에 가는<br>가장 큰 이유는?', pose: 'pose-a-04', talk: '쉬러 온 사람과 일하러 온 사람의<br>제주는 달라!',
+    opts: [
+      ['일에서 벗어나 푹 쉬고 싶어', '푹 쉬기', { pyoseon: 3, gujwa: 2, andeok: 2, jungsangan: 1 }],
+      ['노트북 들고 일하면서 지낼래', '워케이션', { hamdeok: 3, wondosim: 2, shinjeju: 1, aewol: 1 }],
+      ['이주 전에 미리 살아보고 싶어', '이주 연습', { seogwipo: 3, shinjeju: 3 }],
+      ['여행보다 천천히 제주를 느끼고 싶어', '느린 여행', { hallim: 3, aewol: 2, gujwa: 1 }],
+      ['취미나 프로젝트에 푹 빠지고 싶어', '몰입', { jungsangan: 3, andeok: 2, gujwa: 1 }],
+    ] },
+  { q: '이번 한 달,<br>누구와 함께하나요?', pose: 'pose-a-07', talk: '누구와 오느냐에 따라<br>완전 달라!',
+    opts: [
+      ['혼자', '혼자', { wondosim: 2, hamdeok: 1, seogwipo: 1, gujwa: 1 }],
+      ['연인·친구와', '연인·친구', { aewol: 3, hallim: 2, hamdeok: 1 }],
+      ['아이와 함께', '아이와', { shinjeju: 3, seogwipo: 1, hamdeok: 1 }],
+      ['반려동물과 함께', '반려동물', { jungsangan: 3, andeok: 2, gujwa: 1 }],
+      ['부모님·가족과', '가족', { pyoseon: 2, shinjeju: 1, aewol: 1 }],
+    ] },
+  { q: '한 달 동안<br>나의 이동수단은?', pose: 'pose-a-03', talk: '바다 앞 집이어도<br>장 보러 40분이면…?',
+    opts: [
+      ['자차를 가져간다', '자차', { jungsangan: 2, andeok: 2, pyoseon: 2, gujwa: 1, hallim: 1 }],
+      ['렌터카를 빌린다', '렌터카', { jungsangan: 2, andeok: 2, pyoseon: 2, gujwa: 1, hallim: 1 }],
+      ['버스 같은 대중교통', '대중교통', { wondosim: 3, shinjeju: 3, seogwipo: 3, hamdeok: 1, jungsangan: -5, andeok: -2, pyoseon: -1, gujwa: -1, hallim: -1 }],
+      ['자전거·두 발이면 충분', '도보·자전거', { wondosim: 3, seogwipo: 2, hamdeok: 2, jungsangan: -5, andeok: -2, pyoseon: -1 }],
+      ['아직 생각 안 해봤어', '이동 미정', {}],
+    ] },
+  { q: '한 달 예산,<br>어디에 더 쓰고 싶나요?', pose: 'pose-b-07', talk: '월세만 보고 ‘생각보다 싸네?’<br>하면 안 됨!',
+    opts: [
+      ['마트·병원 가까운 생활 편의', '생활 편의', { shinjeju: 3, wondosim: 2 }],
+      ['바다가 보이는 숙소', '바다 뷰', { aewol: 3, hamdeok: 2, hallim: 2 }],
+      ['넓고 조용한 독채', '조용한 독채', { andeok: 3, jungsangan: 2, pyoseon: 2 }],
+      ['맛집·카페 탐방', '맛집·카페', { aewol: 3, gujwa: 2, wondosim: 1 }],
+      ['최대한 아껴서 오래 머물기', '알뜰하게', {}],
+    ] },
+  { q: '내가 꿈꾸는<br>제주의 하루는?', pose: 'pose-a-10', talk: '이게 정해지면<br>동네 고르기가 쉬워져!', weight: 1.5,
+    opts: [
+      ['아침마다 바다 산책', '바다 산책', { hallim: 3, hamdeok: 2, gujwa: 2, pyoseon: 1 }],
+      ['카페에서 일하며 지내기', '카페 작업', { hamdeok: 3, wondosim: 2, aewol: 2 }],
+      ['조용한 마을에서 느리게', '느린 마을', { pyoseon: 3, gujwa: 3, andeok: 2 }],
+      ['맛집·전시 찾아다니기', '맛집·전시', { wondosim: 3, shinjeju: 3, seogwipo: 1 }],
+      ['오름·올레길·숲 걷기', '오름·숲', { jungsangan: 3, andeok: 2, seogwipo: 1 }],
+      ['시장 구경, 현지 사람들과 어울리기', '시장·현지', { seogwipo: 3, wondosim: 1, gujwa: 1 }],
+    ] },
+];
+
+// clockwise from Jeju City; also the tie-break order of last resort
+const ORDER = ['shinjeju', 'wondosim', 'hamdeok', 'gujwa', 'pyoseon', 'seogwipo', 'andeok', 'hallim', 'aewol', 'jungsangan'];
+
+const RESULTS = {
+  shinjeju: { type: '든든한 생활 인프라파', region: '신제주 주민', area: '제주시 노형·연동 · 공항 쪽', icon: 'i-family', pose: 'pose-a-08',
+    line: '필요한 건 다 가까이, 그래야 마음이 편하지', talk: '공항도 마트도 가까우니 든든하지!', stats: [2, 2, 5, 5, 2],
+    kw: ['생활 편의가 1순위인 실속파', '아이와 함께여도 걱정 없는 동선', '공항이 가까워 육지 오가기 편함', '마트·병원·학원이 가까운 생활권', '맛집과 카페도 골라 가는 재미'],
+    day: ['동네 공원 한 바퀴 산책', '마트·병원 동선 걱정 없이 장보기', '연동 맛집 골목에서 저녁 한 끼'],
+    tip: '숙소는 <b>아이 동선(병원·마트·놀이터)</b>을 기준으로 고르면 한 달이 편해요.' },
+  wondosim: { type: '골목 산책 뚜벅이', region: '원도심 주민', area: '제주시 원도심 · 삼도·일도·탑동', icon: 'i-bus', pose: 'pose-a-10',
+    line: '차 없어도 괜찮아, 걷는 만큼 제주가 보이니까', talk: '버스 타고 어디든 가볼까?', stats: [2, 3, 4, 5, 1],
+    kw: ['차 없이도 다닐 만한 생활권', '오래된 골목과 시장 구경', '전시·책방·카페 탐방', '탑동 바닷가 산책', '혼자여도 심심할 틈 없음'],
+    day: ['탑동 바닷길 따라 산책', '골목 책방과 카페 구경', '동문시장에서 저녁거리 사기'],
+    tip: '숙소를 고를 때 <b>가까운 버스 정류장과 노선</b>부터 확인하세요.' },
+  hamdeok: { type: '바다 앞 워케이셔너', region: '함덕 주민', area: '제주시 조천읍 함덕', icon: 'i-laptop', pose: 'pose-a-05',
+    line: '일은 노트북으로, 휴식은 바다로', talk: '오늘 회의는 바다 앞 카페에서!', stats: [3, 5, 3, 3, 3],
+    kw: ['일과 휴식의 균형을 챙기는 타입', '바다 앞 카페에서 노트북 펴기', '공항 오가기 편한 동쪽 바다', '에메랄드빛 해변 산책', '평일엔 집중, 주말엔 동쪽 여행'],
+    day: ['함덕 해변에서 아침 산책', '바다 보이는 카페에서 일하기', '서우봉 산책로에서 노을 보기'],
+    tip: '성수기엔 해변이 붐벼요. <b>일할 카페를 미리 몇 곳</b> 찜해두세요.' },
+  gujwa: { type: '느린 바닷마을 주민', region: '구좌 주민', area: '구좌읍 세화·종달·월정', icon: 'i-leaf', pose: 'pose-b-06',
+    line: '급할 거 없는 동네에서, 나도 천천히', talk: '여긴 시간이 천천히 흘러~', stats: [4, 5, 2, 2, 4],
+    kw: ['조용한 바닷가 마을 감성', '작은 소품샵·책방 구경', '돌담길 산책이 일상', '관광지보다 동네 생활', '혼자만의 시간을 좋아함'],
+    day: ['세화 바닷가 따라 산책', '작은 소품샵과 책방 구경', '돌담길 지나 마을 식당에서 저녁'],
+    tip: '마을 가게는 <b>일찍 문 닫는 곳</b>도 많아요. 저녁 장보기는 미리!' },
+  pyoseon: { type: '느긋한 쉼표형', region: '표선·남원 주민', area: '서귀포시 표선면·남원읍', icon: 'i-sun', pose: 'pose-a-02',
+    line: '아무것도 안 해도 되는 하루가 제일 좋아', talk: '오늘 일정? 노을 보기 하나!', stats: [5, 4, 2, 2, 4],
+    kw: ['쉬는 게 이번 한 달의 목표', '넓은 백사장과 조용한 바다', '관광객이 적은 편인 한적함', '차 타고 가끔 근교 나들이', '넓은 숙소에서 느긋하게'],
+    day: ['넓은 표선 해변 산책', '숙소에서 낮잠과 책 한 권', '남원 바닷길 따라 천천히 걷기'],
+    tip: '큰 마트·병원은 <b>차로 가는 걸 기준</b>으로 계획하세요.' },
+  seogwipo: { type: '따뜻한 남쪽 생활러', region: '서귀포 시내 주민', area: '서귀포시 시내', icon: 'i-house', pose: 'pose-a-07',
+    line: '제주살이 연습은 따뜻한 남쪽 시내에서', talk: '남쪽은 바람도 따뜻해!', stats: [3, 4, 4, 4, 4],
+    kw: ['이주 전 ‘진짜 생활’ 체험파', '시장과 골목이 있는 동네', '걸어서 즐기는 바닷가 산책길', '올레길과 폭포가 가까움', '따뜻한 남쪽 날씨'],
+    day: ['바닷가 산책길에서 하루 시작', '이중섭거리 골목 산책', '매일올레시장에서 저녁 장보기'],
+    tip: '한라산 너머 남쪽이라 <b>공항 오가는 시간</b>을 꼭 계산해두세요.' },
+  andeok: { type: '한적한 서남쪽 은둔러', region: '안덕·대정 주민', area: '서귀포시 안덕면·대정읍', icon: 'i-sanbang', pose: 'pose-b-05',
+    line: '바다도 오름도, 조용한 시간에 독차지', talk: '쉿, 여긴 나만 아는 동네야', stats: [4, 4, 2, 2, 5],
+    kw: ['한적함과 자연, 둘 다 포기 못 함', '산방산·송악산이 보이는 풍경', '오름과 바다를 번갈아 산책', '북적이는 곳은 피하고 싶음', '모슬포 항구 동네의 생활감'],
+    day: ['송악산 둘레길 걷기', '산방산 보이는 카페에서 쉬기', '모슬포 항구 근처에서 저녁'],
+    tip: '서남쪽 끝이라 제주시까지 꽤 멀어요. <b>공항 가는 날은 여유 있게!</b>' },
+  hallim: { type: '에메랄드 바다 산책러', region: '한림 주민', area: '한림읍 협재·금능', icon: 'i-wave', pose: 'pose-b-03',
+    line: '매일 아침 바다 색을 확인하는 게 하루의 시작', talk: '오늘 바다 색 봤어? 완전 에메랄드!', stats: [3, 5, 2, 2, 4],
+    kw: ['아침 바다 산책이 루틴', '투명한 에메랄드빛 바다', '비양도가 보이는 풍경', '여행보다 느린 여행', '서쪽 노을까지 덤'],
+    day: ['협재·금능 바다 색 보며 산책', '근처 오름 하나 오르기', '비양도 너머로 지는 노을 보기'],
+    tip: '여름 성수기엔 해변이 북적여요. 한적함을 원하면 <b>이른 아침 산책</b>을 추천!' },
+  aewol: { type: '노을 카페 감성러', region: '애월 주민', area: '제주시 애월읍', icon: 'i-cup', pose: 'pose-b-02',
+    line: '하루의 끝은 무조건 노을 보이는 카페에서', talk: '노을 시간엔 무조건 카페로!', stats: [2, 5, 3, 2, 3],
+    kw: ['바다 뷰 카페 탐방이 일상', '해안도로 드라이브', '연인·친구와 감성 한 달', '사진 찍기 좋은 순간이 많음', '노을 시간엔 일정 비워두기'],
+    day: ['해안도로 따라 드라이브', '바다 보이는 카페에서 여유', '한담 해안산책로에서 노을'],
+    tip: '카페 거리 주변은 주말에 붐벼요. 숙소는 <b>살짝 안쪽 마을</b>도 같이 찾아보세요.' },
+  jungsangan: { type: '오름·숲 탐험가', region: '중산간 주민', area: '송당·가시리·교래 등 중산간 마을', icon: 'i-mountain', pose: 'pose-a-01',
+    line: '바다보다 숲, 파도 소리보다 바람 소리', talk: '오름 하나 더 가볼까?', stats: [5, 1, 1, 1, 5],
+    kw: ['오름 오르기가 취미', '숲길·목장 풍경 속 생활', '반려동물과 산책하기 좋은 여유', '조용히 집중하는 시간', '차는 필수, 대신 풍경은 독점'],
+    day: ['가까운 오름 하나 오르기', '숲길 따라 천천히 걷기', '불빛 적은 마을에서 별 보기'],
+    tip: '차 없이는 생활이 어려워요. <b>장보기·병원 동선</b>을 꼭 미리 확인하세요.' },
+};
+const SECOND_LABEL = '이런 동네도 잘 맞아요';
+const INSTAGRAM = 'https://www.instagram.com/e_jeju.min/';
+// On its own site the page shares its own address; inside claude.ai it shares the artifact link.
+// 웹진 안 페이지라 늘 자기 주소로 공유한다. 공유에는 실제 주소만 쓴다 (공통 기준: 테스트 주소 금지)
+const STANDALONE = true;
+const SHARE_URL = 'https://lxwebzine.hankyung.com/2026-1/team3/articles/jeju-village-test.html';
+// 동네별 '대표 명소' 웹진 페이지 주소. 비어 있으면 '준비 중' 안내가 떠요
+// 웹진 '나의 제주찾기'의 살고 싶은 동네 10곳과 순서가 같다 (#town-1 ~ #town-10, 2026-10-27)
+const PLACE_PAGES = { shinjeju: './find-my-jeju.html#town-1', wondosim: './find-my-jeju.html#town-2', hamdeok: './find-my-jeju.html#town-3', gujwa: './find-my-jeju.html#town-4', pyoseon: './find-my-jeju.html#town-5',
+  seogwipo: './find-my-jeju.html#town-6', andeok: './find-my-jeju.html#town-7', hallim: './find-my-jeju.html#town-8', aewol: './find-my-jeju.html#town-9', jungsangan: './find-my-jeju.html#town-10' };
+// Visit / start / share / save counts go to Google Analytics on the Vercel site only
+// (build_deploy.py adds the tag; claude.ai blocks it, so there this does nothing).
+function track(name, params = {}) { try { if (window.gtag) gtag('event', name, params); } catch (e) { /* counting must never break the page */ } }
+const saved = (key, method) => track('save_image', { region: koPlace(key), method });
+
+/* ===================== languages ===================== */
+// Korean is the original. Other languages only swap the words; scores, poses and icons stay shared.
+const LANGS = { ko: '한국어', en: 'English', ja: '日本語', zh: '中文' };
+// 아티팩트는 언어를 고르면 Google Fonts에서 그 언어 글꼴을 불러왔다. 웹진은 style.css 하나만 쓰므로 불러오지 않고 기기 글꼴로 보인다
+const LANG_FONTS = {};
+const CANVAS_FONTS = {   // display, body, handwriting, hareubang's talk
+  ko: ['"Bagel Fat One", "Jua", sans-serif', '"Gmarket", "Apple SD Gothic Neo", sans-serif', '"Nanum Pen Script", cursive', '"Jua", sans-serif'],
+  ja: ['"Mochiy Pop One", sans-serif', '"Zen Maru Gothic", sans-serif', '"Yusei Magic", cursive', '"Kiwi Maru", sans-serif'],
+};
+// the Korean fonts carry their own Latin letters, except the handwriting, whose are too thin
+CANVAS_FONTS.en = [CANVAS_FONTS.ko[0], CANVAS_FONTS.ko[1], '"Caveat", cursive', CANVAS_FONTS.ko[3]];
+CANVAS_FONTS.zh = ['"ZCOOL KuaiLe", sans-serif', '"Noto Sans SC", sans-serif', '"ZCOOL KuaiLe", sans-serif', '"ZCOOL KuaiLe", sans-serif'];
+const UI = {
+  ko: {
+    docTitle: '나는 제주 어디 주민?', toTop: '처음 화면으로', home: '홈', share: '공유',
+    kicker: '제주 한 달 살기 동네 테스트', sub: '질문 5개로 찾는, 나에게 맞는 제주 동네', go: '테스트 시작하기',
+    meta: '약 30초 · 제주 동네 10곳 중 하나', pointAlt: '손가락으로 가리키는 하르방', bubble: '숙소부터 찾기 전에,<br>어떻게 살고 싶은지부터!',
+    back: '← 이전', loading: '하르방이 동네를<br>고르는 중…',
+    rheadMine: '당신에게 맞는 제주 동네는', rheadOther: '제주 동네 주민 유형', myAnswers: '내 답변', harubangAlt: '하르방',
+    secStats: '하르방 체감 지수', secKw: '이런 당신에게 딱', secDay: '이 동네에서의 하루', dayLabels: ['아침', '오후', '저녁'],
+    tip: '현실 팁', stamp: '나는 제주 어디 주민? × 이제주민', stats: ['조용함', '바다', '생활 편의', '대중교통', '자연'],
+    meterAria: (l, n) => `${l} ${n}점 / 5점`, quote: x => `“${x}”`,
+    saveLabel: p => `이미지 저장 & ${p} 대표 명소 보러가기`, soonSmall: '(웹진은 지금 준비 중이에요)',
+    shareBtn: '친구에게 공유하기', restart: '다시 하기', backMine: '내 결과로 돌아가기', tryToo: '나도 테스트하기',
+    beta: '베타 버전 · 동네 정보는 이제주민 팀이 검수하고 있어요.',
+    allBackMine: '← 내 결과', allBackHome: '← 처음으로', allHead: '제주 동네 주민 10가지',
+    soon: '이제주민 웹진은 지금 준비 중이에요.\n조금만 기다려 주세요!',
+    moving: p => `‘${p}’ 대표 명소 페이지로 이동할게요!`,
+    savedWebzine: p => `이미지를 저장했어요! ‘${p}’ 대표 명소는 이제주민 웹진에서 볼 수 있어요.`,
+    making: '이미지 만드는 중…', makeFail: '이미지를 만들지 못했어요. 다시 한 번 눌러 주세요.',
+    saveOpen: '저장 창이 이미 열려 있어요. 잠시 후 다시 눌러 주세요.',
+    copied: '공유 문구를 복사했어요! 카톡이나 DM에 붙여넣어 친구에게 보내 주세요.',
+    shareMine: r => `나는 ‘${r.region}’(${r.type}) 나왔어! 너는 제주 어디 주민일까?\n질문 5개로 찾는 제주 한 달 살기 동네 테스트`,
+    shareGeneric: '나는 제주 어디 주민? 질문 5개로 찾는 제주 한 달 살기 동네 테스트',
+    sheetAria: '결과 이미지 저장', myImgAlt: '나의 결과 이미지', capline: '이미지를 꾹 눌러 저장하거나<br>지금 화면을 캡처해 주세요 📸',
+    sheetGo: p => `${p} 대표 명소 보러가기 →`, close: '닫기', copyAria: '공유 문구 복사',
+    copyHelp: '아래 문구를 길게 눌러 전체 선택 → 복사한 뒤<br>카톡이나 DM에 붙여넣어 주세요',
+    imgFooter: '제주 한 달 살기 동네 테스트 · @e_jeju.min',
+    file: r => `나는제주어디주민_${r.region.replace(/[\s·]/g, '')}.png`,
+  },
+  ja: {
+    docTitle: 'わたしは済州のどこの住民？', toTop: 'トップへ', home: 'ホーム', share: 'シェア',
+    kicker: '済州1ヶ月暮らし 住む町診断', sub: '5つの質問でわかる、<br>わたしに合う済州の町', go: '診断スタート',
+    meta: '約30秒 · 済州の10エリアから1つ', pointAlt: '指さすトルハルバン', bubble: '宿探しの前に、<br>暮らし方から！',
+    back: '← 戻る', loading: 'トルハルバンが町を<br>選んでいます…',
+    rheadMine: 'あなたに合う済州の町は', rheadOther: '済州の町 住民タイプ', myAnswers: 'あなたの回答', harubangAlt: 'トルハルバン',
+    secStats: 'トルハルバン体感メーター', secKw: 'こんなあなたにぴったり', secDay: 'この町での1日', dayLabels: ['朝', '午後', '夜'],
+    tip: 'リアルなヒント', stamp: 'わたしは済州のどこの住民？ × イジェジュミン', stats: ['静けさ', '海', '利便性', '公共交通', '自然'],
+    meterAria: (l, n) => `${l} ${n} / 5`, quote: x => `「${x}」`,
+    saveLabel: p => `画像を保存 & ${p}の名所を見る`, soonSmall: '(ウェブマガジンは準備中です)',
+    shareBtn: '友だちにシェアする', restart: 'もう一度診断する', backMine: '自分の結果に戻る', tryToo: 'わたしも診断する',
+    beta: 'ベータ版 · 町の情報はイジェジュミン編集部が確認中です。',
+    allBackMine: '← 自分の結果', allBackHome: '← トップへ', allHead: '済州の住民タイプ 全10種',
+    soon: 'イジェジュミンのウェブマガジンは現在準備中です。もう少しお待ちください！',
+    moving: p => `「${p}」の名所ページへ移動します！`,
+    savedWebzine: p => `画像を保存しました！「${p}」の名所はイジェジュミンのウェブマガジンで見られます。`,
+    making: '画像を作成中…', makeFail: '画像を作成できませんでした。もう一度押してください。',
+    saveOpen: '保存画面がすでに開いています。少ししてからもう一度押してください。',
+    copied: 'シェア用の文章をコピーしました！LINEやDMに貼り付けて友だちに送ってください。',
+    shareMine: r => `わたしは「${r.region}」(${r.type})だった！あなたは済州のどこの住民？\n5つの質問でわかる 済州1ヶ月暮らし 住む町診断`,
+    shareGeneric: 'わたしは済州のどこの住民？ 5つの質問でわかる 済州1ヶ月暮らし 住む町診断',
+    sheetAria: '結果画像を保存', myImgAlt: 'わたしの結果画像', capline: '画像を長押しして保存するか、<br>この画面をスクショしてください 📸',
+    sheetGo: p => `${p}の名所を見る →`, close: '閉じる', copyAria: 'シェア文をコピー',
+    copyHelp: '下の文章を長押しで全選択 → コピーして<br>LINEやDMに貼り付けてください',
+    imgFooter: '済州1ヶ月暮らし 住む町診断 · @e_jeju.min',
+    file: r => `済州住む町診断_${r.place.replace(/[\s·・]/g, '')}.png`,
+  },
+  en: {
+    docTitle: 'Which Jeju Local Are You?', toTop: 'Back to start', home: 'Home', share: 'Share',
+    kicker: 'A Month in Jeju · Neighborhood Quiz', sub: 'Find your Jeju neighborhood<br>in just 5 questions', go: 'Start the quiz',
+    meta: 'About 30 sec · 1 of 10 neighborhoods', pointAlt: 'Hareubang pointing', bubble: 'Pick a lifestyle<br>before a room!',
+    back: '← Back', loading: 'Hareubang is picking<br>your neighborhood…',
+    rheadMine: 'Your Jeju neighborhood is', rheadOther: 'Jeju local type', myAnswers: 'Your answers', harubangAlt: 'Hareubang',
+    secStats: 'Hareubang’s vibe meter', secKw: 'Perfect for you', secDay: 'A day in this neighborhood', dayLabels: ['Morning', 'Afternoon', 'Evening'],
+    tip: 'Reality check', stamp: 'Which Jeju Local Are You? × @e_jeju.min', stats: ['Quiet', 'Ocean', 'Amenities', 'Transit', 'Nature'],
+    meterAria: (l, n) => `${l} ${n} out of 5`, quote: x => `“${x}”`,
+    saveLabel: p => `Save image & see top spots in ${p}`, soonSmall: '(Our webzine is coming soon)',
+    shareBtn: 'Share with friends', restart: 'Take it again', backMine: 'Back to my result', tryToo: 'Try it yourself',
+    beta: 'Beta · Our team is still checking the neighborhood info.',
+    allBackMine: '← My result', allBackHome: '← Start', allHead: 'All 10 Jeju local types',
+    soon: 'The e_jeju.min webzine is coming soon.\nStay tuned!',
+    moving: p => `Taking you to the top spots in ${p}!`,
+    savedWebzine: p => `Image saved! Find the top spots in ${p} on the e_jeju.min webzine.`,
+    making: 'Creating image…', makeFail: 'Couldn’t create the image. Please tap again.',
+    saveOpen: 'The save window is already open. Please try again in a moment.',
+    copied: 'Share message copied! Paste it into a chat or DM to send it to friends.',
+    shareMine: r => `I got “${r.region}” (${r.type})! Which Jeju local are you?\nFind your Jeju neighborhood for a one-month stay in 5 questions`,
+    shareGeneric: 'Which Jeju Local Are You? Find your Jeju neighborhood for a one-month stay in 5 questions',
+    sheetAria: 'Save result image', myImgAlt: 'My result image', capline: 'Press and hold the image to save,<br>or take a screenshot 📸',
+    sheetGo: p => `See top spots in ${p} →`, close: 'Close', copyAria: 'Copy share message',
+    copyHelp: 'Press and hold the text below, select all and copy,<br>then paste it into a chat or DM',
+    imgFooter: 'A Month in Jeju · Neighborhood Quiz · @e_jeju.min',
+    file: r => `which-jeju-local_${r.region.toLowerCase().replace(/ local$/, '').replace(/[^a-z]+/g, '-')}.png`,
+  },
+  zh: {
+    docTitle: '我适合住在济州哪里？', toTop: '回到首页', home: '首页', share: '分享',
+    kicker: '济州旅居一个月 · 街区测试', sub: '5个问题，<br>找到适合你的济州街区', go: '开始测试',
+    meta: '约30秒 · 济州10个街区中的一个', pointAlt: '指着前方的石头爷爷', bubble: '找住处之前，<br>先想想怎么生活！',
+    back: '← 上一题', loading: '石头爷爷正在<br>帮你挑街区…',
+    rheadMine: '最适合你的济州街区是', rheadOther: '济州街区居民类型', myAnswers: '你的回答', harubangAlt: '石头爷爷',
+    secStats: '石头爷爷体感指数', secKw: '这样的你最合适', secDay: '在这里的一天', dayLabels: ['早上', '下午', '晚上'],
+    tip: '实用贴士', stamp: '我适合住在济州哪里？ × @e_jeju.min', stats: ['安静', '海景', '生活便利', '公共交通', '自然'],
+    meterAria: (l, n) => `${l} ${n}/5`, quote: x => `“${x}”`,
+    saveLabel: p => `保存图片 & 去看${p}代表景点`, soonSmall: '（网络杂志正在准备中）',
+    shareBtn: '分享给朋友', restart: '再测一次', backMine: '回到我的结果', tryToo: '我也来测测',
+    beta: '测试版 · 街区信息正在由 e_jeju.min 团队核实中。',
+    allBackMine: '← 我的结果', allBackHome: '← 首页', allHead: '济州街区居民 10种类型',
+    soon: 'e_jeju.min 网络杂志正在准备中，敬请期待！',
+    moving: p => `即将前往${p}代表景点页面！`,
+    savedWebzine: p => `图片已保存！${p}的代表景点可以在 e_jeju.min 网络杂志查看。`,
+    making: '图片生成中…', makeFail: '图片生成失败，请再点一次。',
+    saveOpen: '保存窗口已经打开了，请稍后再试。',
+    copied: '分享文案已复制！粘贴到微信或私信发给朋友吧。',
+    shareMine: r => `我的结果是“${r.region}”（${r.type}）！你适合住在济州哪里？\n5个问题，找到最适合你在济州旅居一个月的地方。`,
+    shareGeneric: '我适合住在济州哪里？5个问题，找到最适合你在济州旅居一个月的地方。',
+    sheetAria: '保存结果图片', myImgAlt: '我的结果图片', capline: '长按图片保存，<br>或者直接截图 📸',
+    sheetGo: p => `去看${p}代表景点 →`, close: '关闭', copyAria: '复制分享文案',
+    copyHelp: '长按下方文字全选并复制，<br>再粘贴到微信或私信',
+    imgFooter: '济州旅居一个月 · 街区测试 · @e_jeju.min',
+    file: r => `我适合住在济州哪里_${r.place.replace(/[\s·・]/g, '')}.png`,
+  },
+};
+
+const CONTENT = {
+  ja: {
+    // same order as QUESTIONS and their opts: [label, short label for the summary chips]
+    questions: [
+      { q: 'このひと月、済州へ行く<br>いちばんの理由は？', talk: '休みに来た人と働きに来た人の<br>済州は違うよ！',
+        opts: [['仕事を離れてゆっくり休みたい', '休息'], ['ノートPCで働きながら過ごしたい', 'ワーケーション'], ['移住前にお試しで暮らしたい', '移住のお試し'],
+               ['観光よりゆっくり済州を味わいたい', 'スロー旅'], ['趣味やプロジェクトに没頭したい', '没頭']] },
+      { q: '今回のひと月、<br>誰と過ごしますか？', talk: '誰と来るかで<br>まったく違うよ！',
+        opts: [['ひとりで', 'ひとり'], ['恋人・友だちと', '恋人・友だち'], ['子どもと一緒に', '子連れ'], ['ペットと一緒に', 'ペット'], ['両親・家族と', '家族']] },
+      { q: 'ひと月の間、<br>移動手段は？', talk: '海の前の家でも<br>買い物に40分かかったら…？',
+        opts: [['マイカーを持っていく', 'マイカー'], ['レンタカーを借りる', 'レンタカー'], ['バスなどの公共交通', '公共交通'],
+               ['自転車と徒歩で十分', '徒歩・自転車'], ['まだ考えていない', '移動は未定']] },
+      { q: 'ひと月の予算、<br>何にもっと使いたい？', talk: '家賃だけ見て「思ったより安い！」<br>って決めちゃダメ！',
+        opts: [['スーパーや病院が近い便利さ', '利便性'], ['海が見える宿', 'オーシャンビュー'], ['広くて静かな一棟貸し', '静かな一棟貸し'],
+               ['グルメ・カフェめぐり', 'グルメ・カフェ'], ['できるだけ節約して長く滞在', '節約']] },
+      { q: 'あなたが夢見る<br>済州の1日は？', talk: 'これが決まれば<br>町選びがラクになるよ！',
+        opts: [['毎朝、海辺を散歩', '海辺さんぽ'], ['カフェで仕事しながら過ごす', 'カフェ作業'], ['静かな村でのんびり', 'のんびり村'],
+               ['グルメや展示めぐり', 'グルメ・展示'], ['火山の丘「オルム」やオルレの遊歩道、森を歩く', 'オルム・森'], ['市場めぐりや地元の人との交流', '市場・地元']] },
+    ],
+    // place: the short name used in buttons ("咸徳の名所を見る")
+    results: {
+      shinjeju: { type: '安心の生活インフラ派', region: '新済州住民', place: '新済州', area: '済州市 老衡・蓮洞（ノヒョン・ヨンドン）· 空港周辺',
+        line: '必要なものは全部近くに。<br>それが一番の安心', talk: '空港もスーパーも<br>近くて安心！',
+        kw: ['生活の便利さが最優先の実用派', '子連れでも安心の動線', '空港が近く、韓国本土との行き来もラク', 'スーパー・病院・塾が近い生活圏', 'グルメやカフェも選び放題'],
+        day: ['近所の公園をひとまわり散歩', 'スーパーも病院も近くて買い物がラク', '蓮洞のグルメ通りで夕ごはん'],
+        tip: '宿は<b>子どもの動線（病院・スーパー・遊び場）</b>を基準に選ぶと、ひと月がぐっとラクに。' },
+      wondosim: { type: '路地さんぽの徒歩派', region: '旧市街住民', place: '旧市街', area: '済州市 旧市街 · 三徒・一徒・塔洞（タプトン）',
+        line: '車がなくても大丈夫。<br>歩いた分だけ済州が見えるから', talk: 'バスに乗って<br>どこへでも行ってみる？',
+        kw: ['車がなくても暮らせる生活圏', '古い路地と市場めぐり', '展示・本屋・カフェ探し', '塔洞の海辺を散歩', 'ひとりでも退屈しない'],
+        day: ['塔洞の海沿いを散歩', '路地の本屋とカフェめぐり', '東門市場で夕ごはんの買い出し'],
+        tip: '宿を選ぶときは<b>近くのバス停と路線</b>から確認しましょう。' },
+      hamdeok: { type: '海辺のワーケーショナー', region: '咸徳住民', place: '咸徳', area: '済州市 朝天邑 咸徳（ハムドク）',
+        line: '仕事はノートPCで、<br>休みは海で', talk: '今日の会議は<br>海の見えるカフェで！',
+        kw: ['仕事と休みのバランス重視', '海辺のカフェでノートPCを開く', '空港への行き来もラクな東側の海', 'エメラルド色のビーチを散歩', '平日は集中、週末は東側を旅'],
+        day: ['咸徳ビーチで朝さんぽ', '海の見えるカフェで仕事', '犀牛峰（ソウボン）の遊歩道で夕焼け'],
+        tip: 'ハイシーズンはビーチが混みます。<b>仕事用のカフェを何軒か</b>見つけておきましょう。' },
+      gujwa: { type: 'のんびり海辺の村人', region: '旧左住民', place: '旧左', area: '旧左邑 細花・終達・月汀（セファ・チョンダル・ウォルジョン）',
+        line: '急ぐことのない町で、<br>わたしもゆっくり', talk: 'ここは時間が<br>ゆっくり流れるよ〜',
+        kw: ['静かな海辺の村の雰囲気', '小さな雑貨屋・本屋めぐり', '石垣の道を散歩するのが日課', '観光地より町の暮らし', 'ひとりの時間が好き'],
+        day: ['細花の海沿いを散歩', '小さな雑貨屋と本屋めぐり', '石垣の道を通って村の食堂で夕ごはん'],
+        tip: '村のお店は<b>早く閉まるところ</b>も多いです。夕方の買い物は早めに！' },
+      pyoseon: { type: 'ゆったり一休み派', region: '表善・南元住民', place: '表善・南元', area: '西帰浦市 表善面・南元邑（ピョソン・ナムウォン）',
+        line: '何もしなくていい1日が、<br>いちばん好き', talk: '今日の予定？<br>夕焼けを見ることだけ！',
+        kw: ['休むことが今回のひと月の目標', '広い砂浜と静かな海', '観光客が比較的少ない静けさ', 'ときどき車で近場におでかけ', '広い宿でのんびり'],
+        day: ['広い表善ビーチを散歩', '宿で昼寝と読書', '南元の海沿いをゆっくり歩く'],
+        tip: '大きなスーパーや病院は<b>車で行く前提</b>で計画しましょう。' },
+      seogwipo: { type: 'あったか南の暮らし派', region: '西帰浦市内住民', place: '西帰浦市内', area: '西帰浦市 市内（ソギポ）',
+        line: '済州暮らしの練習は、<br>あたたかい南の街で', talk: '南は風も<br>あたたかいよ！',
+        kw: ['移住前に「本物の暮らし」を体験', '市場と路地のある町', '歩いて楽しめる海辺の散歩道', 'オルレと滝がすぐそば', 'あたたかい南の気候'],
+        day: ['海辺の散歩道で1日をスタート', '李仲燮（イ・ジュンソプ）通りを散歩', '毎日オルレ市場で夕食の買い出し'],
+        tip: '漢拏山（ハルラサン）の南側なので、<b>空港までの移動時間</b>を必ず計算しておきましょう。' },
+      andeok: { type: '静かな南西の隠れ家派', region: '安徳・大静住民', place: '安徳・大静', area: '西帰浦市 安徳面・大静邑（アンドク・テジョン）',
+        line: '海もオルムも、<br>静かな時間をひとり占め', talk: 'しーっ、ここは<br>わたしだけが知ってる町',
+        kw: ['静けさも自然もゆずれない', '山房山・松岳山が見える風景', 'オルムと海を交互にお散歩', 'にぎやかな場所は避けたい', '摹瑟浦（モスルポ）港町の暮らし'],
+        day: ['松岳山の周遊路を歩く', '山房山が見えるカフェでひと休み', '摹瑟浦港の近くで夕ごはん'],
+        tip: '南西の端なので済州市まではかなり遠いです。<b>空港に行く日は余裕をもって！</b>' },
+      hallim: { type: 'エメラルドの海さんぽ派', region: '翰林住民', place: '翰林', area: '翰林邑 挟才・金陵（ヒョプチェ・クムヌン）',
+        line: '毎朝、海の色を確かめるのが<br>1日の始まり', talk: '今日の海の色見た？<br>完全にエメラルド！',
+        kw: ['朝の海辺さんぽがルーティン', '透き通ったエメラルド色の海', '飛揚島（ピヤンド）が見える風景', '旅行よりゆっくりな旅', '西側の夕焼けもおまけ'],
+        day: ['挟才・金陵の海の色を見ながら散歩', '近くのオルムにひとつ登る', '飛揚島の向こうに沈む夕日を見る'],
+        tip: '夏のハイシーズンはビーチがにぎわいます。静かに過ごしたいなら<b>早朝の散歩</b>がおすすめ！' },
+      aewol: { type: '夕焼けカフェ好き', region: '涯月住民', place: '涯月', area: '済州市 涯月邑（エウォル）',
+        line: '1日の終わりは、<br>必ず夕焼けの見えるカフェで', talk: '夕焼けの時間は<br>絶対カフェへ！',
+        kw: ['海が見えるカフェめぐりが日課', '海岸道路をドライブ', '恋人・友だちとエモいひと月', '写真映えする瞬間がいっぱい', '夕焼けの時間は予定を空ける'],
+        day: ['海岸道路沿いをドライブ', '海の見えるカフェでのんびり', '漢潭（ハンダム）海岸遊歩道で夕焼け'],
+        tip: 'カフェ通りの周辺は週末に混みます。宿は<b>少し内陸の村</b>も一緒に探してみて。' },
+      jungsangan: { type: 'オルム・森の探検家', region: '中山間住民', place: '中山間', area: '松堂・加時里・橋来など 中山間の村（ソンダン・カシリ・キョレ）',
+        line: '海より森、<br>波の音より風の音', talk: 'もうひとつ<br>オルムに登ってみる？',
+        kw: ['オルム登りが趣味', '森の道と牧場の風景の中で暮らす', 'ペットとの散歩にぴったり', '静かに集中できる時間', '車は必須、そのぶん景色はひとり占め'],
+        day: ['近くのオルムにひとつ登る', '森の道をゆっくり歩く', '明かりの少ない村で星を見る'],
+        tip: '車がないと暮らすのは難しいです。<b>買い物や病院への動線</b>を必ず事前に確認しましょう。' },
+    },
+  },
+  en: {
+    questions: [
+      { q: 'What’s your #1 reason<br>for a month in Jeju?', talk: 'Here to rest or to work?<br>It’s a different Jeju!',
+        opts: [['To get away from work and fully rest', 'Rest'], ['To work from my laptop here', 'Workation'], ['To try living here before moving', 'Trial move'],
+               ['To feel Jeju slowly, not just sightsee', 'Slow travel'], ['To dive into a hobby or project', 'Deep focus']] },
+      { q: 'Who’s joining you<br>this month?', talk: 'It all depends on<br>who you come with!',
+        opts: [['Just me', 'Solo'], ['My partner or friends', 'Partner/friends'], ['My kids', 'With kids'], ['My pet', 'With pet'], ['My parents or family', 'Family']] },
+      { q: 'How will you<br>get around?', talk: 'Even by the ocean… what if groceries<br>are 40 minutes away?',
+        opts: [['Bringing my own car', 'Own car'], ['Renting a car', 'Rental car'], ['Buses and public transit', 'Transit'],
+               ['A bike or my own two feet', 'Walk/bike'], ['Haven’t thought about it yet', 'Not sure yet']] },
+      { q: 'Where would you rather<br>spend your budget?', talk: 'Don’t just look at the rent<br>and think “So cheap!”',
+        opts: [['Near groceries and hospitals', 'Convenience'], ['A place with an ocean view', 'Ocean view'], ['A spacious, quiet whole-house rental', 'Entire house'],
+               ['Exploring restaurants and cafés', 'Food & cafés'], ['Spending less so I can stay longer', 'Budget stay']] },
+      { q: 'What does your dream<br>day in Jeju look like?', talk: 'Once you know this,<br>picking a neighborhood is easy!',
+        opts: [['A walk by the sea every morning', 'Sea walks'], ['Working from cafés', 'Café work'], ['Slow days in a quiet village', 'Slow village'],
+               ['Hunting for good food and exhibitions', 'Food & art'], ['Hiking volcanic hills, Olle trails & forests', 'Hills & forests'], ['Browsing markets, meeting locals', 'Markets & locals']] },
+    ],
+    results: {
+      shinjeju: { type: 'Everything-Nearby Type', region: 'Shin-Jeju Local', place: 'Shin-Jeju', area: 'Nohyeong & Yeon-dong, Jeju City · near the airport',
+        line: 'Everything close by = peace of mind', talk: 'Airport and stores close by.<br>So reassuring!',
+        kw: ['Practical, convenience first', 'Stress-free routines with kids', 'Easy flights to mainland Korea', 'Stores, clinics & cram schools', 'Lots of restaurants & cafés'],
+        day: ['A loop around the neighborhood park', 'Easy errands to stores and clinics', 'Dinner on a Yeon-dong food street'],
+        tip: 'Choose your stay around <b>your kids’ routes (hospital, grocery, playground)</b> and the month gets much easier.' },
+      wondosim: { type: 'Alley-Walking Explorer', region: 'Old Town Local', place: 'Old Town', area: 'Old downtown Jeju City · Samdo, Ildo, Tapdong',
+        line: 'No car? No problem. Walk more, see more.', talk: 'Shall we hop on a bus<br>and go anywhere?',
+        kw: ['Livable without a car', 'Old alleys and local markets', 'Exhibitions, bookshops & cafés', 'Seaside walks in Tapdong', 'Never bored, even solo'],
+        day: ['A walk along the Tapdong seafront', 'Browsing alley bookshops and cafés', 'Picking up dinner at Dongmun Market'],
+        tip: 'When choosing a stay, check <b>the nearest bus stops and routes</b> first.' },
+      hamdeok: { type: 'Beachfront Workcationer', region: 'Hamdeok Local', place: 'Hamdeok', area: 'Hamdeok, Jocheon-eup, Jeju City',
+        line: 'Work on the laptop, rest by the sea', talk: 'Today’s meeting is at<br>a beachfront café!',
+        kw: ['Balancing work and rest', 'Laptop open at a seaside café', 'East coast, easy airport access', 'Beach walks beside emerald waters', 'Weekday focus, weekend trips'],
+        day: ['A morning walk on Hamdeok Beach', 'Working at a café with a sea view', 'Sunset on the Seoubong trail'],
+        tip: 'The beach gets crowded in peak season. <b>Pick a few cafés to work from</b> in advance.' },
+      gujwa: { type: 'Slow Seaside Villager', region: 'Gujwa Local', place: 'Gujwa', area: 'Gujwa-eup · Sehwa, Jongdal, Woljeong',
+        line: 'No rush here, so I slow down too', talk: 'Time flows slowly<br>around here~',
+        kw: ['Quiet seaside village vibes', 'Little gift shops & bookstores', 'Daily walks by stone walls', 'Village life over tourist spots', 'Loves time alone'],
+        day: ['A walk along the Sehwa coast', 'Browsing small shops and bookstores', 'Dinner at a village diner past the stone walls'],
+        tip: 'Many village shops <b>close early</b>. Do your evening grocery run ahead of time!' },
+      pyoseon: { type: 'Take-a-Breather Type', region: 'Pyoseon & Namwon Local', place: 'Pyoseon & Namwon', area: 'Pyoseon-myeon & Namwon-eup, Seogwipo',
+        line: 'My favorite day? One with nothing to do', talk: 'Today’s plan?<br>Just watching the sunset!',
+        kw: ['Resting is the goal this month', 'Wide sandy beaches, calm sea', 'Fewer tourists, more quiet', 'Occasional drives nearby', 'Lazy days in a roomy stay'],
+        day: ['A walk on wide Pyoseon Beach', 'Naps and a good book at your stay', 'A slow stroll along the Namwon coast'],
+        tip: 'Plan on <b>driving to big supermarkets and hospitals</b>.' },
+      seogwipo: { type: 'Warm Southern Settler', region: 'Seogwipo Downtown Local', place: 'Downtown Seogwipo', area: 'Downtown Seogwipo',
+        line: 'Practicing island life in the warm south', talk: 'Even the wind is<br>warmer down south!',
+        kw: ['Trying real life before moving', 'Markets and cozy alleys', 'Seaside paths on foot', 'Olle trails & waterfalls nearby', 'Warm southern weather'],
+        day: ['Starting the day on a seaside path', 'A stroll down Lee Jung-seop Street', 'Dinner shopping at Maeil Olle Market'],
+        tip: 'You’re south of Hallasan, so <b>factor in the trip to the airport</b>.' },
+      andeok: { type: 'Quiet Southwest Hideaway', region: 'Andeok & Daejeong Local', place: 'Andeok & Daejeong', area: 'Andeok-myeon & Daejeong-eup, Seogwipo',
+        line: 'The sea and volcanic hills, all to myself', talk: 'Shh, this is my<br>secret neighborhood',
+        kw: ['Won’t give up quiet or nature', 'Views of Sanbangsan & Songaksan', 'Walks on volcanic hills and by the sea', 'Avoids crowded places', 'Harbor-town life in Moseulpo'],
+        day: ['A walk on the Songaksan trail', 'Unwinding at a café facing Sanbangsan', 'Dinner near Moseulpo Harbor'],
+        tip: 'It’s the far southwest, so Jeju City is a long way off. <b>Leave plenty of time on airport days!</b>' },
+      hallim: { type: 'Emerald Sea Stroller', region: 'Hallim Local', place: 'Hallim', area: 'Hallim-eup · Hyeopjae, Geumneung',
+        line: 'Each day starts with the color of the sea', talk: 'Seen the sea today?<br>Total emerald!',
+        kw: ['Morning beach walks on repeat', 'Clear, emerald-green water', 'Views of Biyangdo Island', 'Slower than a typical trip', 'West-coast sunsets as a bonus'],
+        day: ['A walk by the Hyeopjae and Geumneung water', 'Hiking up a nearby volcanic hill', 'Sunset beyond Biyangdo Island'],
+        tip: 'Beaches get busy in summer. For some quiet, try <b>an early-morning walk</b>!' },
+      aewol: { type: 'Sunset Café Lover', region: 'Aewol Local', place: 'Aewol', area: 'Aewol-eup, Jeju City',
+        line: 'Every day ends at a sunset café', talk: 'Sunset time means<br>café time!',
+        kw: ['Ocean-view café hopping', 'Coastal road drives', 'Scenic dates and friend trips', 'So many photo moments', 'Keeps sunset hours free'],
+        day: ['A drive along the coastal road', 'Relaxing at a café with a sea view', 'Sunset on the Handam coastal walk'],
+        tip: 'The café strip gets busy on weekends. Also look for stays <b>in villages a bit inland</b>.' },
+      jungsangan: { type: 'Volcanic Hill & Forest Explorer', region: 'Inland Village Local', place: 'the inland villages', area: 'Songdang, Gasi-ri & Gyorae, between the coast and Hallasan',
+        line: 'Forest over sea, wind over waves', talk: 'Shall we hike up<br>one more volcanic hill?',
+        kw: ['Volcanic hill hikes as a hobby', 'Life among forests & pastures', 'Great for walks with your pet', 'Quiet time to focus', 'Car required, views all yours'],
+        day: ['Hiking up a nearby volcanic hill', 'A slow walk along forest trails', 'Stargazing in a village with few lights'],
+        tip: 'Life here is hard without a car. <b>Check your routes to groceries and clinics</b> in advance.' },
+    },
+  },
+  zh: {
+    questions: [
+      { q: '这一个月去济州，<br>最主要的原因是？', talk: '来休息的人和来工作的人，<br>看到的济州不一样！',
+        opts: [['想摆脱工作，好好休息', '休息'], ['带着笔记本边工作边生活', '旅居办公'], ['移居前想先试住一下', '试住'],
+               ['比起旅游，想慢慢感受济州', '慢旅行'], ['想沉浸在爱好或项目里', '沉浸']] },
+      { q: '这一个月，<br>和谁一起？', talk: '和谁一起来，<br>完全不一样！',
+        opts: [['一个人', '独自'], ['和恋人·朋友', '恋人·朋友'], ['带孩子', '带娃'], ['带宠物', '宠物'], ['和父母·家人', '家人']] },
+      { q: '这一个月，<br>你怎么出行？', talk: '就算住在海边，<br>买菜要40分钟的话…？',
+        opts: [['开自己的车', '自驾'], ['租车', '租车'], ['公交等公共交通', '公共交通'],
+               ['骑车或走路就够了', '步行·骑车'], ['还没想好', '还没想好']] },
+      { q: '一个月的预算，<br>更想花在哪儿？', talk: '只看房租就觉得“好便宜”？<br>可不行哦！',
+        opts: [['离超市·医院近，生活方便', '生活便利'], ['能看到海的住处', '海景'], ['宽敞安静的独栋', '安静独栋'],
+               ['探店·逛咖啡馆', '美食·咖啡'], ['尽量省钱，住得更久', '省钱']] },
+      { q: '你梦想中的<br>济州一天是？', talk: '这个定下来，<br>选街区就容易了！',
+        opts: [['每天早上去海边散步', '海边散步'], ['在咖啡馆边工作边生活', '咖啡馆办公'], ['在安静的村子里慢慢过', '慢村生活'],
+               ['寻找美食和展览', '美食·展览'], ['爬火山丘、走偶来小路和森林', '火山丘·森林'], ['逛市场，和当地人打成一片', '市场·当地']] },
+    ],
+    results: {
+      shinjeju: { type: '安心生活设施派', region: '新济州居民', place: '新济州', area: '济州市 老衡洞·莲洞 · 机场附近',
+        line: '需要的都在身边，<br>心里才踏实', talk: '机场、超市都很近，<br>超安心！',
+        kw: ['生活便利第一的务实派', '带孩子出行也方便', '离机场近，往返韩国本土很方便', '超市·医院·补习班都在附近', '美食咖啡任你挑'],
+        day: ['在小区公园绕一圈散步', '超市、医院都在附近，日常采购很方便', '在莲洞美食街吃晚饭'],
+        tip: '选住处时，先看看<b>带孩子去医院、超市和游乐场是否方便</b>，这一个月会轻松很多。' },
+      wondosim: { type: '小巷散步步行派', region: '老城区居民', place: '老城区', area: '济州市 老城区 · 三徒·一徒·塔洞',
+        line: '没车也没关系，<br>走得越多，看到的济州越多', talk: '坐上公交，<br>随便去哪儿逛逛？',
+        kw: ['没车也能生活的街区', '逛老巷子和市场', '探访展览·书店·咖啡馆', '塔洞海边散步', '一个人也不无聊'],
+        day: ['沿着塔洞海边散步', '逛巷子里的书店和咖啡馆', '在东门市场买晚饭'],
+        tip: '选住处时，先确认<b>附近的公交站和线路</b>。' },
+      hamdeok: { type: '海边旅居办公族', region: '咸德居民', place: '咸德', area: '济州市 朝天邑 咸德',
+        line: '工作交给笔记本，<br>休息交给大海', talk: '今天的会议<br>在海边咖啡馆开！',
+        kw: ['重视工作与休息的平衡', '在海边咖啡馆打开笔记本', '往返机场方便的东部海边', '在翡翠色海滩散步', '工作日专注，周末东部游'],
+        day: ['在咸德海滩晨间散步', '在看得见海的咖啡馆工作', '在犀牛峰步道看日落'],
+        tip: '旺季海滩人很多，<b>提前收藏几家能办公的咖啡馆</b>吧。' },
+      gujwa: { type: '慢节奏海边村民', region: '旧左居民', place: '旧左', area: '旧左邑 细花·终达·月汀',
+        line: '在不慌不忙的村子里，<br>我也慢下来', talk: '这里的时间<br>过得很慢～',
+        kw: ['安静的海边小村氛围', '逛小杂货店和书店', '石墙小路散步是日常', '比起景点更爱村里生活', '喜欢独处的时光'],
+        day: ['沿着细花海边散步', '逛小杂货店和书店', '穿过石墙小路，在村里小馆吃晚饭'],
+        tip: '村里很多店<b>关门很早</b>，晚上要买的东西记得提前买！' },
+      pyoseon: { type: '悠闲休止符型', region: '表善·南元居民', place: '表善·南元', area: '西归浦市 表善面·南元邑',
+        line: '什么都不用做的一天，<br>最好', talk: '今天的安排？<br>只有看日落！',
+        kw: ['这个月的目标就是休息', '宽阔沙滩和安静的海', '游客相对较少的清静', '偶尔开车去周边转转', '在宽敞的住处慢悠悠'],
+        day: ['在宽阔的表善海滩散步', '在住处午睡、看本书', '沿着南元海边慢慢走'],
+        tip: '大超市和医院，要<b>按开车去来规划</b>。' },
+      seogwipo: { type: '温暖南部生活家', region: '西归浦市区居民', place: '西归浦市区', area: '西归浦市 市区',
+        line: '济州生活的练习，<br>就在温暖的南部市区', talk: '南边的风<br>都是暖的！',
+        kw: ['移居前体验“真实生活”', '有市场和小巷的街区', '步行就能享受的海边步道', '偶来小路和瀑布都很近', '温暖的南部天气'],
+        day: ['在海边步道开始一天', '逛李仲燮街的小巷', '在每日偶来市场买晚饭'],
+        tip: '这里在汉拿山南边，<b>往返机场的时间</b>一定要算好。' },
+      andeok: { type: '清静西南隐居派', region: '安德·大静居民', place: '安德·大静', area: '西归浦市 安德面·大静邑',
+        line: '大海和火山丘，<br>在安静时光里独享', talk: '嘘，这是<br>只有我知道的地方',
+        kw: ['清静和自然都不想放弃', '能看到山房山·松岳山的风景', '时而漫步火山丘，时而沿海散步', '想避开热闹的地方', '摹瑟浦港口小镇的生活感'],
+        day: ['走松岳山环山步道', '在看得见山房山的咖啡馆休息', '在摹瑟浦港附近吃晚饭'],
+        tip: '这里在西南端，到济州市挺远的。<b>去机场那天要留足时间！</b>' },
+      hallim: { type: '翡翠海边散步家', region: '翰林居民', place: '翰林', area: '翰林邑 挟才·金陵',
+        line: '每天早上看看海的颜色，<br>一天就开始了', talk: '今天看海了吗？<br>完全是翡翠色！',
+        kw: ['早上海边散步是日常', '清澈的翡翠色大海', '能看到飞扬岛的风景', '比旅行更慢的旅行', '还附赠西边的日落'],
+        day: ['看着挟才·金陵的海水散步', '爬一座附近的火山丘', '看太阳在飞扬岛后面落下'],
+        tip: '夏季旺季海滩很热闹，想要清静推荐<b>清晨散步</b>！' },
+      aewol: { type: '日落咖啡馆文艺派', region: '涯月居民', place: '涯月', area: '济州市 涯月邑',
+        line: '一天的结尾，<br>一定要在看得见日落的咖啡馆', talk: '日落时间<br>一定要去咖啡馆！',
+        kw: ['逛海景咖啡馆是日常', '沿着海岸公路兜风', '和恋人·朋友的文艺一个月', '好出片的瞬间特别多', '日落时间留空不排事'],
+        day: ['沿着海岸公路兜风', '在看得见海的咖啡馆放空', '在汉潭海岸步道看日落'],
+        tip: '咖啡街周边周末人多，住处也可以找找<b>稍微靠内陆的村子</b>。' },
+      jungsangan: { type: '火山丘·森林探险家', region: '山间村落居民', place: '山间村落', area: '松堂、加时里、桥来等位于海岸与汉拿山之间的内陆村落',
+        line: '比起大海更爱森林，<br>比起海浪声更爱风声', talk: '要不要<br>再爬一座火山丘？',
+        kw: ['爱好是爬火山丘', '生活在林间小路和牧场风景里', '适合带宠物散步', '安静专注的时光', '车是必需品，风景独享'],
+        day: ['爬一座附近的火山丘', '沿着林间小路慢慢走', '在灯光稀少的村子看星星'],
+        tip: '没有车，日常生活会很不方便。一定要<b>提前确认买菜和去医院的路线及交通方式</b>。' },
+    },
+  },
+};
+
+// ?lang=ja in the link wins, then the visitor's last choice, then the phone's own language
+// (Korean, Japanese or Chinese as set; any other language gets English)
+function detectLang() {
+  try { const q = new URLSearchParams(location.search).get('lang'); if (LANGS[q]) return q; } catch (e) { /* no query */ }
+  try { const s = localStorage.getItem('ijejumin.villageTest.lang'); if (LANGS[s]) return s; } catch (e) { /* storage blocked */ }
+  const nav = (navigator.language || 'ko').toLowerCase();
+  return nav.startsWith('ko') ? 'ko' : nav.startsWith('ja') ? 'ja' : nav.startsWith('zh') ? 'zh' : 'en';
+}
+let LANG = detectLang();
+function t(k, ...a) {
+  const v = k in UI[LANG] ? UI[LANG][k] : UI.ko[k];
+  return typeof v === 'function' ? v(...a) : v;
+}
+// the question / result in the current language
+function Q(i) {
+  const base = QUESTIONS[i], tr = CONTENT[LANG] && CONTENT[LANG].questions[i];
+  return tr ? { ...base, q: tr.q, talk: tr.talk, opts: base.opts.map((o, j) => [tr.opts[j][0], tr.opts[j][1], o[2]]) } : base;
+}
+function R(key) {
+  const base = RESULTS[key], tr = CONTENT[LANG] && CONTENT[LANG].results[key];
+  return tr ? { ...base, ...tr } : { ...base, place: base.region.replace(' 주민', '') };
+}
+function loadLangFonts(l) {
+  if (!LANG_FONTS[l] || document.getElementById('font-' + l)) return;
+  const k = document.createElement('link'); k.id = 'font-' + l; k.rel = 'stylesheet'; k.href = LANG_FONTS[l];
+  document.head.appendChild(k);
+}
+
+let cur = null;   // the result on screen, so a language switch can redraw it
+function applyStatic() {
+  vtRoot.lang = LANG === 'zh' ? 'zh-CN' : LANG;   // Simplified Chinese glyphs (웹진 페이지 전체가 아니라 테스트 칸에만)
+  loadLangFonts(LANG);
+  // 웹진 헤더의 KO·EN·JA 중 지금 언어에 흰 동그라미 (중국어는 없음)
+  document.querySelectorAll('.wz-lang a').forEach(a => { if (a.getAttribute('hreflang') === LANG) a.setAttribute('aria-current', 'true'); else a.removeAttribute('aria-current'); });
+  vtRoot.querySelectorAll('[data-i18n]').forEach(el => { el.textContent = t(el.dataset.i18n); });
+  vtRoot.querySelectorAll('[data-i18n-html]').forEach(el => { el.innerHTML = t(el.dataset.i18nHtml); });
+  vtRoot.querySelectorAll('[data-i18n-aria]').forEach(el => el.setAttribute('aria-label', t(el.dataset.i18nAria)));
+  vtRoot.querySelectorAll('[data-i18n-alt]').forEach(el => { el.alt = t(el.dataset.i18nAlt); });
+  const ti = $('titleimg'), src = LANG === 'ko' ? IMG + 'title.webp' : `${IMG}title-${LANG}.webp`;
+  if (ti.getAttribute('src') !== src) ti.src = src;
+  ti.alt = t('docTitle');
+  $('langmenu').innerHTML = Object.entries(LANGS).map(([k, n]) =>
+    `<button type="button" role="menuitemradio" lang="${k}" aria-checked="${k === LANG}" data-act="setlang" data-lang="${k}">${n}</button>`).join('');
+  fitHeader();
+}
+// Keep the header on one line: on narrow phones the home pill shows only its icon, then the pills sit closer together.
+function fitHeader() {
+  const h = vtRoot.querySelector('.hdr');
+  h.classList.remove('c1', 'c2');
+  for (const c of ['c1', 'c2']) {
+    if (h.scrollWidth <= h.clientWidth + 1) return;
+    h.classList.add(c);
+  }
+}
+window.addEventListener('resize', fitHeader);
+function closeLangMenu() { $('langmenu').hidden = true; $('langbtn').setAttribute('aria-expanded', 'false'); }
+function toggleLangMenu() {
+  const m = $('langmenu'); m.hidden = !m.hidden;
+  $('langbtn').setAttribute('aria-expanded', String(!m.hidden));
+}
+function setLang(l) {
+  closeLangMenu();
+  if (!LANGS[l] || l === LANG) return;
+  LANG = l;
+  try { localStorage.setItem('ijejumin.villageTest.lang', l); } catch (e) { /* storage blocked */ }
+  if (STANDALONE) {
+    try {
+      const u = new URL(location.href);
+      if (l === 'ko') u.searchParams.delete('lang'); else u.searchParams.set('lang', l);
+      history.replaceState(null, '', u.pathname + u.search + u.hash);
+    } catch (e) { /* the address is a convenience only */ }
+  }
+  track('language', { lang: l });
+  applyStatic();
+  if (!$('quiz').hidden) renderQuestion();
+  else if (!$('result').hidden && cur) renderResult(cur.key, cur.isMine);
+  else if (!$('all').hidden) renderAll();
+}
+document.addEventListener('click', e => { if (!$('langmenu').hidden && !e.target.closest('.langwrap')) closeLangMenu(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLangMenu(); });
+
+/* ===================== scoring ===================== */
+// answers: array of option indexes, one per question
+function score(answers) {
+  const total = Object.fromEntries(ORDER.map(k => [k, 0]));
+  const byQ = QUESTIONS.map(() => Object.fromEntries(ORDER.map(k => [k, 0])));
+  answers.forEach((ai, qi) => {
+    const q = QUESTIONS[qi], pts = q.opts[ai][2], w = q.weight || 1;
+    for (const [k, v] of Object.entries(pts)) { total[k] += v * w; byQ[qi][k] += v; }
+  });
+  // ties: the 'daily life' answer first, then mobility, then companions, then map order
+  const rank = ORDER.slice().sort((a, b) =>
+    total[b] - total[a] || byQ[4][b] - byQ[4][a] || byQ[2][b] - byQ[2][a] || byQ[1][b] - byQ[1][a] || ORDER.indexOf(a) - ORDER.indexOf(b));
+  return { rank, total };
+}
+
+/* ===================== torn paper ===================== */
+function tear(el) {
+  const bg = el.querySelector('.pbg'); if (!bg) return;
+  const w = el.offsetWidth, h = el.offsetHeight; if (!w || !h) return;
+  let seed = [...(el.dataset.seed || 'x')].reduce((s, c) => s + c.charCodeAt(0), 7);
+  const rnd = () => (seed = (seed * 9301 + 49297) % 233280) / 233280;
+  const pts = [], step = 13, J = 5;
+  const edge = (x0, y0, x1, y1, ix, iy) => {
+    const n = Math.max(2, Math.round(Math.hypot(x1 - x0, y1 - y0) / step));
+    for (let i = 0; i < n; i++) {
+      const t = i / n, j = rnd() * J + (rnd() < .07 ? rnd() * 5 : 0);
+      pts.push(`${(x0 + (x1 - x0) * t + ix * j).toFixed(1)}px ${(y0 + (y1 - y0) * t + iy * j).toFixed(1)}px`);
+    }
+  };
+  edge(0, 0, w, 0, 0, 1); edge(w, 0, w, h, -1, 0); edge(w, h, 0, h, 0, -1); edge(0, h, 0, 0, 1, 0);
+  bg.style.clipPath = `polygon(${pts.join(',')})`;
+}
+const paperRO = new ResizeObserver(es => es.forEach(e => tear(e.target)));
+function papers(root) {
+  root.querySelectorAll('.paper').forEach(p => {
+    if (!p.querySelector(':scope > .pshadow')) p.insertAdjacentHTML('afterbegin', '<div class="pshadow"><div class="pbg"></div></div>');
+    tear(p); paperRO.observe(p);
+  });
+}
+
+/* ===================== screens ===================== */
+const $ = id => document.getElementById(id);
+const icon = (id) => `<svg class="icon" viewBox="0 0 48 48" aria-hidden="true"><use href="#${id}"/></svg>`;
+const img = (pose, alt = '') => `<img src="${IMG}${pose}.webp" alt="${alt}" decoding="async">`;
+let answers = [], qi = 0, mine = null;
+const PRELOADED = [...new Set([...QUESTIONS.map(q => q.pose), 'pose-b-08', ...ORDER.map(k => RESULTS[k].pose)])]
+  .map(p => { const i = new Image(); i.src = `${IMG}${p}.webp`; return i; });
+
+function show(id) {
+  ['start', 'quiz', 'loading', 'result', 'all'].forEach(s => { $(s).hidden = s !== id; });
+  $('bgphoto').hidden = id !== 'start';
+  $('homebtn').classList.toggle('on', id === 'start');
+  $('app').classList.toggle('fit', ['start', 'quiz', 'loading'].includes(id));
+  window.scrollTo(0, 0);
+  const el = $(id); el.classList.remove('vt-reveal'); void el.offsetWidth; el.classList.add('vt-reveal');
+  papers(el);
+}
+
+function renderQuestion() {
+  const q = Q(qi);
+  $('progress').innerHTML = TOPICS.map((t, i) =>
+    `<span class="chip${i === qi ? ' on' : i < qi ? ' done' : ''}">${icon(t)}</span>`).join('');
+  $('qcard').innerHTML = `<span class="qno">Q${qi + 1}<span class="qno-of"> / ${QUESTIONS.length}</span></span><h2 class="qtext">${q.q}</h2>`;
+  $('qcard').dataset.seed = 'q' + qi;
+  $('opts').innerHTML = q.opts.map((o, i) =>
+    `<button class="opt${answers[qi] === i ? ' picked' : ''}" type="button" id="opt-${qi}-${i}" data-i="${i}"><span class="box" aria-hidden="true"></span><span>${o[0]}</span></button>`).join('');
+  $('qtalk').innerHTML = `${img(q.pose)}<div class="bubble">${q.talk}</div>`;
+  show('quiz');
+}
+
+function pick(i) {
+  answers[qi] = i;
+  $('opts').querySelectorAll('.opt').forEach(b => b.classList.toggle('picked', +b.dataset.i === i));
+  setTimeout(() => {
+    if (qi < QUESTIONS.length - 1) { qi++; renderQuestion(); }
+    else {
+      show('loading');
+      setTimeout(() => { mine = score(answers); track('test_complete', { region: koPlace(mine.rank[0]) }); renderResult(mine.rank[0], true); }, 1500);
+    }
+  }, 260);
+}
+
+function meters(stats) {
+  return `<dl class="meters">${t('stats').map((l, i) =>
+    `<dt>${l}</dt><dd aria-label="${t('meterAria', l, stats[i])}">${[1, 2, 3, 4, 5].map(n => `<i class="${n <= stats[i] ? 'f' : ''}"></i>`).join('')}</dd>`).join('')}</dl>`;
+}
+
+function renderResult(key, isMine) {
+  const r = R(key);
+  cur = { key, isMine };
+  $('result').innerHTML = `
+    <p class="rhead">${isMine ? t('rheadMine') : t('rheadOther')}</p>
+    ${isMine ? `<div class="answers" aria-label="${t('myAnswers')}">${answers.map((a, i) =>
+        (i === Math.ceil(answers.length / 2) ? '<i class="br"></i>' : '') + `<span>${Q(i).opts[a][1]}</span>`).join('')}</div>` : ''}
+    <article class="paper rcard" data-seed="${key}">
+      <div class="rtop">
+        <span class="typepill"><span class="chip">${icon(r.icon)}</span>${r.type}</span>
+        <h2 class="region">${r.region}<small>${r.area}</small></h2>
+        <p class="oneliner">${t('quote', r.line)}</p>
+      </div>
+      <div class="rtalk">${img(r.pose, t('harubangAlt'))}<div class="bubble">${r.talk}</div></div>
+      <section class="sec"><h3>${t('secStats')}</h3>${meters(r.stats)}</section>
+      <section class="sec"><h3>${t('secKw')}</h3><ul class="kw">${r.kw.map(k => `<li>${k}</li>`).join('')}</ul></section>
+      <section class="sec"><h3>${t('secDay')}</h3><div class="day">${t('dayLabels').map((d, i) => `<b>${d}</b><span>${r.day[i]}</span>`).join('')}</div></section>
+      <p class="tip"><b>${t('tip')}</b> · ${r.tip}</p>
+      <p class="stamp">${t('stamp')}</p>
+    </article>
+    ${(() => {   // one tap: save the image first, then move to the webzine as soon as the save has started
+      const inner = `<span class="l1"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4 V15 M7 10.5 L12 15.5 L17 10.5"/><path d="M4 17 V20 H20 V17"/></svg><span class="lbl">${t('saveLabel', r.place).replace('&', '&amp;')}</span></span>`;
+      return PLACE_PAGES[key]
+        ? `<button class="cta save combo" type="button" data-act="save" data-key="${key}">${inner}</button>`
+        : `<button class="cta save combo" type="button" data-act="save" data-key="${key}">${inner}<small>${t('soonSmall')}</small></button>`;
+    })()}
+    <button class="cta yellow combo" type="button" data-act="share"><span class="l1"><svg viewBox="0 0 48 48" aria-hidden="true"><use href="#i-share"/></svg><span>${t('shareBtn')}</span></span></button>
+    ${isMine ? `<button class="cta blue" type="button" data-act="restart">${t('restart')}</button>` : ''}
+    ${isMine ? '' : (mine ? `<button class="cta ghost" type="button" data-act="mine">${t('backMine')}</button>` : `<button class="cta" type="button" data-act="restart">${t('tryToo')}</button>`)}
+    <p class="beta">${t('beta')}</p>`;
+  show('result');
+  fitChips();
+  try { history.replaceState(null, '', '#' + key); } catch (e) { /* hash is a convenience only */ }
+  setTimeout(() => prepareImage(key).promise.catch(() => {}), 250);
+}
+
+// Keep the answer chips on one line: shrink the text down to 11px; if that is still too wide, break 3/2.
+function fitChips() {
+  const box = document.querySelector('#result .answers'); if (!box) return;
+  box.classList.remove('two');
+  for (let fs = 13; fs >= 11; fs -= 0.5) {
+    box.style.setProperty('--chip-fs', fs + 'px');
+    if (box.scrollWidth <= box.clientWidth + 1) return;
+  }
+  box.style.setProperty('--chip-fs', '13px');
+  box.classList.add('two');
+}
+window.addEventListener('resize', () => { if (!$('result').hidden) fitChips(); });
+
+function renderAll() {
+  const myKey = mine ? mine.rank[0] : null;
+  $('all').innerHTML = `
+    <div class="vt-topbar is-plain"><button class="back" type="button" data-act="${myKey ? 'mine' : 'home'}">${myKey ? t('allBackMine') : t('allBackHome')}</button></div>
+    <p class="rhead">${t('allHead')}</p>
+    <div class="grid">${ORDER.map(k => { const r = R(k); return `
+      <button class="tile${k === myKey ? ' mine' : ''}" type="button" data-act="view" data-key="${k}">
+        <img src="${IMG}${r.pose}.webp" alt="" loading="lazy"><small>${r.type}</small><b>${r.region}</b>
+      </button>`; }).join('')}</div>
+    <button class="cta" type="button" data-act="restart">${mine ? t('restart') : t('go')}</button>`;
+  show('all');
+}
+
+/* ===================== events ===================== */
+$('go').addEventListener('click', () => { track('test_start', { via: 'home' }); answers = []; qi = 0; renderQuestion(); });
+$('back').addEventListener('click', () => { if (qi > 0) { qi--; renderQuestion(); } else show('start'); });
+$('opts').addEventListener('click', e => { const b = e.target.closest('.opt'); if (b) pick(+b.dataset.i); });
+vtRoot.addEventListener('click', e => {
+  const b = e.target.closest('[data-act]'); if (!b) return;
+  const act = b.dataset.act;
+  if (act === 'restart') { track('test_start', { via: mine ? 'retry' : 'friend_result' }); answers = []; qi = 0; mine = null; renderQuestion(); }
+  else if (act === 'all') renderAll();
+  else if (act === 'view') renderResult(b.dataset.key, mine && b.dataset.key === mine.rank[0]);
+  else if (act === 'mine' && mine) renderResult(mine.rank[0], true);
+  else if (act === 'home') { try { history.replaceState(null, '', location.pathname + location.search); } catch (e) {} show('start'); }
+  else if (act === 'save') saveImage(b);
+  else if (act === 'soon') toast(t('soon'), 4200);
+  else if (act === 'lang') toggleLangMenu();
+  else if (act === 'setlang') setLang(b.dataset.lang);
+  else if (act === 'closesheet') closeSheet();
+  else if (act === 'sheetgo') sheetGo();
+  else if (act === 'spots') toast(t('soon'), 4200);
+  else if (act === 'share') shareTest();
+  else if (act === 'closecopy') $('copybox').hidden = true;
+});
+
+/* ===================== share ===================== */
+// Clipboard copy must start inside the click handler; if the frame refuses it, show the text to copy by hand.
+function copyText(text, okMsg, done = () => {}) {
+  const fallback = () => { $('copytext').value = text; $('copybox').hidden = false; setTimeout(() => $('copytext').select(), 50); done('copy_box'); };
+  try {
+    navigator.clipboard.writeText(text).then(() => { toast(okMsg); done('copy'); }, fallback);
+  } catch (e) { fallback(); }
+}
+function shareTest() {
+  const onResult = !$('result').hidden && mine;
+  const r = onResult ? R(mine.rank[0]) : null;
+  const msg = r ? t('shareMine', r) : t('shareGeneric');
+  const url = STANDALONE && LANG !== 'ko' ? `${SHARE_URL}?lang=${LANG}` : SHARE_URL;   // friends open it in the same language
+  const text = `${msg} 👉 ${url}`;
+  const copied = t('copied');
+  const touch = (navigator.maxTouchPoints || 0) > 0 || (window.matchMedia && matchMedia('(pointer: coarse)').matches);   // PC: copying the link beats the Windows share dialog
+  // counted only once it went through (an app was picked, or the text was copied); closing the share sheet is not a share
+  const sent = method => track('share', { method, screen: ['start', 'quiz', 'result'].find(s => !$(s).hidden) || 'other' });
+  if (STANDALONE && navigator.share && !IN_APP && touch) {   // the phone's own share sheet (KakaoTalk, Instagram DM, messages…)
+    navigator.share({ title: t('docTitle'), text: msg, url })
+      .then(() => sent('share_sheet'), e => { if (!e || e.name !== 'AbortError') copyText(text, copied, sent); });
+    return;
+  }
+  copyText(text, copied, sent);
+}
+
+/* ===================== result image ===================== */
+// Inside claude.ai the viewer's own save prompt handles the file; anywhere else we show the image to long-press.
+// (claude.ai 안에서만 쓰던 저장 창은 웹진에 없다)
+const downloads = null;
+const waitDownloads = () => Promise.resolve();
+
+let toastTimer;
+function toast(msg, ms = 2600) {
+  const t = $('toast'); t.textContent = msg; t.hidden = false;
+  clearTimeout(toastTimer); toastTimer = setTimeout(() => { t.hidden = true; }, ms);
+}
+function placeName(key) { return R(key).place; }   // hoisted: renderResult may run before this line
+function koPlace(key) { return RESULTS[key].region.replace(' 주민', ''); }   // analytics stay in Korean whatever the language
+// After the image is saved: go on to the neighbourhood's spots page in the webzine (when it exists).
+// wait: only as long as the save needs (0 after the iPhone share sheet; a moment after a download starts,
+// because leaving the page too early cancels a download that has not begun).
+function afterSaved(key, wait = 0) {
+  const url = PLACE_PAGES[key];
+  if (!url) { toast(t('soon'), 4200); return; }
+  if (STANDALONE) { toast(t('moving', placeName(key))); setTimeout(() => location.assign(url), wait); }
+  else toast(t('savedWebzine', placeName(key)), 4200);
+}
+let pendingKey = null;
+const toDataURL = blob => new Promise((ok, bad) => { const f = new FileReader(); f.onload = () => ok(f.result); f.onerror = bad; f.readAsDataURL(blob); });
+function closeSheet() {
+  $('sheet').hidden = true;
+  pendingKey = null;   // × just closes; only the orange button moves on
+}
+function sheetGo() {
+  const k = pendingKey;
+  closeSheet();
+  if (k) afterSaved(k);
+}
+function showCapture(dataUrl, key) {
+  pendingKey = key || null;
+  if (key) saved(key, 'capture_screen');   // in-app browsers: the image is shown to screenshot
+  $('sheetnext').textContent = key ? t('sheetGo', placeName(key)) : t('close');
+  $('sheetimg').src = dataUrl; $('sheet').hidden = false;
+}
+async function showCaptureOf(blob, key) { showCapture(await toDataURL(blob), key); }
+
+// In-app browsers (KakaoTalk, Instagram, Facebook, Naver, Line…) block saving files, so they get the capture screen.
+const IN_APP = /KAKAOTALK|Instagram|FBAN|FBAV|FB_IAB|NAVER\(inapp|Line\/|DaumApps|everytimeApp|BAND\/|MicroMessenger|Weibo/i.test(navigator.userAgent || '');
+const IS_IOS = /iPad|iPhone|iPod/.test(navigator.userAgent || '') || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+const imgCache = {};
+const cacheKey = key => LANG + ':' + key;   // one image per language
+function prepareImage(key) {
+  const ck = cacheKey(key);
+  if (!imgCache[ck]) {
+    const c = { blob: null };
+    // keep a data: URL too: unlike a blob: URL it survives leaving the page, so the download is not cancelled
+    c.promise = drawResultImage(key).then(async b => { c.blob = b; c.dataUrl = await toDataURL(b); return b; });
+    c.promise.catch(() => { delete imgCache[ck]; });
+    imgCache[ck] = c;
+  }
+  return imgCache[ck];
+}
+// Standalone site: iPhone -> share sheet ('이미지 저장' puts it in Photos); Android / PC -> ordinary download.
+function nativeSave(blob, name, key) {
+  let file = null;
+  try { file = new File([blob], name, { type: 'image/png' }); } catch (e) { /* very old browsers */ }
+  if (IS_IOS && file && navigator.canShare && navigator.canShare({ files: [file] })) {
+    navigator.share({ files: [file] }).then(() => { saved(key, 'ios_share'); afterSaved(key); }, e => {
+      if (e && e.name === 'AbortError') afterSaved(key);   // closed the share sheet without saving: still go on
+      else showCaptureOf(blob, key);
+    });
+    return;
+  }
+  const c = imgCache[cacheKey(key)], data = c && c.dataUrl;
+  const url = data || URL.createObjectURL(blob), a = document.createElement('a');
+  a.href = url; a.download = name; document.body.appendChild(a); a.click(); a.remove();
+  saved(key, 'download');
+  if (!data) setTimeout(() => URL.revokeObjectURL(url), 5000);
+  afterSaved(key, data ? 400 : 1200);
+}
+
+// Save straight away where the viewer can; where saving is blocked (e.g. inside KakaoTalk or Instagram),
+// show the image alone on screen so it can be captured.
+async function saveImage(btn) {
+  const key = btn.dataset.key, label = btn.querySelector('.lbl') || btn.querySelector('span'), old = label.textContent;
+  const name = t('file', R(key));
+  const c = prepareImage(key);
+  if (STANDALONE) {
+    if (c.blob) { if (IN_APP) showCaptureOf(c.blob, key); else nativeSave(c.blob, name, key); return; }   // no await: keeps the tap's permission
+    btn.disabled = true; label.textContent = t('making');
+    try { const blob = await c.promise; if (IN_APP) showCaptureOf(blob, key); else nativeSave(blob, name, key); }
+    catch (e) { toast(t('makeFail')); }
+    finally { btn.disabled = false; label.textContent = old; }
+    return;
+  }
+  btn.disabled = true; label.textContent = t('making');
+  try {
+    const [blob] = await Promise.all([c.promise, waitDownloads()]);
+    if (downloads) {
+      try {
+        const res = await downloads.save({ filename: name, data: blob });
+        if (res && res.status === 'saved') { afterSaved(key); return; }
+      } catch (e) {
+        const code = e && e.code;
+        if (code === 'declined') return;
+        if (code === 'rate_limited') { toast(t('saveOpen')); return; }
+      }
+    }
+    showCapture(await toDataURL(blob), key);
+  } catch (e) {
+    toast(t('makeFail'));
+  } finally { btn.disabled = false; label.textContent = old; }
+}
+
+const loadImg = src => new Promise((ok, bad) => { const i = new Image(); i.onload = () => ok(i); i.onerror = bad; i.src = src; });
+function rr(g, x, y, w, h, r) {
+  g.beginPath(); g.moveTo(x + r, y); g.arcTo(x + w, y, x + w, y + h, r); g.arcTo(x + w, y + h, x, y + h, r);
+  g.arcTo(x, y + h, x, y, r); g.arcTo(x, y, x + w, y, r); g.closePath();
+}
+function torn(g, x, y, w, h, seedStr) {
+  let seed = [...seedStr].reduce((a, c) => a + c.charCodeAt(0), 11);
+  const rnd = () => (seed = (seed * 9301 + 49297) % 233280) / 233280;
+  const pts = [];
+  const edge = (x0, y0, x1, y1, ix, iy) => {
+    const n = Math.max(2, Math.round(Math.hypot(x1 - x0, y1 - y0) / 16));
+    for (let i = 0; i < n; i++) {
+      const t = i / n, j = rnd() * 8 + (rnd() < .07 ? rnd() * 8 : 0);
+      pts.push([x0 + (x1 - x0) * t + ix * j, y0 + (y1 - y0) * t + iy * j]);
+    }
+  };
+  edge(x, y, x + w, y, 0, 1); edge(x + w, y, x + w, y + h, -1, 0); edge(x + w, y + h, x, y + h, 0, -1); edge(x, y + h, x, y, 1, 0);
+  g.beginPath(); pts.forEach(([px, py], i) => i ? g.lineTo(px, py) : g.moveTo(px, py)); g.closePath();
+}
+// shrink the font until the text fits maxW, then draw it
+function fit(g, text, x, y, maxW, size, pattern) {
+  let s = size; g.font = pattern.replace('{s}', s);
+  while (g.measureText(text).width > maxW && s > 12) { s -= 2; g.font = pattern.replace('{s}', s); }
+  g.fillText(text, x, y);
+}
+// Pieces a line may break between: Korean and English break at spaces; Japanese and Chinese have none, so they go by words
+// (or single characters on old browsers). Closing punctuation (、。！」…) never starts a line.
+const GLUE = /^[、。，．！？!?）」』〜～…ー・,.：；”]/;
+const spaced = () => !['ja', 'zh'].includes(LANG);
+function tokens(text) {
+  if (spaced()) return text.split(/(\s+)/).filter(Boolean);
+  try { return [...new Intl.Segmenter(LANG, { granularity: 'word' }).segment(text)].map(x => x.segment); }
+  catch (e) { return [...text]; }
+}
+function wrapWords(g, text, maxW) {
+  const lines = []; let line = '';
+  for (const w of tokens(text)) {
+    const next = line + w;
+    if (g.measureText(next).width <= maxW || !line.trim() || GLUE.test(w)) line = next;
+    else { lines.push(line.trimEnd()); line = w.trimStart(); }
+  }
+  if (line.trim()) lines.push(line.trimEnd());
+  return lines;
+}
+
+async function drawResultImage(key) {
+  const r = R(key), [DISP, BODY, HAND, TALK] = CANVAS_FONTS[LANG] || CANVAS_FONTS.ko;
+  const title = t('docTitle'), talk = r.talk.split('<br>'), line = t('quote', r.line.replace(/<br>/g, spaced() ? ' ' : ''));
+  // web fonts arrive in pieces by character range, so ask for exactly the characters this image uses
+  const used = [title, r.type, r.region, r.area, line, ...talk, t('secStats'), t('secKw'), ...t('stats'), ...r.kw,
+    t('tip'), r.tip.replace(/<\/?b>/g, ''), t('imgFooter'), '· ABC'].join(' ');
+  await Promise.all([`400 60px ${DISP}`, `400 40px ${TALK}`, `400 50px ${HAND}`, `500 30px ${BODY}`, `700 30px ${BODY}`]
+    .map(f => document.fonts.load(f, used).catch(() => null)));
+  const [logo, pose] = await Promise.all([loadImg(IMG + 'logo.webp'), loadImg(`${IMG}${r.pose}.webp`)]);
+  const W = 1080, H = 1350, c = document.createElement('canvas'); c.width = W; c.height = H;
+  const g = c.getContext('2d');
+
+  // sky, corner, logo, title
+  const sky = g.createLinearGradient(0, 0, 0, H);
+  sky.addColorStop(0, '#2E93D1'); sky.addColorStop(.42, '#6FB4E6'); sky.addColorStop(1, '#CFE3F3');
+  g.fillStyle = sky; g.fillRect(0, 0, W, H);
+  g.fillStyle = 'rgba(255,255,255,.3)'; g.beginPath(); g.moveTo(0, 0); g.lineTo(330, 0); g.lineTo(0, 330); g.fill();
+  g.drawImage(logo, 34, 30, 96, 96 * logo.height / logo.width);
+  g.textAlign = 'center'; g.textBaseline = 'alphabetic';
+  g.font = `400 50px ${DISP}`;
+  for (let s = 48; g.measureText(title).width > 800 && s > 30; s -= 2) g.font = `400 ${s}px ${DISP}`;
+  g.fillStyle = 'rgba(38,104,185,.55)'; g.fillText(title, W / 2 + 40, 122);
+  g.fillStyle = '#fff'; g.fillText(title, W / 2 + 40, 118);
+
+  // torn paper card
+  const CX = 64, CY = 170, CW = W - 128, CH = 1095;
+  g.save(); g.shadowColor = 'rgba(6,42,85,.3)'; g.shadowBlur = 26; g.shadowOffsetY = 10;
+  torn(g, CX, CY, CW, CH, key); g.fillStyle = '#fff'; g.fill(); g.restore();
+
+  // type pill, region, area, one-liner
+  g.font = `700 32px ${BODY}`;
+  const pw = g.measureText(r.type).width + 64;
+  rr(g, W / 2 - pw / 2, 226, pw, 60, 30); g.fillStyle = '#4085E0'; g.fill();
+  g.fillStyle = '#fff'; g.fillText(r.type, W / 2, 268);
+  g.fillStyle = '#FD7925'; fit(g, r.region, W / 2, 392, 860, 96, `400 {s}px ${DISP}`);
+  g.fillStyle = '#5B7FAE'; fit(g, r.area, W / 2, 442, 880, 28, `700 {s}px ${BODY}`);
+  g.fillStyle = '#2668B9'; fit(g, line, W / 2, 512, 860, 52, `400 {s}px ${HAND}`);
+
+  // hareubang + bubble
+  const ph = 220, pw2 = pose.width * ph / pose.height, hx = 160, hy = 546;
+  g.drawImage(pose, hx, hy, pw2, ph);
+  g.font = `400 36px ${TALK}`;
+  // Korean and English re-wrap the talk to fit; Japanese and Chinese keep their written line breaks (wrapping only a line that is still too long)
+  const tl = (spaced() ? [talk.join(' ')] : talk).flatMap(x => wrapWords(g, x, 470)), lh = 48;
+  const bw = Math.max(...tl.map(l => g.measureText(l).width)) + 64, bh = tl.length * lh + 40;
+  const bx = hx + pw2 + 34, by = hy + ph * .42 - bh / 2;
+  rr(g, bx, by, bw, bh, 30); g.fillStyle = '#EEF5FD'; g.fill();
+  g.beginPath(); g.moveTo(bx - 22, by + bh / 2); g.lineTo(bx + 2, by + bh / 2 - 13); g.lineTo(bx + 2, by + bh / 2 + 13); g.closePath(); g.fill();
+  g.fillStyle = '#2668B9'; g.textAlign = 'left';
+  tl.forEach((l, i) => g.fillText(l, bx + 32, by + 20 + lh * (i + 1) - 12));
+
+  // two columns: meters + keywords
+  const head = (text, x, y, maxW) => {
+    g.fillStyle = '#FD7925'; g.beginPath(); g.arc(x + 8, y - 10, 8, 0, Math.PI * 2); g.fill();
+    g.fillStyle = '#2668B9'; fit(g, text, x + 26, y, maxW, 30, `700 {s}px ${BODY}`);
+  };
+  const HEAD_Y = 822, ROW_Y = 876, ROW = 48;
+  head(t('secStats'), 124, HEAD_Y, 350);
+  t('stats').forEach((l, i) => {
+    const y = ROW_Y + i * ROW;
+    g.fillStyle = '#5B7FAE'; fit(g, l, 124, y, 140, 27, `500 {s}px ${BODY}`);
+    for (let n = 0; n < 5; n++) {
+      g.beginPath(); g.arc(288 + n * 38, y - 9, 14, 0, Math.PI * 2);
+      g.fillStyle = n < r.stats[i] ? '#FD7925' : '#E3ECF7'; g.fill();
+    }
+  });
+  head(t('secKw'), 520, HEAD_Y, 400);
+  r.kw.forEach((k, i) => {
+    const y = ROW_Y + i * ROW;
+    g.strokeStyle = '#FD7925'; g.lineWidth = 4; g.lineCap = 'round'; g.lineJoin = 'round';
+    g.beginPath(); g.moveTo(522, y - 12); g.lineTo(530, y - 4); g.lineTo(545, y - 22); g.stroke();
+    g.fillStyle = '#2668B9'; fit(g, k, 558, y, 430, 27, `500 {s}px ${BODY}`);
+  });
+
+  // tip box, with the <b> parts in orange
+  const runs = [{ t: t('tip') + ' · ', b: true }].concat(
+    r.tip.split(/(<b>.*?<\/b>)/).filter(Boolean).map(t => ({ t: t.replace(/<\/?b>/g, ''), b: /^<b>/.test(t) })));
+  const TX = 128, TW = W - 256;
+  const words = [];
+  runs.forEach(rn => tokens(rn.t).forEach(w => words.push({ w, b: rn.b })));
+  const layout = TS => {
+    const lines = [[]]; let lw = 0;
+    words.forEach(o => {
+      g.font = `${o.b ? 700 : 500} ${TS}px ${BODY}`;
+      const w = g.measureText(o.w).width, cur = lines[lines.length - 1];
+      if (lw + w > TW - 44 && cur.length && o.w.trim() && !GLUE.test(o.w)) { lines.push([]); lw = 0; }
+      if (!lines[lines.length - 1].length && !o.w.trim()) return;
+      lines[lines.length - 1].push({ ...o, width: w }); lw += w;
+    });
+    return lines;
+  };
+  // a tip that runs past two lines (longer languages) is set smaller so the box stays inside the card
+  let TS = 27, lines = layout(TS);
+  while (lines.length > 2 && TS > 23) lines = layout(TS -= 2);
+  const TL = Math.round(TS * 1.48);
+  const tipH = lines.length * TL + 34, tipY = ROW_Y + 4 * ROW + 40;
+  rr(g, TX, tipY, TW, tipH, 20); g.fillStyle = '#FFF5CC'; g.fill();
+  lines.forEach((ln, i) => {
+    let x = TX + 22;
+    ln.forEach(o => {
+      g.font = `${o.b ? 700 : 500} ${TS}px ${BODY}`; g.fillStyle = o.b ? '#FD7925' : '#5A4A10';
+      g.fillText(o.w, x, tipY + 17 + TL * (i + 1) - 10); x += o.width;
+    });
+  });
+
+  g.textAlign = 'center'; g.fillStyle = '#2668B9'; g.font = `700 26px ${BODY}`;
+  g.fillText(t('imgFooter'), W / 2, H - 34);
+  return new Promise((ok, bad) => c.toBlob(b => (b ? ok(b) : bad(new Error('toBlob'))), 'image/png'));
+}
+
+
+applyStatic();
+// a shared link like …#pyoseon opens that result directly
+const start = location.hash.slice(1);
+if (RESULTS[start]) renderResult(start, false); else show('start');
+document.fonts && document.fonts.ready.then(() => { vtRoot.querySelectorAll('.paper').forEach(tear); fitHeader(); });
+// a newly picked language's fonts arrive later: re-fit the one-line rows when they do
+document.fonts && document.fonts.addEventListener && document.fonts.addEventListener('loadingdone', () => { fitHeader(); if (!$('result').hidden) fitChips(); });
+})();
+/* ===== 마을 테스트 블록 끝 ===== */
