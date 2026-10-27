@@ -208,7 +208,7 @@ ijejumin-webzine/
     - 미리보기(로컬 8737)에서 다섯 개 모두 1회 실행·GA4 전송·매개변수 값 확인. 이 class·id를 바꾸면 GTM 트리거도 같이 고친다
     - 'cchecklist'·'heder'는 사용자가 준 이름 그대로다 (오타일 수 있어 알려 둠)
     - 실제 사이트(lxwebzine)에는 아직 `find-checklist`·`find-policy` id가 없다 (운영 쪽이 GitHub 최신본을 받아 가야 생김)
-  - 영상 `view_video`·엽서 무대 `pick__cards` (사용자 요청 2026-10-27, 작업공간 5에 저장. **아직 게시 전**)
+  - 영상 `view_video`·엽서 무대 `pick__cards` (사용자 요청 2026-10-27, 사용자 확인 뒤 **버전 5 'GA4 영상·엽서 무대'로 게시**)
     - `view_video`: GA4 향상된 측정의 동영상 참여(video_start 등)와 별도로 만들기로 사용자가 정함. 자동 재생(소리 없이)도 센다(사용자 결정)
       - 변수 Video Percent(기본 제공). 트리거 `view_video`: YouTube 동영상, 캡처 시작 + 진행률 10·25·50·75·90%, 전체 동영상, JS API 추가 옵션은 끔(기사 영상은 이미 `enablejsapi=1`)
       - 태그 `GA4_이벤트_view_video`: 매개변수 `video_percent` = `{{Video Percent}}%` (시작은 '0%')
