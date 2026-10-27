@@ -1101,6 +1101,17 @@ function wzT(ko, en, ja) { return wzLang === 'en' ? en : wzLang === 'ja' ? ja : 
     /* 큰 글자 "이제,주민": 휴대폰에서 글자 크기를 키워 두면 화면 밖으로 넘치고 분화구에 더 가려진다.
        원래 폭(휴대폰에서 화면의 약 80%)을 넘으면 그만큼 줄인다 (보통은 1) */
     if (word) setVar('--word-fit', Math.min(1, 0.84 * vw / (word.offsetWidth || 1)).toFixed(4));
+    /* 세로 화면: 아래 글(.landing__foot)을 사진 바로 아래로 올린다 (사용자 요청 2026-10-27, style.css의 --foot-lift).
+       사진 아래 끝 = 72px + 화면 폭의 110% (style.css .jeju 세로 화면 규칙과 같은 수). 사진 아래쪽 6%는 흐려지므로 그만큼 겹친다 */
+    var foot = intro.querySelector('.landing__foot');
+    if (foot) {
+      var lift = 0;
+      if (window.matchMedia && window.matchMedia('(max-aspect-ratio: 1/1)').matches) {
+        var photoH = 1.1 * vw;
+        lift = Math.max(0, foot.offsetTop - (72 + photoH - 0.06 * photoH));
+      }
+      setVar('--foot-lift', lift.toFixed(1) + 'px');
+    }
   }
 
   /* 스크롤 → 창 속으로 빨려 들어가기 (사용자 요청: 한 번에 빨려 들어가듯이, 2026-10-22)
