@@ -1503,8 +1503,11 @@ a { color: inherit; }
 /* 가운데 안내 '옆으로 넘겨 보세요' (사용자가 준 시안, 2026-10-27): 나선 가운데에 손 그림(위에 주황 ↔) + 두 줄.
    엽서 앞에 떠 있지만 누르기·끌기·마우스 올리기는 엽서로 통과한다. 엽서가 모이기 시작하면(--merge) 금방 흐려진다 */
 .pick__hint {
-  position: absolute; left: 50%; top: 54%; z-index: 3;   /* 나선(.pick__world) 가운데 높이 */
-  translate: -50% -50%;
+  /* 무대 아래쪽 가운데 (사용자 요청 "하단으로 내려줘", 2026-10-27. 처음엔 나선 가운데 54%·휴대폰 57%) */
+  /* z-index 5: 무대 아래쪽에는 아직 안 올라온 소개 글(.pick__intro, 4)의 검은 띠가 걸쳐 있어 그보다 위에 둔다.
+     소개 글이 떠오르기(진행 0.31) 전에 이 안내는 이미 사라진다(진행 약 0.2) */
+  position: absolute; left: 50%; bottom: clamp(24px, 7vh, 72px); z-index: 5;
+  translate: -50% 0;
   display: flex; align-items: center; gap: clamp(12px, 1.2vw, 18px);
   width: max-content; max-width: calc(100% - 32px);
   pointer-events: none;
@@ -1932,7 +1935,7 @@ html:not(.js) .pick__world, html:not(.js) .pick__headline { display: none; }
 html:not(.js) .pick__final { opacity: 1; transform: none; }
 @media (max-width: 899px) {
   .pcard, .pick__cover { --cw: clamp(84px, 25vw, 112px); }   /* 휴대폰에서도 엽서를 크게 (390px 화면에서 약 141×94px) */
-  .pick__world, .pick__final, .pick__hint { top: 57%; }   /* 휴대폰: 위 큰 제목 아래로 조금 내리되, 엽서를 잡기 쉽게 60% → 55% → 57%(살짝 내림) */
+  .pick__world, .pick__final { top: 57%; }   /* 휴대폰: 위 큰 제목 아래로 조금 내리되, 엽서를 잡기 쉽게 60% → 55% → 57%(살짝 내림) */
 }
 
 /* ---------- 카테고리 ---------- */
