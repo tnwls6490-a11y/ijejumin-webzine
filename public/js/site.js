@@ -2048,6 +2048,56 @@ var wzPlace = (function () {
   })();
 })();
 
+/* ---------- 기사 인물 소개 네 칸(휴대폰): 줄마다 글이 긴 칸을 더 넓게 (사용자가 준 시안, 2026-10-28) ----------
+   두 칸씩 두 줄. 칸마다 한 줄로 썼을 때의 폭을 재서, 둘 다 들어가면 남는 폭을 반씩 더하고, 모자라면 그 비율로 나눈다.
+   다만 짧은 칸도 이름(떠나온 곳 등)이 한 줄에 들어갈 만큼은 남긴다 (줄의 절반까지). 스크립트가 없으면 반반 */
+(function () {
+  'use strict';
+  var lists = document.querySelectorAll('.hotspots');
+  if (!lists.length || !window.matchMedia) return;
+  var mq = window.matchMedia('(max-width: 899px)');
+  function w(el) { return el.getBoundingClientRect().width; }
+  function fit() {
+    Array.prototype.forEach.call(lists, function (dl) {
+      var cards = Array.prototype.slice.call(dl.children);
+      cards.forEach(function (c) { c.style.removeProperty('flex'); });
+      if (!mq.matches || cards.length < 2) return;
+      dl.classList.add('is-fit-max');                // 한 줄로 썼을 때
+      var want = cards.map(w);
+      var label = cards.map(function (c) { return c.firstElementChild ? w(c.firstElementChild) : 0; });
+      var text = cards.map(function (c) { return Math.max.apply(null, Array.prototype.map.call(c.children, w)); });
+      dl.classList.remove('is-fit-max');
+      dl.classList.add('is-fit-min');                // 가장 좁게 (가장 긴 낱말)
+      var word = cards.map(function (c) { return c.lastElementChild ? w(c.lastElementChild) : 0; });
+      var labelWord = cards.map(function (c) { return c.firstElementChild ? w(c.firstElementChild) : 0; });
+      dl.classList.remove('is-fit-min');
+      var gap = parseFloat(getComputedStyle(dl).columnGap) || 0;
+      var room = dl.clientWidth - gap;
+      function clamp(v, lo, hi) { return Math.min(hi, Math.max(lo, v)); }
+      for (var r = 0; r + 1 < cards.length; r += 2) {
+        var ids = [r, r + 1];
+        var nice = ids.map(function (i) { return want[i] - text[i] + Math.max(label[i], word[i]); });   // 이름은 한 줄, 값은 낱말이 안 잘리게
+        var must = ids.map(function (i) { return want[i] - text[i] + Math.max(labelWord[i], word[i]); });   // 낱말만 안 잘리게
+        var a = want[r], b = want[r + 1], wa;
+        if (a + b <= room) wa = a + (room - a - b) / 2;
+        else if (nice[0] + nice[1] <= room) wa = clamp(room * a / (a + b), nice[0], room - nice[1]);
+        else if (must[0] + must[1] <= room) wa = clamp(room * nice[0] / (nice[0] + nice[1]), must[0], room - must[1]);
+        else {   // 아주 좁은 화면·글자 확대: 둘이 나란히면 낱말이 잘려, 그 줄은 한 칸씩 폭 가득
+          cards[r].style.flex = cards[r + 1].style.flex = '1 1 100%';
+          continue;
+        }
+        wa = Math.floor(wa);
+        cards[r].style.flex = '0 0 ' + wa + 'px';
+        cards[r + 1].style.flex = '1 1 ' + (room - wa - 1) + 'px';   // 나머지 (한 줄에 꼭 둘)
+      }
+    });
+  }
+  fit();
+  window.addEventListener('resize', fit);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(fit);
+  window.addEventListener('load', fit);
+})();
+
 /* ===== 마을 테스트 블록 시작 (scratchpad build.py가 만든다) ===== */
 /* =========================================================
    나는 제주 어디 주민? (마을 테스트, articles/jeju-village-test.html)

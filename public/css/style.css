@@ -2916,6 +2916,44 @@ body.page-interview { background: var(--iv-paper); }
   .hotspots div:nth-child(3)::after,
 .hotspots div:nth-child(4)::after { left: -4px; }
 }
+/* 휴대폰: 인물 사진 아래 네 칸을 시안처럼 흰 카드로 (사용자가 준 시안, 2026-10-28. 전에는 가는 선으로 나눈 표)
+   둥근 흰 카드 + 옅은 그림자, 왼쪽에 살구색 동그라미 속 주황 아이콘, 오른쪽에 작은 회색 이름과 굵은 값. 두 칸씩 두 줄.
+   아이콘은 칸마다 붙인 클래스(hot-pin 위치·hot-music 음표·hot-laptop 노트북·hot-house 집·hot-cap 학사모·hot-school 학교·hot-flag 깃발·
+   hot-money 지폐·hot-store 가게·hot-briefcase 가방·hot-paw 발자국)가 고른다. 세 언어 기사가 같은 클래스. 그림은 24×24 SVG(주황 #F97316)
+   PC(900px 이상)는 전처럼 사진 둘레에 선으로 붙은 글자 */
+.hot-pin { --hot-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23F97316' fill-rule='evenodd' d='M12 2C8.1 2 5 5.1 5 9c0 5.2 7 13 7 13s7-7.8 7-13c0-3.9-3.1-7-7-7zm0 9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5z'/%3E%3C/svg%3E"); }
+.hot-music { --hot-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23F97316' fill-rule='evenodd' d='M20 3 9 5.2v10.1a3.3 3.3 0 1 0 2 3V9.6l7-1.3v5a3.3 3.3 0 1 0 2 3V3z'/%3E%3C/svg%3E"); }
+.hot-laptop { --hot-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23F97316' fill-rule='evenodd' d='M5 4h14a2 2 0 0 1 2 2v9H3V6a2 2 0 0 1 2-2zm.5 2.5v6h13v-6zM1 17h22a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2z'/%3E%3C/svg%3E"); }
+.hot-house { --hot-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23F97316' fill-rule='evenodd' d='M12 3 1.5 12H5v8.5h5.5V15h3v5.5H19V12h3.5z'/%3E%3C/svg%3E"); }
+.hot-cap { --hot-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23F97316' fill-rule='evenodd' d='M12 3 .5 9 12 15l9-4.7V16h2V9zM5 12.6v4c0 1.7 3.1 3.4 7 3.4s7-1.7 7-3.4v-4l-7 3.6z'/%3E%3C/svg%3E"); }
+.hot-school { --hot-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23F97316' fill-rule='evenodd' d='M12 2 2 7v2h20V7zM4 10.5V18h3v-7.5zm6.5 0V18h3v-7.5zm6.5 0V18h3v-7.5zM2 19.5h20V22H2z'/%3E%3C/svg%3E"); }
+.hot-flag { --hot-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23F97316' fill-rule='evenodd' d='M5 2h2v20H5zm3.5 1H20l-3 4.5 3 4.5H8.5z'/%3E%3C/svg%3E"); }
+.hot-money { --hot-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23F97316' fill-rule='evenodd' d='M2 6h20v12H2zm10 3a3 3 0 1 0 0 6 3 3 0 0 0 0-6zM4.5 8.5v7H6v-7zm13.5 0v7h1.5v-7z'/%3E%3C/svg%3E"); }
+.hot-store { --hot-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23F97316' fill-rule='evenodd' d='M3 3h18l1.5 6a3 3 0 0 1-5.25 2 3 3 0 0 1-5.25 0 3 3 0 0 1-5.25 0A3 3 0 0 1 1.5 9zm.5 9.8V21H10v-6h4v6h6.5v-8.2a4.6 4.6 0 0 1-3.25-.6 4.6 4.6 0 0 1-5.25 0 4.6 4.6 0 0 1-5.25 0 4.6 4.6 0 0 1-3.25.6z'/%3E%3C/svg%3E"); }
+.hot-briefcase { --hot-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23F97316' fill-rule='evenodd' d='M9 3h6a2 2 0 0 1 2 2v1h3a2 2 0 0 1 2 2v4H2V8a2 2 0 0 1 2-2h3V5a2 2 0 0 1 2-2zm.5 2v1h5V5zM2 13.5h8.5V15h3v-1.5H22V19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2z'/%3E%3C/svg%3E"); }
+.hot-paw { --hot-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23F97316' fill-rule='evenodd' d='M3 10.5a2 2.6 0 1 0 4 0a2 2.6 0 1 0 -4 0zM7.3 6a2 2.6 0 1 0 4 0a2 2.6 0 1 0 -4 0zM12.7 6a2 2.6 0 1 0 4 0a2 2.6 0 1 0 -4 0zM17 10.5a2 2.6 0 1 0 4 0a2 2.6 0 1 0 -4 0zM12 12.5c-3.3 0-6.5 3.6-6.5 6.2 0 1.6 1.4 2.6 3 2.6 1.4 0 2.3-.7 3.5-.7s2.1.7 3.5.7c1.6 0 3-1 3-2.6 0-2.6-3.2-6.2-6.5-6.2z'/%3E%3C/svg%3E"); }
+@media (max-width: 899px) {
+  /* 두 칸씩 두 줄. 줄마다 칸 폭은 site.js('기사 인물 소개 네 칸')가 글 길이에 맞춰 나눈다 (시안처럼 글이 긴 칸이 더 넓다) */
+  .hotspots { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px; border: 0; }
+  .hotspots div,
+  .hotspots div:nth-child(odd) {
+    flex: 1 1 calc(50% - 5px); min-width: 0;
+    display: grid; grid-template-columns: 40px 1fr; column-gap: 10px; align-items: center; align-content: center;
+    padding: 12px; border: 0; border-radius: 14px; background: #FFFFFF;
+    box-shadow: 0 6px 18px rgba(28, 39, 51, .07);
+  }
+  .hotspots div::before {
+    content: ""; grid-row: 1 / span 2; width: 40px; height: 40px; border-radius: 50%;
+    background: var(--hot-icon, none) center / 20px no-repeat, #FFEDE0;
+  }
+  .hotspots dt { font-size: 14px; line-height: 1.35; }
+  .hotspots dd { margin: 2px 0 0; font-size: 16px; line-height: 1.35; }
+  .hotspots dt, .hotspots dd { overflow-wrap: break-word; }   /* 칸보다 긴 낱말만 마지막 수단으로 끊는다 */
+  /* site.js가 폭을 잴 때만 잠깐 (한 줄로 썼을 때 / 가장 좁게) */
+  .hotspots.is-fit-max div, .hotspots.is-fit-min div { flex: none; }
+  .hotspots.is-fit-max div, .hotspots.is-fit-max dt, .hotspots.is-fit-max dd { width: max-content; }
+  .hotspots.is-fit-min dt, .hotspots.is-fit-min dd { width: min-content; }
+}
 /* ③ 본문 */
 .article-col { max-width: 680px; }
 /* 줄 간격: 사용자 요청으로 좁혔다 (2026-10-26. 본문 1.95 → 1.75, 첫 문단 1.85 → 1.7) */
