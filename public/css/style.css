@@ -967,14 +967,18 @@ a { color: inherit; }
   .person__desc { width: min(330px, calc(100% - 2 * var(--pad-x))); }
 }
 /* 영어·일본어판 PC: 이름이 길어 고르기 버튼 줄이 약 600px로 넓어지고 '인터뷰 읽기' 버튼도 넓다 (2026-10-25).
-   그래서 넓은 PC에서도 버튼을 설명 글 높이로 올리고, 가운데보다 조금 왼쪽(42%)에 두어 오른쪽 설명 글과 떨어뜨린다 */
+   그래서 넓은 PC에서도 버튼을 설명 글 높이로 올린다. 가로는 한국어판처럼 가운데 (사용자 요청 "왼쪽으로 치우쳐 있어", 2026-10-28. 전에는 42%)
+   900~1199px은 가운데에 두면 오른쪽 설명 글(330px)에 닿아(900px에서 24px 겹침), 설명 글에서 24px 떨어질 만큼만 왼쪽으로 (1010px쯤부터 가운데) */
 @media (min-width: 900px) {
-  :is(:lang(en), :lang(ja)) .person__cta { bottom: calc(var(--pad-y) + 60px); left: 42%; }
+  :is(:lang(en), :lang(ja)) .person__cta { bottom: calc(var(--pad-y) + 60px); }
+}
+@media (min-width: 900px) and (max-width: 1199px) {
+  :is(:lang(en), :lang(ja)) .person__cta { left: min(50%, calc(100% - var(--pad-x) - 330px - 24px - 110px)); }
 }
 /* 왼쪽 아래 문구는 한 줄 (사용자 요청 2026-10-26). 영어·일본어는 길어서 1400px 넘는 화면에서 글자가 커지면 위 버튼에 닿으므로,
-   그때만 버튼 왼쪽 끝(42% − 버튼 폭의 반 약 110px)에서 24px 앞까지 쓰고 말 덩어리(.phrase) 사이에서 두 줄로 나눈다 */
+   그때만 버튼 왼쪽 끝(가운데 − 버튼 폭의 반 약 110px)에서 24px 앞까지 쓰고 말 덩어리(.phrase) 사이에서 두 줄로 나눈다 */
 @media (min-width: 1400px) {
-  :is(:lang(en), :lang(ja)) .people__slogan { max-width: calc(42% - var(--pad-x) - 134px); }
+  :is(:lang(en), :lang(ja)) .people__slogan { max-width: calc(50% - var(--pad-x) - 134px); }
 }
 /* 영어판 좁은 휴대폰(360px 미만): 이름이 두 줄이 되어 낮은 화면(312×520)에서 설명과 제목이 겹친다. 한 줄로 두고 옆으로 밀어 넘기게 한다 (더 있으면 오른쪽 끝 흐림) */
 @media (max-width: 359px) {
