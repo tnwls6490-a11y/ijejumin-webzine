@@ -13,6 +13,103 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 var wzLang = (document.documentElement.getAttribute('lang') || 'ko').slice(0, 2);
 function wzT(ko, en, ja) { return wzLang === 'en' ? en : wzLang === 'ja' ? ja : ko; }
 
+/* ---------- 언어를 바꿔도 보던 자리에서 이어 보기 (사용자 요청 2026-10-28) ----------
+   전에는 KO·EN·JA를 누르면 다른 언어 같은 페이지의 맨 위(서브메인은 비행기 창)부터 다시 시작했다.
+   이제 누르는 순간 보고 있던 자리를 이 탭에만(sessionStorage) 적어 두고, 새 페이지가 열리면 그 자리로 바로 옮긴다.
+   - 세 언어 페이지는 HTML 짜임이 같아(글만 다름) '몇 번째 칸의 몇 % 지점'으로 같은 자리를 찾는다
+   - 화면에 붙어 있는(sticky) 무대(인터뷰·엽서)는 높이가 언어와 상관없어, 무대를 감싼 칸에서 몇 px 내려왔는지로 찾는다
+   - 서브메인 첫 화면: 비행기 창이면 새 페이지도 비행기 창, 제주 화면이면 제주 화면에서 바로 (첫 화면 블록의 introMode)
+   - 지금 언어 버튼은 아무 일도 하지 않는다 (전에는 같은 페이지를 처음부터 다시 열었다)
+   - 다른 페이지로 가는 버튼(나의 제주찾기 → 다른 언어 서브메인)과 마을 테스트(테스트 안에서 언어를 바꿈)는 그대로 */
+var wzPlace = (function () {
+  'use strict';
+  var KEY = 'ijejumin.langPlace';
+  var BLOCK = 'section, article, header, footer, nav, aside, div, p, h1, h2, h3, h4, h5, ul, ol, li, dl, dt, dd, figure, figcaption, blockquote, table, tr, img, picture, iframe, video, button';
+  var api = { introMode: null };
+  function file(path) { return path.split('/').pop() || 'index.html'; }
+  function blocks() {
+    return Array.prototype.filter.call(document.querySelectorAll('main *, .wz-outro *, .site-footer *'), function (el) { return el.matches(BLOCK); });
+  }
+  function sig(el) { return el.tagName + '.' + (el.classList[0] || ''); }
+  function docTop(el) { var t = 0; while (el) { t += el.offsetTop; el = el.offsetParent; } return t; }   // 움직임(transform)을 뺀 원래 자리
+  function maxY() { return Math.max(1, document.documentElement.scrollHeight - window.innerHeight); }
+
+  function save(link) {
+    var mode = api.introMode ? api.introMode() : null;
+    if (mode === 'top' || (!mode && window.scrollY < 1)) return;   // 맨 위(비행기 창)면 새 페이지도 맨 위에서
+    var rec = { file: file(link.pathname), t: Date.now(), mode: mode, r: window.scrollY / maxY() };
+    if (!mode) {
+      var hdr = document.querySelector('.wz-header');
+      var ln = (hdr ? Math.max(0, hdr.getBoundingClientRect().bottom) : 0) + 1;   // 헤더 바로 아래 줄
+      var list = blocks(), hits = [];
+      for (var i = 0; i < list.length; i++) {
+        var r = list[i].getBoundingClientRect();
+        if (r.height > 0 && r.top <= ln && r.bottom > ln) hits.push(i);
+      }
+      /* 그 줄에 걸친 가장 안쪽 칸 (화면에 고정된 것은 건너뛰고, 붙어 있는 무대 안이면 무대를 감싼 칸) */
+      for (var k = hits.length - 1; k >= 0; k--) {
+        var el = list[hits[k]], stick = null, fixed = false;
+        for (var n = el; n && n !== document.body; n = n.parentElement) {
+          var p = getComputedStyle(n).position;
+          if (p === 'fixed') { fixed = true; break; }
+          if (p === 'sticky') stick = n;
+        }
+        if (fixed) continue;
+        var y0 = window.scrollY + ln;
+        if (stick) { el = stick.parentElement; if (list.indexOf(el) < 0) break; rec.px = y0 - docTop(el); }
+        else if (el.offsetHeight > 0) rec.f = (y0 - docTop(el)) / el.offsetHeight;
+        else rec.px = y0 - docTop(el);
+        rec.i = list.indexOf(el); rec.sig = sig(el);
+        break;
+      }
+    }
+    try { window.sessionStorage.setItem(KEY, JSON.stringify(rec)); } catch (e) { /* 저장이 막힌 브라우저: 전처럼 처음부터 */ }
+  }
+
+  /* 이 페이지 앞으로 적어 둔 자리 (한 번 읽으면 지운다. 30초 넘은 것·다른 페이지 것은 버린다) */
+  api.take = function () {
+    var rec = null;
+    try { rec = JSON.parse(window.sessionStorage.getItem(KEY)); window.sessionStorage.removeItem(KEY); } catch (e) { return null; }
+    if (!rec || rec.file !== file(window.location.pathname) || !(Date.now() - rec.t < 30000)) return null;
+    return rec;
+  };
+  /* 적어 둔 자리로 가려면 스크롤할 위치 */
+  api.y = function (rec) {
+    var y = (rec.r || 0) * maxY();
+    if (rec.i != null) {
+      var list = blocks(), el = list[rec.i];
+      for (var d = 1; (!el || sig(el) !== rec.sig) && d <= 30; d++) {   // 짜임이 조금 달라도 가까운 같은 칸을 찾는다
+        el = list[rec.i - d] && sig(list[rec.i - d]) === rec.sig ? list[rec.i - d] : list[rec.i + d];
+      }
+      if (el && sig(el) === rec.sig) {
+        var hdr = document.querySelector('.wz-header');
+        y = docTop(el) + (rec.px != null ? rec.px : rec.f * el.offsetHeight) - (hdr ? hdr.offsetHeight : 0) - 1;
+      }
+    }
+    return Math.max(0, Math.min(maxY(), Math.round(y)));
+  };
+  /* 지금 한 번, 글꼴·사진을 다 불러온 뒤 한 번 더 맞춘다 (그사이 직접 스크롤하면 그만) */
+  api.follow = function (fn) {
+    var touched = false;
+    ['wheel', 'touchstart', 'keydown'].forEach(function (type) {
+      window.addEventListener(type, function () { touched = true; }, { once: true, passive: true });
+    });
+    function run() { if (!touched) fn(); }
+    run();
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(run);
+    window.addEventListener('load', run);
+  };
+
+  document.addEventListener('click', function (e) {
+    var a = e.target.closest ? e.target.closest('.wz-lang a[hreflang]') : null;
+    if (!a || e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+    if (document.getElementById('vt')) return;
+    if (a.getAttribute('aria-current') === 'true') { e.preventDefault(); return; }
+    if (file(a.pathname) === file(window.location.pathname)) save(a);
+  });
+  return api;
+})();
+
 (function () {
   'use strict';
 
@@ -1384,13 +1481,24 @@ function wzT(ko, en, ja) { return wzLang === 'en' ? en : wzLang === 'ja' ? ja : 
      창문이 그려지지 않는다. 창 → 제주 연출은 화면 밖이라 재생하지 않고 바로 끝 상태로 둔다 (update의 coveredUp).
      글꼴·사진이 늦게 들어와 자리가 밀릴 수 있어 다 불러온 뒤 한 번 더 맞춘다 (그사이 직접 스크롤하면 그만둔다).
      브라우저도 다 불러온 뒤 같은 자리로 스크롤하므로, 그때까지는 부드러운 스크롤을 꺼 둔다 */
-  var entry = window.location.hash && document.getElementById(window.location.hash.slice(1));
-  if (entry && !intro.contains(entry)) {
+  /* 다른 언어 서브메인에서 언어 버튼으로 왔으면 보던 자리에서 바로 시작한다 (맨 위 '언어를 바꿔도 보던 자리에서', 2026-10-28)
+     비행기 창이었으면 그대로 처음부터, 제주 화면이었으면 비행기 창 → 제주 연출 없이 제주 화면에서, 그 아래 섹션이면 그 자리에서 */
+  wzPlace.introMode = function () {
+    if (run ? run.to === 0 : shownP === 0) return 'top';
+    return after && window.scrollY < marks().full - 2 ? 'landed' : null;
+  };
+  var langPlace = wzPlace.take();
+  var entry = !langPlace && window.location.hash && document.getElementById(window.location.hash.slice(1));
+  if (langPlace || (entry && !intro.contains(entry))) {
     var entryTouched = false;
     var placeEntry = function () {
       if (entryTouched) return;
       var hh = parseFloat(getComputedStyle(root).getPropertyValue('--hdr-h')) || 0;
-      jumpTo(Math.max(0, pageY(entry) - hh));
+      if (langPlace && langPlace.mode === 'landed') {
+        jumpTo(marks().rest);
+        shownP = 1; run = null; restY = window.scrollY;
+        warmNext();
+      } else jumpTo(langPlace ? wzPlace.y(langPlace) : Math.max(0, pageY(entry) - hh));
       root.style.scrollBehavior = 'auto';
       lastY = window.scrollY;
       syncHeader(); update();
@@ -2965,3 +3073,18 @@ document.fonts && document.fonts.ready.then(() => { vtRoot.querySelectorAll('.pa
 document.fonts && document.fonts.addEventListener && document.fonts.addEventListener('loadingdone', () => { fitHeader(); if (!$('result').hidden) fitChips(); });
 })();
 /* ===== 마을 테스트 블록 끝 ===== */
+
+/* ---------- 언어 버튼으로 들어온 기사 등: 보던 자리로 바로 (맨 위 '언어를 바꿔도 보던 자리에서', 2026-10-28) ----------
+   서브메인은 첫 화면 블록이 먼저 처리한다. 페이지 스크립트가 다 돈 뒤(동네 접기 등)에 자리를 잰다 */
+(function () {
+  'use strict';
+  var rec = wzPlace.take();
+  if (!rec) return;
+  var root = document.documentElement;
+  root.style.scrollBehavior = 'auto';   // html의 부드러운 스크롤 대신 바로 옮긴다
+  wzPlace.follow(function () {
+    var y = wzPlace.y(rec);
+    try { window.scrollTo({ top: y, behavior: 'instant' }); } catch (err) { window.scrollTo(0, y); }
+  });
+  window.addEventListener('load', function () { window.setTimeout(function () { root.style.scrollBehavior = ''; }, 600); });
+})();
