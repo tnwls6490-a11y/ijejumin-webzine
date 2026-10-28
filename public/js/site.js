@@ -2105,7 +2105,7 @@ var wzPlace = (function () {
    바꾼 것:
    - #vt(테스트 칸)가 있는 페이지에서만 동작하고, 찾는 범위도 테스트 칸 안으로 (웹진 헤더·푸터는 건드리지 않음)
    - 그림 주소 images/village-test/ (파일 이름은 영문 소문자·하이픈: poseA_01 → pose-a-01, title_en → title-en)
-   - 언어(한국어·English·日本語·中文)는 테스트 칸의 lang만 바꾼다. 웹진 헤더 KO·EN·JA도 이 페이지를 그 언어로 다시 연다(?lang=)
+   - 언어(한국어·English·日本語·中文)는 테스트 칸의 lang만 바꾼다. 웹진 헤더 KO·EN·JA는 그 언어 웹진 페이지(articles/·en/articles/·ja/articles/, frames.py)로 간다(?lang=)
    - '대표 명소 보러가기'는 '나의 제주찾기' 해당 동네(#town-N)로 간다 (전에는 '웹진 준비 중' 안내)
    - 공유 주소는 실제 웹진 주소. claude.ai 전용 저장 창과 언어별 Google Fonts 불러오기는 뺐다
    - 아티팩트의 style="…"는 클래스로 (style.css 맨 뒤 .vt 블록)
@@ -2113,7 +2113,11 @@ var wzPlace = (function () {
 (function () {
 var vtRoot = document.getElementById('vt');
 if (!vtRoot) return;
-const IMG = '../images/village-test/';
+/* 그림 폴더: 한국어 페이지(articles/)와 영어·일본어 페이지(en|ja/articles/)는 깊이가 달라, 테스트 칸 로고 그림 주소에서 얻는다 (2026-10-28) */
+const VT_LOGO = vtRoot.querySelector('.logo');
+const IMG = (VT_LOGO ? VT_LOGO.getAttribute('src') : '../images/village-test/logo.webp').replace(/logo\.webp$/, '');
+/* 이 페이지의 언어 (영어·일본어 웹진 페이지는 그 언어로 테스트를 연다) */
+const PAGE_LANG = (document.documentElement.getAttribute('lang') || 'ko').slice(0, 2);
 /* ===================== content ===================== */
 const TOPICS = ['i-flag', 'i-people', 'i-car', 'i-coin', 'i-sun'];
 
@@ -2222,7 +2226,8 @@ const INSTAGRAM = 'https://www.instagram.com/e_jeju.min/';
 // On its own site the page shares its own address; inside claude.ai it shares the artifact link.
 // 웹진 안 페이지라 늘 자기 주소로 공유한다. 공유에는 실제 주소만 쓴다 (공통 기준: 테스트 주소 금지)
 const STANDALONE = true;
-const SHARE_URL = 'https://lxwebzine.hankyung.com/2026-1/team3/articles/jeju-village-test.html';
+// 언어별 페이지가 있어(2026-10-28) 이 페이지의 실제 주소(canonical)로 공유한다
+const SHARE_URL = (document.querySelector('link[rel="canonical"]') || {}).href || 'https://lxwebzine.hankyung.com/2026-1/team3/articles/jeju-village-test.html';
 // 동네별 '대표 명소' 웹진 페이지 주소. 비어 있으면 '준비 중' 안내가 떠요
 // 웹진 '나의 제주찾기'의 살고 싶은 동네 10곳과 순서가 같다 (#town-1 ~ #town-10, 2026-10-27)
 const PLACE_PAGES = { shinjeju: './find-my-jeju.html#town-1', wondosim: './find-my-jeju.html#town-2', hamdeok: './find-my-jeju.html#town-3', gujwa: './find-my-jeju.html#town-4', pyoseon: './find-my-jeju.html#town-5',
@@ -2574,6 +2579,7 @@ const CONTENT = {
 // (Korean, Japanese or Chinese as set; any other language gets English)
 function detectLang() {
   try { const q = new URLSearchParams(location.search).get('lang'); if (LANGS[q]) return q; } catch (e) { /* no query */ }
+  if (PAGE_LANG !== 'ko' && LANGS[PAGE_LANG]) return PAGE_LANG;   // 영어·일본어 웹진 페이지
   try { const s = localStorage.getItem('ijejumin.villageTest.lang'); if (LANGS[s]) return s; } catch (e) { /* storage blocked */ }
   const nav = (navigator.language || 'ko').toLowerCase();
   return nav.startsWith('ko') ? 'ko' : nav.startsWith('ja') ? 'ja' : nav.startsWith('zh') ? 'zh' : 'en';
@@ -2638,7 +2644,7 @@ function setLang(l) {
   if (STANDALONE) {
     try {
       const u = new URL(location.href);
-      if (l === 'ko') u.searchParams.delete('lang'); else u.searchParams.set('lang', l);
+      if (l === PAGE_LANG) u.searchParams.delete('lang'); else u.searchParams.set('lang', l);
       history.replaceState(null, '', u.pathname + u.search + u.hash);
     } catch (e) { /* the address is a convenience only */ }
   }

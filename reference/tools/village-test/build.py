@@ -151,9 +151,10 @@ mk = pose(mk).replace('src="img/', 'src="' + IMG)
 assert 'style=' not in mk and 'img/' not in mk.replace(IMG, '')
 
 fm = open(os.path.join(PUB, 'articles', 'find-my-jeju.html'), encoding='utf-8').read().split('\n')
-header = fm[33]
-header = rep(header, '<a href="./find-my-jeju.html" lang="ko" hreflang="ko" aria-label="한국어" aria-current="true">KO</a><a href="../en/index.html" lang="en" hreflang="en" aria-label="English">EN</a><a href="../ja/index.html" lang="ja" hreflang="ja" aria-label="日本語">JA</a>',
-             '<a href="./jeju-village-test.html?lang=ko" lang="ko" hreflang="ko" aria-label="한국어" aria-current="true">KO</a><a href="./jeju-village-test.html?lang=en" lang="en" hreflang="en" aria-label="English">EN</a><a href="./jeju-village-test.html?lang=ja" lang="ja" hreflang="ja" aria-label="日本語">JA</a>')
+header = next(l for l in fm if l.startswith('<header class="wz-header">'))   # 줄 번호 대신 내용으로 (머리 줄이 늘어도)
+# 헤더 KO·EN·JA는 세 언어 테스트 페이지로 (영어·일본어 페이지는 frames.py가 만든다, 2026-10-28)
+header = rep(header, '<a href="./find-my-jeju.html" lang="ko" hreflang="ko" aria-label="한국어" aria-current="true">KO</a><a href="../en/articles/find-my-jeju.html" lang="en" hreflang="en" aria-label="English">EN</a><a href="../ja/articles/find-my-jeju.html" lang="ja" hreflang="ja" aria-label="日本語">JA</a>',
+             '<a href="./jeju-village-test.html?lang=ko" lang="ko" hreflang="ko" aria-label="한국어" aria-current="true">KO</a><a href="../en/articles/jeju-village-test.html?lang=en" lang="en" hreflang="en" aria-label="English">EN</a><a href="../ja/articles/jeju-village-test.html?lang=ja" lang="ja" hreflang="ja" aria-label="日本語">JA</a>')
 s0 = fm.index('<!-- 푸터 위 안내 (모든 페이지 같음, 경로만 ../) -->')
 foot = '\n'.join(fm[s0:])
 
@@ -200,7 +201,15 @@ open(os.path.join(PUB, 'articles', 'jeju-village-test.html'), 'w', encoding='utf
 js = '\n'.join(L[373:1383])            # <script> 안 (374~1383줄)
 js = pose(js)
 js = rep(js, "const STANDALONE = window.top === window && /^https?:$/.test(location.protocol);\nconst SHARE_URL = STANDALONE ? location.origin + location.pathname : 'https://claude.ai/artifact/Qhchi6VWQa5d3jBMB8tCCt';",
-             "// 웹진 안 페이지라 늘 자기 주소로 공유한다. 공유에는 실제 주소만 쓴다 (공통 기준: 테스트 주소 금지)\nconst STANDALONE = true;\nconst SHARE_URL = 'https://lxwebzine.hankyung.com/2026-1/team3/articles/jeju-village-test.html';")
+             "// 웹진 안 페이지라 늘 자기 주소로 공유한다. 공유에는 실제 주소만 쓴다 (공통 기준: 테스트 주소 금지)\nconst STANDALONE = true;\n"
+             "// 언어별 페이지가 있어(2026-10-28) 이 페이지의 실제 주소(canonical)로 공유한다\n"
+             "const SHARE_URL = (document.querySelector('link[rel=\"canonical\"]') || {}).href || 'https://lxwebzine.hankyung.com/2026-1/team3/articles/jeju-village-test.html';")
+# 영어·일본어 웹진 페이지는 그 언어로 연다. 테스트 안에서 언어를 바꾸면 이 페이지 언어가 아닐 때만 주소에 ?lang= (2026-10-28)
+js = rep(js, "  try { const q = new URLSearchParams(location.search).get('lang'); if (LANGS[q]) return q; } catch (e) { /* no query */ }\n",
+             "  try { const q = new URLSearchParams(location.search).get('lang'); if (LANGS[q]) return q; } catch (e) { /* no query */ }\n"
+             "  if (PAGE_LANG !== 'ko' && LANGS[PAGE_LANG]) return PAGE_LANG;   // 영어·일본어 웹진 페이지\n")
+js = rep(js, "      if (l === 'ko') u.searchParams.delete('lang'); else u.searchParams.set('lang', l);",
+             "      if (l === PAGE_LANG) u.searchParams.delete('lang'); else u.searchParams.set('lang', l);")
 js = rep(js, "const PLACE_PAGES = { shinjeju: '', wondosim: '', hamdeok: '', gujwa: '', pyoseon: '', seogwipo: '', andeok: '', hallim: '', aewol: '', jungsangan: '' };",
              "// 웹진 '나의 제주찾기'의 살고 싶은 동네 10곳과 순서가 같다 (#town-1 ~ #town-10, 2026-10-27)\n"
              "const PLACE_PAGES = { shinjeju: './find-my-jeju.html#town-1', wondosim: './find-my-jeju.html#town-2', hamdeok: './find-my-jeju.html#town-3', gujwa: './find-my-jeju.html#town-4', pyoseon: './find-my-jeju.html#town-5',\n"
@@ -273,7 +282,7 @@ JS = '''
    바꾼 것:
    - #vt(테스트 칸)가 있는 페이지에서만 동작하고, 찾는 범위도 테스트 칸 안으로 (웹진 헤더·푸터는 건드리지 않음)
    - 그림 주소 images/village-test/ (파일 이름은 영문 소문자·하이픈: poseA_01 → pose-a-01, title_en → title-en)
-   - 언어(한국어·English·日本語·中文)는 테스트 칸의 lang만 바꾼다. 웹진 헤더 KO·EN·JA도 이 페이지를 그 언어로 다시 연다(?lang=)
+   - 언어(한국어·English·日本語·中文)는 테스트 칸의 lang만 바꾼다. 웹진 헤더 KO·EN·JA는 그 언어 웹진 페이지(articles/·en/articles/·ja/articles/, frames.py)로 간다(?lang=)
    - '대표 명소 보러가기'는 '나의 제주찾기' 해당 동네(#town-N)로 간다 (전에는 '웹진 준비 중' 안내)
    - 공유 주소는 실제 웹진 주소. claude.ai 전용 저장 창과 언어별 Google Fonts 불러오기는 뺐다
    - 아티팩트의 style="…"는 클래스로 (style.css 맨 뒤 .vt 블록)
@@ -281,7 +290,11 @@ JS = '''
 (function () {
 var vtRoot = document.getElementById('vt');
 if (!vtRoot) return;
-const IMG = '../images/village-test/';
+/* 그림 폴더: 한국어 페이지(articles/)와 영어·일본어 페이지(en|ja/articles/)는 깊이가 달라, 테스트 칸 로고 그림 주소에서 얻는다 (2026-10-28) */
+const VT_LOGO = vtRoot.querySelector('.logo');
+const IMG = (VT_LOGO ? VT_LOGO.getAttribute('src') : '../images/village-test/logo.webp').replace(/logo\\.webp$/, '');
+/* 이 페이지의 언어 (영어·일본어 웹진 페이지는 그 언어로 테스트를 연다) */
+const PAGE_LANG = (document.documentElement.getAttribute('lang') || 'ko').slice(0, 2);
 ''' + js + '\n})();\n'
 open(os.path.join(OUT, 'vt.js'), 'w', encoding='utf-8').write(JS)
 
