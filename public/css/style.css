@@ -256,7 +256,7 @@ a { color: inherit; }
 }
 :lang(ja) body, :lang(ja) body.page-interview { word-break: normal; line-break: strict; }
 /* 일본어 제목·짧은 글은 낱말(어절) 경계에서 줄을 바꾼다 (지원하는 브라우저에서. 아니면 위 규칙대로) */
-:lang(ja) :is(h1, h2, h3, .story-dek, .iv-person-role, .keywords li, .quote-box p, .pick__final-title, .cat__text, .find__main-desc, .person__desc) { word-break: auto-phrase; }
+:lang(ja) :is(h1, h2, h3, .story-dek, .iv-person-role, .keywords li, .quote-box p, .pick__final-title, .cat__text, .find__main-desc, .person__desc, .pick-pop__label) { word-break: auto-phrase; }   /* .pick-pop__label: 카톡 글자 확대에서 'ひとこ/と'처럼 한 글자만 떨어졌다 (2026-10-28) */
 
 /* ---------- 공통 틀: 푸터 ----------
    사용자가 준 시안(다른 웹진 푸터)의 짜임대로 정리 (2026-10-23)
@@ -1485,12 +1485,15 @@ a { color: inherit; }
 /* 영문 큰 제목: 굵은 세리프 */
 .pick__en {
   font-family: "Bodoni 72", Didot, "Playfair Display", "Times New Roman", Georgia, serif;
-  font-size: clamp(44px, 9vw, 150px); font-weight: 700; line-height: .92; letter-spacing: -0.01em;
+  /* 한 줄 그대로. 좁은 휴대폰(312px)이나 글자를 키운 휴대폰(카톡 '가가')에서 화면보다 길어지면 site.js가 --en-fit으로 줄인다 (2026-10-28) */
+  font-size: calc(clamp(44px, 9vw, 150px) * var(--en-fit, 1)); font-weight: 700; line-height: .92; letter-spacing: -0.01em;
 }
 /* 한글 부제 */
 .pick__en { color: #F6EFE4; }   /* 크림빛 흰색 */
 .pick__hl { font-style: normal; font-weight: 800; color: var(--orange); }
 .pick__ko {
+  /* 화면보다 길면 말 덩어리(.phrase) 사이에서 두 줄로 접는다 (2026-10-28. 전에는 한 줄 고정이라 좁은 휴대폰·카톡 글자 확대에서 양옆이 잘렸다) */
+  max-width: calc(100% - 32px); white-space: normal; text-wrap: balance;
   font-size: clamp(18px, 2.6vw, 40px); font-weight: 600; line-height: 1.3; letter-spacing: -0.03em;
   /* 카드 위에 겹쳐도 읽히도록 검은 빛을 두른다 */
   text-shadow: 0 0 6px #000000, 0 0 14px #000000, 0 0 28px rgba(0, 0, 0, .9);
@@ -1532,8 +1535,10 @@ a { color: inherit; }
   text-shadow: 0 0 6px #000000, 0 0 14px #000000, 0 0 28px rgba(0, 0, 0, .9);   /* 엽서 위에 겹쳐도 읽히게 (위 부제와 같은 검은 빛) */
 }
 /* 크기: 사용자 요청 "사이즈 줄이고"로 줄였다 (2026-10-27. 전 제목 22~34px·아래 줄 16~19px·손 44~60px) */
-.pick__hint-title { font-size: clamp(19px, 1.7vw, 24px); font-weight: 800; line-height: 1.25; letter-spacing: -0.03em; color: #FFFFFF; }
-.pick__hint-sub { font-size: 16px; font-weight: 500; line-height: 1.45; color: rgba(255, 255, 255, .88); }
+/* 두 줄 다 한 줄로 둔다. 글자를 키운 휴대폰(카톡 '가가')에서 들어가지 않으면 site.js가 --hint-fit-t·--hint-fit-s로 줄인다 (2026-10-28.
+   전에는 일본어 제목이 두 줄로 접히며 안내 덩어리가 화면 폭 가득 넓어져 왼쪽으로 쏠려 보였다) */
+.pick__hint-title { font-size: calc(clamp(19px, 1.7vw, 24px) * var(--hint-fit-t, 1)); font-weight: 800; line-height: 1.25; letter-spacing: -0.03em; color: #FFFFFF; white-space: nowrap; }
+.pick__hint-sub { font-size: calc(16px * var(--hint-fit-s, 1)); font-weight: 500; line-height: 1.45; color: rgba(255, 255, 255, .88); white-space: nowrap; }
 html:not(.js) .pick__hint { display: none; }
 .pick__world {
   /* 엽서들은 3D 공간을 같이 쓰지 않는다(flat). 원근은 site.js가 엽서마다 따로 주고, 앞뒤는 z-index로 정한다

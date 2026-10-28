@@ -44,7 +44,11 @@ function wzT(ko, en, ja) { return wzLang === 'en' ? en : wzLang === 'ja' ? ja : 
           text += links[i].offsetWidth - p;
         }
         var room = nav.clientWidth - pad - (parseFloat(getComputedStyle(nav).columnGap) || 0) * (links.length - 1);
-        if (text > room) nav.style.setProperty('--nav-fit', Math.max(NAV_MIN_FIT, room / text * 0.98).toFixed(3));
+        /* 줄이는 한계는 '실제로 보이는 글자 13px'. 휴대폰에서 글자를 키워 두면(카톡 '가가') 같은 15px 글자가 더 크게 보여,
+           그만큼 더 줄여도 13px보다 작아지지 않는다 (2026-10-28. 전에는 늘 0.87배까지만 줄여 카톡에서 메뉴가 옆으로 넘쳤다) */
+        var shown = parseFloat(getComputedStyle(nav).fontSize) || 15;
+        var minFit = Math.min(NAV_MIN_FIT, 13 / shown);
+        if (text > room) nav.style.setProperty('--nav-fit', Math.max(minFit, room / text * 0.98).toFixed(3));
       }
       navMore();
     }
@@ -499,6 +503,36 @@ function wzT(ko, en, ja) { return wzLang === 'en' ? en : wzLang === 'ja' ? ja : 
     measureLift();
     window.addEventListener('resize', measureLift);
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(measureLift);
+    /* 한 줄 글 맞추기 (2026-10-28): 좁은 휴대폰(312px)이나 글자를 키운 휴대폰(카톡 '가가')에서 큰 제목 'VOICES OF JEJU'와
+       아래 안내 두 줄('옆으로 넘겨 보세요' 등)이 화면보다 길어지면 들어갈 만큼 글자를 줄인다 (style.css --en-fit·--hint-fit-t·--hint-fit-s, 보통은 1) */
+    var enTitle = section.querySelector('.pick__en');
+    var hintBox = section.querySelector('.pick__hint');
+    function fitText() {
+      var room = stage.clientWidth - 32;   // 양옆 16px 여백
+      if (enTitle) {
+        enTitle.style.removeProperty('--en-fit');
+        var w = enTitle.getBoundingClientRect().width;
+        if (w > room) enTitle.style.setProperty('--en-fit', Math.max(0.5, room / w * 0.98).toFixed(3));
+      }
+      if (hintBox) {
+        var icon = hintBox.querySelector('.pick__hint-icon');
+        var textRoom = room - (icon ? icon.getBoundingClientRect().width : 0) - (parseFloat(getComputedStyle(hintBox).columnGap) || 0);
+        [['.pick__hint-title', '--hint-fit-t'], ['.pick__hint-sub', '--hint-fit-s']].forEach(function (p) {
+          var el = hintBox.querySelector(p[0]);
+          if (!el) return;
+          el.style.removeProperty(p[1]);
+          if (el.scrollWidth > textRoom) el.style.setProperty(p[1], Math.max(0.55, textRoom / el.scrollWidth * 0.98).toFixed(3));
+        });
+      }
+    }
+    fitText();
+    window.addEventListener('resize', fitText);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitText);
+    /* 페이지를 연 뒤 글자 크기를 바꾸면(카톡 '가가') resize가 안 와서, 글 칸 크기가 바뀌면 다시 잰다 */
+    if ('ResizeObserver' in window) {
+      var fitRo = new ResizeObserver(function () { fitText(); });
+      Array.prototype.forEach.call(section.querySelectorAll('.pick__en, .pick__hint-title, .pick__hint-sub'), function (el) { fitRo.observe(el); });
+    }
     function frame(ts) {
       window.requestAnimationFrame(frame);
       if (!visible) { last = null; return; }
