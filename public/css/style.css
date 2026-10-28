@@ -2224,14 +2224,39 @@ html:not(.js) .check__save, html:not(.js) .check__group-count { display: none; }
   .check__summary { position: static; }
 }
 
-/* ---------- 03 정책모음 (자료를 받기 전: 준비 중 카드) ---------- */
-.policy__empty {
-  display: flex; flex-direction: column; align-items: flex-start; gap: 6px;
+/* ---------- 03 정책모음: 사용자가 준 PDF '제주 이주 청년 정책 링크 모음 2026'을 내려받는 카드 (2026-10-28) ----------
+   파일은 files/jeju-youth-policy-links-2026.pdf (8쪽, 651KB, 한국어. 1쪽 작성 계정은 지운 판). 전에는 '정책 자료를 준비하고 있어요' 점선 카드(.policy__empty)였다 */
+.policy__doc {
+  display: flex; align-items: flex-start; gap: clamp(16px, 2.4vw, 28px);
   margin-top: clamp(24px, 4vh, 36px); padding: clamp(24px, 3vw, 40px); border-radius: 22px;
-  background: #FFFFFF; border: 1.5px dashed rgba(18, 35, 58, .2);
+  background: #FFFFFF; border: 1.5px solid rgba(18, 35, 58, .1); box-shadow: 0 10px 28px rgba(18, 35, 58, .06);
 }
-.policy__empty-title { margin: 0; font-size: clamp(20px, 2vw, 24px); font-weight: 800; color: var(--ink); }
-.policy__empty-text { margin: 0; font-size: 16px; color: var(--muted); }
+/* 문서 모양 아이콘 (꾸밈) */
+.policy__doc-icon {
+  position: relative; flex: none; display: grid; place-items: end center; width: 56px; height: 70px; padding-bottom: 10px;
+  border-radius: 8px 18px 8px 8px; background: linear-gradient(160deg, #FDBA74, var(--orange));
+  font-size: 14px; font-weight: 800; letter-spacing: .04em; color: #FFFFFF;
+}
+.policy__doc-icon::before {
+  content: ""; position: absolute; top: 0; right: 0; width: 18px; height: 18px;
+  border-radius: 0 18px 0 8px; background: rgba(255, 255, 255, .45);
+}
+.policy__doc-body { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; min-width: 0; }
+.policy__doc-title { margin: 0; font-size: clamp(20px, 2vw, 24px); font-weight: 800; line-height: 1.35; color: var(--ink); }
+.policy__doc-text { margin: 0; font-size: 16px; line-height: 1.7; color: var(--ink); }
+.policy__doc-note { margin: 0; font-size: 16px; line-height: 1.6; color: var(--muted); }
+.policy__doc-btn {
+  display: inline-flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; min-height: 48px; margin-top: 8px; padding: 8px 22px;
+  border-radius: 999px; background: var(--ink); color: #FFFFFF; font-size: 16px; font-weight: 800; text-decoration: none;
+  transition: background-color .3s ease;
+}
+.policy__doc-btn:hover { background: var(--orange-ink); }
+.policy__doc-meta { font-size: 14px; font-weight: 600; color: rgba(255, 255, 255, .78); }
+.policy__doc-arrow { flex: none; }
+@media (max-width: 599px) {
+  .policy__doc { flex-direction: column; }
+  .policy__doc-icon { width: 48px; height: 60px; padding-bottom: 8px; font-size: 13px; }
+}
 
 /* ---------- 이 페이지에 관하여 · 사진 출처 ---------- */
 .guide-about { padding: clamp(48px, 8vh, 80px) 0 clamp(64px, 10vh, 112px); border-top: 1px solid var(--line); background: var(--paper); }
