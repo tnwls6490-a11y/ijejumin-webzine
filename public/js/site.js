@@ -67,8 +67,8 @@ function wzT(ko, en, ja) { return wzLang === 'en' ? en : wzLang === 'ja' ? ja : 
     var items = Array.prototype.map.call(rises, function (el) {
       var prev = el.previousElementSibling;
       while (prev && !/SECTION|DIV/.test(prev.tagName)) prev = prev.previousElementSibling;
-      var dim = prev ? prev.querySelector('.under-dim') : null;
-      return { el: el, dimHost: dim ? dim.parentNode : null };
+      /* 어둡게 하는 값은 가리개(.under-dim) 하나에만 넣는다. 감싼 칸에 넣으면 장면마다 첫 화면 요소 67개의 스타일을 다시 계산했다 */
+      return { el: el, dim: prev ? prev.querySelector('.under-dim') : null };
     });
     var ticking = false;
     function update() {
@@ -79,7 +79,7 @@ function wzT(ko, en, ja) { return wzLang === 'en' ? en : wzLang === 'ja' ? ja : 
         var e = Math.min(1, Math.max(0, 1 - top / vh));
         var eased = 1 - Math.pow(1 - e, 2);
         items[i].el.style.setProperty('--enter', eased.toFixed(4));
-        if (items[i].dimHost) items[i].dimHost.style.setProperty('--under', e.toFixed(3));
+        if (items[i].dim) items[i].dim.style.setProperty('--under', e.toFixed(3));
       }
     }
     function request() { if (!ticking) { ticking = true; window.requestAnimationFrame(update); } }
@@ -1179,6 +1179,14 @@ function wzT(ko, en, ja) { return wzLang === 'en' ? en : wzLang === 'ja' ? ja : 
     return window.scrollY - startTop > 8 ? 1 : 0;
   }
   function easeInOut(t) { return t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2; }
+  /* 제주 화면에 닿으면 곧 올라올 인터뷰 화면의 지금 사람 사진·누끼를 미리 풀어 둔다.
+     안 풀어 두면 인터뷰 화면이 올라오기 시작하는 첫 장면에서 사진을 푸느라 0.1초쯤 멈췄다 (사용자 요청 "한번에 깔끔하게", 2026-10-28) */
+  function warmNext() {
+    if (!after) return;
+    Array.prototype.forEach.call(after.querySelectorAll('.is-active img'), function (img) {
+      if (img.decode) img.decode().catch(function () {});
+    });
+  }
   function coveredUp() {   // 다음 섹션 위 끝이 헤더 아래까지 올라와 첫 화면을 다 가렸다
     if (!after) return false;
     var hh = parseFloat(getComputedStyle(root).getPropertyValue('--hdr-h')) || 0;
@@ -1197,7 +1205,7 @@ function wzT(ko, en, ja) { return wzLang === 'en' ? en : wzLang === 'ja' ? ja : 
     if (run) {
       var k = clamp((now - run.start) / run.dur, 0, 1);
       shownP = run.from + (run.to - run.from) * easeInOut(k);
-      if (k >= 1) { shownP = run.to; if (run.to === 1) restY = window.scrollY; run = null; holding = false; }   // 제주 화면에 도착한 자리를 기억한다 (아래 '인터뷰 화면 한 번에')
+      if (k >= 1) { shownP = run.to; if (run.to === 1) { restY = window.scrollY; warmNext(); } run = null; holding = false; }   // 제주 화면에 도착한 자리를 기억한다 (아래 '인터뷰 화면 한 번에')
       else requestUpdate();
     }
     var p = shownP;
@@ -1270,10 +1278,12 @@ function wzT(ko, en, ja) { return wzLang === 'en' ? en : wzLang === 'ja' ? ja : 
      스크롤에 맞춰 헤더가 내려온다. 그래서 헤더가 제주 사진 위에 오래 겹치지 않는다 */
   var root = document.documentElement;
   var after = intro.nextElementSibling;
+  /* 숨길 높이는 헤더에만 넣는다. html에 넣으면 헤더가 내려오는 장면마다 페이지 전체(요소 480여 개) 스타일을 다시 계산해 버벅였다 (2026-10-28) */
+  var hdrEl = document.querySelector('.wz-header') || root;
   function syncHeader() {
     var hh = parseFloat(getComputedStyle(root).getPropertyValue('--hdr-h')) || 0;
     var top = after ? after.getBoundingClientRect().top : intro.getBoundingClientRect().bottom;
-    root.style.setProperty('--hdr-hide', clamp(top - hh, 0, hh).toFixed(1) + 'px');
+    hdrEl.style.setProperty('--hdr-hide', clamp(top - hh, 0, hh).toFixed(1) + 'px');
   }
   root.classList.add('has-intro');
   syncHeader();

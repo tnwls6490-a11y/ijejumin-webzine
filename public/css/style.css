@@ -111,7 +111,8 @@ a { color: inherit; }
 }
 /* 서브메인: 첫 화면(비행기 창 → 제주)에서는 헤더를 위로 숨겼다가, 인터뷰 화면이 올라오면 내려온다.
    헤더는 자리를 차지하지 않게 화면 맨 위에 띄운다. 키보드로 헤더 메뉴에 오면 바로 내려온다
-   (site.js가 html에 has-intro와, 숨길 높이 --hdr-hide를 스크롤에 맞춰 넣는다) */
+   (site.js가 html에 has-intro를, 헤더에 숨길 높이 --hdr-hide를 스크롤에 맞춰 넣는다.
+    --hdr-hide를 html에 넣으면 헤더가 내려오는 장면마다 페이지 전체 스타일을 다시 계산해 버벅였다, 2026-10-28) */
 .has-intro .wz-header {
   position: fixed; left: 0; right: 0; top: 0;
   transform: translateY(calc(var(--hdr-hide, 0px) * -1));
@@ -823,6 +824,8 @@ a { color: inherit; }
 }
 .js .people { height: calc(100vh + 2016px); height: calc(100svh + 2016px); }   /* 무대가 붙어 있는 동안 스크롤(약 470px)마다 다음 사람으로 넘어간다. 마지막 150px은 마지막 사람에 머무는 구간, 그다음은 평범하게 스크롤된다 */
 .js .people__stage {
+  /* will-change: 무대를 따로 그려 두어, 제주 화면 위로 올라오는 동안(둥근 모서리가 펴지는 동안) 사진을 장면마다 다시 그리지 않는다 (2026-10-28) */
+  will-change: transform;
   position: sticky; top: var(--hdr-h, 0px);
   height: calc(100vh - var(--hdr-h, 0px)); height: calc(100svh - var(--hdr-h, 0px)); min-height: 560px;
   touch-action: pan-y;               /* 세로 스크롤은 그대로, 가로로 밀면 넘김 */
@@ -1422,24 +1425,23 @@ a { color: inherit; }
 
 /* ---------- 다음 화면이 아래에서 올라와 화면 가득 퍼진다 (.rise) ----------
    site.js가 화면에 들어온 정도를 --enter(0→1)로 넣는다.
-   0: 양옆이 좁고 위가 크게 둥근 카드 → 1: 화면 가득 */
+   0: 양옆이 좁고 위가 크게 둥근 카드 → 1: 화면 가득
+   --enter는 이 칸에만 쓰고 안쪽 요소에는 물려주지 않는다(inherits: false). 물려주면 올라오는 동안 장면마다
+   인물 소개 안 요소 110개의 스타일을 다시 계산해 버벅였다 (2026-10-28) */
+@property --enter { syntax: '<number>'; inherits: false; initial-value: 1; }
 .js .rise {
   position: relative; z-index: 2;
   margin-top: calc(var(--hdr-h, 0px) - 100vh); margin-top: calc(var(--hdr-h, 0px) - 100svh);
   min-height: calc(100vh - var(--hdr-h, 0px)); min-height: calc(100svh - var(--hdr-h, 0px));
-  --e: var(--enter, 1);
-  clip-path: inset(0 calc((1 - var(--e)) * 9%) 0 calc((1 - var(--e)) * 9%)
-    round calc((1 - var(--e)) * min(26vw, 340px)) calc((1 - var(--e)) * min(26vw, 340px)) 0 0);
+  clip-path: inset(0 calc((1 - var(--enter, 1)) * 9%) 0 calc((1 - var(--enter, 1)) * 9%)
+    round calc((1 - var(--enter, 1)) * min(26vw, 340px)) calc((1 - var(--enter, 1)) * min(26vw, 340px)) 0 0);
 }
-/* 올라오는 동안 안쪽 내용은 살짝 늦게 따라 올라온다 */
-.js .rise .rise__inner { transform: translateY(calc((1 - var(--e)) * 14vh)); }
-/* 덮이는 화면은 조금 어두워지며 뒤로 물러난다 */
+/* 덮이는 화면은 조금 어두워지며 뒤로 물러난다 (site.js가 이 칸에 바로 --under를 넣는다)
+   will-change: 진하기가 바뀔 때마다 밑에 깔린 제주 사진까지 다시 그리지 않게 따로 그린다 (2026-10-28) */
 .under-dim {
   position: absolute; inset: 0; z-index: 20; pointer-events: none;
   background: #0B1A2C; opacity: calc(var(--under, 0) * .45);
-}
-@media (prefers-reduced-motion: reduce) {
-  .js .rise .rise__inner { transform: none; }
+  will-change: opacity;
 }
 
 
