@@ -33,14 +33,19 @@ var wzPlace = (function () {
   function sig(el) { return el.tagName + '.' + (el.classList[0] || ''); }
   function docTop(el) { var t = 0; while (el) { t += el.offsetTop; el = el.offsetParent; } return t; }   // 움직임(transform)을 뺀 원래 자리
   function maxY() { return Math.max(1, document.documentElement.scrollHeight - window.innerHeight); }
+  /* 화면 위에 붙어 있는 줄: 헤더, 인터뷰 기사는 그 아래 목록 줄(.ivnav)까지 (2026-10-29) */
+  function bars() {
+    return ['.wz-header', '.ivnav'].map(function (s) { return document.querySelector(s); }).filter(function (el) {
+      return el && (el.matches('.wz-header') || getComputedStyle(el).position === 'sticky');
+    });
+  }
 
   function save(link) {
     var mode = api.introMode ? api.introMode() : null;
     if (mode === 'top' || (!mode && window.scrollY < 1)) return;   // 맨 위(비행기 창)면 새 페이지도 맨 위에서
     var rec = { file: file(link.pathname), t: Date.now(), mode: mode, r: window.scrollY / maxY() };
     if (!mode) {
-      var hdr = document.querySelector('.wz-header');
-      var ln = (hdr ? Math.max(0, hdr.getBoundingClientRect().bottom) : 0) + 1;   // 헤더 바로 아래 줄
+      var ln = bars().reduce(function (b, el) { return Math.max(b, el.getBoundingClientRect().bottom); }, 0) + 1;   // 헤더(기사는 목록 줄) 바로 아래 줄
       var list = blocks(), hits = [];
       for (var i = 0; i < list.length; i++) {
         var r = list[i].getBoundingClientRect();
@@ -82,8 +87,8 @@ var wzPlace = (function () {
         el = list[rec.i - d] && sig(list[rec.i - d]) === rec.sig ? list[rec.i - d] : list[rec.i + d];
       }
       if (el && sig(el) === rec.sig) {
-        var hdr = document.querySelector('.wz-header');
-        y = docTop(el) + (rec.px != null ? rec.px : rec.f * el.offsetHeight) - (hdr ? hdr.offsetHeight : 0) - 1;
+        var cover = bars().reduce(function (s, b) { return s + b.offsetHeight; }, 0);
+        y = docTop(el) + (rec.px != null ? rec.px : rec.f * el.offsetHeight) - cover - 1;
       }
     }
     return Math.max(0, Math.min(maxY(), Math.round(y)));
@@ -150,7 +155,15 @@ var wzPlace = (function () {
       navMore();
     }
     if (nav) nav.addEventListener('scroll', navMore, { passive: true });
-    function setH() { fitNav(); document.documentElement.style.setProperty('--hdr-h', header.offsetHeight + 'px'); }
+    /* 인터뷰 기사는 헤더 아래 목록 줄(.ivnav)도 붙어 있어(2026-10-29), 위를 가리는 높이(--hdr-h)에 그 줄까지 더한다.
+       목록 줄이 붙을 자리는 헤더 높이(--wz-hdr) */
+    var ivnav = document.querySelector('.ivnav');
+    function setH() {
+      fitNav();
+      var root = document.documentElement, h = header.offsetHeight;
+      root.style.setProperty('--wz-hdr', h + 'px');
+      root.style.setProperty('--hdr-h', h + (ivnav ? ivnav.offsetHeight : 0) + 'px');
+    }
     setH();
     window.addEventListener('resize', setH);
     window.addEventListener('load', setH);

@@ -3485,6 +3485,10 @@ body.page-interview { background: var(--iv-paper); }
    인터뷰 탭 — 공통 헤더 아래, 인터뷰 세부페이지끼리 오가는 줄 (휴대폰에서도 숨기지 않고 옆으로 넘김)
    ========================================================= */
 .ivnav { background: var(--iv-paper); border-bottom: 1px solid var(--rule); }
+/* 스크롤해도 헤더 바로 아래에 붙어 있다 (사용자 요청 2026-10-29). site.js가 헤더 높이를 --wz-hdr로,
+   헤더 + 이 줄 높이를 --hdr-h로 넣어, 읽기 진행 막대·# 이동 자리도 이 줄 아래로 간다.
+   스크립트가 없으면 헤더 높이를 몰라 전처럼 붙이지 않는다. 헤더(z-index 50)의 펼침 메뉴는 이 줄 위로 열린다 */
+.js .ivnav { position: sticky; top: var(--wz-hdr, 0px); z-index: 49; }
 .ivnav .container { display: flex; align-items: center; gap: 4px; overflow-x: auto; scrollbar-width: none; padding-top: 6px; padding-bottom: 6px; }
 .ivnav .container::-webkit-scrollbar { display: none; }
 /* 맨 앞 '이주민 인터뷰' 글자(.ivnav-label)는 사용자 요청으로 세 언어 기사 12편에서 지웠다 (2026-10-28) */
