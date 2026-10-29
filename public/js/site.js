@@ -530,9 +530,35 @@ var wzPlace = (function () {
     var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     var n = cards.length;
     var TURNS = 2;                                           // 나선이 감긴 바퀴 수 (정수여야 맨 위 카드가 맨 아래로 이어질 때 모양이 맞는다)
+    /* 휴대폰 버벅임 줄이기 (2026-10-29, 모양·움직임은 그대로)
+       - 뒤로 돈 엽서를 어둡게 하는 그늘을 엽서의 ::after(--shade)가 아니라 따로 띄운 칸(.pcard__shade)의 opacity로 바꾼다.
+         --shade를 엽서에 넣으면 매 프레임 엽서 20장과 그 안 글자까지 스타일을 다시 계산하고, 엽서 그림을 다시 그렸다
+       - 같은 값은 다시 넣지 않는다(put). 앞뒤 순서(z-index)는 실제 순서가 바뀔 때만 바꾼다(아래 frame)
+       - 매 프레임 바뀌는 위치(transform)·순서(z-index)는 엽서를 감싼 빈 칸(.pcard-slot)에 넣는다. 엽서는 규칙이 많아 다시 계산하는 데
+         빈 칸보다 20배쯤 걸렸다(20장에 휴대폰 기준 약 8ms → 0.4ms). 빈 칸의 기준점이 엽서 가운데와 같은 점이라 화면은 그대로다 */
     var items = cards.map(function (el, i) {
-      return { el: el, a: i / n * TURNS * Math.PI * 2, h0: i / n, note: el.classList.contains('pcard--note'), back: false };
+      var shade = document.createElement('span');
+      shade.className = 'pcard__shade';
+      shade.setAttribute('aria-hidden', 'true');
+      el.appendChild(shade);
+      var slot = document.createElement('div');
+      slot.className = el.classList.contains('pcard--post') ? 'pcard-slot pcard-slot--post' : 'pcard-slot';
+      el.parentNode.insertBefore(slot, el);
+      slot.appendChild(el);
+      return { el: el, slot: slot, shade: shade, a: i / n * TURNS * Math.PI * 2, h0: i / n, note: el.classList.contains('pcard--note'), back: false };
     });
+    var order = items.map(function (it, i) { return i; });
+    function put(el, prop, v) {               // el.style[prop] = v, 바뀔 때만 (사용자 정의 속성 '--x'도)
+      if (!el) return;
+      var memo = el.__wzStyle || (el.__wzStyle = {});
+      if (memo[prop] === v) return;
+      memo[prop] = v;
+      if (prop.charAt(0) === '-') el.style.setProperty(prop, v); else el.style[prop] = v;
+    }
+    /* 진행 값(--in·--merge·--fy 등)은 쓰는 요소에만 넣는다. 전에는 무대 전체(.pick)에 넣어 바뀔 때마다 무대 안 모든 요소를 다시 계산했다 */
+    var introBox = section.querySelector('.pick__intro');
+    var headline = section.querySelector('.pick__headline');
+    var hintEl = section.querySelector('.pick__hint');
     function clamp(v, a, b) { return Math.min(b, Math.max(a, v)); }
     function ease(t) { return t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2; }
     function smooth(a, b, x) { var u = clamp((x - a) / (b - a), 0, 1); return u * u * (3 - 2 * u); }
@@ -649,6 +675,13 @@ var wzPlace = (function () {
       var dt = last === null ? 1 / 60 : clamp((ts - last) / 1000, 0, .1);
       last = ts;
       var t = target();
+      /* 크기는 값을 넣기 전에 한꺼번에 읽는다. 넣은 뒤에 읽으면 그 프레임에 스타일·레이아웃을 한 번 더(많게는 세 번) 계산했다 */
+      var W = stage.clientWidth, H = stage.clientHeight;
+      var cw = cards[0].offsetWidth, ch = cards[0].offsetHeight;
+      var finalW = finalCard ? finalCard.offsetWidth : 0;
+      var cs = getComputedStyle(cardsBox);
+      var persp = parseFloat(cs.perspective) || 1100;
+      var vy = (parseFloat(cs.perspectiveOrigin.split(' ')[1]) || cardsBox.clientHeight * .45) - world.offsetTop;
       /* 스크롤을 천천히 따라온다. 뒤집기를 저절로 넘길 때(flipSnap)는 그 시간표의 진행을 그대로 쓴다 */
       shown = reduce ? t : flipSnap && flipSnap.p !== null ? flipSnap.p : shown + (t - shown) * (1 - Math.exp(-dt / .6));
       /* ① 0~0.4: 카드가 가운데로 모인다  ② 0.34~0.78: 소개 글  ③ 0.8~: 모인 카드 한 장 */
@@ -663,29 +696,29 @@ var wzPlace = (function () {
       var intro = introIn * (1 - introOut);
       var flip = smooth(.78, .95, shown), ang = 180 * flip;   // 엽서 뒤집기 0 → 180도
       var fin = ang >= 90 ? 1 : 0;                          // 반쯤(옆모습) 돌았을 때 앞면 묶음 → 뒷면 엽서로 바뀐다
-      section.style.setProperty('--in', introIn.toFixed(3));
-      section.style.setProperty('--out', introOut.toFixed(3));
-      section.style.setProperty('--outfade', smooth(.7, 1, introOut).toFixed(3));
+      put(introBox, '--in', introIn.toFixed(3));
+      put(introBox, '--out', introOut.toFixed(3));
+      put(introBox, '--outfade', smooth(.7, 1, introOut).toFixed(3));
       /* 모인 엽서는 글이 떠오를 때 글 아래로 살짝 가라앉았다가(작아지고 어두워짐),
          글이 지나가면 떠올라 뒤집히며 제자리로 내려온다 */
       var sink = introIn * (1 - introOut);
       var dropY = (.09 * sink - .07 * introOut * (1 - flip)) * window.innerHeight - Math.sin(flip * Math.PI) * .04 * window.innerHeight - lift * flip;
       /* 엽서가 모이는 자리는 나선 가운데보다 무대 높이의 2.5%만큼 위 (사용자 요청 "진짜 살짝만 위로").
          모이면서 올라가고, 뒤집히는 동안 마지막 엽서 자리로 돌아온다 */
-      var rise = .025 * stage.clientHeight * m * (1 - flip);
-      var cw0 = cards[0].offsetWidth || 1;
-      var grow = finalCard ? finalCard.offsetWidth / (cw0 * 1.55) : 1;   // 묶음 → 엽서 한 장 크기
+      var rise = .025 * H * m * (1 - flip);
+      var cw0 = cw || 1;
+      var grow = finalCard ? finalW / (cw0 * 1.55) : 1;   // 묶음 → 엽서 한 장 크기
       var half = clamp(ang / 90, 0, 1);
-      world.style.transform = m > .5 ? 'translateY(' + dropY.toFixed(1) + 'px) rotateY(' + Math.min(ang, 90).toFixed(2) + 'deg) scale(' + ((1 + (grow - 1) * half * .85) * (1 - .1 * sink)).toFixed(3) + ')' : '';
+      put(world, 'transform', m > .5 ? 'translateY(' + dropY.toFixed(1) + 'px) rotateY(' + Math.min(ang, 90).toFixed(2) + 'deg) scale(' + ((1 + (grow - 1) * half * .85) * (1 - .1 * sink)).toFixed(3) + ')' : '');
       /* 뒷면 엽서가 나오면 앞면 묶음은 90도로 옆으로 선 채(폭 0이라 보이지 않음) 그대로 둔다.
          전에는 visibility: hidden으로 숨겼는데, 위로 올려 다시 보일 때 엽서 20장을 새로 그리느라 화면이 0.1~0.2초 멈췄다가 확 따라잡았다 (2026-10-27).
          그동안 엽서 버튼을 누르거나 키보드로 고를 수 없게 inert를 건다 */
-      world.style.opacity = (1 - .35 * sink).toFixed(3);
+      put(world, 'opacity', (1 - .35 * sink).toFixed(3));
       if (world.inert !== !!fin) world.inert = !!fin;
-      section.style.setProperty('--fin', fin);
-      section.style.setProperty('--fy', (dropY - rise).toFixed(1) + 'px');
-      section.style.setProperty('--fr', (ang - 180).toFixed(2));
-      section.style.setProperty('--fs', (.85 + .15 * clamp((ang - 90) / 90, 0, 1)).toFixed(3));
+      put(finalCard, '--fin', String(fin));
+      put(finalCard, '--fy', (dropY - rise).toFixed(1) + 'px');
+      put(finalCard, '--fr', (ang - 180).toFixed(2));
+      put(finalCard, '--fs', (.85 + .15 * clamp((ang - 90) / 90, 0, 1)).toFixed(3));
       section.classList.toggle('is-intro', intro > .5);
       /* 마우스를 올리거나 팝업이 열리면 멈추듯 느려진다 */
       var want = isOpen ? 0 : (hover ? .12 : 1);
@@ -696,13 +729,9 @@ var wzPlace = (function () {
         spin += vel * dt;                                        // 손을 놓은 뒤 남은 힘으로 조금 더 돌다 멈춘다
         vel *= Math.exp(-dt / .7);
       }
-      var W = stage.clientWidth, H = stage.clientHeight;
-      var cw = cards[0].offsetWidth, ch = cards[0].offsetHeight;
       /* 엽서끼리 한 3D 공간을 같이 쓰면, 모이는 동안 비스듬한 엽서들이 서로를 뚫고 지나가 깨져 보인다.
-         그래서 엽서마다 원근을 따로 주고(.pick__cards와 같은 거리·같은 시점 높이), 앞에 있는 엽서가 위에 그려지게 순서를 매긴다 */
-      var cs = getComputedStyle(cardsBox);
-      var persp = parseFloat(cs.perspective) || 1100;
-      var vy = (parseFloat(cs.perspectiveOrigin.split(' ')[1]) || cardsBox.clientHeight * .45) - world.offsetTop;
+         그래서 엽서마다 원근을 따로 주고(.pick__cards와 같은 거리·같은 시점 높이), 앞에 있는 엽서가 위에 그려지게 순서를 매긴다
+         (크기·원근 값은 프레임 맨 앞에서 읽었다) */
       var view = 'translateY(' + vy.toFixed(1) + 'px) perspective(' + persp + 'px) translateY(' + (-vy).toFixed(1) + 'px) ';
       var R = clamp(W * .36, cw * 1.8, 580);       // 반지름이 클수록 좌우로 카드 사이가 넓어진다
       var span = Math.max(H * 1.4, cw * 7);                 // 나선의 높이 (화면 위아래로 살짝 넘친다)
@@ -732,22 +761,27 @@ var wzPlace = (function () {
         var fanR = 0, fanX = 0, fanY = 0;   // 모였을 때 한 장처럼 딱 맞게 겹친다
         var X = x2 * k + fanX, Y = y2 * k + fanY - rise, Z = (z1 - R * .35) * k - i * .5 * m;
         var deg = ((th * 180 / Math.PI) % 360 + 540) % 360 - 180;   // 바깥을 향한 각도 (-180~180)
-        it.el.style.zIndex = 1000 + Math.round(Z * 4);   // 모인 묶음(0.5px 간격)도 앞뒤가 갈리게
-        it.el.style.transform = view + 'translate3d(' + X.toFixed(1) + 'px,' + Y.toFixed(1) + 'px,' + Z.toFixed(1) + 'px) rotateZ(' + (tz * 180 / Math.PI).toFixed(2) + 'deg) rotateX(' + (tx * 180 / Math.PI).toFixed(2) + 'deg) rotateY(' + (deg * k).toFixed(2) + 'deg) rotateZ(' + fanR.toFixed(2) + 'deg) scale(' + (1 + .55 * m).toFixed(3) + ')';
-        it.el.style.opacity = (edge + (1 - edge) * m).toFixed(3);
-        it.el.style.setProperty('--shade', ((1 - Math.cos(th)) / 2 * .42 * k).toFixed(3));
+        it.zr = Math.round(Z * 4);   // 앞뒤 순서 (모인 묶음 0.5px 간격도 갈리게). z-index는 아래에서 순서가 바뀔 때만 넣는다
+        put(it.slot, 'transform', view + 'translate3d(' + X.toFixed(1) + 'px,' + Y.toFixed(1) + 'px,' + Z.toFixed(1) + 'px) rotateZ(' + (tz * 180 / Math.PI).toFixed(2) + 'deg) rotateX(' + (tx * 180 / Math.PI).toFixed(2) + 'deg) rotateY(' + (deg * k).toFixed(2) + 'deg) rotateZ(' + fanR.toFixed(2) + 'deg) scale(' + (1 + .55 * m).toFixed(3) + ')');
+        put(it.el, 'opacity', (edge + (1 - edge) * m).toFixed(3));   // 투명도는 엽서에 (바뀌는 건 위아래 끝의 몇 장뿐이라 put이 거의 건너뛴다)
+        put(it.shade, 'opacity', ((1 - Math.cos(th)) / 2 * .42 * k).toFixed(3));
         var back = Math.abs(deg * k) > 90;                   // 뒤돌아 있는 엽서는 글자(장소 이름)를 숨긴다
         if (back !== it.back) { it.el.classList.toggle('is-back', back); it.back = back; }
       }
+      /* 앞뒤 순서: 전에는 매 프레임 z-index에 깊이 값(1000 + 깊이×4)을 넣어, 순서가 그대로여도 값이 바뀌어 무대 전체를 다시 그렸다.
+         이제 깊이 순서대로 1000, 1001…을 매겨 순서가 실제로 바뀐 엽서만 고친다. 깊이가 같으면 전처럼 뒤(나중) 엽서가 위 */
+      order.sort(function (a, b) { return items[a].zr - items[b].zr || a - b; });
+      for (var r = 0; r < n; r++) put(items[order[r]].slot, 'zIndex', String(1000 + r));
       /* 엽서가 거의 다 모이면 이제주민 로고 엽서가 아래에서 살짝 떠오르며 맨 위에 덮인다 */
       if (cover) {
         var cv = smooth(.8, 1, m);
-        cover.style.visibility = cv > 0 ? 'visible' : 'hidden';
-        cover.style.opacity = cv.toFixed(3);
-        cover.style.zIndex = 9000;
-        cover.style.transform = view + 'translate3d(0,' + ((1 - cv) * 28 - rise).toFixed(1) + 'px,2px) scale(' + (1 + .55 * m).toFixed(3) + ')';
+        put(cover, 'visibility', cv > 0 ? 'visible' : 'hidden');
+        put(cover, 'opacity', cv.toFixed(3));
+        put(cover, 'zIndex', '9000');
+        put(cover, 'transform', view + 'translate3d(0,' + ((1 - cv) * 28 - rise).toFixed(1) + 'px,2px) scale(' + (1 + .55 * m).toFixed(3) + ')');
       }
-      section.style.setProperty('--merge', m.toFixed(3));
+      put(headline, '--merge', m.toFixed(3));
+      put(hintEl, '--merge', m.toFixed(3));
       section.classList.toggle('is-merging', m > .35);
       section.classList.toggle('is-merged', ang > 150);
     }

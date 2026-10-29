@@ -1541,6 +1541,7 @@ a { color: inherit; }
 .pick__hint-move { animation: pick-hint-sway 2.4s ease-in-out infinite; }
 @keyframes pick-hint-sway { 0%, 100% { transform: translateX(-4px); } 50% { transform: translateX(4px); } }
 @media (prefers-reduced-motion: reduce) { .pick__hint-move { animation: none; } }
+.pick.is-merging .pick__hint-move { animation-play-state: paused; }   /* 엽서가 모여 안내가 다 사라진 뒤에는 손 움직임 계산도 멈춘다 (보이는 것은 같음) */
 .pick__hint-text {
   margin: 0; display: flex; flex-direction: column; gap: .3em;
   text-shadow: 0 0 6px #000000, 0 0 14px #000000, 0 0 28px rgba(0, 0, 0, .9);   /* 엽서 위에 겹쳐도 읽히게 (위 부제와 같은 검은 빛) */
@@ -1575,6 +1576,17 @@ html:not(.js) .pick__hint { display: none; }
   border: calc(var(--cw) * .055) solid #FFFDF8; background-clip: padding-box;
   -webkit-tap-highlight-color: transparent;
 }
+/* 엽서를 감싼 빈 칸 (site.js가 만든다, 2026-10-29 휴대폰 버벅임 줄이기): 매 프레임 바뀌는 위치(transform)·순서(z-index)는 이 칸에 넣는다.
+   칸은 엽서와 같은 크기·같은 자리이고 엽서는 그 안 (0, 0)에 놓여, 엽서에 넣던 때와 같은 자리·같은 모양으로 보인다
+   (크기 0인 칸에 넣었더니 엽서가 소수점 자리에 놓여 글자가 아주 살짝 흐려졌다). 크기 규칙은 아래 .pcard와 같다 (휴대폰 --cw도 같이) */
+.pcard-slot {
+  --cw: clamp(96px, 10.4vw, 156px);
+  --pw: calc(var(--cw) * 1.45);
+  position: absolute; left: calc(var(--pw) / -2); top: calc(var(--cw) * -.48);
+  width: var(--pw); height: calc(var(--cw) * .96);
+}
+.pcard-slot--post { top: calc(var(--pw) / -3.258); height: calc(var(--pw) / 1.629); }
+.pcard-slot > .pcard { left: 0; top: 0; }
 /* 우표: 톱니 모양 흰 테두리 안의 주황 */
 .pcard:not(.pcard--note)::before,
 .pcard--note::before, .pick-pop__body::before {
@@ -1583,10 +1595,12 @@ html:not(.js) .pick__hint { display: none; }
   border: 2px dotted #FFFDF8; box-shadow: 0 0 0 2px #FFFDF8, 0 2px 6px rgba(18, 35, 58, .25);
 }
 .pcard:not(.pcard--note)::before { top: 7%; right: 6%; width: 16%; height: 30%; }
-/* 뒤쪽으로 돈 카드는 조금 어둡게 (깊이감) */
-.pcard::after {
-  content: ""; position: absolute; inset: 0; pointer-events: none;
-  background: #12233A; opacity: var(--shade, 0);
+/* 뒤쪽으로 돈 카드는 조금 어둡게 (깊이감). site.js가 엽서마다 넣은 칸(.pcard__shade)의 opacity를 바꾼다
+   (휴대폰 버벅임 줄이기, 2026-10-29: 전에는 .pcard::after의 opacity를 엽서에 넣은 --shade로 바꿔, 매 프레임 엽서 20장과 그 안 글자까지 스타일을 다시 계산했다.
+    이제 이 칸 하나만 다시 계산한다. 이 칸을 따로 띄우면(will-change) 반투명한 엽서의 글자가 거칠어져 띄우지 않는다. 모양은 전과 같다) */
+.pcard__shade {
+  position: absolute; inset: 0; pointer-events: none;
+  background: #12233A; opacity: 0;
 }
 .pick__stage.is-grabbing, .pick__stage.is-grabbing .pcard { cursor: grabbing; }
 .pcard:hover { box-shadow: 0 0 0 3px #FFFFFF, 0 14px 36px rgba(18, 35, 58, .3); }
@@ -1952,7 +1966,7 @@ html:not(.js) .pick__intro { position: relative; left: auto; top: auto; translat
 html:not(.js) .pick__world, html:not(.js) .pick__headline { display: none; }
 html:not(.js) .pick__final { opacity: 1; transform: none; }
 @media (max-width: 899px) {
-  .pcard, .pick__cover { --cw: clamp(84px, 25vw, 112px); }   /* 휴대폰에서도 엽서를 크게 (390px 화면에서 약 141×94px) */
+  .pcard, .pick__cover, .pcard-slot { --cw: clamp(84px, 25vw, 112px); }   /* 휴대폰에서도 엽서를 크게 (390px 화면에서 약 141×94px) */
   .pick__world, .pick__final { top: 57%; }   /* 휴대폰: 위 큰 제목 아래로 조금 내리되, 엽서를 잡기 쉽게 60% → 55% → 57%(살짝 내림) */
 }
 
