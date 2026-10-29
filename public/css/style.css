@@ -3176,8 +3176,18 @@ body.page-interview { background: var(--iv-paper); }
   background: radial-gradient(ellipse at 50% 16%, rgba(255, 255, 255, .13), transparent 58%), #0A0E14;
   color: #fff;
 }
-.reel-frame.reel-frame--soon::before,
-.reel-frame.reel-frame--soon::after { display: none; }
+/* 옆 영상 표지처럼 안쪽 가는 테두리(::before)와 왼쪽 위 주황 로고(::after) (사용자 요청 2026-10-29).
+   자리·크기는 표지(1080×1920)에서 잰 비율: 테두리는 위아래 1.9%·양옆 3.4% 안쪽, 로고는 왼쪽 7.1%·위 3.65%·폭 9.5% */
+.reel-frame.reel-frame--soon::before {
+  inset: 1.9% 3.4%; height: auto; z-index: 3;
+  border: 1px solid rgba(245, 245, 235, .85); background: none;
+}
+.reel-frame.reel-frame--soon::after {
+  left: 7.1%; right: auto; top: 3.65%; bottom: auto; z-index: 3; width: 9.5%; height: auto; aspect-ratio: 180 / 209;
+  background: var(--orange);
+  -webkit-mask: url(../images/logo-ijejumin-white.webp) center / contain no-repeat;
+  mask: url(../images/logo-ijejumin-white.webp) center / contain no-repeat;
+}
 .soon-figure { position: absolute; left: 50%; top: 24%; width: 64%; height: 50%; transform: translateX(-50%); }
 .soon-figure::before,
 .soon-figure::after { content: ""; position: absolute; background: linear-gradient(#262F3C, #151B24); }
