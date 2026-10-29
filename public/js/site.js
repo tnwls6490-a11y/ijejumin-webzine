@@ -2098,6 +2098,54 @@ var wzPlace = (function () {
   window.addEventListener('load', fit);
 })();
 
+/* ---------- 나의 제주찾기 정책 카드 쪽 넘기기 (사용자가 준 시안, 2026-10-29) ----------
+   한 쪽에 두 줄(PC 4칸 × 2 = 8장, 600~899px 3칸 × 2, 휴대폰 2칸 × 2). 카드 아래 '‹ 1 2 ›'로 넘긴다.
+   줄 수가 화면 폭에 따라 바뀌면 지금 보던 첫 카드가 들어 있는 쪽으로 맞춘다. 스크립트가 없으면 13장이 다 보인다 */
+(function () {
+  'use strict';
+  var grid = document.querySelector('.policy-grid');
+  if (!grid) return;
+  var cards = Array.prototype.slice.call(grid.children);
+  var arrow = function (d) { return '<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="' + d + '" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>'; };
+  var pager = document.createElement('nav');
+  pager.className = 'policy-pager';
+  pager.setAttribute('aria-label', wzT('정책 카드 쪽', 'Policy card pages', '政策カードのページ'));
+  grid.insertAdjacentElement('afterend', pager);
+  var page = 0, per = 8, first = 0;
+  function cols() { return getComputedStyle(grid).gridTemplateColumns.split(' ').filter(Boolean).length || 1; }
+  function render() {
+    var pages = Math.max(1, Math.ceil(cards.length / per));
+    page = Math.min(page, pages - 1);
+    cards.forEach(function (c, i) { c.hidden = i < page * per || i >= (page + 1) * per; });
+    first = page * per;
+    var h = '<button type="button" data-go="prev" aria-label="' + wzT('이전 쪽', 'Previous page', '前のページ') + '"' + (page === 0 ? ' disabled' : '') + '>' + arrow('M14.5 5.5 8 12l6.5 6.5') + '</button>';
+    for (var i = 0; i < pages; i++) {
+      h += '<button type="button" data-go="' + i + '" aria-label="' + wzT((i + 1) + '쪽', 'Page ' + (i + 1), (i + 1) + 'ページ') + '"' + (i === page ? ' aria-current="page"' : '') + '>' + (i + 1) + '</button>';
+    }
+    h += '<button type="button" data-go="next" aria-label="' + wzT('다음 쪽', 'Next page', '次のページ') + '"' + (page >= pages - 1 ? ' disabled' : '') + '>' + arrow('M9.5 5.5 16 12l-6.5 6.5') + '</button>';
+    pager.innerHTML = h;
+    pager.hidden = pages < 2;
+  }
+  function fit() {
+    var n = cols() * 2;
+    if (n === per && pager.childElementCount) return;
+    per = n; page = Math.floor(first / per); render();
+  }
+  pager.addEventListener('click', function (e) {
+    var b = e.target.closest('button');
+    if (!b || b.disabled) return;
+    var go = b.getAttribute('data-go');
+    page = go === 'prev' ? page - 1 : go === 'next' ? page + 1 : parseInt(go, 10);
+    render();
+    var keep = pager.querySelector('[data-go="' + go + '"]');   // 눌렀던 버튼에 손가락·키보드 자리를 남긴다
+    if (keep && !keep.disabled) keep.focus(); else if (pager.querySelector('[aria-current]')) pager.querySelector('[aria-current]').focus();
+    var top = grid.getBoundingClientRect().top;
+    if (top < 0) window.scrollBy({ top: top - 120, behavior: 'smooth' });   // 카드 줄 위가 화면 밖이면 보이게
+  });
+  fit();
+  window.addEventListener('resize', fit);
+})();
+
 /* ===== 마을 테스트 블록 시작 (scratchpad build.py가 만든다) ===== */
 /* =========================================================
    나는 제주 어디 주민? (마을 테스트, articles/jeju-village-test.html)

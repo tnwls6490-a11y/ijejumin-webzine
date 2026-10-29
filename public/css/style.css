@@ -2258,6 +2258,81 @@ html:not(.js) .check__save, html:not(.js) .check__group-count { display: none; }
   .policy__doc-icon { width: 48px; height: 60px; padding-bottom: 8px; font-size: 13px; }
 }
 
+/* ---------- 03 정책모음: 정책 카드 (사용자가 준 시안, 2026-10-29) ----------
+   PDF '제주 이주 청년 정책 링크 모음 2026'의 13건. 포스터 위에 아래쪽이 짙어지는 띠를 깔고 분야(작은 글)·정책 이름(굵은 흰 글)을 얹는다.
+   시안은 초록 띠였는데 웹진 색(주황)으로 바꿨다. PC 가로 4칸·600~899px 3칸·휴대폰 2칸, 두 줄씩 한 쪽 (site.js '정책 카드 쪽 넘기기').
+   포스터가 없는 정책은 분야 색 바탕에 흰 아이콘(.policy-card__art). 카드를 누르면 그 기관 공식 페이지가 새 창으로 열린다 */
+.policy-note { margin: 12px 0 0; max-width: 760px; font-size: 16px; line-height: 1.6; color: var(--muted); }
+.policy-grid {
+  list-style: none; margin: clamp(20px, 3vh, 32px) 0 0; padding: 0;
+  display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: clamp(14px, 2vw, 28px);
+}
+@media (max-width: 899px) { .policy-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (max-width: 599px) { .policy-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; } }
+.policy-card { display: grid; }   /* 같은 줄 카드 높이를 맞춘다 */
+.policy-card[hidden] { display: none; }
+/* 4:5 칸. 글이 칸보다 길면(좁은 화면·카톡 글자 확대·영어) 칸이 글에 맞춰 길어진다: 4:5 빈 칸(::before)과 글을 한 자리에 겹쳐 더 큰 쪽을 따른다.
+   글은 아래에 붙고, 그림·띠는 칸 전체에 */
+.policy-card__link {
+  position: relative; display: grid; overflow: hidden; isolation: isolate;
+  border-radius: clamp(14px, 1.6vw, 22px); background: #0B2F5A; color: #FFFFFF; text-decoration: none;
+  box-shadow: 0 10px 24px rgba(18, 35, 58, .12);
+}
+.policy-card__link { grid-template-columns: minmax(0, 1fr); }
+.policy-card__link::before { content: ""; grid-area: 1 / 1; align-self: start; width: 100%; aspect-ratio: 4 / 5; }   /* 높이는 폭에서만 (줄 높이에 늘어나 옆으로 커지지 않게) */
+.policy-card__img, .policy-card__art {
+  position: absolute; inset: 0; width: 100%; height: 100%; max-width: none;
+  object-fit: cover; object-position: 50% 0; transition: transform .5s ease;
+}
+.policy-card__link:hover .policy-card__img, .policy-card__link:hover .policy-card__art { transform: scale(1.04); }
+/* 아래 글이 읽히게 주황으로 짙어지는 띠 (글이 놓이는 아래쪽은 거의 불투명) */
+.policy-card__link::after {
+  content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  background: linear-gradient(180deg, rgba(154, 52, 18, 0) 38%, rgba(154, 52, 18, .82) 62%, #9A3412 80%);
+}
+.policy-card__body {
+  position: relative; z-index: 2; grid-area: 1 / 1; align-self: end;
+  display: flex; flex-direction: column; gap: 4px; padding: clamp(12px, 1.5vw, 20px);
+}
+/* 분야(작은 살구색 글)와 접수 상태(흰 작은 칸)를 한 줄에. 상태를 위쪽에 두면 포스터 제목을 가려 아래로 모았다 */
+.policy-card__meta { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; }
+.policy-card__tag { font-size: 14px; font-weight: 800; color: #FED7AA; }
+.policy-card__title {
+  margin: 0; font-size: clamp(16px, 1.6vw, 22px); font-weight: 800; line-height: 1.3; letter-spacing: -0.02em; color: #FFFFFF;
+  overflow-wrap: break-word;
+}
+.policy-card__status {
+  max-width: 100%; padding: 1px 8px; border-radius: 999px; background: rgba(255, 255, 255, .94);
+  font-size: 14px; font-weight: 800; line-height: 1.45; color: #9A3412; overflow-wrap: anywhere;   /* 아주 좁은 칸에서만 낱말 안에서 줄을 바꾼다 */
+}
+.policy-card__link:focus-visible { outline: 3px solid var(--orange); outline-offset: 3px; }
+/* 포스터가 없는 정책: 분야 색 바탕 + 흰 아이콘 */
+.policy-card__art { background: radial-gradient(circle at 50% 30%, rgba(255, 255, 255, .28) 0 21%, transparent 21.5%), linear-gradient(165deg, var(--art-a), var(--art-b)); }
+.policy-card__art::before {
+  content: ""; position: absolute; left: 50%; top: 30%; width: 26%; aspect-ratio: 1; translate: -50% -50%; background: #FFFFFF;
+  -webkit-mask: var(--art-icon) center / contain no-repeat; mask: var(--art-icon) center / contain no-repeat;
+}
+.policy-card__art--housing { --art-a: #3D8ED8; --art-b: #A9D4F5; }
+.policy-card__art--jobs { --art-a: #0F8F6E; --art-b: #8EDCC0; }
+.policy-card__art--settle { --art-a: #E8762B; --art-b: #FDD8A8; }
+.policy-art-key { --art-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23000' fill-rule='evenodd' d='M14.5 2a6.5 6.5 0 0 0-6.1 8.7L2 17.1V22h5v-2.2h2.2v-2.2h2.2l1.4-1.4A6.5 6.5 0 1 0 14.5 2zm2.3 3a2.2 2.2 0 1 1 0 4.4 2.2 2.2 0 0 1 0-4.4z'/%3E%3C/svg%3E"); }
+.policy-art-contract { --art-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23000' fill-rule='evenodd' d='M5 2h10l4 4v5.6l-2 2V7h-3.5V4H7v16h4.6l-.4 2H5zm3 7h7v2H8zm0 4h5v2H8zm12.4.6 1.6 1.6-7.2 7.2-2.4.8.8-2.4z'/%3E%3C/svg%3E"); }
+.policy-art-building { --art-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23000' fill-rule='evenodd' d='M3 22V9l7-6v5h11v14zM6 12v2h2v-2zm0 4v2h2v-2zm5-4v2h2v-2zm0 4v2h2v-2zm5-4v2h2v-2zm0 4v2h2v-2z'/%3E%3C/svg%3E"); }
+.policy-art-suitcase { --art-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23000' fill-rule='evenodd' d='M9 3h6a1.5 1.5 0 0 1 1.5 1.5V6H19a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h2.5V4.5A1.5 1.5 0 0 1 9 3zm.5 2v1h5V5zM8 9v9h1.6V9zm6.4 0v9H16V9z'/%3E%3C/svg%3E"); }
+.policy-art-people { --art-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23000' fill-rule='evenodd' d='M9 3.5a3.8 3.8 0 1 1 0 7.6 3.8 3.8 0 0 1 0-7.6zm8 1.5a3.2 3.2 0 1 1 0 6.4A3.2 3.2 0 0 1 17 5zM1.5 20.5c0-4.2 3.4-7.5 7.5-7.5s7.5 3.3 7.5 7.5zm16.5 0c0-2.4-.9-4.6-2.4-6.2.6-.2 1.2-.3 1.9-.3 3.3 0 5.9 2.7 5.9 6.5z'/%3E%3C/svg%3E"); }
+.policy-art-search { --art-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23000' fill-rule='evenodd' d='M4 2h11l4 4v5.2A7 7 0 0 0 9.8 21H4zm11 .8V6h3.2zM15.5 12a4.8 4.8 0 1 1-2.8 8.7l-2.9 2.9-1.4-1.4 2.9-2.9A4.8 4.8 0 0 1 15.5 12zm0 2.1a2.7 2.7 0 1 0 0 5.4 2.7 2.7 0 0 0 0-5.4z'/%3E%3C/svg%3E"); }
+.policy-credit { margin: 14px 0 0; font-size: 14px; line-height: 1.6; color: var(--muted); }
+/* 쪽 넘기기 (site.js가 만든다) */
+.policy-pager { display: flex; justify-content: center; align-items: center; gap: 8px; margin-top: 20px; }
+.policy-pager button {
+  min-width: 44px; height: 44px; padding: 0 12px; border-radius: 999px; border: 1.5px solid rgba(18, 35, 58, .18);
+  background: #FFFFFF; font: inherit; font-size: 16px; font-weight: 800; color: var(--ink); cursor: pointer;
+}
+.policy-pager button:hover:not(:disabled) { border-color: var(--ink); }
+.policy-pager button[aria-current="page"] { border-color: var(--ink); background: var(--ink); color: #FFFFFF; }
+.policy-pager button:disabled { opacity: .35; cursor: default; }
+.policy-pager svg { display: block; }
+
 /* ---------- 이 페이지에 관하여 · 사진 출처 ---------- */
 .guide-about { padding: clamp(48px, 8vh, 80px) 0 clamp(64px, 10vh, 112px); border-top: 1px solid var(--line); background: var(--paper); }
 .guide-about__title { margin: 0 0 12px; font-size: 20px; font-weight: 800; color: var(--ink); }
