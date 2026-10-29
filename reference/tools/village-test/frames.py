@@ -16,7 +16,7 @@ BASE = 'https://lxwebzine.hankyung.com/2026-1/team3/'
 KO_PATH = os.path.join(PUB, 'articles', 'jeju-village-test.html')
 TEXT = {
     'en': {
-        'title': 'Which Jeju Local Are You? A one-month Jeju stay neighborhood test | ejejumin · Hankyung Webzine',
+        'title': 'Which Jeju neighborhood suits me? A one-month Jeju stay neighborhood test | ejejumin · Hankyung Webzine',
         'desc': 'Find the Jeju neighborhood that suits you for a one-month stay in 5 questions. Out of 10 Jeju neighborhoods, see the one that fits you and what a day there looks like.',
         'site': 'ejejumin · Hankyung Webzine',
         'h1': 'Which Jeju Local Are You? A one-month Jeju stay neighborhood test',
@@ -25,7 +25,7 @@ TEXT = {
         'locale': 'en_US', 'alt_locales': ['ko_KR', 'ja_JP'],
     },
     'ja': {
-        'title': 'わたしは済州のどこの住民？ 済州1ヶ月暮らし 住む町診断 | ejejumin · 韓経ウェブジン',
+        'title': 'わたしに合う済州の町はどこ？ 済州1ヶ月暮らし 住む町診断 | ejejumin · 韓経ウェブジン',
         'desc': '5つの質問でわかる、わたしに合う済州1ヶ月暮らしの町。済州の10の町の中から、あなたに合う町と、その町での1日を紹介します。',
         'site': 'ejejumin · 韓経ウェブジン',
         'h1': 'わたしは済州のどこの住民？ 済州1ヶ月暮らし 住む町診断',

@@ -165,12 +165,12 @@ page = '''<!doctype html>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>나는 제주 어디 주민? 제주 한 달 살기 동네 테스트 | 이제, 주민</title>
+<title>나는 제주도 어느 동네가 어울릴까? 제주 한 달 살기 동네 테스트 | 이제, 주민</title>
 <meta name="description" content="{desc}">
 <link rel="canonical" href="{url}">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="이제, 주민 · 한경 웹진">
-<meta property="og:title" content="나는 제주 어디 주민? 제주 한 달 살기 동네 테스트 | 이제, 주민">
+<meta property="og:title" content="나는 제주도 어느 동네가 어울릴까? 제주 한 달 살기 동네 테스트 | 이제, 주민">
 <meta property="og:description" content="{desc}">
 <meta property="og:url" content="{url}">
 <meta property="og:image" content="https://lxwebzine.hankyung.com/2026-1/team3/images/og-village-test.jpg">
