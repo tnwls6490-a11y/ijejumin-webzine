@@ -145,4 +145,11 @@ policy/policy-07.webp | 모두의 창업 2기 포스터 (제주더큰내일센�
 policy/policy-08.webp | 2026 서귀포시 스타트업타운 입주기업 2기 하반기 모집 포스터 (서귀포시 스타트업베이) | [확인 필요] | https://www.startupbay.or.kr/acc/?idx=172768809&bmode=view
 policy/policy-10.webp | 청년이어드림 '피드백 상담 START' 배너 (청년이어드림 첫 화면) | [확인 필요] | https://jejuyouthdream.com/
 policy/policy-13.webp | 온통청년 '정책 탐험 START' 배너 (국무조정실·한국고용정보원, 온통청년 첫 화면) | [확인 필요] | https://www.youthcenter.go.kr/
-# 포스터를 찾지 못한 정책(청년월세 지원·중개수수료 지원·청년형 매입임대주택·제주 정착지원 사업·제주청년센터·제주in情)은 팀이 그린 분야 색·아이콘 카드 (style.css, 출처 없음)
+# 포스터를 찾지 못한 6곳은 그 공식 페이지 화면을 찍어 넣었다 (사용자 요청 2026-10-29 "사이트 페이지 이미지라도 넣어줘").
+# 휴대폰 크기(390px 폭) 화면을 2026-10-29에 찍어 위쪽을 640×800 webp로 잘랐다. 제주청년센터는 첫 화면에 뜨는 알림 창을 닫고 찍었다. 09는 공지 작성자(직원) 이름 칸을 흰색으로 덮었다.
+policy/policy-01.webp | 복지로 공지 '2026년 청년월세 지원 신청 안내' 화면 (고용노동부·국토교통부, 복지로) | [확인 필요] | https://www.bokjiro.go.kr/ssis-tbu/cms/pc/customer/notice/1309500_1141.html
+policy/policy-03.webp | '청년 및 주거취약계층 중개수수료 지원' 안내 화면 (제주특별자치도 주거복지센터) | [확인 필요] | https://jejuhwc.co.kr/finance/cost-support/brokerage-fees.htm
+policy/policy-04.webp | '청년형 매입임대주택' 안내 화면 (제주특별자치도 주거복지센터) | [확인 필요] | https://jejuhwc.co.kr/housing/housing/youth.htm
+policy/policy-09.webp | 공지 '2026년 제주 정착지원 사업 참여자 모집 변경 공고' 화면 (제주상공회의소) | [확인 필요] | https://jejucci.korcham.net/front/board/boardContentsView.do?boardId=10088&contId=128769&menuId=379
+policy/policy-11.webp | 제주청년센터 누리집 첫 화면 | [확인 필요] | https://jejuyouth.com/
+policy/policy-12.webp | 제주인구정책 통합플랫폼 제주in情 첫 화면 (제주특별자치도) | [확인 필요] | https://www.jeju.go.kr/lifecycle/index.htm
