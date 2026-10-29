@@ -1268,9 +1268,8 @@ a { color: inherit; }
 }
 /* 아인학교: 밝은 창가 배경(평균 밝기 176)보다 인물(89)이 많이 어두워, 배경 사진은 그대로 두고 인물(누끼)만 밝게 (사용자 요청 2026-10-29).
    다른 세 사람은 인물과 배경 밝기가 비슷해 그대로 (백록마케팅 109·109, 파랑오브레코즈샵 45·42, 엠아이티도그 106·94) */
-.people .person--photo:is([data-index="1"], [data-index="2"]) .person__cut { filter: brightness(var(--cut-bright)) drop-shadow(0 0 1.5px rgba(0, 0, 0, .35)) drop-shadow(0 4px 8px rgba(0, 0, 0, .18)); }
-/* 백록마케팅: 새 사진(2026-10-29)에서 얼굴이 어두워 보인다는 사용자 말에 같은 방식으로 누끼(인물+오토바이)만 밝게 */
-.people .person--photo[data-index="1"] { --cut-bright: 1.18; }
+.people .person--photo[data-index="2"] .person__cut { filter: brightness(var(--cut-bright)) drop-shadow(0 0 1.5px rgba(0, 0, 0, .35)) drop-shadow(0 4px 8px rgba(0, 0, 0, .18)); }
+/* 백록마케팅은 얼굴만 밝게 해 누끼 그림(interview-02-cut.webp)에 바로 넣었다 (사용자 요청 "얼굴 부분만", 2026-10-29). CSS 밝기는 쓰지 않는다 */
 /* 얼굴 쪽 밝기를 PC 97 → 107, 휴대폰 85 → 98로 (사용자가 정한 수치, 같은 날. 바로 전 1.34배는 113·102) */
 .people .person--photo[data-index="2"] { --cut-bright: 1.22; }
 @media (max-width: 899px) { .people .person--photo[data-index="2"] { --cut-bright: 1.26; } }
