@@ -2236,7 +2236,7 @@ html:not(.js) .check__group-count { display: none; }
    파일은 files/jeju-youth-policy-links-2026.pdf (8쪽, 651KB, 한국어. 1쪽 작성 계정은 지운 판). 전에는 '정책 자료를 준비하고 있어요' 점선 카드(.policy__empty)였다 */
 .policy__doc {
   display: flex; align-items: flex-start; gap: clamp(16px, 2.4vw, 28px);
-  margin-top: clamp(24px, 4vh, 36px); padding: clamp(24px, 3vw, 40px); border-radius: 22px;
+  margin-top: clamp(40px, 6vh, 52px); padding: clamp(24px, 3vw, 40px); border-radius: 22px;   /* 위 출처 줄과 조금 띄운다 (사용자 요청 2026-10-29, 전 24~36px) */
   background: #FFFFFF; border: 1.5px solid rgba(18, 35, 58, .1); box-shadow: 0 10px 28px rgba(18, 35, 58, .06);
 }
 /* 문서 모양 아이콘 (꾸밈) */
@@ -2270,7 +2270,7 @@ html:not(.js) .check__group-count { display: none; }
    PDF '제주 이주 청년 정책 링크 모음 2026'의 13건. 포스터 위에 아래쪽이 짙어지는 띠를 깔고 분야(작은 글)·정책 이름(굵은 흰 글)을 얹는다.
    시안은 초록 띠였는데 웹진 색(주황)으로 바꿨다. PC 가로 4칸·600~899px 3칸·휴대폰 2칸, 두 줄씩 한 쪽 (site.js '정책 카드 쪽 넘기기').
    그림은 기관 포스터, 포스터가 없는 정책은 그 공식 페이지 화면. 카드를 누르면 그 기관 공식 페이지가 새 창으로 열린다 */
-.policy-note { margin: 12px 0 0; max-width: 760px; font-size: 16px; line-height: 1.6; color: var(--muted); }
+.policy-note { margin: 12px 0 0; max-width: 760px; font-size: 16px; line-height: 1.6; color: var(--muted); text-wrap: pretty; }   /* 마지막 줄에 한 낱말만 남지 않게 */
 .policy-grid {
   list-style: none; margin: clamp(20px, 3vh, 32px) 0 0; padding: 0;
   display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: clamp(14px, 2vw, 28px);
