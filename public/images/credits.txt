@@ -43,6 +43,7 @@ place-08-4.webp | 베르니사주 · Wikimedia Commons (제주도 비양도 2201
 place-08-5.webp | 봄삐 · Wikimedia Commons (금오름.jpg) (크기·형식 변환) | CC BY 2.0 kr | https://commons.wikimedia.org/wiki/File:%EA%B8%88%EC%98%A4%EB%A6%84.jpg
 place-09-1.webp | Jeju Olle Foundation · Wikimedia Commons (Jeju Olle Route 15-B.jpg) (크기·형식 변환, 가공본도 같은 라이선스) | CC BY-SA 4.0 | https://commons.wikimedia.org/wiki/File:Jeju_Olle_Route_15-B.jpg
 place-09-2.webp | Jeong seolah · Wikimedia Commons (Gwakji Beach in Jeju Island, 2022.jpg) (크기·형식 변환) | CC0 | https://commons.wikimedia.org/wiki/File:Gwakji_Beach_in_Jeju_Island,_2022.jpg
+place-09-3.webp | 네이버 플레이스 지도 (애월 카페거리, 한담마을 바닷길, 사용자가 준 사진 2026-10-29, 출처는 사용자가 알려 줌) (크기·형식 변환, 961×1280 → 800×1066, 자르지 않음) | [확인 필요: 누가 올린 사진인지, 네이버 플레이스 사진을 웹진에 실어도 되는지(이용 약관·올린 사람 허락)] | [확인 필요: 원본 주소]
 place-09-4.webp | 제주관광공사 · Visitjeju.net (새별오름) (크기·형식 변환) | CC BY | https://visitjeju.net/photojeju/category?cntId=10250
 place-09-5.webp | Nt · Wikimedia Commons (Jeju Deoreok Branch School.jpg) (크기·형식 변환, 가공본도 같은 라이선스) | CC BY-SA 4.0 | https://commons.wikimedia.org/wiki/File:Jeju_Deoreok_Branch_School.jpg
 place-10-1.webp | 제주관광공사 · Visitjeju.net (사려니숲길) (크기·형식 변환) | 사용제한 없음 · 출처표기 | https://visitjeju.net/photojeju/category?cntId=10630
