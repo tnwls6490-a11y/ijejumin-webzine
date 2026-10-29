@@ -288,6 +288,8 @@ a { color: inherit; }
 .wz-outro__head { margin: 0 0 8px; font-size: 16px; font-weight: 700; letter-spacing: .16em; }
 .wz-outro__line { margin: 0 0 4px; font-size: 16px; line-height: 1.5; }   /* 줄 간격 살짝 좁게 (사용자 요청, 1.6 → 1.5) */
 .wz-outro__line:last-child { margin-bottom: 0; }
+/* 링크 줄이 이어지면(인스타그램 아래 유튜브, 2026-10-29) 44px 칸을 10px 겹쳐, 글 사이가 이름 줄 → 인스타그램 줄과 비슷하게 (인터뷰 스토리 링크와 같은 방식) */
+.wz-outro__line:has(> a) + .wz-outro__line:has(> a) { margin-top: -10px; }
 .wz-outro__line a {
   display: inline-flex; align-items: center; min-height: 44px; vertical-align: middle;
   color: inherit; font-weight: 600; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 4px;
