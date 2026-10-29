@@ -2171,8 +2171,7 @@ html:not(.js) .towns__picker, html:not(.js) .towns__nav { display: none; }
 .check__done { font-size: 44px; font-weight: 800; letter-spacing: -0.03em; color: #A8380A; }   /* 하늘색 판 위에서 대비 5.3:1 (기본 주황잉크는 4.3:1) */
 .check__bar { height: 10px; margin: 10px 0 14px; overflow: hidden; border-radius: 999px; background: rgba(18, 35, 58, .1); }
 .check__fill { display: block; width: calc(var(--done, 0) * 100%); height: 100%; border-radius: inherit; background: var(--orange); transition: width .4s ease; }
-.check__note, .check__save { margin: 0; font-size: 16px; color: #3E4A59; }
-.check__save { margin-top: 12px; }
+.check__note { margin: 0; font-size: 16px; color: #3E4A59; }
 .check__tools { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
 .check__tool {
   min-height: 44px; padding: 0 18px; border: 1.5px solid var(--ink); border-radius: 999px; background: transparent;
@@ -2180,7 +2179,16 @@ html:not(.js) .towns__picker, html:not(.js) .towns__nav { display: none; }
 }
 .check__tool:hover { background: var(--ink); color: #FFFFFF; }
 html:not(.js) .check__count, html:not(.js) .check__bar, html:not(.js) .check__tools,
-html:not(.js) .check__save, html:not(.js) .check__group-count { display: none; }
+html:not(.js) .check__group-count { display: none; }
+/* '결과 다운로드' 그림 창: 카톡 같은 앱 안 브라우저에서만 뜬다 (파일 저장이 막혀 그림을 길게 눌러 저장) */
+.check-shot { width: min(92vw, 520px); max-height: 90vh; padding: 16px; border: 0; border-radius: 20px; background: #FFFFFF; color: var(--ink); overflow: auto; }
+.check-shot::backdrop { background: rgba(10, 14, 20, .72); }
+.check-shot__img { display: block; width: 100%; height: auto; border-radius: 12px; -webkit-touch-callout: default; }
+.check-shot__msg { margin: 12px 0 0; font-size: 16px; text-align: center; }
+.check-shot__close {
+  display: block; min-height: 44px; margin: 12px auto 0; padding: 0 24px; border: 1.5px solid var(--ink); border-radius: 999px;
+  background: #FFFFFF; font: inherit; font-size: 16px; font-weight: 700; color: var(--ink); cursor: pointer;
+}
 
 .check__groups { display: flex; flex-direction: column; gap: 12px; }
 .check__group { border-radius: 18px; background: #FFFFFF; box-shadow: 0 1px 0 rgba(18, 35, 58, .04), 0 0 0 1px var(--line); }

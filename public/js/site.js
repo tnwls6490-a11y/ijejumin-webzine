@@ -1042,9 +1042,8 @@ var wzPlace = (function () {
     var board = section.querySelector('.check__board');
     var doneEl = section.querySelector('.check__done');
     var expandBtn = section.querySelector('[data-check-expand]');
-    var resetBtn = section.querySelector('[data-check-reset]');
+    var downBtn = section.querySelector('[data-check-download]');
     var state = load();
-    var undo = null;   // 지운 바로 뒤에는 '되돌리기'로 바뀐다
 
     function load() {
       try {
@@ -1068,7 +1067,6 @@ var wzPlace = (function () {
       });
       doneEl.textContent = done;
       board.style.setProperty('--done', (done / items.length).toFixed(3));
-      resetBtn.textContent = undo ? wzT('되돌리기', 'Undo', '元に戻す') : wzT('기록 지우기', 'Clear all', '記録を消す');
     }
     function syncExpand() {
       var someClosed = Array.prototype.some.call(groups, function (g) { return !g.open; });
@@ -1080,16 +1078,161 @@ var wzPlace = (function () {
       if (!b) return;
       var id = b.getAttribute('data-check');
       if (state[id]) delete state[id]; else state[id] = 1;
-      undo = null;
       save();
       render();
     });
-    resetBtn.addEventListener('click', function () {
-      if (undo) { state = undo; undo = null; }
-      else if (Object.keys(state).length) { undo = state; state = {}; }
-      else return;
-      save();
-      render();
+
+    /* 결과 다운로드 (사용자 요청 2026-10-29, 전에는 '기록 지우기'): 지금 표시한 내용을 그림(PNG) 한 장으로 그려 내려받는다.
+       누른 그 자리에서 기다림 없이 그려야 아이폰 공유 시트('이미지 저장')가 열린다.
+       카톡 같은 앱 안 브라우저는 파일 저장을 막아, 그림을 화면에 띄워 길게 눌러 저장하게 한다 (마을 테스트와 같은 방식) */
+    var IN_APP = /KAKAOTALK|Instagram|FBAN|FBAV|FB_IAB|NAVER\(inapp|Line\/|DaumApps|everytimeApp|BAND\/|MicroMessenger|Weibo/i.test(navigator.userAgent || '');
+    var IS_IOS = /iPad|iPhone|iPod/.test(navigator.userAgent || '') || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+
+    // 줄 나누기: 띄어쓰기에서 나누고, 한 낱말이 한 줄보다 길면(띄어쓰기 없는 일본어) 글자에서 나눈다. 。、 같은 문장부호는 줄 앞에 오지 않게
+    function wrapText(ctx, text, max) {
+      var lines = [], line = '';
+      text.split(/(\s+)/).forEach(function (tok) {
+        if (!tok) return;
+        if (ctx.measureText(line + tok).width <= max) { line += tok; return; }
+        if (line.trim()) { lines.push(line.trim()); line = ''; tok = tok.replace(/^\s+/, ''); }
+        while (tok && ctx.measureText(tok).width > max) {
+          var n = tok.length;
+          while (n > 1 && ctx.measureText(tok.slice(0, n)).width > max) n--;
+          if (n < tok.length && /[。、，．）」』ー・？！]/.test(tok.charAt(n))) n++;
+          lines.push(tok.slice(0, n)); tok = tok.slice(n);
+        }
+        line = tok;
+      });
+      if (line.trim()) lines.push(line.trim());
+      return lines;
+    }
+    function roundRect(ctx, x, y, w, h, r) {
+      ctx.beginPath();
+      ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r);
+      ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath();
+    }
+    // 그림: 웹진 이름·제목·확인 수·날짜·막대, 그 아래 주제 6개(항목마다 확인 표시). 높이는 한 번 재고 나서 그린다
+    function drawResult() {
+      var W = 1080, P = 72, IW = W - P * 2, CP = 36;
+      var family = getComputedStyle(document.body).fontFamily;
+      var lang = document.documentElement.lang || 'ko';
+      var done = section.querySelectorAll('.check__item[aria-pressed="true"]').length;
+      var rest = section.querySelector('.check__count').textContent.replace(/^\s*\d+\s*/, '');
+      var date = new Date().toLocaleDateString(lang, { year: 'numeric', month: 'long', day: 'numeric' });
+      var c = document.createElement('canvas'), ctx = c.getContext('2d');
+      function font(size, weight) { ctx.font = weight + ' ' + size + 'px ' + family; }
+      function text(t, x, y, color) { ctx.fillStyle = color; ctx.fillText(t, x, y); }
+      function layout(draw) {
+        var y = P, textX = P + CP + 34 + 20, textW = IW - CP * 2 - 34 - 20;
+        ctx.textBaseline = 'top';
+        if (draw) { ctx.fillStyle = '#F7F3EC'; ctx.fillRect(0, 0, W, c.height); }
+        font(28, 800); if (draw) text(wzT('이제주민 · 나의 제주찾기', 'ejejumin · Find My Jeju', 'ejejumin · 私の済州探し'), P, y, '#B4410C');
+        y += 48;
+        font(60, 800); if (draw) text(section.querySelector('.cat__title').textContent, P, y, '#12233A');
+        y += 86;
+        ctx.textBaseline = 'alphabetic';
+        font(96, 800); var nw = ctx.measureText(String(done)).width;
+        if (draw) text(String(done), P, y + 88, '#A8380A');
+        font(40, 700); if (draw) text(rest, P + nw + 14, y + 88, '#12233A');
+        ctx.textBaseline = 'top';
+        y += 112;
+        if (draw) {
+          ctx.fillStyle = 'rgba(18, 35, 58, .1)'; roundRect(ctx, P, y, IW, 16, 8); ctx.fill();
+          if (done) { ctx.fillStyle = '#F97316'; roundRect(ctx, P, y, Math.max(16, IW * done / items.length), 16, 8); ctx.fill(); }
+        }
+        y += 40;
+        font(26, 400);
+        var notes = [wzT(date + ' 기준', 'As of ' + date, date + '時点')].concat(wrapText(ctx, section.querySelector('.check__note').textContent, IW));
+        notes.forEach(function (l) { if (draw) text(l, P, y, '#3E4A59'); y += 40; });
+        y += 32;
+        Array.prototype.forEach.call(groups, function (g) {
+          var rows = Array.prototype.map.call(g.querySelectorAll('.check__item'), function (b) {
+            font(30, 400);
+            return { on: b.getAttribute('aria-pressed') === 'true', lines: wrapText(ctx, b.querySelector('.check__text').textContent, textW) };
+          });
+          var h = CP + 52 + 20;
+          rows.forEach(function (r) { h += Math.max(r.lines.length * 44, 44) + 16; });
+          h += CP - 16;
+          if (draw) {
+            ctx.fillStyle = '#FFFFFF'; roundRect(ctx, P, y, IW, h, 24); ctx.fill();
+            var hx = P + CP;
+            font(28, 800); text(g.querySelector('.check__group-no').textContent, hx, y + CP + 8, '#B4410C');
+            hx += ctx.measureText(g.querySelector('.check__group-no').textContent).width + 16;
+            font(36, 800); text(g.querySelector('.check__group-title').textContent, hx, y + CP + 2, '#12233A');
+            font(28, 800); ctx.textAlign = 'right'; text(g.querySelector('.check__group-count').textContent, P + IW - CP, y + CP + 8, '#5B5246'); ctx.textAlign = 'left';
+            ctx.fillStyle = 'rgba(18, 35, 58, .12)'; ctx.fillRect(P + CP, y + CP + 56, IW - CP * 2, 2);
+          }
+          var ry = y + CP + 52 + 20;
+          rows.forEach(function (r) {
+            if (draw) {
+              var bx = P + CP, by = ry + 5;
+              roundRect(ctx, bx, by, 34, 34, 8);
+              if (r.on) {
+                ctx.fillStyle = '#F97316'; ctx.fill();
+                ctx.strokeStyle = '#FFFFFF'; ctx.lineWidth = 4; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+                ctx.beginPath(); ctx.moveTo(bx + 8, by + 18); ctx.lineTo(bx + 15, by + 25); ctx.lineTo(bx + 27, by + 10); ctx.stroke();
+              } else {
+                ctx.fillStyle = '#FFFFFF'; ctx.fill(); ctx.strokeStyle = '#8A93A0'; ctx.lineWidth = 3; ctx.stroke();
+              }
+              font(30, r.on ? 700 : 400);
+              r.lines.forEach(function (l, i) { text(l, textX, ry + 2 + i * 44, '#12233A'); });
+            }
+            ry += Math.max(r.lines.length * 44, 44) + 16;
+          });
+          y += h + 20;
+        });
+        y += 12;
+        font(24, 400); if (draw) text('lxwebzine.hankyung.com/2026-1/team3', P, y, '#5B5246');
+        return y + 34 + P;
+      }
+      c.width = W; c.height = 10;
+      var H = layout(false);
+      c.height = H;
+      layout(true);
+      return c;
+    }
+    function dataToBlob(url) {
+      var bin = atob(url.split(',')[1]), u = new Uint8Array(bin.length);
+      for (var i = 0; i < bin.length; i++) u[i] = bin.charCodeAt(i);
+      return new Blob([u], { type: 'image/png' });
+    }
+    // 앱 안 브라우저: 그림만 화면에 띄워 길게 눌러 저장
+    function showShot(url) {
+      var dlg = section.querySelector('.check-shot');
+      if (!dlg) {
+        dlg = document.createElement('dialog');
+        dlg.className = 'check-shot';
+        dlg.innerHTML = '<img class="check-shot__img" alt=""><p class="check-shot__msg"></p><button class="check-shot__close" type="button"></button>';
+        section.appendChild(dlg);
+        dlg.querySelector('.check-shot__close').addEventListener('click', function () {
+          if (dlg.close) dlg.close(); else dlg.removeAttribute('open');
+        });
+      }
+      dlg.setAttribute('aria-label', wzT('체크리스트 결과 그림', 'Checklist result image', 'チェックリストの結果画像'));
+      var img = dlg.querySelector('.check-shot__img');
+      img.src = url;
+      img.alt = wzT('나의 제주살이 체크리스트 결과', 'My Jeju living checklist results', '私の済州暮らしチェックリストの結果');
+      dlg.querySelector('.check-shot__msg').textContent = wzT('그림을 길게 눌러 저장해 주세요', 'Press and hold the image to save it', '画像を長押しして保存してください');
+      dlg.querySelector('.check-shot__close').textContent = wzT('닫기', 'Close', '閉じる');
+      if (dlg.showModal) dlg.showModal(); else dlg.setAttribute('open', '');
+    }
+    downBtn.addEventListener('click', function () {
+      var url;
+      try { url = drawResult().toDataURL('image/png'); } catch (e) { return; }
+      var d = new Date();
+      var name = 'ijejumin-checklist-' + d.getFullYear() + ('0' + (d.getMonth() + 1)).slice(-2) + ('0' + d.getDate()).slice(-2) + '.png';
+      if (IN_APP) { showShot(url); return; }
+      if (IS_IOS && navigator.canShare) {
+        var file = null;
+        try { file = new File([dataToBlob(url)], name, { type: 'image/png' }); } catch (e) { /* 아주 옛 브라우저 */ }
+        if (file && navigator.canShare({ files: [file] })) {
+          navigator.share({ files: [file] }).catch(function (e) { if (!e || e.name !== 'AbortError') showShot(url); });
+          return;
+        }
+      }
+      var a = document.createElement('a');
+      a.href = url; a.download = name;
+      document.body.appendChild(a); a.click(); a.remove();
     });
     expandBtn.addEventListener('click', function () {
       var open = Array.prototype.some.call(groups, function (g) { return !g.open; });
