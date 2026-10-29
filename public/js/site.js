@@ -2282,17 +2282,31 @@ var wzPlace = (function () {
     pager.innerHTML = h;
     pager.hidden = pages < 2;
   }
+  /* 띠 높이: 같은 줄 카드는 그 줄에서 가장 긴 글 칸에 맞춰 같은 높이 (사용자 요청 "그라데이션 높이 맞춰", 2026-10-29) */
+  function band() {
+    var rows = {};
+    cards.forEach(function (c) {
+      if (c.hidden) return;
+      var top = Math.round(c.getBoundingClientRect().top);
+      (rows[top] = rows[top] || []).push(c);
+    });
+    Object.keys(rows).forEach(function (k) {
+      var h = 0;
+      rows[k].forEach(function (c) { h = Math.max(h, c.querySelector('.policy-card__body').offsetHeight); });
+      rows[k].forEach(function (c) { c.style.setProperty('--band', h + 'px'); });
+    });
+  }
   function fit() {
     var n = cols() * 2;
-    if (n === per && pager.childElementCount) return;
-    per = n; page = Math.floor(first / per); render();
+    if (n !== per || !pager.childElementCount) { per = n; page = Math.floor(first / per); render(); }
+    band();
   }
   pager.addEventListener('click', function (e) {
     var b = e.target.closest('button');
     if (!b || b.disabled) return;
     var go = b.getAttribute('data-go');
     page = go === 'prev' ? page - 1 : go === 'next' ? page + 1 : parseInt(go, 10);
-    render();
+    render(); band();
     var keep = pager.querySelector('[data-go="' + go + '"]');   // 눌렀던 버튼에 손가락·키보드 자리를 남긴다
     if (keep && !keep.disabled) keep.focus(); else if (pager.querySelector('[aria-current]')) pager.querySelector('[aria-current]').focus();
     var top = grid.getBoundingClientRect().top;
@@ -2300,6 +2314,8 @@ var wzPlace = (function () {
   });
   fit();
   window.addEventListener('resize', fit);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(band);   // 글꼴이 바뀌면 글 칸 높이도 바뀐다
+  window.addEventListener('load', band);
 })();
 
 /* ===== 마을 테스트 블록 시작 (scratchpad build.py가 만든다) ===== */
