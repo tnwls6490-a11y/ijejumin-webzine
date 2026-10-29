@@ -3200,6 +3200,8 @@ body.page-interview { background: var(--iv-paper); }
   .reels .reveal:nth-child(4) { transition-delay: .24s; }
 }
 .shorts-wrap .back-link { margin-top: 36px; }
+/* 쇼츠 줄 밑 '← 홈으로 돌아가기': 나의 제주찾기의 '← 나의 제주찾기로 돌아가기'와 같은 버튼(.find__btn) (사용자 요청 2026-10-29, 전에는 작은 .back-link) */
+.shorts-wrap .find__btn { margin-top: 36px; }
 /* =========================================================
    ① 인트로 (최종) — the-edit 첫 화면 구성
    왼쪽 반: 사진·무음 클립이 꽉 참 / 오른쪽 반: 파란 면에 카테고리·밑줄 제목·부제·날짜, 오른쪽 아래 글쓴이
