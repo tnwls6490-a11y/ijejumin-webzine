@@ -3175,35 +3175,10 @@ body.page-interview { background: var(--iv-paper); }
 /* 글자가 이미 들어간 완성 썸네일: 위·아래 어둡게 하는 막을 끔 */
 .reel-frame.reel-frame--thumb::before,
 .reel-frame.reel-frame--thumb::after { display: none; }
-/* 공개 예정 티저 카드: 사람 실루엣만 있는 검은 카드 (링크 없음)
-   10/26 점검의 '미완성 문구'로 지웠다가 사용자 요청으로 되돌렸다 (2026-10-27). 10/29 점검 뒤 사용자 요청으로 1장만 남겨 영상 3개와 4칸 */
+/* 공개 예정 티저 카드 (링크 없음): 사용자가 준 표지 그림 reel-coming-soon.jpg를 다른 표지처럼 .reel-frame--thumb으로 보인다 (2026-10-29)
+   10/26 점검의 '미완성 문구'로 지웠다가 사용자 요청으로 되돌렸다 (2026-10-27). 10/29 점검 뒤 사용자 요청으로 1장만 남겨 영상 3개와 4칸.
+   전에는 CSS로 그린 검은 카드(사람 실루엣·COMING SOON·준비 중, 같은 날 표지처럼 로고·테두리를 더함)였다 (커밋 e636875에 남음) */
 .reel--soon { cursor: default; }
-.reel-frame.reel-frame--soon {
-  background: radial-gradient(ellipse at 50% 16%, rgba(255, 255, 255, .13), transparent 58%), #0A0E14;
-  color: #fff;
-}
-/* 옆 영상 표지처럼 안쪽 가는 테두리(::before)와 왼쪽 위 주황 로고(::after) (사용자 요청 2026-10-29).
-   자리·크기는 표지(1080×1920)에서 잰 비율: 테두리는 위아래 1.9%·양옆 3.4% 안쪽, 로고는 왼쪽 7.1%·위 3.65%·폭 9.5% */
-.reel-frame.reel-frame--soon::before {
-  inset: 1.9% 3.4%; height: auto; z-index: 3;
-  border: 1px solid rgba(245, 245, 235, .85); background: none;
-}
-.reel-frame.reel-frame--soon::after {
-  left: 7.1%; right: auto; top: 3.65%; bottom: auto; z-index: 3; width: 9.5%; height: auto; aspect-ratio: 180 / 209;
-  background: var(--orange);
-  -webkit-mask: url(../images/logo-ijejumin-white.webp) center / contain no-repeat;
-  mask: url(../images/logo-ijejumin-white.webp) center / contain no-repeat;
-}
-.soon-figure { position: absolute; left: 50%; top: 24%; width: 64%; height: 50%; transform: translateX(-50%); }
-.soon-figure::before,
-.soon-figure::after { content: ""; position: absolute; background: linear-gradient(#262F3C, #151B24); }
-.soon-figure::before { top: 0; left: 50%; width: 42%; aspect-ratio: 1; transform: translateX(-50%); border-radius: 50%; }
-.soon-figure::after { left: 0; right: 0; top: 36%; height: 220%; border-radius: 50% 50% 0 0 / 14% 14% 0 0; }
-.soon-label {
-  position: absolute; z-index: 2; left: 0; right: 0; bottom: 15%;
-  text-align: center; font-size: 16px; font-weight: 900; letter-spacing: .16em; color: #fff;
-}
-.soon-sub { position: absolute; z-index: 2; left: 0; right: 0; bottom: 9%; text-align: center; font-size: 16px; font-weight: 600; color: #B8C0CC; }
 .reel-hint { position: absolute; left: 0; right: 0; top: 34%; text-align: center; font-size: 14px; font-weight: 700; color: var(--sea-text); }
 .reel-series {
   position: absolute; z-index: 2; left: 0; right: 0; top: 7%;
