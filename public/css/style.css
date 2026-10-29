@@ -3741,6 +3741,9 @@ body.page-interview :is(.topbar, .wz-header, .site-footer) { font-family: var(--
 .story-media video,
 .story-media img,
 .story-media .media-empty { position: absolute; inset: 0; }
+/* 아인학교 첫 화면: 배경 사진은 그대로, 같은 사진에서 오려 낸 서브메인 누끼(interview-01-cut.webp)를 겹쳐 인물만 살짝 밝게 (사용자 요청 2026-10-29).
+   자리·자르기·움직임은 위 .story-media img 규칙을 그대로 따른다 */
+.story-media .story-cut { z-index: 1; pointer-events: none; filter: brightness(1.15); }
 @media (max-width: 899px) {
   .story-panel { min-height: 510px; }   /* 가장 긴 제목(백록마케팅)이 312px 카톡 화면에서 차지하는 높이(약 503px)에 맞춤 */
   /* 영어·일본어판은 제목이 길어 312px 화면에서 가장 긴 글 칸(백록마케팅)이 영어 593px·일본어 548px. 네 기사의 첫 화면이 같게 (2026-10-25) */
