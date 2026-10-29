@@ -393,6 +393,10 @@ ijejumin-webzine/
         - 원본 사진·마스크는 `reference/tools/cut-01/`. 다시 만들기: `reference/tools/cut-02/face_boost.py reference/tools/cut-01/source.webp reference/tools/cut-01/mask-final.png public/images/interview-01-cut-b.webp 1`
       - 밝기: 위 누끼 밝기(1.22·1.26배)가 밝게 손본 새 사진 위에 더해져 "너무 밝아서 다 날아갔어"라 뺐다. 이제 사진 그대로 (얼굴 쪽 PC 107·휴대폰 108)
         - 그래서 `--cut-bright` CSS는 이제 어디에도 쓰지 않는다 (백록마케팅은 얼굴만 누끼 그림에 바로 밝힘)
+  - 파랑오브레코즈샵(세 번째 슬라이드) 사진도 사용자가 준 밝기 손본 사진으로 바꾸고 누끼를 rembg(isnet-general-use)로 새로 땄다 (사용자 요청 2026-10-29, 세 언어 서브메인)
+    - 같은 장면이라 어긋남 0px, 평균 밝기 43 → 52. `interview-03-photo.jpg?v=2`(184KB)·`interview-03-cut.webp?v=2`(39KB, 두 파일 모두 서브메인에서만 씀)
+    - 원본은 사용자가 내려받은 압축 파일(`Downloads/drive-download-20261029T074355Z-1-001.zip`의 '파랑.png', 1672×941). 채팅에 붙인 그림은 파일로 남지 않아 거기서 꺼냈다
+    - 원본·마스크는 `reference/tools/cut-03/`. CSS 밝기는 쓰지 않는다
   - 엠아이티도그 사진(04, 전 '에밀리')은 사용자가 준 더 넓은 사진(손까지 나옴)으로 바꿨다 (2026-10-22). 1600×900으로 줄여 넣었다
     - 휴대폰에서 사진을 0.92배로 줄여 양옆에 어두운 여백이 생기던 것을 없앴다. 이제 줄이지 않고 위로 12% 당긴다 ("인물 더 올려줘")
     - 같은 이름으로 바꿨기 때문에 휴대폰이 예전 사진을 캐시에서 꺼내 썼다. 그래서 `index.html`의 두 사진 주소 끝에 `?v=2`를 붙였다
