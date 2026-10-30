@@ -566,9 +566,13 @@ var wzPlace = (function () {
     var spin = 0, speed = 1, shown = 0, last = null, visible = false, hover = false, isOpen = false;
     var aim = { x: 0, y: 0 }, lean = { x: 0, y: 0 };        // 엽서 무대 위 마우스 위치(-1~1)와, 그 위치를 천천히 따라가는 나선의 기울기
     var drag = null, vel = 0, dragged = false;
+    /* 손가락은 처음 6px 움직인 방향으로 한 번 정하면 뗄 때까지 그대로: 'x' 엽서만 돌고 페이지는 그대로, 'y' 페이지만 스크롤 (2026-10-30)
+       전에는 비스듬히(약 50도) 밀면 엽서가 돌기 시작한 뒤 브라우저가 스크롤을 가져가, 페이지가 내려가는 동안 엽서도 관성으로 계속 돌았다 */
+    var axis = null;
 
     /* 마우스·손가락으로 좌우로 잡아 돌리기 (위아래로 밀면 평소처럼 스크롤) */
     stage.addEventListener('pointerdown', function (e) {
+      axis = null;
       if (e.pointerType === 'mouse' && e.button !== 0) return;
       if (section.classList.contains('is-merging')) return;
       dragged = false;
@@ -578,8 +582,16 @@ var wzPlace = (function () {
       if (!drag) return;
       var dx = e.clientX - drag.x, dy = e.clientY - drag.y;
       if (!drag.active) {
-        if (Math.abs(dy) > 10 && Math.abs(dy) > Math.abs(dx)) { drag = null; return; }
-        if (Math.abs(dx) < 6) return;
+        if (e.pointerType === 'mouse') {
+          if (Math.abs(dy) > 10 && Math.abs(dy) > Math.abs(dx)) { drag = null; return; }
+          if (Math.abs(dx) < 6) return;
+        } else {
+          if (axis === null) {
+            if (dx * dx + dy * dy < 36) return;
+            axis = Math.abs(dx) >= Math.abs(dy) ? 'x' : 'y';
+          }
+          if (axis === 'y') { drag = null; return; }
+        }
         drag.active = true;
         stage.classList.add('is-grabbing');
         if (stage.setPointerCapture) stage.setPointerCapture(drag.id);
@@ -598,7 +610,16 @@ var wzPlace = (function () {
       stage.classList.remove('is-grabbing');
     }
     stage.addEventListener('pointerup', endDrag);
-    stage.addEventListener('pointercancel', endDrag);
+    /* 브라우저가 손가락을 가져가면(스크롤 등) 관성 없이 그 자리에 멈춘다 */
+    stage.addEventListener('pointercancel', function () { vel = 0; endDrag(); });
+    /* 엽서를 돌리는 손가락('x')은 위아래로 흔들려도 페이지가 따라 내려가지 않게 */
+    stage.addEventListener('touchmove', function (e) {
+      if (axis === null && drag && e.touches.length === 1) {   // pointermove가 아직 못 정했으면 여기서 같은 규칙으로
+        var dx = e.touches[0].clientX - drag.x, dy = e.touches[0].clientY - drag.y;
+        if (dx * dx + dy * dy >= 36) axis = Math.abs(dx) >= Math.abs(dy) ? 'x' : 'y';
+      }
+      if (axis === 'x' && e.cancelable) e.preventDefault();
+    }, { passive: false });
     world.addEventListener('pointerover', function (e) { if (e.target.closest('.pcard')) hover = true; });
     world.addEventListener('pointerout', function (e) { if (e.target.closest('.pcard')) hover = false; });
     /* 마우스를 올리면 나선 전체가 커서 쪽으로 살짝 돌아보듯 기운다 (손가락·움직임 줄이기 설정에서는 그대로) */
