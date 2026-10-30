@@ -3235,6 +3235,19 @@ body.page-interview { background: var(--iv-paper); }
 .shorts-wrap .back-link { margin-top: 36px; }
 /* 쇼츠 줄 밑 '← 홈으로 돌아가기': 나의 제주찾기의 '← 나의 제주찾기로 돌아가기'와 같은 버튼(.find__btn) (사용자 요청 2026-10-29, 전에는 작은 .back-link) */
 .shorts-wrap .find__btn { margin-top: 36px; }
+/* 쇼츠 줄 아래 '나의 제주찾기' 카드 3개 (사용자 요청 2026-10-30): 서브메인 #cat-3의 마을 테스트·체크리스트·마을·청년 정보.
+   카드는 서브메인 작은 카드(.find__sub) 모양 그대로. 761px 이상은 세 칸으로 나눠 그림을 위에, 그 아래 휴대폰은 서브메인처럼 한 줄에 하나(그림 왼쪽) */
+.more-find { margin-top: clamp(48px, 6vw, 72px); }
+.more-find__list { list-style: none; margin: 28px 0 0; padding: 0; display: grid; gap: 16px; }
+.more-find__img--test { object-position: 18% 50%; }   /* 좁은 칸에서도 하르방이 보이게 (테스트 공유 그림 1200×630) */
+@media (min-width: 761px) {
+  .more-find__list { grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .more-find .find__sub { position: relative; flex-direction: column; align-items: stretch; gap: 0; padding-right: 0; }
+  .more-find .find__sub-img { width: 100%; min-height: 0; aspect-ratio: 16 / 9; object-position: 50% 50%; }
+  .more-find .find__sub-body { padding: 20px 24px 16px; }
+  .more-find .find__sub-more { margin-top: auto; padding-top: 8px; }   /* 설명 길이가 달라도 '확인하기' 줄은 카드 아래 끝에 */
+  .more-find .find__sub-go { position: absolute; right: 20px; bottom: 16px; }
+}
 /* =========================================================
    ① 인트로 (최종) — the-edit 첫 화면 구성
    왼쪽 반: 사진·무음 클립이 꽉 참 / 오른쪽 반: 파란 면에 카테고리·밑줄 제목·부제·날짜, 오른쪽 아래 글쓴이
