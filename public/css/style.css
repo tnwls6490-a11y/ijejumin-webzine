@@ -3800,12 +3800,13 @@ body.page-interview :is(.topbar, .wz-header, .site-footer) { font-family: var(--
    - 글꼴: Bagel Fat One·Jua·Nanum Pen Script(SIL OFL 1.1)는 테스트에 쓰는 글자만 Google Fonts에서 받아 css/fonts/에,
      G마켓 산스(Gmarket Sans, 무료 글꼴)는 아티팩트에 들어 있던 것을 꺼내 css/fonts/에 둔다. 이 페이지에서만 내려받는다
    - 영어·일본어·중국어 화면은 아티팩트가 Google Fonts에서 따로 불러오던 글꼴 대신 기기 글꼴로 보인다
+   - 2026-10-30 아티팩트 업데이트(결과 화면 '내 선택으로 본 ○○' .picks) 반영. 새 글자가 든 글꼴로 같은 이름에 바꿔 주소 끝에 ?v=2 (휴대폰 캐시)
    ========================================================= */
-@font-face { font-family: "Gmarket"; font-weight: 500; font-display: swap; src: url(fonts/vt-gmarket-500.woff) format("woff"); }
-@font-face { font-family: "Gmarket"; font-weight: 700; font-display: swap; src: url(fonts/vt-gmarket-700.woff) format("woff"); }
-@font-face { font-family: "Bagel Fat One"; font-weight: 400; font-display: swap; src: url(fonts/vt-bagel-fat-one.woff2) format("woff2"); }
-@font-face { font-family: "Jua"; font-weight: 400; font-display: swap; src: url(fonts/vt-jua.woff2) format("woff2"); }
-@font-face { font-family: "Nanum Pen Script"; font-weight: 400; font-display: swap; src: url(fonts/vt-nanum-pen.woff2) format("woff2"); }
+@font-face { font-family: "Gmarket"; font-weight: 500; font-display: swap; src: url(fonts/vt-gmarket-500.woff?v=2) format("woff"); }
+@font-face { font-family: "Gmarket"; font-weight: 700; font-display: swap; src: url(fonts/vt-gmarket-700.woff?v=2) format("woff"); }
+@font-face { font-family: "Bagel Fat One"; font-weight: 400; font-display: swap; src: url(fonts/vt-bagel-fat-one.woff2?v=2) format("woff2"); }
+@font-face { font-family: "Jua"; font-weight: 400; font-display: swap; src: url(fonts/vt-jua.woff2?v=2) format("woff2"); }
+@font-face { font-family: "Nanum Pen Script"; font-weight: 400; font-display: swap; src: url(fonts/vt-nanum-pen.woff2?v=2) format("woff2"); }
 .vt, .vt *, .vt *::before, .vt *::after { box-sizing: border-box; }
 .vt img { max-width: 100%; }
 .vt [hidden]:not([hidden=until-found i]) { display: none !important; }
@@ -3932,6 +3933,12 @@ body.page-interview :is(.topbar, .wz-header, .site-footer) { font-family: var(--
 .vt .kw { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 7px; }
 .vt .kw li { display: flex; gap: 9px; align-items: flex-start; font: 500 15.5px/1.4 var(--f-body); color: var(--deep); letter-spacing: -0.02em; }
 .vt .kw li::before { content: ''; flex: none; width: 14px; height: 8px; margin-top: 4px; border: solid var(--orange); border-width: 0 0 3px 3px; transform: rotate(-45deg); }
+.vt .picks { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 9px; }
+.vt .picks li { position: relative; display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 8px; padding-left: 24px; font: 500 15px/1.45 var(--f-body); color: var(--deep); letter-spacing: -0.02em; }
+.vt .picks li::before { content: ''; position: absolute; left: 2px; top: 5px; width: 13px; height: 7px; border: solid var(--orange); border-width: 0 0 3px 3px; transform: rotate(-45deg); }
+.vt .picks li.warn::before { content: '!'; left: 0; top: 1px; width: 17px; height: 17px; border: 0; border-radius: 50%; background: var(--blue); color: #fff; font: 700 12px/17px var(--f-body); text-align: center; transform: none; }
+.vt .picks b { flex: none; font: 700 12.5px/1 var(--f-body); color: var(--blue); background: #EAF3FD; border-radius: 999px; padding: 5px 9px 4px; }
+.vt .picks span { flex: 1 1 12em; }
 .vt .day { display: grid; grid-template-columns: 52px 1fr; gap: 8px 10px; align-items: baseline; }
 .vt .day b { font: 400 18px var(--f-display); color: var(--blue); }
 .vt .day span { font: 500 15.5px/1.4 var(--f-body); color: var(--deep); letter-spacing: -0.02em; }
@@ -4006,5 +4013,5 @@ body.page-interview :is(.topbar, .wz-header, .site-footer) { font-family: var(--
 .vt .langmenu button { min-height: 44px; }
 .vt #sheet .x { width: 44px; height: 44px; }
 .vt .app.fit .opt { min-height: clamp(44px, 6.4cqh, 56px); font-size: clamp(16px, 2.1cqh, 17px); }
-.vt .kw li, .vt .day span, .vt .tip, .vt .zine p { font-size: 16px; }
+.vt .kw li, .vt .day span, .vt .tip, .vt .zine p, .vt .picks li { font-size: 16px; }
 /* ===== 마을 테스트 블록 끝 ===== */

@@ -2384,6 +2384,8 @@ var wzPlace = (function () {
    - '대표 명소 보러가기'는 '나의 제주찾기' 해당 동네(#town-N)로 간다 (전에는 '웹진 준비 중' 안내)
    - 공유 주소는 실제 웹진 주소. claude.ai 전용 저장 창과 언어별 Google Fonts 불러오기는 뺐다
    - 아티팩트의 style="…"는 클래스로 (style.css 맨 뒤 .vt 블록)
+   2026-10-30 아티팩트 업데이트 반영 (사용자가 준 압축 파일의 이 블록 그대로): 결과의 '내 선택으로 본 ○○' 5줄(FIT_*·fitNotes),
+   고른 답과 어긋나는 문장 바꾸기(VARY·RA), 대중교통·도보면 중산간 빼기(score), 누구와 오는지 가정한 문구 고침
    ========================================================= */
 (function () {
 var vtRoot = document.getElementById('vt');
@@ -2447,12 +2449,12 @@ const ORDER = ['shinjeju', 'wondosim', 'hamdeok', 'gujwa', 'pyoseon', 'seogwipo'
 const RESULTS = {
   shinjeju: { type: '든든한 생활 인프라파', region: '신제주 주민', area: '제주시 노형·연동 · 공항 쪽', icon: 'i-family', pose: 'pose-a-08',
     line: '필요한 건 다 가까이, 그래야 마음이 편하지', talk: '공항도 마트도 가까우니 든든하지!', stats: [2, 2, 5, 5, 2],
-    kw: ['생활 편의가 1순위인 실속파', '아이와 함께여도 걱정 없는 동선', '공항이 가까워 육지 오가기 편함', '마트·병원·학원이 가까운 생활권', '맛집과 카페도 골라 가는 재미'],
+    kw: ['생활 편의가 1순위인 실속파', '누구와 와도 걱정 없는 생활 동선', '공항이 가까워 육지 오가기 편함', '마트·병원·은행이 가까운 생활권', '맛집과 카페도 골라 가는 재미'],
     day: ['동네 공원 한 바퀴 산책', '마트·병원 동선 걱정 없이 장보기', '연동 맛집 골목에서 저녁 한 끼'],
-    tip: '숙소는 <b>아이 동선(병원·마트·놀이터)</b>을 기준으로 고르면 한 달이 편해요.' },
+    tip: '숙소는 <b>생활 동선(마트·병원·버스 정류장)</b>을 기준으로 고르면 한 달이 편해요.' },
   wondosim: { type: '골목 산책 뚜벅이', region: '원도심 주민', area: '제주시 원도심 · 삼도·일도·탑동', icon: 'i-bus', pose: 'pose-a-10',
     line: '차 없어도 괜찮아, 걷는 만큼 제주가 보이니까', talk: '버스 타고 어디든 가볼까?', stats: [2, 3, 4, 5, 1],
-    kw: ['차 없이도 다닐 만한 생활권', '오래된 골목과 시장 구경', '전시·책방·카페 탐방', '탑동 바닷가 산책', '혼자여도 심심할 틈 없음'],
+    kw: ['차 없이도 다닐 만한 생활권', '오래된 골목과 시장 구경', '전시·책방·카페 탐방', '탑동 바닷가 산책', '걸을수록 볼거리가 많은 동네'],
     day: ['탑동 바닷길 따라 산책', '골목 책방과 카페 구경', '동문시장에서 저녁거리 사기'],
     tip: '숙소를 고를 때 <b>가까운 버스 정류장과 노선</b>부터 확인하세요.' },
   hamdeok: { type: '바다 앞 워케이셔너', region: '함덕 주민', area: '제주시 조천읍 함덕', icon: 'i-laptop', pose: 'pose-a-05',
@@ -2462,7 +2464,7 @@ const RESULTS = {
     tip: '성수기엔 해변이 붐벼요. <b>일할 카페를 미리 몇 곳</b> 찜해두세요.' },
   gujwa: { type: '느린 바닷마을 주민', region: '구좌 주민', area: '구좌읍 세화·종달·월정', icon: 'i-leaf', pose: 'pose-b-06',
     line: '급할 거 없는 동네에서, 나도 천천히', talk: '여긴 시간이 천천히 흘러~', stats: [4, 5, 2, 2, 4],
-    kw: ['조용한 바닷가 마을 감성', '작은 소품샵·책방 구경', '돌담길 산책이 일상', '관광지보다 동네 생활', '혼자만의 시간을 좋아함'],
+    kw: ['조용한 바닷가 마을 감성', '작은 소품샵·책방 구경', '돌담길 산책이 일상', '관광지보다 동네 생활', '나만의 조용한 시간을 좋아함'],
     day: ['세화 바닷가 따라 산책', '작은 소품샵과 책방 구경', '돌담길 지나 마을 식당에서 저녁'],
     tip: '마을 가게는 <b>일찍 문 닫는 곳</b>도 많아요. 저녁 장보기는 미리!' },
   pyoseon: { type: '느긋한 쉼표형', region: '표선·남원 주민', area: '서귀포시 표선면·남원읍', icon: 'i-sun', pose: 'pose-a-02',
@@ -2487,12 +2489,12 @@ const RESULTS = {
     tip: '여름 성수기엔 해변이 북적여요. 한적함을 원하면 <b>이른 아침 산책</b>을 추천!' },
   aewol: { type: '노을 카페 감성러', region: '애월 주민', area: '제주시 애월읍', icon: 'i-cup', pose: 'pose-b-02',
     line: '하루의 끝은 무조건 노을 보이는 카페에서', talk: '노을 시간엔 무조건 카페로!', stats: [2, 5, 3, 2, 3],
-    kw: ['바다 뷰 카페 탐방이 일상', '해안도로 드라이브', '연인·친구와 감성 한 달', '사진 찍기 좋은 순간이 많음', '노을 시간엔 일정 비워두기'],
+    kw: ['바다 뷰 카페 탐방이 일상', '해안도로 드라이브', '감성 가득한 바닷가 한 달', '사진 찍기 좋은 순간이 많음', '노을 시간엔 일정 비워두기'],
     day: ['해안도로 따라 드라이브', '바다 보이는 카페에서 여유', '한담 해안산책로에서 노을'],
     tip: '카페 거리 주변은 주말에 붐벼요. 숙소는 <b>살짝 안쪽 마을</b>도 같이 찾아보세요.' },
   jungsangan: { type: '오름·숲 탐험가', region: '중산간 주민', area: '송당·가시리·교래 등 중산간 마을', icon: 'i-mountain', pose: 'pose-a-01',
     line: '바다보다 숲, 파도 소리보다 바람 소리', talk: '오름 하나 더 가볼까?', stats: [5, 1, 1, 1, 5],
-    kw: ['오름 오르기가 취미', '숲길·목장 풍경 속 생활', '반려동물과 산책하기 좋은 여유', '조용히 집중하는 시간', '차는 필수, 대신 풍경은 독점'],
+    kw: ['오름 오르기가 취미', '숲길·목장 풍경 속 생활', '한적한 산책길이 많은 여유', '조용히 집중하는 시간', '차는 필수, 대신 풍경은 독점'],
     day: ['가까운 오름 하나 오르기', '숲길 따라 천천히 걷기', '불빛 적은 마을에서 별 보기'],
     tip: '차 없이는 생활이 어려워요. <b>장보기·병원 동선</b>을 꼭 미리 확인하세요.' },
 };
@@ -2531,7 +2533,7 @@ const UI = {
     meta: '약 30초 · 제주 동네 10곳 중 하나', pointAlt: '손가락으로 가리키는 하르방', bubble: '숙소부터 찾기 전에,<br>어떻게 살고 싶은지부터!',
     back: '← 이전', loading: '하르방이 동네를<br>고르는 중…',
     rheadMine: '당신에게 맞는 제주 동네는', rheadOther: '제주 동네 주민 유형', myAnswers: '내 답변', harubangAlt: '하르방',
-    secStats: '하르방 체감 지수', secKw: '이런 당신에게 딱', secDay: '이 동네에서의 하루', dayLabels: ['아침', '오후', '저녁'],
+    secStats: '하르방 체감 지수', secKw: '이런 당신에게 딱', secFit: p => `내 선택으로 본 ${p}`, secDay: '이 동네에서의 하루', dayLabels: ['아침', '오후', '저녁'],
     tip: '현실 팁', stamp: '나는 제주 어디 주민? × 이제주민', stats: ['조용함', '바다', '생활 편의', '대중교통', '자연'],
     meterAria: (l, n) => `${l} ${n}점 / 5점`, quote: x => `“${x}”`,
     saveLabel: p => `이미지 저장 & ${p} 대표 명소 보러가기`, soonSmall: '(웹진은 지금 준비 중이에요)',
@@ -2558,7 +2560,7 @@ const UI = {
     meta: '約30秒 · 済州の10エリアから1つ', pointAlt: '指さすトルハルバン', bubble: '宿探しの前に、<br>暮らし方から！',
     back: '← 戻る', loading: 'トルハルバンが町を<br>選んでいます…',
     rheadMine: 'あなたに合う済州の町は', rheadOther: '済州の町 住民タイプ', myAnswers: 'あなたの回答', harubangAlt: 'トルハルバン',
-    secStats: 'トルハルバン体感メーター', secKw: 'こんなあなたにぴったり', secDay: 'この町での1日', dayLabels: ['朝', '午後', '夜'],
+    secStats: 'トルハルバン体感メーター', secKw: 'こんなあなたにぴったり', secFit: p => `あなたの選択で見る${p}`, secDay: 'この町での1日', dayLabels: ['朝', '午後', '夜'],
     tip: 'リアルなヒント', stamp: 'わたしは済州のどこの住民？ × イジェジュミン', stats: ['静けさ', '海', '利便性', '公共交通', '自然'],
     meterAria: (l, n) => `${l} ${n} / 5`, quote: x => `「${x}」`,
     saveLabel: p => `画像を保存 & ${p}の名所を見る`, soonSmall: '(ウェブマガジンは準備中です)',
@@ -2585,7 +2587,7 @@ const UI = {
     meta: 'About 30 sec · 1 of 10 neighborhoods', pointAlt: 'Hareubang pointing', bubble: 'Pick a lifestyle<br>before a room!',
     back: '← Back', loading: 'Hareubang is picking<br>your neighborhood…',
     rheadMine: 'Your Jeju neighborhood is', rheadOther: 'Jeju local type', myAnswers: 'Your answers', harubangAlt: 'Hareubang',
-    secStats: 'Hareubang’s vibe meter', secKw: 'Perfect for you', secDay: 'A day in this neighborhood', dayLabels: ['Morning', 'Afternoon', 'Evening'],
+    secStats: 'Hareubang’s vibe meter', secKw: 'Perfect for you', secFit: p => `Your picks × ${p}`, secDay: 'A day in this neighborhood', dayLabels: ['Morning', 'Afternoon', 'Evening'],
     tip: 'Reality check', stamp: 'Which Jeju Local Are You? × @e_jeju.min', stats: ['Quiet', 'Ocean', 'Amenities', 'Transit', 'Nature'],
     meterAria: (l, n) => `${l} ${n} out of 5`, quote: x => `“${x}”`,
     saveLabel: p => `Save image & see top spots in ${p}`, soonSmall: '(Our webzine is coming soon)',
@@ -2612,7 +2614,7 @@ const UI = {
     meta: '约30秒 · 济州10个街区中的一个', pointAlt: '指着前方的石头爷爷', bubble: '找住处之前，<br>先想想怎么生活！',
     back: '← 上一题', loading: '石头爷爷正在<br>帮你挑街区…',
     rheadMine: '最适合你的济州街区是', rheadOther: '济州街区居民类型', myAnswers: '你的回答', harubangAlt: '石头爷爷',
-    secStats: '石头爷爷体感指数', secKw: '这样的你最合适', secDay: '在这里的一天', dayLabels: ['早上', '下午', '晚上'],
+    secStats: '石头爷爷体感指数', secKw: '这样的你最合适', secFit: p => `从你的选择看${p}`, secDay: '在这里的一天', dayLabels: ['早上', '下午', '晚上'],
     tip: '实用贴士', stamp: '我适合住在济州哪里？ × @e_jeju.min', stats: ['安静', '海景', '生活便利', '公共交通', '自然'],
     meterAria: (l, n) => `${l} ${n}/5`, quote: x => `“${x}”`,
     saveLabel: p => `保存图片 & 去看${p}代表景点`, soonSmall: '（网络杂志正在准备中）',
@@ -2658,12 +2660,12 @@ const CONTENT = {
     results: {
       shinjeju: { type: '安心の生活インフラ派', region: '新済州住民', place: '新済州', area: '済州市 老衡・蓮洞（ノヒョン・ヨンドン）· 空港周辺',
         line: '必要なものは全部近くに。<br>それが一番の安心', talk: '空港もスーパーも<br>近くて安心！',
-        kw: ['生活の便利さが最優先の実用派', '子連れでも安心の動線', '空港が近く、韓国本土との行き来もラク', 'スーパー・病院・塾が近い生活圏', 'グルメやカフェも選び放題'],
+        kw: ['生活の便利さが最優先の実用派', '誰と来ても安心の生活動線', '空港が近く、韓国本土との行き来もラク', 'スーパー・病院・銀行が近い生活圏', 'グルメやカフェも選び放題'],
         day: ['近所の公園をひとまわり散歩', 'スーパーも病院も近くて買い物がラク', '蓮洞のグルメ通りで夕ごはん'],
-        tip: '宿は<b>子どもの動線（病院・スーパー・遊び場）</b>を基準に選ぶと、ひと月がぐっとラクに。' },
+        tip: '宿は<b>生活の動線（スーパー・病院・バス停）</b>を基準に選ぶと、ひと月がぐっとラクに。' },
       wondosim: { type: '路地さんぽの徒歩派', region: '旧市街住民', place: '旧市街', area: '済州市 旧市街 · 三徒・一徒・塔洞（タプトン）',
         line: '車がなくても大丈夫。<br>歩いた分だけ済州が見えるから', talk: 'バスに乗って<br>どこへでも行ってみる？',
-        kw: ['車がなくても暮らせる生活圏', '古い路地と市場めぐり', '展示・本屋・カフェ探し', '塔洞の海辺を散歩', 'ひとりでも退屈しない'],
+        kw: ['車がなくても暮らせる生活圏', '古い路地と市場めぐり', '展示・本屋・カフェ探し', '塔洞の海辺を散歩', '歩くほど見どころが増える町'],
         day: ['塔洞の海沿いを散歩', '路地の本屋とカフェめぐり', '東門市場で夕ごはんの買い出し'],
         tip: '宿を選ぶときは<b>近くのバス停と路線</b>から確認しましょう。' },
       hamdeok: { type: '海辺のワーケーショナー', region: '咸徳住民', place: '咸徳', area: '済州市 朝天邑 咸徳（ハムドク）',
@@ -2673,7 +2675,7 @@ const CONTENT = {
         tip: 'ハイシーズンはビーチが混みます。<b>仕事用のカフェを何軒か</b>見つけておきましょう。' },
       gujwa: { type: 'のんびり海辺の村人', region: '旧左住民', place: '旧左', area: '旧左邑 細花・終達・月汀（セファ・チョンダル・ウォルジョン）',
         line: '急ぐことのない町で、<br>わたしもゆっくり', talk: 'ここは時間が<br>ゆっくり流れるよ〜',
-        kw: ['静かな海辺の村の雰囲気', '小さな雑貨屋・本屋めぐり', '石垣の道を散歩するのが日課', '観光地より町の暮らし', 'ひとりの時間が好き'],
+        kw: ['静かな海辺の村の雰囲気', '小さな雑貨屋・本屋めぐり', '石垣の道を散歩するのが日課', '観光地より町の暮らし', '自分だけの静かな時間が好き'],
         day: ['細花の海沿いを散歩', '小さな雑貨屋と本屋めぐり', '石垣の道を通って村の食堂で夕ごはん'],
         tip: '村のお店は<b>早く閉まるところ</b>も多いです。夕方の買い物は早めに！' },
       pyoseon: { type: 'ゆったり一休み派', region: '表善・南元住民', place: '表善・南元', area: '西帰浦市 表善面・南元邑（ピョソン・ナムウォン）',
@@ -2698,12 +2700,12 @@ const CONTENT = {
         tip: '夏のハイシーズンはビーチがにぎわいます。静かに過ごしたいなら<b>早朝の散歩</b>がおすすめ！' },
       aewol: { type: '夕焼けカフェ好き', region: '涯月住民', place: '涯月', area: '済州市 涯月邑（エウォル）',
         line: '1日の終わりは、<br>必ず夕焼けの見えるカフェで', talk: '夕焼けの時間は<br>絶対カフェへ！',
-        kw: ['海が見えるカフェめぐりが日課', '海岸道路をドライブ', '恋人・友だちとエモいひと月', '写真映えする瞬間がいっぱい', '夕焼けの時間は予定を空ける'],
+        kw: ['海が見えるカフェめぐりが日課', '海岸道路をドライブ', 'エモさあふれる海辺のひと月', '写真映えする瞬間がいっぱい', '夕焼けの時間は予定を空ける'],
         day: ['海岸道路沿いをドライブ', '海の見えるカフェでのんびり', '漢潭（ハンダム）海岸遊歩道で夕焼け'],
         tip: 'カフェ通りの周辺は週末に混みます。宿は<b>少し内陸の村</b>も一緒に探してみて。' },
       jungsangan: { type: 'オルム・森の探検家', region: '中山間住民', place: '中山間', area: '松堂・加時里・橋来など 中山間の村（ソンダン・カシリ・キョレ）',
         line: '海より森、<br>波の音より風の音', talk: 'もうひとつ<br>オルムに登ってみる？',
-        kw: ['オルム登りが趣味', '森の道と牧場の風景の中で暮らす', 'ペットとの散歩にぴったり', '静かに集中できる時間', '車は必須、そのぶん景色はひとり占め'],
+        kw: ['オルム登りが趣味', '森の道と牧場の風景の中で暮らす', '静かな散歩道がたくさん', '静かに集中できる時間', '車は必須、そのぶん景色はひとり占め'],
         day: ['近くのオルムにひとつ登る', '森の道をゆっくり歩く', '明かりの少ない村で星を見る'],
         tip: '車がないと暮らすのは難しいです。<b>買い物や病院への動線</b>を必ず事前に確認しましょう。' },
     },
@@ -2728,12 +2730,12 @@ const CONTENT = {
     results: {
       shinjeju: { type: 'Everything-Nearby Type', region: 'Shin-Jeju Local', place: 'Shin-Jeju', area: 'Nohyeong & Yeon-dong, Jeju City · near the airport',
         line: 'Everything close by = peace of mind', talk: 'Airport and stores close by.<br>So reassuring!',
-        kw: ['Practical, convenience first', 'Stress-free routines with kids', 'Easy flights to mainland Korea', 'Stores, clinics & cram schools', 'Lots of restaurants & cafés'],
+        kw: ['Practical, convenience first', 'Easy routines, whoever comes', 'Easy flights to mainland Korea', 'Stores, clinics & banks nearby', 'Lots of restaurants & cafés'],
         day: ['A loop around the neighborhood park', 'Easy errands to stores and clinics', 'Dinner on a Yeon-dong food street'],
-        tip: 'Choose your stay around <b>your kids’ routes (hospital, grocery, playground)</b> and the month gets much easier.' },
+        tip: 'Choose your stay around <b>your daily routes (grocery, hospital, bus stop)</b> and the month gets much easier.' },
       wondosim: { type: 'Alley-Walking Explorer', region: 'Old Town Local', place: 'Old Town', area: 'Old downtown Jeju City · Samdo, Ildo, Tapdong',
         line: 'No car? No problem. Walk more, see more.', talk: 'Shall we hop on a bus<br>and go anywhere?',
-        kw: ['Livable without a car', 'Old alleys and local markets', 'Exhibitions, bookshops & cafés', 'Seaside walks in Tapdong', 'Never bored, even solo'],
+        kw: ['Livable without a car', 'Old alleys and local markets', 'Exhibitions, bookshops & cafés', 'Seaside walks in Tapdong', 'More to see the more you walk'],
         day: ['A walk along the Tapdong seafront', 'Browsing alley bookshops and cafés', 'Picking up dinner at Dongmun Market'],
         tip: 'When choosing a stay, check <b>the nearest bus stops and routes</b> first.' },
       hamdeok: { type: 'Beachfront Workcationer', region: 'Hamdeok Local', place: 'Hamdeok', area: 'Hamdeok, Jocheon-eup, Jeju City',
@@ -2743,7 +2745,7 @@ const CONTENT = {
         tip: 'The beach gets crowded in peak season. <b>Pick a few cafés to work from</b> in advance.' },
       gujwa: { type: 'Slow Seaside Villager', region: 'Gujwa Local', place: 'Gujwa', area: 'Gujwa-eup · Sehwa, Jongdal, Woljeong',
         line: 'No rush here, so I slow down too', talk: 'Time flows slowly<br>around here~',
-        kw: ['Quiet seaside village vibes', 'Little gift shops & bookstores', 'Daily walks by stone walls', 'Village life over tourist spots', 'Loves time alone'],
+        kw: ['Quiet seaside village vibes', 'Little gift shops & bookstores', 'Daily walks by stone walls', 'Village life over tourist spots', 'Loves quiet me-time'],
         day: ['A walk along the Sehwa coast', 'Browsing small shops and bookstores', 'Dinner at a village diner past the stone walls'],
         tip: 'Many village shops <b>close early</b>. Do your evening grocery run ahead of time!' },
       pyoseon: { type: 'Take-a-Breather Type', region: 'Pyoseon & Namwon Local', place: 'Pyoseon & Namwon', area: 'Pyoseon-myeon & Namwon-eup, Seogwipo',
@@ -2768,12 +2770,12 @@ const CONTENT = {
         tip: 'Beaches get busy in summer. For some quiet, try <b>an early-morning walk</b>!' },
       aewol: { type: 'Sunset Café Lover', region: 'Aewol Local', place: 'Aewol', area: 'Aewol-eup, Jeju City',
         line: 'Every day ends at a sunset café', talk: 'Sunset time means<br>café time!',
-        kw: ['Ocean-view café hopping', 'Coastal road drives', 'Scenic dates and friend trips', 'So many photo moments', 'Keeps sunset hours free'],
+        kw: ['Ocean-view café hopping', 'Coastal road drives', 'A month of seaside moods', 'So many photo moments', 'Keeps sunset hours free'],
         day: ['A drive along the coastal road', 'Relaxing at a café with a sea view', 'Sunset on the Handam coastal walk'],
         tip: 'The café strip gets busy on weekends. Also look for stays <b>in villages a bit inland</b>.' },
       jungsangan: { type: 'Volcanic Hill & Forest Explorer', region: 'Inland Village Local', place: 'the inland villages', area: 'Songdang, Gasi-ri & Gyorae, between the coast and Hallasan',
         line: 'Forest over sea, wind over waves', talk: 'Shall we hike up<br>one more volcanic hill?',
-        kw: ['Volcanic hill hikes as a hobby', 'Life among forests & pastures', 'Great for walks with your pet', 'Quiet time to focus', 'Car required, views all yours'],
+        kw: ['Volcanic hill hikes as a hobby', 'Life among forests & pastures', 'Plenty of quiet walking paths', 'Quiet time to focus', 'Car required, views all yours'],
         day: ['Hiking up a nearby volcanic hill', 'A slow walk along forest trails', 'Stargazing in a village with few lights'],
         tip: 'Life here is hard without a car. <b>Check your routes to groceries and clinics</b> in advance.' },
     },
@@ -2798,12 +2800,12 @@ const CONTENT = {
     results: {
       shinjeju: { type: '安心生活设施派', region: '新济州居民', place: '新济州', area: '济州市 老衡洞·莲洞 · 机场附近',
         line: '需要的都在身边，<br>心里才踏实', talk: '机场、超市都很近，<br>超安心！',
-        kw: ['生活便利第一的务实派', '带孩子出行也方便', '离机场近，往返韩国本土很方便', '超市·医院·补习班都在附近', '美食咖啡任你挑'],
+        kw: ['生活便利第一的务实派', '和谁来都方便的生活动线', '离机场近，往返韩国本土很方便', '超市·医院·银行都在附近', '美食咖啡任你挑'],
         day: ['在小区公园绕一圈散步', '超市、医院都在附近，日常采购很方便', '在莲洞美食街吃晚饭'],
-        tip: '选住处时，先看看<b>带孩子去医院、超市和游乐场是否方便</b>，这一个月会轻松很多。' },
+        tip: '选住处时，先看看<b>超市、医院和公交站是否方便</b>，这一个月会轻松很多。' },
       wondosim: { type: '小巷散步步行派', region: '老城区居民', place: '老城区', area: '济州市 老城区 · 三徒·一徒·塔洞',
         line: '没车也没关系，<br>走得越多，看到的济州越多', talk: '坐上公交，<br>随便去哪儿逛逛？',
-        kw: ['没车也能生活的街区', '逛老巷子和市场', '探访展览·书店·咖啡馆', '塔洞海边散步', '一个人也不无聊'],
+        kw: ['没车也能生活的街区', '逛老巷子和市场', '探访展览·书店·咖啡馆', '塔洞海边散步', '越走越有看头的街区'],
         day: ['沿着塔洞海边散步', '逛巷子里的书店和咖啡馆', '在东门市场买晚饭'],
         tip: '选住处时，先确认<b>附近的公交站和线路</b>。' },
       hamdeok: { type: '海边旅居办公族', region: '咸德居民', place: '咸德', area: '济州市 朝天邑 咸德',
@@ -2813,7 +2815,7 @@ const CONTENT = {
         tip: '旺季海滩人很多，<b>提前收藏几家能办公的咖啡馆</b>吧。' },
       gujwa: { type: '慢节奏海边村民', region: '旧左居民', place: '旧左', area: '旧左邑 细花·终达·月汀',
         line: '在不慌不忙的村子里，<br>我也慢下来', talk: '这里的时间<br>过得很慢～',
-        kw: ['安静的海边小村氛围', '逛小杂货店和书店', '石墙小路散步是日常', '比起景点更爱村里生活', '喜欢独处的时光'],
+        kw: ['安静的海边小村氛围', '逛小杂货店和书店', '石墙小路散步是日常', '比起景点更爱村里生活', '喜欢属于自己的安静时光'],
         day: ['沿着细花海边散步', '逛小杂货店和书店', '穿过石墙小路，在村里小馆吃晚饭'],
         tip: '村里很多店<b>关门很早</b>，晚上要买的东西记得提前买！' },
       pyoseon: { type: '悠闲休止符型', region: '表善·南元居民', place: '表善·南元', area: '西归浦市 表善面·南元邑',
@@ -2838,12 +2840,12 @@ const CONTENT = {
         tip: '夏季旺季海滩很热闹，想要清静推荐<b>清晨散步</b>！' },
       aewol: { type: '日落咖啡馆文艺派', region: '涯月居民', place: '涯月', area: '济州市 涯月邑',
         line: '一天的结尾，<br>一定要在看得见日落的咖啡馆', talk: '日落时间<br>一定要去咖啡馆！',
-        kw: ['逛海景咖啡馆是日常', '沿着海岸公路兜风', '和恋人·朋友的文艺一个月', '好出片的瞬间特别多', '日落时间留空不排事'],
+        kw: ['逛海景咖啡馆是日常', '沿着海岸公路兜风', '充满氛围感的海边一个月', '好出片的瞬间特别多', '日落时间留空不排事'],
         day: ['沿着海岸公路兜风', '在看得见海的咖啡馆放空', '在汉潭海岸步道看日落'],
         tip: '咖啡街周边周末人多，住处也可以找找<b>稍微靠内陆的村子</b>。' },
       jungsangan: { type: '火山丘·森林探险家', region: '山间村落居民', place: '山间村落', area: '松堂、加时里、桥来等位于海岸与汉拿山之间的内陆村落',
         line: '比起大海更爱森林，<br>比起海浪声更爱风声', talk: '要不要<br>再爬一座火山丘？',
-        kw: ['爱好是爬火山丘', '生活在林间小路和牧场风景里', '适合带宠物散步', '安静专注的时光', '车是必需品，风景独享'],
+        kw: ['爱好是爬火山丘', '生活在林间小路和牧场风景里', '有很多安静的散步小路', '安静专注的时光', '车是必需品，风景独享'],
         day: ['爬一座附近的火山丘', '沿着林间小路慢慢走', '在灯光稀少的村子看星星'],
         tip: '没有车，日常生活会很不方便。一定要<b>提前确认买菜和去医院的路线及交通方式</b>。' },
     },
@@ -2941,6 +2943,8 @@ function score(answers) {
     const q = QUESTIONS[qi], pts = q.opts[ai][2], w = q.weight || 1;
     for (const [k, v] of Object.entries(pts)) { total[k] += v * w; byQ[qi][k] += v; }
   });
+  // the inland villages can't be lived in without a car: never send someone who gets around by bus or on foot there
+  if (answers[2] === 2 || answers[2] === 3) total.jungsangan = -999;
   // ties: the 'daily life' answer first, then mobility, then companions, then map order
   const rank = ORDER.slice().sort((a, b) =>
     total[b] - total[a] || byQ[4][b] - byQ[4][a] || byQ[2][b] - byQ[2][a] || byQ[1][b] - byQ[1][a] || ORDER.indexOf(a) - ORDER.indexOf(b));
@@ -3019,8 +3023,246 @@ function meters(stats) {
     `<dt>${l}</dt><dd aria-label="${t('meterAria', l, stats[i])}">${[1, 2, 3, 4, 5].map(n => `<i class="${n <= stats[i] ? 'f' : ''}"></i>`).join('')}</dd>`).join('')}</dl>`;
 }
 
-function renderResult(key, isMine) {
+/* ===================== my picks × this neighborhood ===================== */
+// One line for each of the five answers, chosen from what the neighborhood is like, so every one of the
+// 3,750 answer sets reads true (a line starting with '!' is a heads-up rather than a match).
+// s = the hareubang meters (quiet, sea, convenience, transit, nature) + cafés (0-2), downtown culture (0-2), a market.
+const TRAITS = {
+  shinjeju: { cafe: 2, city: 2, market: true }, wondosim: { cafe: 2, city: 2, market: true }, hamdeok: { cafe: 2, city: 0 },
+  gujwa: { cafe: 1, city: 0, market: true }, pyoseon: { cafe: 0, city: 0 }, seogwipo: { cafe: 2, city: 1, market: true },
+  andeok: { cafe: 1, city: 0, market: true }, hallim: { cafe: 1, city: 0, market: true }, aewol: { cafe: 2, city: 0 }, jungsangan: { cafe: 0, city: 0 },
+};
+const byCafe = s => ['c', 'b', 'a'][s.cafe];
+// FIT_PICK[question][option](s) -> which line; the transport question shares one line for own car and rental car
+const FIT_PICK = [
+  [s => s.quiet >= 4 ? 'a' : s.quiet === 3 ? 'b' : 'c', byCafe, s => s.infra >= 4 ? 'a' : 'b',
+   s => s.nature >= 4 || s.quiet >= 4 ? 'a' : 'b', s => s.quiet >= 4 ? 'a' : 'b'],
+  [s => s.transit >= 4 ? 'a' : s.quiet >= 4 ? 'b' : 'c', s => s.city ? 'a' : s.sea >= 5 && s.cafe === 2 ? 'b' : s.sea >= 4 ? 'c' : 'd',
+   s => s.infra >= 4 ? 'a' : s.infra === 3 ? 'b' : 'c', s => s.nature >= 4 ? 'a' : s.infra >= 4 ? 'c' : 'b',
+   s => s.infra >= 4 ? 'a' : s.quiet >= 4 ? 'b' : 'c'],
+  [s => s.transit <= 2 ? 'a' : s.infra >= 4 ? 'b' : 'c', s => s.transit >= 4 ? 'a' : s.transit === 3 ? 'b' : s.transit === 2 ? 'c' : 'd',
+   s => s.infra >= 4 && s.transit >= 4 ? 'a' : s.infra >= 3 || s.transit >= 3 ? 'b' : 'c', s => s.transit <= 2 ? 'a' : 'b'],
+  [s => s.infra >= 4 ? 'a' : s.infra === 3 ? 'b' : 'c', s => s.sea >= 5 ? 'a' : s.sea === 4 ? 'b' : s.sea === 3 ? 'c' : 'd',
+   s => s.quiet >= 4 ? 'a' : s.quiet === 3 ? 'b' : 'c', byCafe, s => s.transit >= 4 ? 'a' : 'b'],
+  [s => s.sea >= 4 ? 'a' : s.sea === 3 ? 'b' : 'c', byCafe, s => s.quiet >= 4 ? 'a' : s.quiet === 3 ? 'b' : 'c',
+   s => s.city === 2 ? 'a' : s.city === 1 ? 'b' : s.cafe === 2 ? 'c' : 'd', s => s.nature >= 5 ? 'a' : s.nature === 4 ? 'b' : s.nature === 3 ? 'c' : 'd',
+   s => s.market ? 'a' : s.quiet >= 4 ? 'b' : 'c'],
+];
+const FIT_TEXT = {
+  ko: [
+    [{ a: '조용해서 푹 쉬기 좋은 동네예요', b: '적당히 한적해서 쉬기 괜찮아요', c: '!북적이는 편이에요. 쉬는 날엔 근교 바다·숲으로' },
+     { a: '카페·편의시설이 많아 일하기 편해요', b: '일할 카페가 있어요. 숙소 작업 공간도 확인', c: '!작업할 카페가 적어요. 숙소 책상·와이파이 먼저 확인' },
+     { a: '생활 인프라가 갖춰져 ‘진짜 생활’ 연습에 딱', b: '마을살이를 미리 겪어 보기 좋아요. 병원·마트 거리는 체크' },
+     { a: '천천히 걸으며 제주를 느끼기 좋아요', b: '골목과 시장을 걸으며 천천히 둘러보기 좋아요' },
+     { a: '방해받지 않고 몰입하기 좋은 조용함', b: '!활기찬 동네예요. 집중할 공간을 따로 찾아 두세요' }],
+    [{ a: '혼자여도 버스·걸어서 다니기 편해요', b: '혼자만의 조용한 시간에 딱. 밤 이동은 미리 계획', c: '혼자 지내기 무난해요. 막차 시간은 확인해 두기' },
+     { a: '맛집·전시·카페를 같이 다니기 좋아요', b: '바다·카페 데이트 코스가 가까워요', c: '둘이 바닷가 산책하며 쉬기 좋아요', d: '둘이 오름·숲길 산책하기 좋아요' },
+     { a: '병원·마트·놀이터가 가까워 아이와 지내기 편해요', b: '아이와 해변 놀이하기 좋아요. 소아과 위치는 미리 확인', c: '!소아과·큰 마트가 멀 수 있어요. 차로 가는 거리 꼭 확인' },
+     { a: '반려동물과 걸을 숲길·오름이 가까워요', b: '바닷가 산책은 가능해요. 해수욕장 출입 규칙은 확인', c: '!도심이라 산책은 공원 위주예요. 반려동물 가능 숙소부터 찾기' },
+     { a: '병원·마트가 가까워 부모님과 지내기 편해요', b: '넓고 조용한 숙소에서 가족이 쉬기 좋아요. 병원 위치는 미리 확인', c: '가족 나들이하기 좋은 바다와 산책길이 가까워요' }],
+    [{ a: '차가 있으니 이 동네가 훨씬 편해져요', b: '차가 있으면 주말 나들이도 쉬워요. 숙소 주차 공간은 확인', c: '차가 있으면 섬 반대편 나들이도 자유롭게' },
+     { a: '버스 노선이 많아 차 없이도 괜찮아요', b: '!버스는 다니지만 배차가 길어요. 시간표 앱은 필수', c: '!버스 배차가 길고 막차가 일러요. 나들이 날엔 렌터카도 고려', d: '!버스로는 생활이 어려워요. 렌터카를 꼭 고려하세요' },
+     { a: '걸어서 대부분 해결되는 생활권이에요', b: '동네 안은 걸어서 충분, 멀리 갈 땐 버스로', c: '!걸어서 갈 수 있는 가게가 적어요. 장보기는 미리 계획' },
+     { a: '!이 동네는 차가 있어야 편해요. 렌터카를 미리 알아보세요', b: '버스로도 다닐 만해요. 나들이 날만 렌터카도 방법' }],
+    [{ a: '마트·병원 가까운 숙소를 구하기 쉬워요', b: '동네 마트는 가까워요. 큰 병원은 시내로', c: '!큰 마트·병원은 차로 가야 해요. 숙소 고를 때 거리 확인' },
+     { a: '바다 보이는 숙소 선택지가 많아요', b: '해안 쪽이라면 바다 뷰 숙소도 찾을 수 있어요', c: '바닷가 쪽 숙소라면 바다 뷰도 가능해요', d: '!바다 뷰 숙소는 드물어요. 바다는 나들이로 즐기기' },
+     { a: '넓고 조용한 독채가 많은 동네예요', b: '마을 안쪽이라면 조용한 독채도 있어요', c: '!아파트·원룸이 많아요. 독채는 외곽 마을까지 넓혀 보세요' },
+     { a: '가 볼 맛집·카페가 넘쳐요', b: '분위기 좋은 카페가 곳곳에 있어요', c: '!맛집·카페가 적어요. 근처 동네로 원정 가기' },
+     { a: '버스·마트가 가까워 생활비 아끼기 좋아요', b: '!월세만 보지 말고 차량·교통비도 같이 계산하세요' }],
+    [{ a: '아침마다 걸어서 바다 산책할 수 있어요', b: '걸어서 갈 수 있는 바닷길이 있어요', c: '!바다까지는 차나 버스로 나가야 해요' },
+     { a: '노트북 펴기 좋은 카페가 많아요', b: '작업할 카페가 있어요. 몇 곳 미리 찜해 두기', c: '!카페가 적어요. 숙소 책상·와이파이를 먼저 확인' },
+     { a: '조용한 마을에서 느리게 사는 하루', b: '마을 안쪽에선 조용하게 지낼 수 있어요', c: '!활기찬 동네예요. 골목 안쪽 숙소로 조용함 챙기기' },
+     { a: '맛집·전시가 가까워요', b: '이중섭미술관과 시내 맛집이 가까워요', c: '맛집은 가까워요. 전시는 시내로 나들이', d: '!맛집·전시는 시내까지 나가야 해요' },
+     { a: '오름·숲이 바로 곁에 있어요', b: '가까운 오름·올레길이 많아요', c: '차로 조금 가면 오름·올레길', d: '!오름·숲은 차나 버스로 나들이 가야 해요' },
+     { a: '{m}에서 장 보며 동네 사람 되기', b: '마을 가게·식당 단골이 되기 좋아요', c: '동네 식당 단골 되기, 장은 가까운 오일장으로' }],
+  ],
+  ja: [
+    [{ a: '静かで、ゆっくり休める町', b: 'ほどよくのんびりで休みやすい', c: '!にぎやかな町。休みの日は近くの海や森へ' },
+     { a: 'カフェも便利な施設も多く、仕事がしやすい', b: '仕事できるカフェあり。宿の作業スペースも確認を', c: '!作業向きのカフェが少なめ。宿の机とWi-Fiを先に確認' },
+     { a: '生活インフラがそろい、「本物の暮らし」の練習にぴったり', b: '村の暮らしを先取り体験。病院・スーパーまでの距離は確認を' },
+     { a: 'ゆっくり歩いて済州を感じるのにぴったり', b: '路地や市場をのんびり歩いて楽しめる' },
+     { a: 'じゃまされずに没頭できる静けさ', b: '!にぎやかな町。集中できる場所を別に見つけておこう' }],
+    [{ a: 'ひとりでもバスや徒歩で動きやすい', b: 'ひとりの静かな時間にぴったり。夜の移動は計画を', c: 'ひとりでも過ごしやすい。終バスの時間は確認を' },
+     { a: 'グルメ・展示・カフェを一緒にめぐれる', b: '海とカフェのデートコースがすぐそば', c: 'ふたりで海辺を散歩してのんびりできる', d: 'ふたりでオルムや森の道を散歩できる' },
+     { a: '病院・スーパー・遊び場が近く、子連れでも安心', b: '子どもと海遊びができる。小児科の場所は事前に確認', c: '!小児科や大きなスーパーが遠いことも。車での距離を必ず確認' },
+     { a: 'ペットと歩ける森の道やオルムが近い', b: '海辺の散歩はOK。海水浴場のペット規則は確認を', c: '!街なかなので散歩は公園中心。ペット可の宿から探そう' },
+     { a: '病院・スーパーが近く、両親と過ごしやすい', b: '広くて静かな宿で家族でくつろげる。病院の場所は事前に確認', c: '家族のおでかけにいい海と散歩道が近い' }],
+    [{ a: '車があれば、この町はぐっと便利に', b: '車があれば週末のおでかけもラク。宿の駐車場は確認を', c: '車があれば島の反対側までおでかけ自由' },
+     { a: 'バス路線が多く、車なしでも大丈夫', b: '!バスはあるけど本数が少なめ。時刻表アプリは必須', c: '!バスの本数が少なく終バスも早め。おでかけの日はレンタカーも検討', d: '!バスでの生活は難しい町。レンタカーをぜひ検討して' },
+     { a: 'ほとんど歩いて用が足りる生活圏', b: '町の中は徒歩で十分、遠出はバスで', c: '!歩いて行けるお店が少なめ。買い物は計画的に' },
+     { a: '!この町は車があると便利。レンタカーを早めにチェック', b: 'バスでも動ける町。おでかけの日だけレンタカーもあり' }],
+    [{ a: 'スーパー・病院が近い宿を見つけやすい', b: '近所にスーパーはあり。大きな病院は市内へ', c: '!大きなスーパーや病院は車で。宿選びで距離を確認' },
+     { a: '海が見える宿の選択肢が多い', b: '海沿いなら海が見える宿も見つかる', c: '海辺寄りの宿なら海の眺めも', d: '!海が見える宿は少なめ。海はおでかけで楽しもう' },
+     { a: '広くて静かな一棟貸しが多い町', b: '村の奥なら静かな一棟貸しも', c: '!マンションやワンルームが中心。一棟貸しは郊外の村まで探して' },
+     { a: '行きたいグルメ・カフェがありすぎるほど', b: '雰囲気のいいカフェがあちこちに', c: '!グルメ・カフェは少なめ。近くの町まで遠征を' },
+     { a: 'バスやスーパーが近く、生活費を節約しやすい', b: '!家賃だけでなく車や交通費も一緒に計算しよう' }],
+    [{ a: '毎朝歩いて海辺を散歩できる', b: '歩いて行ける海沿いの道がある', c: '!海までは車かバスで' },
+     { a: 'ノートPCを開きやすいカフェが多い', b: '作業できるカフェあり。何軒か見つけておこう', c: '!カフェは少なめ。宿の机とWi-Fiを先に確認' },
+     { a: '静かな村でのんびり過ごす1日', b: '村の奥なら静かに過ごせる', c: '!にぎやかな町。路地の奥の宿で静けさを確保' },
+     { a: 'グルメも展示もすぐそば', b: '李仲燮美術館と市内のグルメが近い', c: 'グルメは近く。展示は市内へおでかけ', d: '!グルメや展示は市内まで出かけよう' },
+     { a: 'オルムや森がすぐそば', b: '近くにオルムやオルレの道がたくさん', c: '車で少し行けばオルムやオルレ', d: '!オルムや森へは車かバスでおでかけ' },
+     { a: '{m}で買い物して地元の人気分', b: '村のお店や食堂の常連になりやすい', c: '地元の食堂の常連になろう。買い物は近くの五日市で' }],
+  ],
+  en: [
+    [{ a: 'Quiet enough to truly rest', b: 'Peaceful enough for a good rest', c: '!It’s lively. On days off, head to a nearby beach or forest' },
+     { a: 'Plenty of cafés and amenities for working', b: 'There are cafés to work from. Check your desk at home too', c: '!Few work-friendly cafés. Check the desk and Wi-Fi first' },
+     { a: 'Everyday essentials close by: ideal for a trial move', b: 'A real taste of village life. Check how far shops and clinics are' },
+     { a: 'Perfect for slow walks and feeling Jeju', b: 'Wander alleys and markets at your own pace' },
+     { a: 'Quiet enough to dive deep', b: '!It’s a lively area. Find a quiet spot to focus' }],
+    [{ a: 'Easy to get around alone by bus or on foot', b: 'Made for quiet time alone. Plan late-night trips ahead', c: 'Comfortable for going solo. Check when the last bus leaves' },
+     { a: 'Great for food, art and cafés together', b: 'Beach and café dates are close by', c: 'Lovely for seaside walks together', d: 'Lovely for hill and forest walks together' },
+     { a: 'Clinics, shops and playgrounds nearby: easy with kids', b: 'Fun beach days with kids. Locate the pediatrician first', c: '!Pediatricians and big stores may be far. Check driving times' },
+     { a: 'Forest trails and volcanic hills nearby for walks', b: 'Seaside walks work. Check beach rules for pets', c: '!It’s urban, so walks are mostly in parks. Find a pet-friendly stay first' },
+     { a: 'Clinics and shops nearby: easy with parents', b: 'Roomy, quiet stays for family downtime. Locate the hospital first', c: 'Beaches and walking paths for family outings' }],
+    [{ a: 'With a car, this area gets so much easier', b: 'A car makes weekend trips easy. Check parking at your stay', c: 'A car lets you explore the whole island' },
+     { a: 'Lots of bus routes: no car needed', b: '!Buses run, but not often. A timetable app is a must', c: '!Buses are infrequent and stop early. Consider a rental for trips', d: '!Hard to live here by bus. Seriously consider a rental car' },
+     { a: 'Almost everything is walkable', b: 'Walk around the neighborhood, bus for farther trips', c: '!Few shops within walking distance. Plan grocery runs' },
+     { a: '!A car makes life here much easier. Look into rentals early', b: 'Buses work fine. Rent a car just for day trips' }],
+    [{ a: 'Easy to find a place near shops and clinics', b: 'Local shops are close. Big hospitals are in town', c: '!Big stores and hospitals need a car. Check distances when booking' },
+     { a: 'Lots of ocean-view stays to choose from', b: 'Ocean views are possible on the coastal side', c: 'Seafront stays can have an ocean view', d: '!Ocean-view stays are rare. Enjoy the sea on outings' },
+     { a: 'Plenty of spacious, quiet whole-house rentals', b: 'Quiet houses can be found deeper in the village', c: '!Mostly apartments and studios. Look at outer villages for houses' },
+     { a: 'More restaurants and cafés than you can visit', b: 'Charming cafés scattered around', c: '!Few restaurants and cafés. Expect short trips for good food' },
+     { a: 'Buses and shops nearby help you save', b: '!Count car and travel costs, not just rent' }],
+    [{ a: 'Walk to the sea every morning', b: 'There’s a seaside path within walking distance', c: '!You’ll need a car or bus to reach the sea' },
+     { a: 'Lots of laptop-friendly cafés', b: 'There are cafés to work from. Bookmark a few', c: '!Few cafés. Check the desk and Wi-Fi at your stay' },
+     { a: 'Slow days in a quiet village', b: 'It’s quiet deeper in the village', c: '!A lively area. Pick a stay tucked away in an alley' },
+     { a: 'Good food and exhibitions nearby', b: 'Close to the Lee Jung-seop Art Museum and downtown food', c: 'Good food nearby. Exhibitions mean a trip downtown', d: '!Food and exhibitions mean a trip downtown' },
+     { a: 'Volcanic hills and forests right next door', b: 'Lots of volcanic hills and Olle trails nearby', c: 'Hills and Olle trails a short drive away', d: '!Hills and forests mean a trip by car or bus' },
+     { a: 'Shop at {m} and live like a local', b: 'Easy to become a regular at village shops', c: 'Be a regular at local eateries; shop at a nearby five-day market' }],
+  ],
+  zh: [
+    [{ a: '安静，适合好好休息', b: '比较清静，休息起来很舒服', c: '!这里比较热闹，休息日可以去附近的海边或森林' },
+     { a: '咖啡馆和便利设施多，适合工作', b: '有能工作的咖啡馆，住处的办公空间也要看看', c: '!适合办公的咖啡馆不多，先确认住处的书桌和Wi-Fi' },
+     { a: '生活设施齐全，最适合练习“真正的生活”', b: '适合提前体验村里的生活，记得确认到医院和超市的距离' },
+     { a: '适合慢慢散步，感受济州', b: '可以慢慢逛小巷和市场' },
+     { a: '安静不受打扰，适合专注', b: '!这里比较热闹，最好另找能专心的地方' }],
+    [{ a: '一个人坐公交、步行都方便', b: '很适合一个人安静度过，夜里出行要提前计划', c: '一个人住也不错，记得看看末班车时间' },
+     { a: '适合一起逛美食、展览和咖啡馆', b: '海边和咖啡馆约会路线就在附近', c: '适合两个人在海边散步放松', d: '适合两个人去火山丘和林间小路散步' },
+     { a: '医院、超市、游乐场都近，带孩子很方便', b: '可以带孩子在海边玩，先确认儿科在哪里', c: '!儿科和大超市可能比较远，一定要确认开车的距离' },
+     { a: '附近有能带宠物散步的林间小路和火山丘', b: '可以在海边散步，注意海水浴场的宠物规定', c: '!这里是市区，散步以公园为主，先找可带宠物的住处' },
+     { a: '医院和超市都近，和父母一起住很方便', b: '宽敞安静的住处适合全家休息，先确认医院位置', c: '附近有适合全家出游的海边和步道' }],
+    [{ a: '有车的话，这里会方便很多', b: '有车周末出游很轻松，记得确认住处的停车位', c: '有车的话，去岛的另一边也很自由' },
+     { a: '公交线路多，没车也没问题', b: '!有公交，但班次少，时刻表App必不可少', c: '!公交班次少、末班车早，出游的日子可以考虑租车', d: '!靠公交很难生活，建议一定考虑租车' },
+     { a: '几乎所有事情步行就能解决', b: '附近步行就够了，远一点就坐公交', c: '!步行能到的商店不多，买东西要提前计划' },
+     { a: '!这里有车才方便，尽早了解租车', b: '坐公交也能出行，出游的日子再租车也行' }],
+    [{ a: '很容易找到离超市、医院近的住处', b: '附近有超市，大医院要去市区', c: '!大超市和医院要开车去，选住处时确认距离' },
+     { a: '能看到海的住处选择很多', b: '靠海一侧也能找到海景住处', c: '靠海的住处也可能有海景', d: '!海景住处很少，海边就当作出游去玩' },
+     { a: '宽敞安静的独栋民宿很多', b: '村子深处也有安静的独栋', c: '!以公寓和单间为主，独栋可以扩大到郊外村子找' },
+     { a: '想去的美食和咖啡馆多到去不完', b: '处处都有氛围好的咖啡馆', c: '!美食和咖啡馆不多，要去附近地区觅食' },
+     { a: '公交和超市都近，方便省生活费', b: '!不要只看房租，车费和交通费也要一起算' }],
+    [{ a: '每天早上步行就能去海边散步', b: '步行就能走到海边的小路', c: '!去海边要开车或坐公交' },
+     { a: '适合打开笔记本的咖啡馆很多', b: '有能工作的咖啡馆，先收藏几家', c: '!咖啡馆不多，先确认住处的书桌和Wi-Fi' },
+     { a: '在安静的村子里慢慢过一天', b: '村子深处可以安静地生活', c: '!这里很热闹，选在小巷深处的住处更安静' },
+     { a: '美食和展览都在附近', b: '离李仲燮美术馆和市区美食都近', c: '美食就在附近，看展要去市区', d: '!美食和展览要去市区' },
+     { a: '火山丘和森林就在身边', b: '附近有很多火山丘和偶来小路', c: '开车不远就有火山丘和偶来小路', d: '!去火山丘和森林要开车或坐公交' },
+     { a: '在{m}买菜，像当地人一样生活', b: '容易成为村里小店和食堂的常客', c: '做当地小馆的常客，买菜就去附近的五日集市' }],
+  ],
+};
+const FIT_MARKET = {
+  ko: { shinjeju: '제주시 민속오일장', wondosim: '동문시장', seogwipo: '매일올레시장', gujwa: '세화 오일장', hallim: '한림 오일장', andeok: '대정 오일장' },
+  ja: { shinjeju: '済州市民俗五日市', wondosim: '東門市場', seogwipo: '毎日オルレ市場', gujwa: '細花五日市', hallim: '翰林五日市', andeok: '大静五日市' },
+  en: { shinjeju: 'Jeju City Folk Five-Day Market', wondosim: 'Dongmun Market', seogwipo: 'Maeil Olle Market', gujwa: 'Sehwa Five-Day Market', hallim: 'Hallim Five-Day Market', andeok: 'Daejeong Five-Day Market' },
+  zh: { shinjeju: '济州市民俗五日集市', wondosim: '东门市场', seogwipo: '每日偶来市场', gujwa: '细花五日集市', hallim: '翰林五日集市', andeok: '大静五日集市' },
+};
+function fitNotes(key, picks = answers) {
+  const [quiet, sea, infra, transit, nature] = RESULTS[key].stats;
+  const s = { quiet, sea, infra, transit, nature, ...TRAITS[key] }, txt = FIT_TEXT[LANG] || FIT_TEXT.ko;
+  return picks.map((a, i) => {
+    const j = i === 2 ? Math.max(0, a - 1) : a;   // own car and rental car read the same
+    let text = txt[i][j][FIT_PICK[i][j](s)];
+    const warn = text.startsWith('!');
+    text = (warn ? text.slice(1) : text).replace('{m}', (FIT_MARKET[LANG] || FIT_MARKET.ko)[key] || '');
+    return { label: Q(i).opts[a][1], text, warn };
+  });
+}
+
+/* ===================== no line that contradicts the answers ===================== */
+// Some neighborhood lines describe the person (works on a laptop, rests all day, has no car...). When the answers
+// say otherwise, the line in VARY takes its place, on the screen, in the saved image and in the share text.
+// answers: [why, who with, getting around, budget, dream day]
+const working = a => a[0] === 1 || a[4] === 1;
+const noCar = a => a[2] === 2 || a[2] === 3;
+const hasCar = a => a[2] === 0 || a[2] === 1;
+const VARY = {
+  hamdeok: [{ when: a => !working(a),
+    ko: { icon: 'i-wave', type: '에메랄드 바다 앞 주민', line: '눈 뜨면 에메랄드 바다, 하루가 가벼워져', talk: '오늘은 바다 앞 카페에서 쉬어 갈까?',
+          kw: { 0: '바다와 생활 편의를 함께 챙기는 타입', 1: '바다 앞 카페에서 여유 즐기기', 4: '틈날 때마다 동쪽 바다 여행' }, day: { 1: '바다 보이는 카페에서 쉬어 가기' },
+          tip: '성수기엔 해변이 붐벼요. <b>이른 아침·저녁 시간</b>을 노려 보세요.' },
+    ja: { icon: 'i-wave', type: 'エメラルドの海辺住民', line: '目覚めればエメラルドの海、<br>1日が軽くなる', talk: '今日は海の見えるカフェで<br>ひと休みしよう！',
+          kw: { 0: '海も暮らしの便利さも大事にする派', 1: '海辺のカフェでのんびり', 4: '時間があれば東側の海へ' }, day: { 1: '海の見えるカフェでひと休み' },
+          tip: 'ハイシーズンはビーチが混みます。<b>早朝や夕方の時間帯</b>がおすすめ。' },
+    en: { icon: 'i-wave', type: 'Emerald Beachfront Local', line: 'Wake up to an emerald sea, and the day feels light', talk: 'Shall we take a break<br>at a beachfront café?',
+          kw: { 0: 'The sea and daily comforts, both', 1: 'Slow time at a seaside café', 4: 'East-coast trips whenever you like' }, day: { 1: 'Unwinding at a café with a sea view' },
+          tip: 'The beach gets crowded in peak season. <b>Go early in the morning or in the evening</b>.' },
+    zh: { icon: 'i-wave', type: '翡翠海边居民', line: '睁眼就是翡翠色的海，<br>一天都变轻松', talk: '今天去海边咖啡馆<br>歇一歇吧！',
+          kw: { 0: '大海和生活便利都想要', 1: '在海边咖啡馆享受悠闲', 4: '有空就去东部海边走走' }, day: { 1: '在看得见海的咖啡馆歇一歇' },
+          tip: '旺季海滩人很多，<b>清晨或傍晚</b>去更舒服。' } }],
+  pyoseon: [{ when: a => a[0] === 1 || a[0] === 4 || a[4] === 1,   // came to work or to focus on something
+    ko: { type: '한적한 남쪽 바다 주민', line: '넓은 바다 앞이라, 무얼 해도 여유롭게', talk: '할 일 끝나면 바다 보러 가자!',
+          kw: { 0: '조용한 곳에서 내 페이스대로' }, day: { 1: '넓은 숙소에서 내 일에 집중' } },
+    ja: { type: '静かな南の海辺住民', line: '広い海のそばだから、<br>何をしてもゆったり', talk: 'やることが終わったら<br>海を見に行こう！',
+          kw: { 0: '静かな場所で自分のペースで' }, day: { 1: '広い宿で自分のことに集中' } },
+    en: { type: 'Quiet South Shore Local', line: 'Wide open sea, so every task feels unhurried', talk: 'Once you’re done,<br>let’s go see the sea!',
+          kw: { 0: 'My own pace, somewhere quiet' }, day: { 1: 'Focusing on your work in a roomy stay' } },
+    zh: { type: '清静南部海边居民', line: '面朝宽阔的大海，<br>做什么都从容', talk: '忙完了，<br>一起去看海吧！',
+          kw: { 0: '在安静的地方按自己的节奏' }, day: { 1: '在宽敞的住处专心做事' } } },
+    { when: noCar,
+    ko: { kw: { 3: '가끔은 근교로 나들이' }, tip: '큰 마트·병원까지는 버스로 꽤 걸려요. <b>장보기·병원 가는 날은 미리 계획</b>하세요.' },
+    ja: { kw: { 3: 'ときどき近場におでかけ' }, tip: '大きなスーパーや病院まではバスだと時間がかかります。<b>買い物や通院の日は早めに計画</b>しましょう。' },
+    en: { kw: { 3: 'Occasional trips nearby' }, tip: 'Big supermarkets and hospitals are a long bus ride away. <b>Plan grocery and clinic days ahead</b>.' },
+    zh: { kw: { 3: '偶尔去周边转转' }, tip: '坐公交去大超市和医院要花不少时间，<b>买东西、看病的日子要提前规划</b>。' } }],
+  wondosim: [{ when: hasCar,
+    ko: { icon: 'i-pin', type: '골목 산책러', line: '골목을 걸을수록 제주가 더 보이니까', talk: '오늘은 어느 골목을 걸어 볼까?',
+          tip: '원도심은 길이 좁아요. 숙소를 고를 땐 <b>주차 공간</b>부터 확인하세요.' },
+    ja: { icon: 'i-pin', type: '路地さんぽ好き', line: '路地を歩くほど、<br>済州がもっと見えてくる', talk: '今日はどの路地を<br>歩いてみる？',
+          tip: '旧市街は道が狭いです。宿を選ぶときは<b>駐車スペース</b>から確認しましょう。' },
+    en: { icon: 'i-pin', type: 'Alley Stroller', line: 'Walk more alleys, see more of Jeju', talk: 'Which alley shall we<br>explore today?',
+          tip: 'Old Town streets are narrow. When choosing a stay, check <b>parking</b> first.' },
+    zh: { icon: 'i-pin', type: '小巷散步爱好者', line: '越走小巷，<br>越能看见济州', talk: '今天去<br>哪条小巷走走？',
+          tip: '老城区道路窄，选住处时先确认<b>停车位</b>。' } }],
+  seogwipo: [{ when: a => a[0] !== 2,   // not here to try living before a move
+    ko: { line: '따뜻한 남쪽 시내에서 보내는 한 달', kw: { 0: '시내 생활과 자연을 함께 누리는 타입' } },
+    ja: { line: 'あたたかい南の街で<br>過ごすひと月', kw: { 0: '街の暮らしも自然も楽しむ派' } },
+    en: { line: 'A month in the warm southern downtown', kw: { 0: 'City life and nature, both' } },
+    zh: { line: '在温暖的南部市区<br>度过一个月', kw: { 0: '城市生活和自然都想享受' } } }],
+  shinjeju: [{ when: a => a[3] === 1 || a[3] === 2 || a[3] === 3,   // budget goes to something other than convenience
+    ko: { kw: { 0: '생활 편의도 놓치지 않는 실속파' } }, ja: { kw: { 0: '生活の便利さも外さない実用派' } },
+    en: { kw: { 0: 'Practical, comfort included' } }, zh: { kw: { 0: '生活便利也不放过的务实派' } } }],
+  aewol: [{ when: noCar,
+    ko: { kw: { 1: '해안 산책로 따라 걷기' }, day: { 0: '애월 바닷가 따라 산책' } },
+    ja: { kw: { 1: '海沿いの遊歩道を歩く' }, day: { 0: '涯月の海沿いを散歩' } },
+    en: { kw: { 1: 'Walks along the coastal path' }, day: { 0: 'A walk along the Aewol seaside' } },
+    zh: { kw: { 1: '沿着海岸步道散步' }, day: { 0: '沿着涯月海边散步' } } }],
+  andeok: [{ when: a => a[4] === 3 || a[4] === 5,   // dreams of food, exhibitions, markets and people
+    ko: { type: '한적한 서남쪽 주민', kw: { 0: '한적함과 자연이 함께하는 동네', 3: '북적임보다 여유가 있는 동네' } },
+    ja: { type: '静かな南西の住民', kw: { 0: '静けさと自然がそろう町', 3: 'にぎわいより、ゆとりのある町' } },
+    en: { type: 'Quiet Southwest Local', kw: { 0: 'Quiet and nature, side by side', 3: 'More breathing room than crowds' } },
+    zh: { type: '清静西南居民', kw: { 0: '清静与自然兼得的地方', 3: '比起热闹，更有余裕的地方' } } }],
+  hallim: [{ when: a => a[0] === 1,
+    ko: { kw: { 3: '일상처럼 머무는 바닷가 한 달' } }, ja: { kw: { 3: '暮らすように過ごす海辺のひと月' } },
+    en: { kw: { 3: 'Living by the sea like a local' } }, zh: { kw: { 3: '像生活一样住在海边的一个月' } } }],
+  jungsangan: [{ when: a => a[3] === 1 || a[4] === 0,   // wants a sea view or seaside walks
+    ko: { line: '숲과 오름 사이, 바람 소리 들리는 하루', kw: { 0: '오름이 가까운 일상' } },
+    ja: { line: '森とオルムのあいだで、<br>風の音を聞く1日', kw: { 0: 'オルムがすぐそばの毎日' } },
+    en: { line: 'Between forests and hills, the sound of wind', kw: { 0: 'Volcanic hills close at hand' } },
+    zh: { line: '在森林与火山丘之间，<br>听着风声过一天', kw: { 0: '火山丘就在身边的日常' } } }],
+};
+// the result in the current language, with the stand-ins these answers call for
+function RA(key, picks) {
   const r = R(key);
+  for (const v of VARY[key] || []) {
+    if (!v.when(picks)) continue;
+    for (const [f, val] of Object.entries(v[LANG] || v.ko)) {
+      if (typeof val === 'string') r[f] = val;
+      else { r[f] = r[f].slice(); for (const [i, s] of Object.entries(val)) r[f][i] = s; }
+    }
+  }
+  return r;
+}
+const mineShown = key => !!(cur && cur.isMine && cur.key === key);   // the result on screen is the viewer's own
+
+function renderResult(key, isMine) {
+  const r = isMine ? RA(key, answers) : R(key);
   cur = { key, isMine };
   $('result').innerHTML = `
     <p class="rhead">${isMine ? t('rheadMine') : t('rheadOther')}</p>
@@ -3034,7 +3276,9 @@ function renderResult(key, isMine) {
       </div>
       <div class="rtalk">${img(r.pose, t('harubangAlt'))}<div class="bubble">${r.talk}</div></div>
       <section class="sec"><h3>${t('secStats')}</h3>${meters(r.stats)}</section>
-      <section class="sec"><h3>${t('secKw')}</h3><ul class="kw">${r.kw.map(k => `<li>${k}</li>`).join('')}</ul></section>
+      ${isMine ? `<section class="sec"><h3>${t('secFit', r.place)}</h3><ul class="picks">${fitNotes(key).map(f =>
+        `<li${f.warn ? ' class="warn"' : ''}><b>${f.label}</b><span>${f.text}</span></li>`).join('')}</ul></section>`
+        : `<section class="sec"><h3>${t('secKw')}</h3><ul class="kw">${r.kw.map(k => `<li>${k}</li>`).join('')}</ul></section>`}
       <section class="sec"><h3>${t('secDay')}</h3><div class="day">${t('dayLabels').map((d, i) => `<b>${d}</b><span>${r.day[i]}</span>`).join('')}</div></section>
       <p class="tip"><b>${t('tip')}</b> · ${r.tip}</p>
       <p class="stamp">${t('stamp')}</p>
@@ -3114,7 +3358,7 @@ function copyText(text, okMsg, done = () => {}) {
 }
 function shareTest() {
   const onResult = !$('result').hidden && mine;
-  const r = onResult ? R(mine.rank[0]) : null;
+  const r = onResult ? RA(mine.rank[0], answers) : null;
   const msg = r ? t('shareMine', r) : t('shareGeneric');
   const url = STANDALONE && LANG !== 'ko' ? `${SHARE_URL}?lang=${LANG}` : SHARE_URL;   // friends open it in the same language
   const text = `${msg} 👉 ${url}`;
@@ -3175,7 +3419,7 @@ async function showCaptureOf(blob, key) { showCapture(await toDataURL(blob), key
 const IN_APP = /KAKAOTALK|Instagram|FBAN|FBAV|FB_IAB|NAVER\(inapp|Line\/|DaumApps|everytimeApp|BAND\/|MicroMessenger|Weibo/i.test(navigator.userAgent || '');
 const IS_IOS = /iPad|iPhone|iPod/.test(navigator.userAgent || '') || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
 const imgCache = {};
-const cacheKey = key => LANG + ':' + key;   // one image per language
+const cacheKey = key => LANG + ':' + key + (mineShown(key) ? ':' + answers.join('') : '');   // one image per language
 function prepareImage(key) {
   const ck = cacheKey(key);
   if (!imgCache[ck]) {
@@ -3285,7 +3529,7 @@ function wrapWords(g, text, maxW) {
 }
 
 async function drawResultImage(key) {
-  const r = R(key), [DISP, BODY, HAND, TALK] = CANVAS_FONTS[LANG] || CANVAS_FONTS.ko;
+  const r = mineShown(key) ? RA(key, answers) : R(key), [DISP, BODY, HAND, TALK] = CANVAS_FONTS[LANG] || CANVAS_FONTS.ko;
   const title = t('docTitle'), talk = r.talk.split('<br>'), line = t('quote', r.line.replace(/<br>/g, spaced() ? ' ' : ''));
   // web fonts arrive in pieces by character range, so ask for exactly the characters this image uses
   const used = [title, r.type, r.region, r.area, line, ...talk, t('secStats'), t('secKw'), ...t('stats'), ...r.kw,

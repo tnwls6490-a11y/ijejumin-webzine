@@ -22,7 +22,9 @@ def ren_css(s):
     return re.sub(r'\.(%s)\b' % '|'.join(RENAME), lambda m: '.vt-' + m.group(1), s)
 
 # ---------------------------------------------------------------- CSS
-css_src = '\n'.join(L[9:279])          # 10~279줄
+# 구역은 줄 번호 대신 표시로 찾는다 (2026-10-30: 아티팩트에 줄이 늘어 번호가 밀렸다)
+I_STYLE, I_SCRIPT, I_END = L.index('</style>'), L.index('<script>'), L.index('</script>')
+css_src = '\n'.join(L[9:I_STYLE])       # 10번째 줄(글꼴 두 줄 다음) ~ </style> 앞
 css_src = re.sub(r'/\*.*?\*/', '', css_src, flags=re.S)   # 영어 주석은 빼고, 블록 머리에 한국어 설명을 단다
 
 def split_top(text):
@@ -103,12 +105,13 @@ HEAD_CSS = '''/* =========================================================
    - 글꼴: Bagel Fat One·Jua·Nanum Pen Script(SIL OFL 1.1)는 테스트에 쓰는 글자만 Google Fonts에서 받아 css/fonts/에,
      G마켓 산스(Gmarket Sans, 무료 글꼴)는 아티팩트에 들어 있던 것을 꺼내 css/fonts/에 둔다. 이 페이지에서만 내려받는다
    - 영어·일본어·중국어 화면은 아티팩트가 Google Fonts에서 따로 불러오던 글꼴 대신 기기 글꼴로 보인다
+   - 2026-10-30 아티팩트 업데이트(결과 화면 '내 선택으로 본 ○○' .picks) 반영. 새 글자가 든 글꼴로 같은 이름에 바꿔 주소 끝에 ?v=2 (휴대폰 캐시)
    ========================================================= */
-@font-face { font-family: "Gmarket"; font-weight: 500; font-display: swap; src: url(fonts/vt-gmarket-500.woff) format("woff"); }
-@font-face { font-family: "Gmarket"; font-weight: 700; font-display: swap; src: url(fonts/vt-gmarket-700.woff) format("woff"); }
-@font-face { font-family: "Bagel Fat One"; font-weight: 400; font-display: swap; src: url(fonts/vt-bagel-fat-one.woff2) format("woff2"); }
-@font-face { font-family: "Jua"; font-weight: 400; font-display: swap; src: url(fonts/vt-jua.woff2) format("woff2"); }
-@font-face { font-family: "Nanum Pen Script"; font-weight: 400; font-display: swap; src: url(fonts/vt-nanum-pen.woff2) format("woff2"); }
+@font-face { font-family: "Gmarket"; font-weight: 500; font-display: swap; src: url(fonts/vt-gmarket-500.woff?v=2) format("woff"); }
+@font-face { font-family: "Gmarket"; font-weight: 700; font-display: swap; src: url(fonts/vt-gmarket-700.woff?v=2) format("woff"); }
+@font-face { font-family: "Bagel Fat One"; font-weight: 400; font-display: swap; src: url(fonts/vt-bagel-fat-one.woff2?v=2) format("woff2"); }
+@font-face { font-family: "Jua"; font-weight: 400; font-display: swap; src: url(fonts/vt-jua.woff2?v=2) format("woff2"); }
+@font-face { font-family: "Nanum Pen Script"; font-weight: 400; font-display: swap; src: url(fonts/vt-nanum-pen.woff2?v=2) format("woff2"); }
 .vt, .vt *, .vt *::before, .vt *::after { box-sizing: border-box; }
 .vt img { max-width: 100%; }
 .vt [hidden]:not([hidden=until-found i]) { display: none !important; }
@@ -129,12 +132,12 @@ TAIL_CSS = '''/* 아티팩트에서 style="…"로 넣던 것 (공통 기준: st
 .vt .langmenu button { min-height: 44px; }
 .vt #sheet .x { width: 44px; height: 44px; }
 .vt .app.fit .opt { min-height: clamp(44px, 6.4cqh, 56px); font-size: clamp(16px, 2.1cqh, 17px); }
-.vt .kw li, .vt .day span, .vt .tip, .vt .zine p { font-size: 16px; }
+.vt .kw li, .vt .day span, .vt .tip, .vt .zine p, .vt .picks li { font-size: 16px; }
 '''
 open(os.path.join(OUT, 'vt.css'), 'w', encoding='utf-8').write(HEAD_CSS + css + '\n' + TAIL_CSS)
 
 # ---------------------------------------------------------------- 마크업
-mk = '\n'.join(L[281:371])            # 282~371줄 (SVG 아이콘 묶음 ~ 공유 문구 상자)
+mk = '\n'.join(L[I_STYLE + 2:I_SCRIPT - 1])   # </style> 다음 빈 줄 뒤 ~ <script> 앞 빈 줄 전 (SVG 아이콘 묶음 ~ 공유 문구 상자)
 mk = rep(mk, '<svg width="0" height="0" style="position:absolute" aria-hidden="true">', '<svg class="vt-sprite" width="0" height="0" aria-hidden="true">')
 mk = rep(mk, '<main class="app" id="app">', '<div class="app" id="app">')
 mk = rep(mk, '</main>', '</div>')
@@ -198,7 +201,7 @@ page = '''<!doctype html>
 open(os.path.join(PUB, 'articles', 'jeju-village-test.html'), 'w', encoding='utf-8', newline='\n').write(page)
 
 # ---------------------------------------------------------------- 스크립트
-js = '\n'.join(L[373:1383])            # <script> 안 (374~1383줄)
+js = '\n'.join(L[I_SCRIPT + 1:I_END])  # <script> 안
 js = pose(js)
 js = rep(js, "const STANDALONE = window.top === window && /^https?:$/.test(location.protocol);\nconst SHARE_URL = STANDALONE ? location.origin + location.pathname : 'https://claude.ai/artifact/Qhchi6VWQa5d3jBMB8tCCt';",
              "// 웹진 안 페이지라 늘 자기 주소로 공유한다. 공유에는 실제 주소만 쓴다 (공통 기준: 테스트 주소 금지)\nconst STANDALONE = true;\n"
@@ -286,6 +289,8 @@ JS = '''
    - '대표 명소 보러가기'는 '나의 제주찾기' 해당 동네(#town-N)로 간다 (전에는 '웹진 준비 중' 안내)
    - 공유 주소는 실제 웹진 주소. claude.ai 전용 저장 창과 언어별 Google Fonts 불러오기는 뺐다
    - 아티팩트의 style="…"는 클래스로 (style.css 맨 뒤 .vt 블록)
+   2026-10-30 아티팩트 업데이트 반영 (사용자가 준 압축 파일의 이 블록 그대로): 결과의 '내 선택으로 본 ○○' 5줄(FIT_*·fitNotes),
+   고른 답과 어긋나는 문장 바꾸기(VARY·RA), 대중교통·도보면 중산간 빼기(score), 누구와 오는지 가정한 문구 고침
    ========================================================= */
 (function () {
 var vtRoot = document.getElementById('vt');
