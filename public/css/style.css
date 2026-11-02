@@ -365,7 +365,9 @@ a { color: inherit; }
 @keyframes page-show { to { opacity: 1; } }
 
 .intro { position: relative; height: 100vh; height: 100svh; }
-.js .intro { height: calc(200vh + 720px); height: calc(200svh + 720px); }   /* 조금만 내려도 한 번에(약 2.4초) 제주까지 빨려 들어간다(site.js). 그다음 약 700px은 제주 화면에 머물고, 마지막 한 화면은 인터뷰 화면이 아래에서 올라와 퍼지는 동안 제주를 붙잡아 두는 구간 */
+.js .intro { height: calc(100vh + 40px); height: calc(100svh + 40px); }   /* 조금만(8px) 내려도 한 번에(약 2.4초) 제주까지 빨려 들어가고, 그동안 페이지는 40px 자리에 붙잡혀 있다(site.js).
+   제주 화면에 닿은 뒤로는 보통 페이지처럼 제주 화면과 인터뷰 화면이 함께 밀려 올라간다 (사용자 요청 2026-11-02 "그냥 스크롤해서 내려갈 수 있도록").
+   전에는 calc(200svh + 720px): 약 700px 동안 제주 화면에 머물고, 마지막 한 화면 동안 인터뷰 화면(.rise)이 둥근 카드로 올라와 제주를 덮었다 */
 
 .intro__stage {
   /* 창문 사진(1086×1448) 크기와, 그 안의 유리 자리 */
@@ -1451,6 +1453,7 @@ a { color: inherit; }
 }
 
 /* ---------- 다음 화면이 아래에서 올라와 화면 가득 퍼진다 (.rise) ----------
+   지금은 쓰는 곳이 없다: 인물 소개(.people)에서 rise를 뺐다 (사용자 요청 2026-11-02, 보통 스크롤로). 되돌릴 때는 세 언어 index.html의 people에 rise를 다시 붙이고 .intro 높이도 되돌린다
    site.js가 화면에 들어온 정도를 --enter(0→1)로 넣는다.
    0: 양옆이 좁고 위가 크게 둥근 카드 → 1: 화면 가득
    --enter는 이 칸에만 쓰고 안쪽 요소에는 물려주지 않는다(inherits: false). 물려주면 올라오는 동안 장면마다

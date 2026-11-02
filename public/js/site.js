@@ -170,7 +170,8 @@ var wzPlace = (function () {
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(setH);
   })();
 
-  /* ---------- 다음 화면이 아래에서 올라와 퍼지기 (.rise) ---------- */
+  /* ---------- 다음 화면이 아래에서 올라와 퍼지기 (.rise) ----------
+     지금은 .rise가 붙은 곳이 없어 아무 일도 하지 않는다 (2026-11-02 인물 소개를 보통 스크롤로 바꾸며 뺐다. style.css .rise 참고) */
   (function () {
     var rises = document.querySelectorAll('.rise');
     if (!rises.length) return;
@@ -1513,7 +1514,7 @@ var wzPlace = (function () {
     if (run) {
       var k = clamp((now - run.start) / run.dur, 0, 1);
       shownP = run.from + (run.to - run.from) * easeInOut(k);
-      if (k >= 1) { shownP = run.to; if (run.to === 1) { restY = window.scrollY; warmNext(); } run = null; holding = false; }   // 제주 화면에 도착한 자리를 기억한다 (아래 '인터뷰 화면 한 번에')
+      if (k >= 1) { shownP = run.to; if (run.to === 1) warmNext(); run = null; holding = false; }
       else requestUpdate();
     }
     var p = shownP;
@@ -1596,49 +1597,15 @@ var wzPlace = (function () {
   root.classList.add('has-intro');
   syncHeader();
 
-  /* 제주 화면 → 인터뷰 화면: 스크롤하면 인터뷰 화면이 한 번에 쓱 올라온다 (사용자 요청 "한번에 슉 뜨는 걸로, 너무 빠르지 않게", 2026-10-23)
-     제주 화면에 도착한 뒤 아래로 조금(24px) 내리면, 인터뷰 화면이 올라오기 시작하는 곳으로 바로 옮긴 다음(제주 화면은 그대로라 티가 안 난다)
-     SNAP_MS(1.2초) 동안 인터뷰 화면이 다 올라온 곳(헤더 아래)까지 저절로 스크롤한다. 인터뷰 첫 화면에서 위로 올리면 같은 방식으로 제주 화면으로 돌아간다.
-     손으로 스크롤할 때만(휠·손가락·키보드) 움직이고, 메뉴·맨 위로 버튼처럼 저절로 스크롤할 때는 끼어들지 않는다. 움직임 줄이기 설정이면 하지 않는다.
-     (전에는 스크롤한 만큼 조금씩 올라왔다) */
-  var SNAP_MS = 1200;
-  var snap = null;            // 지금 재생 중인 저절로 스크롤 { from, to, then, start }
-  var restY = null;           // 제주 화면에 머무는 자리 (도착한 곳)
+  /* 제주 화면 → 인터뷰 화면은 보통 페이지처럼 스크롤한 만큼 함께 밀려 올라간다 (사용자 요청 2026-11-02 "그냥 스크롤해서 내려갈 수 있도록").
+     전에는(2026-10-23~) 제주 화면에서 조금 내리면 인터뷰 화면이 1.2초 동안 저절로 쓱 올라와(SNAP_MS) 제주 화면을 둥근 카드처럼 덮었다.
+     그 코드는 커밋 기록(2026-10-30까지)에 있다 */
   var userAt = -1e9;          // 사람이 마지막으로 스크롤한 때
-  var lastY = window.scrollY;
   function pageY(el) { return el.getBoundingClientRect().top + window.scrollY; }
   function marks() {
     var hh = parseFloat(getComputedStyle(root).getPropertyValue('--hdr-h')) || 0;
     var y = pageY(after);
-    return { rise: y - window.innerHeight, full: y - hh, rest: pageY(intro) + 40 };
-  }
-  function snapStep(ts) {
-    if (!snap) return;
-    if (snap.start === null) snap.start = ts;
-    var k = clamp((ts - snap.start) / SNAP_MS, 0, 1);
-    window.scrollTo(0, snap.from + (snap.to - snap.from) * easeInOut(k));
-    if (k < 1) { window.requestAnimationFrame(snapStep); return; }
-    var then = snap.then;
-    snap = null;
-    if (then !== null) { window.scrollTo(0, then); restY = then; }
-    root.style.scrollBehavior = '';
-    lastY = window.scrollY;
-  }
-  function startSnap(from, to, then) {
-    root.style.scrollBehavior = 'auto';   // 한 칸씩 바로 옮기도록 (html의 부드러운 스크롤을 잠깐 끈다)
-    window.scrollTo(0, from);
-    snap = { from: from, to: to, then: then, start: null };
-    window.requestAnimationFrame(snapStep);
-  }
-  function snapCheck() {
-    var y = window.scrollY, dy = y - lastY;
-    lastY = y;
-    if (snap || run || shownP !== 1 || reduced() || !after) return;
-    if (performance.now() - userAt > 350) return;                    // 사람이 직접 스크롤할 때만
-    var m = marks();
-    var rest = restY === null ? m.rest : restY;
-    if (dy > 0 && y > rest + 24 && y < m.full - 2) startSnap(Math.max(y, m.rise), m.full, null);   // 아래로: 인터뷰 화면이 올라온다
-    else if (dy < 0 && y > m.rise && y < m.full - 24) startSnap(y, m.rise, m.rest);                // 위로: 제주 화면으로 돌아간다
+    return { full: y - hh, rest: pageY(intro) + 40 };
   }
   function markUser() { userAt = performance.now(); }
   window.addEventListener('wheel', markUser, { passive: true });
@@ -1653,7 +1620,7 @@ var wzPlace = (function () {
   function jumpTo(y) {
     root.style.scrollBehavior = 'auto';   // html의 부드러운 스크롤 대신 바로 옮긴다
     try { window.scrollTo({ top: y, behavior: 'instant' }); } catch (err) { window.scrollTo(0, y); }
-    if (!snap) root.style.scrollBehavior = '';
+    root.style.scrollBehavior = '';
   }
   function holdPlace() {
     if (reduced() || !after || targetP() !== 1 || (shownP === 1 && !run)) { holding = false; return; }
@@ -1665,15 +1632,15 @@ var wzPlace = (function () {
     if (window.scrollY > cap) jumpTo(cap);
   }
 
-  window.addEventListener('scroll', function () { holdPlace(); syncHeader(); requestUpdate(); snapCheck(); }, { passive: true });
+  window.addEventListener('scroll', function () { holdPlace(); syncHeader(); requestUpdate(); }, { passive: true });
   window.addEventListener('resize', function () { measure(); syncHeader(); requestUpdate(); });
   if (reduceQuery && reduceQuery.addEventListener) reduceQuery.addEventListener('change', requestUpdate);
-  /* 제주로 빨려 들어가는 동안, 인터뷰 화면이 저절로 올라오는(내려가는) 동안은 휠·손가락 스크롤을 막는다.
+  /* 제주로 빨려 들어가는 동안은 휠·손가락 스크롤을 막는다.
      끝난 뒤에도 같은 휠 흐름(트랙패드 관성)이 이어지는 동안은 계속 막아, 남은 힘으로 다음 화면까지 넘어가지 않게 한다 (휠이 0.16초 쉬면 풀린다) */
   var holdWheel = false, lastWheel = 0;
   function holdScroll(e) {
     var now = performance.now();
-    if ((run && run.to === 1) || snap) { e.preventDefault(); holdWheel = true; lastWheel = now; return; }
+    if (run && run.to === 1) { e.preventDefault(); holdWheel = true; lastWheel = now; return; }
     /* 비행기 창(제주에 닿기 전)에서 아래로 굴린 첫 휠은 페이지를 그만큼 내리지 않고, 제자리로만 옮겨 빨려 들어가기를 시작한다 */
     if (e.type === 'wheel' && e.deltaY > 0 && !e.ctrlKey && shownP < 1 && !reduced() && after && window.scrollY < marks().rest) {
       e.preventDefault(); holdWheel = true; lastWheel = now; jumpTo(marks().rest); return;
@@ -1707,11 +1674,10 @@ var wzPlace = (function () {
       var hh = parseFloat(getComputedStyle(root).getPropertyValue('--hdr-h')) || 0;
       if (langPlace && langPlace.mode === 'landed') {
         jumpTo(marks().rest);
-        shownP = 1; run = null; restY = window.scrollY;
+        shownP = 1; run = null;
         warmNext();
       } else jumpTo(langPlace ? wzPlace.y(langPlace) : Math.max(0, pageY(entry) - hh));
       root.style.scrollBehavior = 'auto';
-      lastY = window.scrollY;
       syncHeader(); update();
     };
     ['wheel', 'touchstart', 'keydown'].forEach(function (type) {
@@ -1720,7 +1686,7 @@ var wzPlace = (function () {
     placeEntry();
     window.addEventListener('load', function () {
       placeEntry();
-      window.setTimeout(function () { if (!snap) root.style.scrollBehavior = ''; }, 600);
+      window.setTimeout(function () { root.style.scrollBehavior = ''; }, 600);
     });
   }
 })();
