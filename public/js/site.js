@@ -4176,10 +4176,10 @@ document.fonts && document.fonts.addEventListener && document.fonts.addEventList
     return '<a class="rq-next-test rq-sequel" href="./jeju-village-test.html?lang=' + GL + '&amp;mode=' + (kind === 'people' ? 'real2' : 'real1') + '" data-rq-next="' + kind + '"><span class="rq-next-kicker">' + esc(c.kicker) + '</span><span class="rq-next-name">' + c.name + '</span><span class="rq-next-desc">' + esc(c.desc) + '</span></a>';
   };
   const rqPeopleList = SET => '<section class="rq-people" aria-labelledby="rq-people-title"><h3 class="rq-people-title" id="rq-people-title">' + esc(SET.peopleTitle) + '</h3><p class="rq-people-sub">' + esc(SET.peopleSub) + '</p><ul class="rq-list" id="rq-list"></ul></section>';
-  /* 1탄: 2탄 카드(그 위 제목·설명은 사용자 요청으로 지움) → 네 사람. 2탄: 네 사람 → 1탄 카드 */
+  /* 1탄: 네 사람 (2탄 카드는 사용자 요청으로 지웠다, 2026-11-03). 2탄: 네 사람 → 1탄 카드 */
   const rqAfter = (name, SET) => name === 'life'
-    ? '<section class="rq-people" aria-label="' + esc(L.rq.sequelAria) + '">' + rqNext('people') + '</section>' + rqPeopleList(SET)
-    : rqPeopleList(SET) + '<section class="rq-people" aria-labelledby="rq-prequel-title"><h3 class="rq-people-title" id="rq-prequel-title">' + esc(SET.prequelTitle) + '</h3><p class="rq-people-sub">' + esc(SET.prequelSub) + '</p>' + rqNext('life') + '</section>';
+    ? rqPeopleList(SET)
+    :rqPeopleList(SET) + '<section class="rq-people" aria-labelledby="rq-prequel-title"><h3 class="rq-people-title" id="rq-prequel-title">' + esc(SET.prequelTitle) + '</h3><p class="rq-people-sub">' + esc(SET.prequelSub) + '</p>' + rqNext('life') + '</section>';
   let rqRoot = null;
   function rqMarkup(name, SET) {
     const R = L.rq;

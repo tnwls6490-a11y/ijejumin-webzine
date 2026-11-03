@@ -4625,7 +4625,8 @@ body.page-interview :is(.topbar, .wz-header, .site-footer) { font-family: var(--
 .rq-bubble::before{content:"";position:absolute;left:-10px;top:42%;border-top:8px solid transparent;border-bottom:8px solid transparent;border-right:13px solid #fff}
 /* 첫 화면을 다른 게임과 비슷한 톤으로 (사용자 요청 2026-11-03): 둥근 굵은 제목 글꼴(Bagel Fat One), 말풍선 글꼴(Jua), 부드러운 그림자.
    색은 실화냐 그대로(크림·살구·주황·남색). 글꼴은 밸런스 게임 글꼴에 실화냐 첫 화면 글자를 더해 같이 쓴다 (reference/tools/games/fonts.py) */
-.rq{background:radial-gradient(ellipse at 6% 6%,#fffdf8 0,transparent 45%),radial-gradient(ellipse at 100% 88%,#ffe0c4 0,transparent 42%),linear-gradient(160deg,#fff8ee,#ffeedd)}
+.rq{background:url(../images/rq-bg-hills.svg) center bottom/100% auto no-repeat,radial-gradient(ellipse at 6% 6%,#fffdf8 0,transparent 45%),radial-gradient(ellipse at 100% 88%,#ffe0c4 0,transparent 42%),linear-gradient(160deg,#fff8ee,#ffeedd)}
+/* ↑ 맨 아래 주황빛 오름·눈 덮인 한라산·양쪽 유채꽃 그림(images/rq-bg-hills.svg, 사용자가 준 시안처럼 2026-11-03). 다른 요소는 그대로 */
 .rq .rq-kicker{margin-bottom:14px;padding:8px 15px 6px;background:var(--peach);color:var(--orange-ink);font-size:14px;font-weight:700}
 .rq .rq-title{display:flex;flex-direction:column;align-items:center;gap:6px;font:400 clamp(40px,11vw,52px)/1.18 BalanceBagel,BalanceJua,var(--font);letter-spacing:-.03em;color:var(--ink)}
 .rq .rq-title span{display:block;transform:rotate(-2deg);text-shadow:0 3px 0 #fff}

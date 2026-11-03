@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 200" width="1024" height="200">
+  <!-- 실화냐 배경 맨 아래: 주황빛 오름 능선, 눈 덮인 한라산, 양쪽 귀퉁이 유채꽃 (사용자가 준 시안처럼, 2026-11-03. 웹진에서 직접 그린 그림) -->
+  <defs>
+    <linearGradient id="far" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FAD9BF"/><stop offset="1" stop-color="#F6C6A2"/></linearGradient>
+    <linearGradient id="halla" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F3B488"/><stop offset="1" stop-color="#EFA273"/></linearGradient>
+    <linearGradient id="near" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F1AA78"/><stop offset="1" stop-color="#EA9661"/></linearGradient>
+    <symbol id="fl" viewBox="-12 -12 24 24">
+      <g fill="#FFCA3A"><ellipse cx="0" cy="-6" rx="4.6" ry="6"/><ellipse cx="6" cy="0" rx="6" ry="4.6"/><ellipse cx="0" cy="6" rx="4.6" ry="6"/><ellipse cx="-6" cy="0" rx="6" ry="4.6"/></g>
+      <circle r="3.2" fill="#F2A007"/>
+    </symbol>
+    <g id="cluster">
+      <g fill="none" stroke="#7DA24B" stroke-width="3.2" stroke-linecap="round">
+        <path d="M30 200 C31 180 34 160 30 132"/><path d="M58 200 C57 182 60 166 64 150"/><path d="M86 200 C84 186 82 172 90 160"/><path d="M14 200 C16 188 18 176 12 166"/>
+      </g>
+      <g fill="#8DB25A"><ellipse cx="40" cy="178" rx="9" ry="3.6" transform="rotate(-35 40 178)"/><ellipse cx="22" cy="186" rx="8" ry="3.2" transform="rotate(30 22 186)"/><ellipse cx="72" cy="182" rx="9" ry="3.6" transform="rotate(-28 72 182)"/></g>
+      <use href="#fl" x="16" y="114" width="28" height="28"/><use href="#fl" x="34" y="126" width="22" height="22"/><use href="#fl" x="8" y="132" width="20" height="20"/>
+      <use href="#fl" x="50" y="134" width="26" height="26"/><use href="#fl" x="66" y="146" width="20" height="20"/>
+      <use href="#fl" x="78" y="142" width="24" height="24"/><use href="#fl" x="0" y="152" width="22" height="22"/><use href="#fl" x="92" y="158" width="18" height="18"/>
+    </g>
+  </defs>
+  <!-- 먼 오름 -->
+  <path d="M0 124 C110 96 210 100 320 114 C420 128 480 106 570 98 C660 90 760 110 860 106 C940 102 990 94 1024 98 V200 H0Z" fill="url(#far)"/>
+  <!-- 한라산 (완만한 방패 화산) -->
+  <path d="M500 156 C576 126 632 88 684 72 C700 67 708 61 720 59 L762 59 C774 61 782 67 798 72 C852 88 906 124 990 156 Z" fill="url(#halla)"/>
+  <!-- 눈 덮인 꼭대기 -->
+  <path d="M684 72 C700 67 708 61 720 59 L762 59 C774 61 782 67 798 72 C786 79 774 74 764 82 C754 74 744 85 733 78 C722 86 712 76 700 82 C694 78 689 76 684 72Z" fill="#FFF4E8"/>
+  <!-- 가까운 오름 -->
+  <path d="M0 162 C110 134 214 138 304 152 C394 166 474 148 566 152 C664 156 764 138 862 148 C942 156 992 152 1024 148 V200 H0Z" fill="url(#near)"/>
+  <path d="M0 184 C140 168 282 172 424 182 C564 192 704 178 844 180 C934 182 992 178 1024 176 V200 H0Z" fill="#E68A52" opacity=".5"/>
+  <!-- 유채꽃 (왼쪽·오른쪽 귀퉁이) -->
+  <use href="#cluster"/>
+  <use href="#cluster" transform="translate(1024 0) scale(-1 1)"/>
+</svg>
