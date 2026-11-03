@@ -1,0 +1,624 @@
+{
+  "ui": {
+    "switchAria": "Choose a game",
+    "village": "Jeju Local Quiz",
+    "villageSub": "Find your neighborhood",
+    "balance": "Balance Game",
+    "balanceSub": "Pick the day you’d live",
+    "realPre": "Jeju Life, ",
+    "real": "Real or Not?",
+    "realSub": "True or fake",
+    "toTop": "Back to start",
+    "home": "Home",
+    "share": "Share",
+    "logoAlt": "ejejumin",
+    "copied": "Share message copied! Paste it into a chat or DM to send it to friends.",
+    "copyAria": "Copy share message",
+    "copyHelp": "Press and hold the text below, select all and copy,<br>then paste it into a chat or DM",
+    "copyText": "Share message",
+    "close": "Close",
+    "endShare": "Share with friends",
+    "endAgain": "Take it again",
+    "titleBalance": "Jeju Life Balance Game | ejejumin · Hankyung Webzine",
+    "titleReal1": "Jeju Life, Real or Not? Daily Life Edition | ejejumin · Hankyung Webzine",
+    "titleReal2": "Jeju Life, Real or Not? Settlers Edition | ejejumin · Hankyung Webzine"
+  },
+  "b": {
+    "aria": "Jeju Life Balance Game",
+    "invite": "A friend sent you the same 8 questions.<br><strong>You’ll see each other’s picks at the end!</strong>",
+    "inviteBad": "We couldn’t read the comparison link, so we opened the regular game.",
+    "kicker": "My Jeju days, picked with Hareubang",
+    "title1": "Jeju Life",
+    "title2": "Balance Game",
+    "sub": "The sea you see every day, the convenience store by your door — both sound great…<br>but if you could pick only one?",
+    "go": "Let’s pick my Jeju life!",
+    "goContinue": "Keep picking my Jeju life",
+    "meta": "8 choices · About 2 min · No right answers",
+    "restartAll": "Start over from the beginning",
+    "startTalk": "If you lived in Jeju,\ncould you give this up?",
+    "assume": "The times and conditions in each choice are made up for the game.<br>Of the two situations, pick the one that appeals to you more.",
+    "back": "Back",
+    "backStart": "Start screen",
+    "goBack": "Go back",
+    "topicAria": "Current topic: {c}",
+    "progressAria": "Questions answered",
+    "optionsAria": "Choose one of two",
+    "picked": "Picked {t}. {r}",
+    "categories": [
+      "Home",
+      "Work",
+      "People",
+      "Everyday"
+    ],
+    "resultLabel": "My Jeju life ending",
+    "postmark": "ejejumin",
+    "framesLabel": "My Jeju life in 4 cuts, drawn from my picks",
+    "evidenceLabel": "The taste combo Hareubang spotted",
+    "stamp": "There’s no right answer. It’s the day you chose!",
+    "inviteBtn": "What ending will your friend get? Send the same questions",
+    "saveBtn": "Save my Jeju life postcard ↓",
+    "summary": "Review my 8 picks · Edit",
+    "relatedTitle": "Read the stories of people who’ve already lived this Jeju life",
+    "toVillage": "So, which Jeju local am I?",
+    "endNote": "This is a just-for-fun imaginary ending woven from your picks. It doesn’t rate how suited you are to moving to Jeju.",
+    "compareTitle": "We made the same pick<br>on {n} of 8 questions!",
+    "compareAll": "All our picks match. Was the toughest question the same too?",
+    "compareSome": "Shall we talk about the questions where we split?",
+    "compareRow": "Q{n}. Different picks on {c}",
+    "me": "Me",
+    "friend": "Friend",
+    "revealKicker": "BEHIND THE SCENES",
+    "revealTitle": "Want to see the other side of the dream?",
+    "revealDesc": "Tap a card to see the everyday life that comes with your pick.",
+    "flipAria": "{t}: see the life that comes with it",
+    "flipAriaBack": "{t}: see the dream side again",
+    "frontLabel": "The dream I picked",
+    "frontHint": "Flip it ↻",
+    "backLabel": "The life that comes with it",
+    "backHint": "See the front ↻",
+    "altKicker": "ANOTHER ENDING",
+    "altTitle": "One pick, a different ending",
+    "altDesc": "If you’d picked the other answer, what scene would be waiting?",
+    "talkKicker": "ENDING TALK",
+    "talkTitle": "After-ending talk with friends",
+    "talkBtn": "Let your friends pick too →",
+    "previewTitle": "Peek at another ending",
+    "previewKicker": "An imagined ending with one pick changed",
+    "previewNote": "Your current result stays as it is. If you like this one, switch to this pick.",
+    "applyBtn": "Change my result to this pick",
+    "fileTitle": "To pick together with friends",
+    "fileText": "Comparing picks with friends works on the web. For now, pick your Jeju life and save your postcard.",
+    "shareTitle": "Jeju Life Balance Game",
+    "shareGeneric": "A home by the sea vs. a market by your home? Pick your Jeju life in 8 choices!",
+    "shareMine": "My Jeju life ending is “{t}”!\n{q}\nAnswer the same 8 questions and let’s compare our picks.",
+    "making": "Making your postcard…",
+    "makeFail": "Couldn’t make the postcard. Please try again in a moment.",
+    "postcardTitle": "My Jeju life postcard",
+    "postcardAlt": "My Jeju in four cuts: {t}. {s}",
+    "longPress": "On your phone, press and hold the image to save it.",
+    "download": "Download image ↓",
+    "fileName": "my-jeju-life-postcard.png",
+    "cvHeader": "My Jeju in Four Cuts",
+    "cvPostmark": "ejejumin · MY JEJU LIFE",
+    "cvFooter": "Jeju Life Balance Game · ejejumin"
+  },
+  "bd": {
+    "questions": [
+      {
+        "title": "By the sea, or by the market?\nWhere will you live?",
+        "talk": "An everyday view,\nor everyday convenience!",
+        "options": [
+          {
+            "title": "Wake up to the sea!",
+            "detail": "A 1-minute walk to the sea",
+            "cost": "But groceries are a 30-minute drive away",
+            "tag": "Home by the sea",
+            "reaction": "Let’s call the grocery run\na scenic drive!"
+          },
+          {
+            "title": "Grocery runs in slippers!",
+            "detail": "A 1-minute walk to the market",
+            "cost": "But the sea is a 30-minute drive away",
+            "tag": "Everything nearby",
+            "reaction": "Visit the sea for fun,\nshop with ease!"
+          }
+        ]
+      },
+      {
+        "title": "Weekend morning coffee:\nwhich home will you have it in?",
+        "talk": "Even a dreamy yard\ncomes with chores!",
+        "options": [
+          {
+            "title": "Stone walls and my own yard",
+            "detail": "My own outdoor café in the sun",
+            "cost": "But 2 hours of house and yard work every weekend",
+            "tag": "The dreamy yard",
+            "reaction": "Coffee in the yard!\nWeeds, wait your turn."
+          },
+          {
+            "title": "An easy-care apartment",
+            "detail": "Save the time you’d spend on upkeep",
+            "cost": "But no yard of your own",
+            "tag": "Light upkeep",
+            "reaction": "Weekends are precious,\nso grab a coffee and go for a walk!"
+          }
+        ]
+      },
+      {
+        "title": "On the way to work:\nthe view or the distance?",
+        "talk": "Working with a sea view —\ndid you think about the commute?",
+        "options": [
+          {
+            "title": "A workplace with a sea view",
+            "detail": "Look up and there’s the sea",
+            "cost": "But a 40-minute commute each way",
+            "tag": "Sea-view workplace",
+            "reaction": "With a view like this,\nmaybe the commute is worth it?"
+          },
+          {
+            "title": "A 5-minute walk from home",
+            "detail": "Time to spare before and after work",
+            "cost": "But no sea view from work",
+            "tag": "Short commute",
+            "reaction": "Let’s fill my day\nwith the commute time I saved!"
+          }
+        ]
+      },
+      {
+        "title": "If you worked in Jeju,\nwhat kind of day would you choose?",
+        "talk": "Between the work you love\nand the days you want to rest!",
+        "options": [
+          {
+            "title": "Owning my dream little shop",
+            "detail": "Running a space that reflects my taste",
+            "cost": "But working weekends while others rest",
+            "tag": "My own little shop",
+            "reaction": "A space full of my taste!\nWeekend guests, welcome in."
+          },
+          {
+            "title": "My usual work, from home",
+            "detail": "Settling in while keeping my current work",
+            "cost": "Put the shop dream on hold and rest on weekends",
+            "tag": "Remote job, weekends off",
+            "reaction": "Familiar work,\nfresh weekends!"
+          }
+        ]
+      },
+      {
+        "title": "Dinner together tonight?\nHow close will you be with your neighbors?",
+        "talk": "Friendly neighbors are nice,\nand so is dinner on your own!",
+        "options": [
+          {
+            "title": "Eating often with neighbors",
+            "detail": "Shared stories and a warm table",
+            "cost": "But fewer evenings on your own",
+            "tag": "Dinner with neighbors",
+            "reaction": "One more side dish tonight!\nIt tastes better together."
+          },
+          {
+            "title": "A slow dinner on my own",
+            "detail": "My time, on no one else’s schedule",
+            "cost": "Make separate time to meet new friends",
+            "tag": "Dinner for one",
+            "reaction": "Today’s menu and pace,\nall up to me!"
+          }
+        ]
+      },
+      {
+        "title": "A text from a friend on the mainland:\n“Can I come visit you in Jeju?”",
+        "talk": "Friends are always welcome,\nbut think about your weekends too!",
+        "options": [
+          {
+            "title": "Invite them over monthly!",
+            "detail": "Making Jeju memories with friends you miss",
+            "cost": "But one weekend a month goes to hosting",
+            "tag": "Friends come to my place",
+            "reaction": "Time to start a booking\ncalendar for my place?"
+          },
+          {
+            "title": "Mainland, every two months!",
+            "detail": "Usual weekends are for my own life",
+            "cost": "But I’m the one who flies to meet them",
+            "tag": "Weekends at my own pace",
+            "reaction": "My own time in Jeju,\ndouble the joy when we meet!"
+          }
+        ]
+      },
+      {
+        "title": "Walking again next weekend?\nWhich path calls to you?",
+        "talk": "Some things you notice because they’re familiar,\nsome because they’re new!",
+        "options": [
+          {
+            "title": "One path, all four seasons",
+            "detail": "Noticing when flowers bloom and the wind shifts",
+            "cost": "But your weekend walk is always the same path",
+            "tag": "My four-season walk",
+            "reaction": "Same path,\nbut a different Jeju from yesterday!"
+          },
+          {
+            "title": "A new path every week",
+            "detail": "Adding a new memory to the map each time",
+            "cost": "But you have to look up routes and transport every time",
+            "tag": "New path every week",
+            "reaction": "Where to this week?\nEven opening the map is exciting!"
+          }
+        ]
+      },
+      {
+        "title": "Even in Jeju, a day has 24 hours.\nWhat will you put first?",
+        "talk": "A slightly tough last question!\nWhere’s your heart right now?",
+        "options": [
+          {
+            "title": "Earn less, leave work early",
+            "detail": "Enjoy a seaside walk after work every day",
+            "cost": "But a tight budget for hobbies and eating out",
+            "tag": "After-work sea walks",
+            "reaction": "Let’s not miss today’s sunset.\nMy time matters too!"
+          },
+          {
+            "title": "Work more, keep spare cash",
+            "detail": "Plenty for hobbies and eating out",
+            "cost": "But save your sea walks for the weekend",
+            "tag": "A comfortable budget",
+            "reaction": "Keep everyday life well stocked,\nand look forward to the weekend sea!"
+          }
+        ]
+      }
+    ],
+    "articles": {
+      "lee": {
+        "title": "Building a base for work and life in Jeju",
+        "name": "Baengnok Marketing · Lee Jae-eun",
+        "description": "The story of coming back to what they do best after trial and error"
+      },
+      "paarang": {
+        "title": "Someone who opened a shop that reflects their taste",
+        "name": "Parang of Records · Lim Ha-ram",
+        "description": "The story of building their own work with a photo studio and a goods shop"
+      },
+      "ain": {
+        "title": "How relationships became a strength in an unfamiliar Jeju",
+        "name": "Ain School · Ahn Se-eun",
+        "description": "The story of settling in while preparing a place of learning with neighbors"
+      },
+      "emily": {
+        "title": "Between ease and monotony, my Jeju everyday",
+        "name": "MIT DOG · Emily",
+        "description": "The story of carrying on work they love, close to nature"
+      }
+    },
+    "endingNames": [
+      [
+        "Owner of a seaside\ngathering spot",
+        "A neighborhood growth story with a human touch"
+      ],
+      [
+        "Shop owner with taste,\nwithin sound of the waves",
+        "A slice-of-life story of taste that starts in a small space"
+      ],
+      [
+        "Regular at seaside\ndinner gatherings",
+        "A warm everyday story between work and neighbors"
+      ],
+      [
+        "Keeper of the waves’ sound\nand my own rhythm",
+        "A slice-of-life story of collecting quiet days"
+      ],
+      [
+        "Owner of a gathering spot\ndown the alley",
+        "A neighborhood growth story, growing with the regulars"
+      ],
+      [
+        "Owner of a space of taste,\nclose to the neighborhood",
+        "A slice-of-life story filling a handy alley with taste"
+      ],
+      [
+        "Neighborhood friend\nwithin slipper distance",
+        "An everyday story with shops and neighbors close by"
+      ],
+      [
+        "Living light,\ncollector of my own time",
+        "A slice-of-life story of saving up my time, bit by bit"
+      ]
+    ],
+    "scenes": [
+      {
+        "slot": "Morning",
+        "variants": [
+          [
+            "Starting the day in the yard",
+            "Coffee in hand, out to the yard. Sun first — the weeds can wait a bit."
+          ],
+          [
+            "A light morning start",
+            "Tidying up is done in no time. The effort saved today stays as time for me."
+          ]
+        ]
+      },
+      {
+        "slot": "Daytime",
+        "variants": [
+          [
+            "Opening a shop of my taste",
+            "I open the doors of my little shop and arrange the things I love. Who’ll drop by today?"
+          ],
+          [
+            "Familiar work, fresh breaks",
+            "At the laptop, my usual work, step by step. When it’s done, I head out to meet today’s Jeju."
+          ]
+        ]
+      },
+      {
+        "slot": "Evening",
+        "variants": [
+          [
+            "Setting out one more dish",
+            "“Want to have dinner together?” A meal shared with neighbors becomes the longest story of the day."
+          ],
+          [
+            "Tonight’s dinner, at my pace",
+            "The menu, the music, how fast I eat — all up to me. I savor a long, quiet evening."
+          ]
+        ]
+      },
+      {
+        "slot": "Day off",
+        "variants": [
+          [
+            "New seasons on the same path",
+            "Walking the path again, I spot small changes. A flower that wasn’t there last time is today’s news."
+          ],
+          [
+            "One more memory on the map",
+            "First, I pull up the map and transport options. Knowing there are paths I haven’t walked yet is today’s thrill."
+          ]
+        ]
+      }
+    ],
+    "reality": {
+      "0": [
+        "The milk in the fridge may run out, but the sea outside the window stays!",
+        "Heading out for the sunset? Grab the car keys, not just your slippers."
+      ],
+      "2": [
+        "The view fills your heart; the commute takes your time.",
+        "You can’t see the sea after work, but you can clearly see the time you saved."
+      ],
+      "7": [
+        "Catch the sunset every day, and pick where to eat out a bit more carefully.",
+        "A comfortable budget for daily life, and an even more welcome weekend sea."
+      ]
+    },
+    "comments": [
+      "You want to open a shop and leave work early too. Plan your opening hours carefully!",
+      "Tending the yard and finding new paths! Your weekend calendar might get quietly busy.",
+      "Dinners with neighbors and hosting friends from the mainland. Better find a free weekend first!",
+      "The sea every day and a short commute! You’ll be checking the distance between home and work closely.",
+      "You save time on groceries and after work, and spend it on yourself!",
+      "Once the meeting ends, your own time begins. From focus mode to rest mode, again today!",
+      "Every scene you picked has a reason. You’re the star of this Jeju life!"
+    ],
+    "friendQ": [
+      "If friends visited a Jeju home every month, would you join the hosting team too?",
+      "How about enjoying our own weekends in Jeju and meeting on the mainland once every two months?"
+    ],
+    "altLabel": [
+      "What if you’d picked remote work instead of a shop?",
+      "What if you’d opened a little shop instead of working remotely?"
+    ],
+    "desc": {
+      "sea": "a home near the sea",
+      "conv": "a home handy for groceries",
+      "time": "time for a walk after work",
+      "money": "spare money for hobbies",
+      "tpl": "You chose {h} and were drawn to {w}. Here are the scenes from the Jeju life you picked."
+    }
+  },
+  "rq": {
+    "kicker": "True or fake?",
+    "title1": "Jeju Life,",
+    "title2": "Real or Not?",
+    "meta": "8 cards · About 1 min",
+    "go": "Start",
+    "bubble": "Jeju life stories Hareubang heard:\ntrue or fake?",
+    "askAlt": "Hareubang pointing and talking",
+    "cardLabel": "A Jeju life story Hareubang heard",
+    "choicesAria": "Choose true or fake",
+    "real": "It’s real!",
+    "fake": "Nah, fake",
+    "stampReal": "REAL",
+    "stampFake": "FAKE",
+    "rightReal": "Right, it’s real!",
+    "rightFake": "Right, it’s fake!",
+    "wrongReal": "Fooled you? It’s real!",
+    "wrongFake": "Fooled you? It’s fake!",
+    "readMain": "Read this story in the article ↗",
+    "src": "Source: {s}",
+    "next": "Next card",
+    "toResult": "See results",
+    "scoreKicker": "My Jeju reality sense",
+    "scoreAlt": "Hareubang announcing your result",
+    "challenge": "Your friend’s Jeju reality sense is {n}%. What will yours be?",
+    "again": "Last time: reality sense {p}% · {t}",
+    "doubtedTag": "A true story you called ‘fake’",
+    "readStory": "Read the story →",
+    "shareResult": "{title}: I got {p}% for reality sense lol {hook}",
+    "people": {
+      "ahn": {
+        "name": "Teacher Ahn Se-eun",
+        "brand": "Ain School",
+        "title": "In windswept Jocheon, building a forest called school",
+        "line": "Someone who hopped between one-month-stay rentals with no lump sum for yeonse, and is now preparing a school in Jocheon"
+      },
+      "lee": {
+        "name": "CEO Lee Jae-eun",
+        "brand": "Baengnok Marketing",
+        "title": "Working and living in Jeju: Baengnok Marketing CEO Lee Jae-eun’s five years",
+        "line": "Someone who came on vacation, decided to move, and after three years of searching set up a company in Jeju"
+      },
+      "lim": {
+        "name": "Photographer Lim Ha-ram",
+        "brand": "Parang of Records",
+        "title": "Came to Jeju with 500,000 won, stayed to live better",
+        "line": "Someone who came down to Jeju with ₩500,000 as if running away, and opened a photo studio and a goods shop"
+      },
+      "emily": {
+        "name": "Trainer Emily",
+        "brand": "MIT DOG",
+        "title": "How Jeju, once a business-trip destination, became ‘home’",
+        "line": "A dog trainer who stayed by their parents’ side before settling in Hallim"
+      }
+    },
+    "life": [
+      {
+        "claim": "You can climb to Baengnokdam, the summit of Hallasan, anytime without a reservation.",
+        "reveal": "The Seongpanak and Gwaneumsa trails to the summit need a reservation in advance (free).\nMost other trails that don’t go to the summit need no reservation.",
+        "src": "Hallasan National Park trail reservation guide · Related news reports"
+      },
+      {
+        "claim": "In Jeju, there’s a custom of moving house during the week when ‘the gods go up to the sky and leave their posts.’",
+        "reveal": "It’s called ‘Singugan.’\nFrom about 5 days after Daehan (Major Cold) to 3 days before Ipchun (Start of Spring), while the gods of the world went up to the sky to report to the Jade Emperor, people moved house and fixed up their homes.",
+        "src": "Encyclopedia of Korean Culture, ‘Singugan’"
+      },
+      {
+        "claim": "Jeju has so many tangerines that some places let you pay monthly rent in tangerines.",
+        "reveal": "No one pays rent in tangerines.\nBut there is ‘yeonse,’ where you pay a whole year’s rent at once.\nThat part’s real!",
+        "src": "A fake card made up for fun"
+      },
+      {
+        "claim": "Instead of a gate, old Jeju homes showed whether anyone was home by the number of wooden poles laid across the entrance.",
+        "reveal": "It’s called ‘jeongnang.’\nInstead of a gate with doors, people laid wooden poles across the entrance, and the number of poles told whether anyone was home or not.",
+        "src": "Local news reports on Jeju’s jeongnang"
+      },
+      {
+        "claim": "Picking up turban shells or abalone from a Jeju village’s sea can count as theft.",
+        "reveal": "A village’s sea (its village fishing ground) is managed by the local fishing cooperative and tended by haenyeo (women divers).\nTaking seafood from there can be punished as theft.",
+        "src": "Korea Coast Guard guidance (Fishery Resources Management Act) · Related news reports"
+      },
+      {
+        "claim": "If you move to Jeju, you have to pass a ‘Jeju language test’ within a year.",
+        "reveal": "There’s no test!\nBut UNESCO classifies the Jeju language as ‘critically endangered,’ so efforts to protect it continue.",
+        "src": "A fake card made up for fun · UNESCO endangered languages classification (2010)"
+      },
+      {
+        "claim": "In Jeju, people call neighborhood elders ‘samchun’ even if they’re not relatives.",
+        "reveal": "It’s a friendly way to address elders in the neighborhood, without much regard for gender or family ties.\nThe shop owner, the elder next door: all samchun!",
+        "src": "Jeju National University, ‘A Study of Kinship Terms in the Jeju Dialect’"
+      },
+      {
+        "claim": "These days, more people leave Jeju than move in.",
+        "reveal": "That’s been true three years in a row since 2023.\nIn 2025, 4,273 more people left than arrived.\nStill, there are people who stay and make a life here.",
+        "src": "Statistics Korea, Domestic Migration Statistics · ‘2025 Annual Jeju Regional Economic Trends’"
+      }
+    ],
+    "peopleCards": [
+      {
+        "claim": "Someone in Jeju bought a ₩10,000 item online, and ₩5,000–6,000 in shipping was added on top.",
+        "reveal": "That’s more than half the price of the item.\nOne settler says it still makes them laugh in disbelief every time.",
+        "src": "ejejumin interview",
+        "quote": "an extra 5,000 to 6,000 won for shipping"
+      },
+      {
+        "claim": "Jeju has so many tangerines that some places let you pay monthly rent in tangerines.",
+        "reveal": "No one pays rent in tangerines.\nBut there is a way of paying a whole year’s rent at once.\nCheck the next card!",
+        "src": "A fake card made up for fun"
+      },
+      {
+        "claim": "Jeju has ‘yeonse’: paying a whole year’s rent at once.",
+        "reveal": "Since it takes a big lump sum all at once, one settler at first got by moving between one-month-stay rentals, suitcase in tow.",
+        "src": "ejejumin interview",
+        "quote": "paying a full year's rent in one lump sum"
+      },
+      {
+        "claim": "There’s a settler whose revenue in Jeju grew more than tenfold compared with their salary at a Seoul job.",
+        "reveal": "It’s the story of a marketing CEO.\nOf course, it’s one person’s experience, the result of the experience and client relationships they built up.\nBefore that came three years of trial and error.",
+        "src": "ejejumin interview",
+        "quote": "their revenue has now grown more than tenfold"
+      },
+      {
+        "claim": "If you move to Jeju, you have to pass a ‘Jeju language test’ within your first year.",
+        "reveal": "There’s no test!\nBut UNESCO classifies the Jeju language as ‘critically endangered,’ so efforts to protect it continue.",
+        "src": "A fake card made up for fun · UNESCO endangered languages classification (2010)"
+      },
+      {
+        "claim": "These days, more people leave Jeju than move in.",
+        "reveal": "That’s been true three years in a row since 2023.\nIn 2025, 4,273 more people left than arrived.\nStill, some people stayed.",
+        "src": "Statistics Korea, Domestic Migration Statistics · ‘2025 Annual Jeju Regional Economic Trends’",
+        "quote": "4,273 more people moved out than moved in"
+      },
+      {
+        "claim": "A settler in their third year in Jeju said this: “Coming just because you like nature might be a little risky.”",
+        "reveal": "Surprising, coming from someone who lives in Jeju, right?\nBut if you come because there’s something you really want to do, they say the possibilities are endless.",
+        "src": "ejejumin interview",
+        "quote": "coming simply because you like nature"
+      },
+      {
+        "claim": "Someone came down to Jeju with just ₩500,000 in the bank and opened a photo studio and a goods shop.",
+        "reveal": "It’s true.\nAt first, they didn’t even plan to settle down.\nThe story in between? Coming up in your results!",
+        "src": "ejejumin interview",
+        "quote": "the money in hand was 500,000 won"
+      }
+    ],
+    "types": [
+      {
+        "name": "Dreamy Traveler",
+        "desc": "To you, Jeju is still an island of sea and tangerines!\nThat romance isn’t bad at all.\nCurious about real Jeju life? Start with the stories below."
+      },
+      {
+        "name": "One-Month-Stay Explorer",
+        "desc": "Somewhere between romance and reality.\nLive in Jeju for a month or so, and you’ll see the rest."
+      },
+      {
+        "name": "Realist Resident-to-Be",
+        "desc": "Most Jeju realities can’t fool you.\nAll that’s left is to live it yourself!"
+      },
+      {
+        "name": "Certified Jeju Samchun",
+        "desc": "Not fooled even once.\nAt this level, you could teach your friends on the mainland about Jeju life."
+      }
+    ],
+    "nextPeople": {
+      "kicker": "Part 2 · Settlers Edition · 8 cards",
+      "name": "₩6,000 shipping on a ₩10,000 item?<br>A shop opened with ₩500,000 in the bank?",
+      "desc": "Stories of 4 real settlers: true or fake?"
+    },
+    "nextLife": {
+      "kicker": "Part 1 · Daily Life Edition · 8 cards",
+      "name": "Moving house while the gods are away?<br>Paying rent in tangerines?",
+      "desc": "Jeju life you won’t learn on a trip: true or fake?"
+    },
+    "sequelAria": "Part 2: Settlers Edition",
+    "sets": {
+      "life": {
+        "title": "Jeju Life, Real or Not? Daily Life Edition",
+        "hook": "Apparently moving house while the gods are up in the sky is real. Let’s see if you get fooled too",
+        "invite": "Moving house while the gods are up in the sky? True or fake?",
+        "sub": "8 stories of Jeju life you won’t learn on a trip.<br>Guess whether each one is true or fake.",
+        "preview": [
+          "Moving while<br>the gods are away?",
+          "Wooden poles<br>instead of a gate?",
+          "Rent paid<br>in tangerines?"
+        ],
+        "peopleTitle": "True stories from people who lived it first",
+        "peopleSub": "We met four people who came to live in Jeju.",
+        "note": "This test is just for fun.<br>True cards were checked against encyclopedias, official sources, statistics and news reports,<br>and fake cards are stories made up for fun."
+      },
+      "people": {
+        "title": "Jeju Life, Real or Not? Settlers Edition",
+        "hook": "Apparently ₩6,000 shipping on a ₩10,000 item is real. Let’s see if you get fooled too",
+        "invite": "₩6,000 shipping on a ₩10,000 item: true or fake?",
+        "sub": "8 Jeju stories from people who lived here first.<br>Guess whether each one is true or fake.",
+        "preview": [
+          "₩6,000 shipping<br>on a ₩10,000 item?",
+          "A year’s rent<br>all at once?",
+          "A shop opened<br>with ₩500,000?"
+        ],
+        "peopleTitle": "The true stories you just saw have real people behind them",
+        "peopleSub": "They’re all true stories from people who came to live in Jeju before you.",
+        "prequelTitle": "Want to try Part 1 too?",
+        "prequelSub": "This time, it’s stories of Jeju life you won’t learn on a trip.",
+        "note": "This test is just for fun.<br>True cards come from ejejumin interviews and official statistics and sources,<br>and fake cards are stories made up for fun."
+      }
+    }
+  }
+}

@@ -4027,8 +4027,8 @@ body.page-interview :is(.topbar, .wz-header, .site-footer) { font-family: var(--
      게임 고르기는 세 칸, 그림은 클래스(.jb-art-*)
    - 실화냐(#rq): 사용자가 준 rq-block.css
    ========================================================= */
-@font-face{font-family:BalanceJua;src:url(fonts/balance-jua.woff2?v=2) format("woff2");font-weight:400;font-display:swap}
-@font-face{font-family:BalanceBagel;src:url(fonts/balance-bagel.woff2?v=2) format("woff2");font-weight:400;font-display:swap}
+@font-face{font-family:BalanceJua;src:url(fonts/balance-jua.woff2?v=3) format("woff2");font-weight:400;font-display:swap}
+@font-face{font-family:BalanceBagel;src:url(fonts/balance-bagel.woff2?v=3) format("woff2");font-weight:400;font-display:swap}
 #jeju-balance{--jb-blue:#4085e0;--jb-deep:#245f9f;--jb-orange:#fd7925;--jb-ink:#194e84;--jb-paper:#fff;--jb-title:BalanceBagel,BalanceJua,'Malgun Gothic',sans-serif;--jb-body:var(--font);background:linear-gradient(180deg,#2e93d1 0%,#83bee7 60%,#cfe3f3 100%);color:var(--jb-ink);isolation:isolate;min-height:calc(100svh - var(--hdr-h,64px));font-family:var(--jb-body);position:relative;overflow:hidden}
 #jeju-balance[hidden],#jeju-balance [hidden],#vt[hidden]{display:none!important}
 #jeju-balance *,#jeju-balance *::before,#jeju-balance *::after{box-sizing:border-box}
@@ -4382,6 +4382,18 @@ body.page-interview :is(.topbar, .wz-header, .site-footer) { font-family: var(--
 .rq .jb-endbtn--share{background:var(--orange);color:#fff;box-shadow:0 6px 0 var(--orange-ink),0 10px 18px rgba(18,35,58,.16)}
 .rq .jb-endbtn--again{background:var(--ink);color:#fff;box-shadow:0 6px 0 #050d18,0 10px 18px rgba(18,35,58,.2)}
 @media(prefers-reduced-motion:reduce){.jb-endbtn{transition:none}}
+/* 일본어·중국어(동네 테스트 Language로 바꾼 게임 글, 2026-11-03): 한국어 낱말 단위 줄바꿈(keep-all)을 풀어 줄이 바뀌게.
+   Bagel·Jua 글꼴에는 일본어·중국어 글자가 없어 그 글자는 기기 글꼴로 보인다 */
+#jeju-balance:is(:lang(ja),:lang(zh)) :is(h1,h2,h3,h4,p,span,strong,small,button,blockquote,summary,a),.rq:is(:lang(ja),:lang(zh)) :is(h2,h3,p,span,strong,em,button,a,li),.jb-share:is(:lang(ja),:lang(zh)) p,.vt:is(:lang(ja),:lang(zh)) .jb-switch :is(strong,small){word-break:normal;line-break:strict;overflow-wrap:anywhere}
+/* 일본어·중국어 글꼴: 그대로 두면 가나가 맑은 고딕으로(가늘고 자간이 넓게), 한자는 한국어 글꼴로 섞여 그려진다. 그 언어 글꼴을 먼저 쓰고,
+   원래 둥근 굵은 글꼴(Bagel·Jua)을 쓰던 제목·말풍선 등은 굵게 */
+#jeju-balance:lang(ja),.rq:lang(ja),.jb-share:lang(ja),.vt:lang(ja) .jb-switch{--jb-title:BalanceBagel,"Hiragino Maru Gothic ProN","Hiragino Sans","Yu Gothic UI","Yu Gothic",Meiryo,sans-serif;--jb-body:"Hiragino Sans","Hiragino Kaku Gothic ProN","Yu Gothic UI","Yu Gothic",Meiryo,sans-serif;--font:var(--jb-body)}
+#jeju-balance:lang(zh),.rq:lang(zh),.jb-share:lang(zh),.vt:lang(zh) .jb-switch{--jb-title:BalanceBagel,"PingFang SC","Microsoft YaHei","Noto Sans SC",sans-serif;--jb-body:"PingFang SC","Microsoft YaHei","Noto Sans SC",sans-serif;--font:var(--jb-body)}
+#jeju-balance:is(:lang(ja),:lang(zh)) :is(.jb-sub,.jb-bubble,.jb-option-title,.jb-description,.jb-invite,.jb-stamp,.jb-result-label,.jb-related h3,.jb-story strong,.jb-ending-section-head h3,.jb-ending-alternative h3,.jb-ending-friend h3,.jb-ending-frame h4,.jb-ending-flip strong,.jb-ending-friend blockquote,.jb-dialog h2),
+.rq:is(:lang(ja),:lang(zh)) :is(.rq-sub,.rq-preview-card,.rq-bubble){font-family:var(--jb-body);font-weight:700}
+#jeju-balance:is(:lang(ja),:lang(zh)) :is(.jb-title span,.jb-question,.jb-result-title,.jb-ending-preview h3),.rq:is(:lang(ja),:lang(zh)) .rq-title{font-weight:800;letter-spacing:-.01em}
+/* 위쪽 줄 버튼 글자는 줄을 바꾸지 않는다 (실화냐의 .rq span{text-wrap:pretty}가 줄 안 바꿈을 덮어, 일본어처럼 긴 글이 버튼 안에서 접혔다) */
+.rq .pill *,#jeju-balance .pill *{white-space:nowrap}
 /* 동네 테스트 칸은 화면 높이에 맞춰 줄어드는데, 게임 고르기 줄은 줄어들지 않게 */
 #vt .app.fit>.jb-switch{flex-shrink:0}
 /* 공통 기준(누르는 요소 44px 이상, 본문 글자 16px 이상)에 맞춰 키운 것. 분류·NEW·안내 같은 작은 이름표는 그대로
