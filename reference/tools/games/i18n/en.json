@@ -519,9 +519,9 @@
         "quote": "an extra 5,000 to 6,000 won for shipping"
       },
       {
-        "claim": "Jeju has so many tangerines that some places let you pay monthly rent in tangerines.",
-        "reveal": "No one pays rent in tangerines.\nBut there is a way of paying a whole year’s rent at once.\nCheck the next card!",
-        "src": "A fake card made up for fun"
+        "claim": "Jeju is called ‘Samdado’ (island of three abundances) because it has lots of tangerines, stones, and wind.",
+        "reveal": "Not tangerines, but women!\nIt was called ‘Samdado’ for its many stones, winds, and women, and also ‘Sammudo’ for having no thieves, beggars, or gates.",
+        "src": "A fake card made up for fun · News reports on Jeju’s ‘samda’ and ‘sammu’"
       },
       {
         "claim": "Jeju has ‘yeonse’: paying a whole year’s rent at once.",
@@ -536,15 +536,14 @@
         "quote": "their revenue has now grown more than tenfold"
       },
       {
-        "claim": "If you move to Jeju, you have to pass a ‘Jeju language test’ within your first year.",
-        "reveal": "There’s no test!\nBut UNESCO classifies the Jeju language as ‘critically endangered,’ so efforts to protect it continue.",
-        "src": "A fake card made up for fun · UNESCO endangered languages classification (2010)"
+        "claim": "The Jeju word ‘olle’ originally meant ‘seaside walking path.’",
+        "reveal": "It originally meant the narrow alley leading from the main road to a house’s gate.\nToday it’s better known as the name of walking trails like Jeju Olle.",
+        "src": "A fake card made up for fun · News reports explaining the Jeju word ‘olle’"
       },
       {
-        "claim": "These days, more people leave Jeju than move in.",
-        "reveal": "That’s been true three years in a row since 2023.\nIn 2025, 4,273 more people left than arrived.\nStill, some people stayed.",
-        "src": "Statistics Korea, Domestic Migration Statistics · ‘2025 Annual Jeju Regional Economic Trends’",
-        "quote": "4,273 more people moved out than moved in"
+        "claim": "Jeju has more than 360 small volcanoes called ‘oreum.’",
+        "reveal": "Jeju’s survey counts 368 (210 in Jeju City, 158 in Seogwipo City).\nSome say there are over 400, depending on how you count.",
+        "src": "Jeju oreum comprehensive report (1997) · News reports on the oreum conservation plan"
       },
       {
         "claim": "A settler in their third year in Jeju said this: “Coming just because you like nature might be a little risky.”",
