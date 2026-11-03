@@ -4311,11 +4311,15 @@ body.page-interview :is(.topbar, .wz-header, .site-footer) { font-family: var(--
   .jb-switch .jb-game-copy strong{font-size:13px}
   .jb-switch .jb-game-copy small{display:none}
 }
-/* 낮은 화면(PC 노트북, 카톡 막대가 보일 때 등)과 문제를 푸는 동안: 그림·설명·NEW 없이 짧은 이름만 한 줄 (동네 테스트 첫 화면이 한 화면에 들어가게) */
+/* 낮은 화면(PC 노트북, 카톡 막대가 보일 때 등): 그림은 낮게 남기고 설명·NEW만 뺀다 (동네 테스트 첫 화면이 한 화면에 들어가게)
+   전에는 그림까지 빼고 이름만 한 줄이었는데, 사용자 요청 "모바일도 PC 버전이랑 비슷하게"로 그림을 다시 보인다 (2026-11-03). 문제를 푸는 동안은 아래처럼 이름만 */
 @media(max-height:760px){
-  .jb-switch .jb-game-cover,.jb-switch .jb-game-copy small,.jb-switch .jb-new,.jb-switch .jb-game-pre{display:none}
-  .jb-switch button{justify-content:center;padding:5px}
+  .jb-switch .jb-game-cover{height:36px}
+  .jb-switch .jb-game-copy small,.jb-switch .jb-new,.jb-switch .jb-game-pre{display:none}
+  .jb-switch button{padding:5px;gap:4px}
 }
+/* 아주 낮은 화면(카톡 312×520 등): 그림을 더 낮게 (동네 테스트 '테스트 시작하기'가 첫 화면 안에) */
+@media(max-height:560px){.jb-switch .jb-game-cover{height:28px}}
 #jeju-balance[data-phase=quiz] .jb-switch .jb-game-cover,#jeju-balance[data-phase=quiz] .jb-switch .jb-new,#jeju-balance[data-phase=quiz] .jb-switch .jb-game-pre,
 #vt .app:has(>#quiz:not([hidden]),>#loading:not([hidden]))>.jb-switch :is(.jb-game-cover,.jb-new,.jb-game-pre,small){display:none}
 #jeju-balance[data-phase=quiz] .jb-switch button,#vt .app:has(>#quiz:not([hidden]),>#loading:not([hidden]))>.jb-switch button{justify-content:center;min-height:44px;padding:5px}
