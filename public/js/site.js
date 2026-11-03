@@ -3779,7 +3779,8 @@ document.fonts && document.fonts.addEventListener && document.fonts.addEventList
     } catch (e) { fallback(); }
   }
   /* 결과 맨 아래 '친구에게 공유하기'·'다시 하기' (동네 테스트 결과 버튼과 같은 모양, 사용자 요청 2026-11-03) */
-  const endButtons = (shareAttr, againAttr) => '<div class="jb-endbtns"><button class="jb-endbtn jb-endbtn--share" type="button" ' + shareAttr + ' data-track="share_copy"><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M24 7 V29"/><path d="M15 15.5 L24 6.5 L33 15.5"/><path d="M13 23 V40 H35 V23"/></svg><span>' + esc(L.ui.endShare) + '</span></button><button class="jb-endbtn jb-endbtn--again" type="button" ' + againAttr + '>' + esc(L.ui.endAgain) + '</button></div>';
+  /* mid: 공유와 다시 하기 사이에 넣을 버튼 (실화냐 1탄의 '2탄 하러 가기') */
+  const endButtons = (shareAttr, againAttr, mid) => '<div class="jb-endbtns"><button class="jb-endbtn jb-endbtn--share" type="button" ' + shareAttr + ' data-track="share_copy"><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M24 7 V29"/><path d="M15 15.5 L24 6.5 L33 15.5"/><path d="M13 23 V40 H35 V23"/></svg><span>' + esc(L.ui.endShare) + '</span></button>' + (mid || '') + '<button class="jb-endbtn jb-endbtn--again" type="button" ' + againAttr + '>' + esc(L.ui.endAgain) + '</button></div>';
   function shareOrCopy(title, msg, url, done) {
     const text = msg + ' 👉 ' + url;
     const touch = (navigator.maxTouchPoints || 0) > 0 || (window.matchMedia && matchMedia('(pointer: coarse)').matches);   // PC: 윈도우 공유 창보다 복사가 낫다
@@ -4176,9 +4177,11 @@ document.fonts && document.fonts.addEventListener && document.fonts.addEventList
     return '<a class="rq-next-test rq-sequel" href="./jeju-village-test.html?lang=' + GL + '&amp;mode=' + (kind === 'people' ? 'real2' : 'real1') + '" data-rq-next="' + kind + '"><span class="rq-next-kicker">' + esc(c.kicker) + '</span><span class="rq-next-name">' + c.name + '</span><span class="rq-next-desc">' + esc(c.desc) + '</span></a>';
   };
   const rqPeopleList = SET => '<section class="rq-people" aria-labelledby="rq-people-title"><h3 class="rq-people-title" id="rq-people-title">' + esc(SET.peopleTitle) + '</h3><p class="rq-people-sub">' + esc(SET.peopleSub) + '</p><ul class="rq-list" id="rq-list"></ul></section>';
-  /* 1탄: 네 사람 → 맨 아래 '2탄 하러 가기' 버튼 (2탄 카드는 사용자 요청으로 지웠다가, 버튼으로 다시 둠, 2026-11-03). 2탄: 네 사람 → 1탄 카드 */
+  /* 1탄: '2탄 하러 가기' 버튼은 '친구에게 공유하기'와 '다시 하기' 사이 (2탄 카드는 사용자 요청으로 지웠다가 버튼으로 다시 두고, 맨 아래에서 옮김, 2026-11-03) */
+  const rqSequelBtn = name => name === 'life' ? '<a class="jb-endbtn jb-endbtn--next" href="./jeju-village-test.html?lang=' + GL + '&amp;mode=real2" data-rq-next="people">' + esc(L.rq.toSequel) + '</a>' : '';
+  /* 1탄: 네 사람. 2탄: 네 사람 → 1탄 카드 */
   const rqAfter = (name, SET) => name === 'life'
-    ? rqPeopleList(SET) + '<a class="jb-endbtn jb-endbtn--next" href="./jeju-village-test.html?lang=' + GL + '&amp;mode=real2" data-rq-next="people">' + esc(L.rq.toSequel) + '</a>'
+    ? rqPeopleList(SET)
     :rqPeopleList(SET) + '<section class="rq-people" aria-labelledby="rq-prequel-title"><h3 class="rq-people-title" id="rq-prequel-title">' + esc(SET.prequelTitle) + '</h3><p class="rq-people-sub">' + esc(SET.prequelSub) + '</p>' + rqNext('life') + '</section>';
   let rqRoot = null;
   function rqMarkup(name, SET) {
@@ -4202,7 +4205,7 @@ document.fonts && document.fonts.addEventListener && document.fonts.addEventList
       /* '그럼, 나는 어디서 살아 볼까?'(마을 테스트 카드)는 사용자 요청으로 지웠다. 맨 위 게임 고르기로 간다 (2026-11-03)
          '다시 하기'·작은 '결과 링크 복사' 대신 동네 테스트 같은 '친구에게 공유하기'·'다시 하기' */
       /* '친구에게 공유하기'·'다시 하기'는 점수 카드 바로 아래 (사용자 요청 2026-11-03. 전에는 맨 아래) */
-      endButtons('id="rq-copy"', 'id="rq-retry"') +
+      endButtons('id="rq-copy"', 'id="rq-retry"', rqSequelBtn(name)) +
       rqAfter(name, SET) +
       '<p class="rq-note">' + SET.note + '</p></div></div>';
   }

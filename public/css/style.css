@@ -4383,7 +4383,7 @@ body.page-interview :is(.topbar, .wz-header, .site-footer) { font-family: var(--
    밸런스 = 자두색 공유 · 크림 다시 하기 (게임의 .jb-cta·.jb-cta-white와 같은 색), 실화냐 = 주황 공유 · 남색 다시 하기 (.rq-cta·.rq-next와 같은 색) */
 #jeju-balance .jb-endbtn--share{background:#594172;color:#fffbf2;box-shadow:0 6px 0 #3d2b56,0 10px 18px rgba(65,43,87,.18)}
 /* 실화냐 1탄 결과 맨 아래 '2탄 하러 가기' (사용자 요청 2026-11-03): 위 두 버튼과 같은 모양, 실화냐 고르기 버튼처럼 흰 바탕·남색 테두리 */
-.rq .jb-endbtn--next{margin-top:28px;border:2px solid var(--ink);background:#fff;color:var(--ink);box-shadow:0 6px 0 var(--ink),0 10px 18px rgba(18,35,58,.12);font:800 18px/1.35 var(--font);text-align:center;text-decoration:none}
+.rq .jb-endbtn--next{border:2px solid var(--ink);background:#fff;color:var(--ink);box-shadow:0 6px 0 var(--ink),0 10px 18px rgba(18,35,58,.12);font:800 18px/1.35 var(--font);text-align:center;text-decoration:none}
 #jeju-balance .jb-endbtn--again{background:#fffbf2;color:#594172;box-shadow:0 6px 0 #d1c4dc,0 10px 18px rgba(65,43,87,.12)}
 .rq .jb-endbtn--share{background:var(--orange);color:#fff;box-shadow:0 6px 0 var(--orange-ink),0 10px 18px rgba(18,35,58,.16)}
 .rq .jb-endbtn--again{background:var(--ink);color:#fff;box-shadow:0 6px 0 #050d18,0 10px 18px rgba(18,35,58,.2)}
