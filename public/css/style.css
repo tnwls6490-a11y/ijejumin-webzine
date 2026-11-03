@@ -4378,6 +4378,8 @@ body.page-interview :is(.topbar, .wz-header, .site-footer) { font-family: var(--
 /* 두 버튼 색: 동네 테스트(노랑·파랑) 말고는 게임 메인 색으로 (사용자 요청 2026-11-03). 모양·크기는 그대로
    밸런스 = 자두색 공유 · 크림 다시 하기 (게임의 .jb-cta·.jb-cta-white와 같은 색), 실화냐 = 주황 공유 · 남색 다시 하기 (.rq-cta·.rq-next와 같은 색) */
 #jeju-balance .jb-endbtn--share{background:#594172;color:#fffbf2;box-shadow:0 6px 0 #3d2b56,0 10px 18px rgba(65,43,87,.18)}
+/* 실화냐 1탄 결과 맨 아래 '2탄 하러 가기' (사용자 요청 2026-11-03): 위 두 버튼과 같은 모양, 실화냐 고르기 버튼처럼 흰 바탕·남색 테두리 */
+.rq .jb-endbtn--next{margin-top:28px;border:2px solid var(--ink);background:#fff;color:var(--ink);box-shadow:0 6px 0 var(--ink),0 10px 18px rgba(18,35,58,.12);font:800 18px/1.35 var(--font);text-align:center;text-decoration:none}
 #jeju-balance .jb-endbtn--again{background:#fffbf2;color:#594172;box-shadow:0 6px 0 #d1c4dc,0 10px 18px rgba(65,43,87,.12)}
 .rq .jb-endbtn--share{background:var(--orange);color:#fff;box-shadow:0 6px 0 var(--orange-ink),0 10px 18px rgba(18,35,58,.16)}
 .rq .jb-endbtn--again{background:var(--ink);color:#fff;box-shadow:0 6px 0 #050d18,0 10px 18px rgba(18,35,58,.2)}
@@ -4627,6 +4629,11 @@ body.page-interview :is(.topbar, .wz-header, .site-footer) { font-family: var(--
    색은 실화냐 그대로(크림·살구·주황·남색). 글꼴은 밸런스 게임 글꼴에 실화냐 첫 화면 글자를 더해 같이 쓴다 (reference/tools/games/fonts.py) */
 .rq{background:url(../images/rq-bg-hills.svg) center bottom/100% auto no-repeat,radial-gradient(ellipse at 6% 6%,#fffdf8 0,transparent 45%),radial-gradient(ellipse at 100% 88%,#ffe0c4 0,transparent 42%),linear-gradient(160deg,#fff8ee,#ffeedd)}
 /* ↑ 맨 아래 주황빛 오름·눈 덮인 한라산·양쪽 유채꽃 그림(images/rq-bg-hills.svg, 사용자가 준 시안처럼 2026-11-03). 다른 요소는 그대로 */
+/* 2탄(이주민편)은 녹색 (사용자가 준 시안처럼, 2026-11-03): 배경 그림(초록 오름·한라산·유채꽃·현무암 돌담, images/rq-bg-green.svg)·바탕,
+   진한 남색 → 짙은 초록(--ink), 옅은 살구 → 연두(--peach). 주황(실화다·진행 숫자·공유)은 그대로. 1탄은 그대로 */
+.rq[data-rq-set=people]{--ink:#1F4636;--peach:#D3DEC6;background:url(../images/rq-bg-green.svg) center bottom/100% auto no-repeat,radial-gradient(ellipse at 6% 6%,#fbfaf4 0,transparent 45%),radial-gradient(ellipse at 100% 88%,#dfe6d3 0,transparent 42%),linear-gradient(160deg,#f5f2e9,#ece9dd)}
+.rq[data-rq-set=people] .rq-preview-card:nth-child(1),.rq[data-rq-set=people] .rq-preview-card:nth-child(3){background:repeating-linear-gradient(135deg,#E6ECDC 0 10px,#D3DEC6 10px 20px)}
+.rq[data-rq-set=people] .jb-switch .jb-game-real .jb-game-cover{background-color:#FFD9BC}
 .rq .rq-kicker{margin-bottom:14px;padding:8px 15px 6px;background:var(--peach);color:var(--orange-ink);font-size:14px;font-weight:700}
 .rq .rq-title{display:flex;flex-direction:column;align-items:center;gap:6px;font:400 clamp(40px,11vw,52px)/1.18 BalanceBagel,BalanceJua,var(--font);letter-spacing:-.03em;color:var(--ink)}
 .rq .rq-title span{display:block;transform:rotate(-2deg);text-shadow:0 3px 0 #fff}

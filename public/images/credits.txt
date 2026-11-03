@@ -167,3 +167,4 @@ balance-v2/house.webp · yard · workplace · workstyle · neighbors · friends 
 # 글꼴 css/fonts/balance-bagel.woff2 · balance-jua.woff2 = Google Fonts Bagel Fat One · Jua (SIL OFL 1.1)에서 게임 글자만 뽑음 (reference/tools/games/fonts.py)
 # 같은 페이지의 '제주살이, 실화냐?'(?mode=real1·real2)는 새 그림 없이 위 village-test 하르방을 쓴다
 rq-bg-hills.svg | 웹진에서 직접 그린 그림 (실화냐 배경 맨 아래 오름·한라산·유채꽃, 사용자가 준 시안처럼 2026-11-03, SVG) | 팀 소유 | -
+rq-bg-green.svg | 웹진에서 직접 그린 그림 (실화냐 2탄 배경 맨 아래 초록 오름·한라산·유채꽃·현무암 돌담, 사용자가 준 시안처럼 2026-11-03, SVG) | 팀 소유 | -
