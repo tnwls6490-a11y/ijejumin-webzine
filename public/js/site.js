@@ -3647,3 +3647,873 @@ document.fonts && document.fonts.addEventListener && document.fonts.addEventList
   });
   window.addEventListener('load', function () { window.setTimeout(function () { root.style.scrollBehavior = ''; }, 600); });
 })();
+
+/* ===== 게임 고르기 블록 시작 (밸런스 게임 · 제주살이, 실화냐?) ===== */
+/* =========================================================
+   마을 테스트 페이지(articles/jeju-village-test.html, 한국어)에 게임 두 개를 더 넣었다 (사용자 요청 2026-11-03 "마을찾기 세부페이지에 추가")
+   - 테스트 칸 맨 위 '게임 고르기'(.jb-switch): 동네 테스트 · 밸런스 게임 · 제주살이, 실화냐?
+     주소 ?mode=village(기본) | balance | real1(실화냐 1탄 생활편) | real2(2탄 이주민편). 고르면 주소만 바뀌고 페이지는 그대로
+   - 밸런스 게임(#jeju-balance): 사용자가 준 '제주살이-밸런스게임-웹진추가용-v3'의 balance-data.js·balance-game.js. 문항·엔딩 글은 그대로
+   - 실화냐(#rq): 사용자가 준 '전달_제주살이-실화냐'의 rq-block.js와 두 페이지의 화면 글. 카드·해설 글은 그대로
+     전달 메모에는 페이지 두 장(jeju-real-or-not-life.html·jeju-real-or-not.html)이었는데, 이 페이지 안에서 연다
+   - 웹진 공통 기준에 맞춰 바꾼 것: 상대 경로, style="…" 대신 클래스(style.css '게임 고르기 블록'),
+     헤더·푸터 색은 그대로(밸런스 게임은 보라색으로 바꿨다), 글꼴은 게임에 쓰는 글자만 뽑은 woff2, 제목은 h2(페이지 h1은 하나)
+   - 영어·일본어 테스트 페이지에는 없다 (게임 글이 한국어뿐). <html lang="ko">이고 #vt가 있는 페이지에서만 돈다
+   - GA4: dataLayer에 balance_*·rq_* 이벤트를 넣는다 (GTM에는 아직 이 이벤트를 받는 태그가 없다)
+   ========================================================= */
+(function () {
+  'use strict';
+  const village = document.getElementById('vt');
+  const main = document.querySelector('main');
+  if (!village || !main || (document.documentElement.getAttribute('lang') || '').slice(0, 2) !== 'ko') return;
+  /* 그림 폴더: 테스트 칸 로고 그림 주소에서 얻는다 ('../images/') */
+  const VT_LOGO = village.querySelector('.logo');
+  const IMG = (VT_LOGO ? VT_LOGO.getAttribute('src') : '../images/village-test/logo.webp').replace(/village-test\/logo\.webp$/, '');
+  const params = new URLSearchParams(location.search);
+  const esc = value => String(value).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const br = value => esc(value).replace(/\n/g, '<br>');
+
+  /* ---------- 게임 고르기 ---------- */
+  const MODES = ['village', 'balance', 'real1', 'real2'];
+  const TITLES = { village: document.title, balance: '제주살이 밸런스 게임 | 이제, 주민', real1: '제주살이, 실화냐? 생활편 | 이제, 주민', real2: '제주살이, 실화냐? 이주민편 | 이제, 주민' };
+  const switches = game => '<div class="jb-switch" role="group" aria-label="게임 고르기">' +
+    '<button type="button" class="jb-game-village" data-jb-mode="village" aria-pressed="' + (game === 'village') + '"><span class="jb-game-cover" aria-hidden="true"><span>JEJU</span></span><span class="jb-game-copy"><strong>동네 테스트</strong><small>내게 맞는 동네 찾기</small></span></button>' +
+    '<button type="button" class="jb-game-balance" data-jb-mode="balance" aria-pressed="' + (game === 'balance') + '"><span class="jb-new">NEW</span><span class="jb-game-cover" aria-hidden="true"><span>A / B</span></span><span class="jb-game-copy"><strong>밸런스 게임</strong><small>살고 싶은 하루 고르기</small></span></button>' +
+    '<button type="button" class="jb-game-real" data-jb-mode="real1" aria-pressed="' + (game === 'real') + '"><span class="jb-new">NEW</span><span class="jb-game-cover" aria-hidden="true"><span>O / X</span></span><span class="jb-game-copy"><strong><span class="jb-game-pre">제주살이,&nbsp;</span><span>실화냐?</span></strong><small>진짜일까, 가짜일까</small></span></button></div>';
+
+  /* ---------- 밸런스 게임: 문항·엔딩 (balance-data.js 그대로) ---------- */
+  const D = (function () {
+    const version = 'v1';
+    const questions = [
+      { id: 'home-location', category: '집', icon: 'house', title: '바다 앞 집, 마트 앞 집.\n어디에 살래?', pose: 'pose-a-06', talk: '매일 보는 풍경이냐,\n매일의 편리함이냐!', options: [
+        { title: '눈뜨면 바다!', detail: '바다까지 걸어서 1분', cost: '대신 장 보러 갈 때는 차로 30분', tag: '바다 앞 집', reaction: '장 보러 가는 길도\n드라이브라고 치자!' },
+        { title: '슬리퍼 신고 장보기!', detail: '마트까지 걸어서 1분', cost: '대신 바다 보러 갈 때는 차로 30분', tag: '편리한 생활권', reaction: '바다는 놀러 가고,\n장보기는 편하게!' }
+      ] },
+      { id: 'home-yard', category: '집', icon: 'house', title: '주말 아침 커피 한 잔,\n어떤 집에서 마실래?', pose: 'pose-a-07', talk: '마당의 낭만에도\n할 일이 따라온다구!', options: [
+        { title: '돌담과 내 마당 있는 집', detail: '햇볕 아래 나만의 야외 카페', cost: '대신 주말마다 집과 마당 관리 2시간', tag: '마당의 낭만', reaction: '마당에서 커피 한 잔!\n잡초는 잠깐만 기다려.' },
+        { title: '관리 편한 아파트', detail: '집 관리에 쓸 시간은 아껴두기', cost: '대신 나만의 마당은 없음', tag: '가벼운 집 관리', reaction: '주말은 소중하니까,\n커피 들고 산책 가자!' }
+      ] },
+      { id: 'work-location', category: '일', icon: 'laptop', title: '일하러 가는 길,\n풍경이냐 거리냐!', pose: 'pose-a-05', talk: '바다 보며 일하기,\n출근길까지 생각해봤어?', options: [
+        { title: '바다가 보이는 일터', detail: '고개만 들면 펼쳐지는 바다', cost: '대신 출퇴근은 편도 40분', tag: '바다 보이는 일터', reaction: '창밖이 이 정도면,\n출근길도 견뎌볼까?' },
+        { title: '집에서 걸어서 5분', detail: '출근 전에도, 퇴근 후에도 여유', cost: '대신 일터에서 바다는 안 보임', tag: '짧은 출퇴근', reaction: '아낀 출근 시간으로\n내 하루를 채워보자!' }
+      ] },
+      { id: 'work-style', category: '일', icon: 'laptop', title: '제주에서 일한다면,\n어떤 하루를 고를래?', pose: 'pose-a-04', talk: '좋아하는 일과\n쉬고 싶은 날 사이!', options: [
+        { title: '꿈꾸던 작은 가게 사장님', detail: '내 취향을 담은 공간 운영하기', cost: '대신 남들이 쉬는 주말에 일하기', tag: '나만의 작은 가게', reaction: '내 취향 가득한 공간!\n주말 손님, 어서 오세요.' },
+        { title: '익숙한 일을 재택으로', detail: '하던 일을 이어가며 자리 잡기', cost: '새 가게의 꿈은 미뤄두고 주말 쉬기', tag: '재택과 주말 휴식', reaction: '일은 익숙하게,\n주말은 새롭게!' }
+      ] },
+      { id: 'people-neighbors', category: '관계', icon: 'people', title: '오늘 저녁 같이 먹을까?\n이웃과 어느 만큼 가까울래?', pose: 'pose-a-08', talk: '반가운 이웃도 좋고,\n혼자만의 저녁도 좋지!', options: [
+        { title: '이웃과 자주 밥 먹기', detail: '함께 나누는 이야기와 따뜻한 식탁', cost: '대신 혼자 보내는 저녁은 적음', tag: '이웃과 저녁 식탁', reaction: '오늘 반찬 하나 더!\n같이 먹으니 더 맛있네.' },
+        { title: '혼자 느긋하게 저녁 먹기', detail: '누구에게도 맞추지 않는 내 시간', cost: '새 친구는 따로 시간을 내서 만나기', tag: '혼자만의 저녁', reaction: '오늘 메뉴도, 속도도\n내 마음대로!' }
+      ] },
+      { id: 'people-friends', category: '관계', icon: 'people', title: '육지 친구의 연락,\n“나 제주 놀러 가도 돼?”', pose: 'pose-b-03', talk: '친구는 반갑지만,\n주말 일정도 생각해봐!', options: [
+        { title: '매달 우리 집으로 초대!', detail: '보고 싶은 친구와 제주 추억 쌓기', cost: '대신 매달 한 주말은 손님맞이', tag: '친구 오는 우리 집', reaction: '우리 집 예약 달력,\n슬슬 만들어야겠는데?' },
+        { title: '두 달에 한 번 육지에서!', detail: '평소 주말은 내 생활에 집중하기', cost: '대신 친구 만나는 날엔 내가 비행기 타기', tag: '내 리듬대로 주말', reaction: '제주에선 내 시간,\n만나는 날엔 반가움 두 배!' }
+      ] },
+      { id: 'daily-trail', category: '일상', icon: 'leaf', title: '다음 주말에도 걸을래?\n어떤 길이 더 끌려?', pose: 'pose-b-06', talk: '익숙해서 보이는 것도,\n처음이라 보이는 것도 있지!', options: [
+        { title: '한 길을 사계절 걷기', detail: '꽃 피고 바람 바뀌는 순간 알아채기', cost: '대신 주말 산책 코스는 늘 같은 길', tag: '사계절 단골 산책길', reaction: '같은 길인데도\n어제랑 다른 제주네!' },
+        { title: '매주 새로운 길 찾기', detail: '지도에 새로운 추억 하나씩 더하기', cost: '대신 코스와 이동편도 매번 알아보기', tag: '매주 새로운 길', reaction: '이번 주엔 어디로?\n지도 펼치는 것도 설렘!' }
+      ] },
+      { id: 'daily-priority', category: '일상', icon: 'sun', title: '제주에서도 하루는 24시간.\n무엇을 더 챙길래?', pose: 'pose-a-02', talk: '조금 어려운 마지막 질문!\n지금 네 마음은 어디야?', options: [
+        { title: '덜 벌어도 일찍 퇴근', detail: '퇴근 후 바다 산책을 매일 즐기기', cost: '대신 취미와 외식 예산은 빠듯하게', tag: '퇴근 후 바다 산책', reaction: '오늘 노을은 놓치지 말자.\n내 시간도 소중하니까!' },
+        { title: '더 일하고 여윳돈 챙기기', detail: '취미와 외식을 넉넉하게 즐기기', cost: '대신 바다 산책은 주말에 몰아서', tag: '든든한 생활 예산', reaction: '일상을 든든히 채우고,\n주말 바다를 기다리자!' }
+      ] }
+    ];
+    const artwork = ['house', 'yard', 'workplace', 'workstyle', 'neighbors', 'friends', 'trails', 'priority'];
+    questions.forEach((question, index) => { question.art = artwork[index]; });
+    const articles = [
+      { id: 'lee', title: '제주에서도 일과 삶의 기반을 만든다면', name: '백록마케팅 · 이재은', description: '시행착오 끝에 자신이 잘하는 일로 돌아온 이야기', path: 'lee-jaeeun.html' },
+      { id: 'paarang', title: '내 취향을 담은 가게를 연 사람', name: '파랑오브레코즈 · 임하람', description: '사진관과 소품숍으로 자신의 일을 만들어간 이야기', path: 'paarang-of-records.html' },
+      { id: 'ain', title: '낯선 제주에서 관계가 힘이 되기까지', name: '아인학교 · 안세은', description: '이웃과 함께 배움터를 준비하며 자리를 잡는 이야기', path: 'ain-school.html' },
+      { id: 'emily', title: '여유와 단조로움 사이, 나의 제주 일상', name: '엠아이티도그 · 에밀리', description: '자연 가까이에서 좋아하는 일을 이어가는 이야기', path: 'emily.html' }
+    ];
+    function validAnswers(value) { return Array.isArray(value) && value.length === questions.length && value.every(n => n === 0 || n === 1); }
+    function encode(value) { return validAnswers(value) ? version + '.' + value.join('') : null; }
+    function decode(value) { return typeof value === 'string' && /^v1\.[01]{8}$/.test(value) ? value.slice(3).split('').map(Number) : null; }
+    const endingNames = [
+      ['바다 앞\n사랑방 사장님', '사람 냄새 나는 동네 성장극'],
+      ['파도 소리 듣는\n취향 사장님', '작은 공간에서 시작하는 취향 생활극'],
+      ['바다 곁\n저녁 모임 단골', '일과 이웃 사이, 따뜻한 일상극'],
+      ['파도 소리와\n내 리듬 지킴이', '고요한 하루를 모으는 생활극'],
+      ['골목 안\n사랑방 사장님', '단골과 함께 자라는 동네 성장극'],
+      ['동네 가까이\n취향 공간 주인장', '편리한 골목에 취향을 채우는 생활극'],
+      ['슬리퍼 생활권\n동네 친구', '가까운 가게와 이웃이 있는 일상극'],
+      ['생활은 가볍게\n내 시간 수집가', '내 시간을 차곡차곡 모으는 생활극']
+    ];
+    const scenes = [
+      { slot: '아침', question: 1, variants: [
+        ['마당부터 열어보는 하루', '커피 한 잔 들고 마당으로. 햇볕 먼저 쬐고, 잡초는 조금 뒤에 보자.'],
+        ['가볍게 시작하는 아침', '집 정리는 가볍게 끝. 오늘 아낀 수고는 나를 위한 시간으로 남겨둔다.']
+      ] },
+      { slot: '낮', question: 3, variants: [
+        ['내 취향을 담아 문 열기', '작은 가게의 문을 열고 좋아하는 물건을 정돈한다. 오늘은 어떤 손님이 올까?'],
+        ['일은 익숙하게, 쉼은 새롭게', '노트북 앞에서 하던 일을 차근차근. 일을 마치면 오늘의 제주를 만나러 간다.']
+      ] },
+      { slot: '저녁', question: 4, variants: [
+        ['반찬 하나 더 놓는 식탁', '“저녁 같이 먹을래요?” 이웃과 나눈 한 끼가 오늘의 가장 긴 이야기가 된다.'],
+        ['오늘 저녁은 내 속도로', '메뉴도, 음악도, 밥 먹는 속도도 내 마음대로. 조용한 저녁을 길게 누린다.']
+      ] },
+      { slot: '쉬는 날', question: 6, variants: [
+        ['같은 길에서 다른 계절 찾기', '다시 걷는 길에서 작은 변화를 발견한다. 지난번엔 없던 꽃이 오늘의 새 소식.'],
+        ['지도에 추억 하나 추가', '지도와 이동편부터 펼쳐본다. 아직 안 걸어본 길이 있다는 게 오늘의 설렘이다.']
+      ] }
+    ];
+    const realityComments = {
+      0: ['냉장고 속 우유가 떨어져도, 창밖 바다는 그대로!', '노을 보러 나갈 때는 슬리퍼 말고 차 키도 챙기기.'],
+      2: ['풍경은 마음을 채우고, 출근길은 시간을 쓴다.', '퇴근 후 바다는 안 보여도, 아낀 시간은 확실히 보이네.'],
+      7: ['노을은 매일 챙기고, 외식 메뉴는 조금 신중하게.', '생활 예산은 든든하게, 주말 바다는 더 반갑게.']
+    };
+    function buildEnding(value) {
+      if (!validAnswers(value)) throw new TypeError('Complete answers required');
+      const profileKey = value[0] * 4 + value[3] * 2 + value[4];
+      let comment, evidence;
+      if (value[3] === 0 && value[7] === 0) {
+        comment = '가게도 내고, 일찍 퇴근도 하고 싶구나. 영업시간표부터 신중하게!'; evidence = [3, 7];
+      } else if (value[1] === 0 && value[6] === 1) {
+        comment = '마당도 돌보고, 새 길도 찾고! 주말 달력이 은근히 바빠지겠는데?'; evidence = [1, 6];
+      } else if (value[4] === 0 && value[5] === 0) {
+        comment = '이웃과 밥 먹고, 육지 친구도 맞이하고. 빈 주말부터 찾아야겠는데?'; evidence = [4, 5];
+      } else if (value[0] === 0 && value[2] === 1) {
+        comment = '바다는 매일, 출근은 짧게! 집과 일터 사이를 꼼꼼히 보겠구나.'; evidence = [0, 2];
+      } else if (value[0] === 1 && value[7] === 0) {
+        comment = '장보기 시간도, 퇴근 후 시간도 아껴서 나에게 쓰는 편이구나!'; evidence = [0, 7];
+      } else if (value[3] === 1 && value[4] === 1) {
+        comment = '회의가 끝나면 나만의 시간 시작. 오늘도 집중 모드에서 휴식 모드로!'; evidence = [3, 4];
+      } else {
+        comment = '네가 고른 장면마다 이유가 있네. 이 제주살이의 주인공은 너야!'; evidence = [0, 7];
+      }
+      return {
+        profileKey, name: endingNames[profileKey][0], genre: endingNames[profileKey][1],
+        comment, evidence: evidence.map(i => ({ question: i, text: questions[i].options[value[i]].tag })),
+        scenes: scenes.map(scene => {
+          const index = scene.question, variant = scene.variants[value[index]];
+          return { slot: scene.slot, title: variant[0], text: variant[1], question: index, art: questions[index].art, side: value[index] };
+        }),
+        realities: [0, 2, 7].map(index => ({ question: index, title: questions[index].options[value[index]].title, cost: questions[index].options[value[index]].cost, comment: realityComments[index][value[index]] })),
+        friendQuestion: value[5] === 0 ? '제주 집에 친구가 매달 놀러 온다면, 너도 손님맞이 팀에 합류할래?' : '제주에서는 각자 주말을 즐기고, 두 달에 한 번 육지에서 만나는 건 어때?',
+        alternativeQuestion: 3,
+        alternativeLabel: value[3] === 0 ? '가게 대신 재택근무를 골랐다면?' : '재택 대신 작은 가게를 열었다면?'
+      };
+    }
+    function summarize(value) {
+      if (!validAnswers(value)) throw new TypeError('Complete answers required');
+      const sea = value[0] === 0, time = value[7] === 0;
+      const ending = buildEnding(value);
+      const title = ending.name;
+      const description = (sea ? '바다 가까운 집' : '장보기 편한 집') + '을 골랐고, ' + (time ? '퇴근 후 산책할 시간' : '취미를 즐길 여윳돈') + '에 마음이 갔네요. 당신이 고른 제주살이의 장면들을 모았어요.';
+      const scores = { lee: 0, paarang: 0, ain: 0, emily: 0 };
+      scores[value[3] === 0 ? 'paarang' : 'lee'] += 3;
+      scores[value[4] === 0 ? 'ain' : 'emily'] += 2;
+      scores[value[7] === 0 ? 'emily' : 'lee'] += 1;
+      return { title, description, ending, tags: questions.map((q, i) => q.options[value[i]].tag), articles: articles.slice().sort((a, b) => scores[b.id] - scores[a.id]).slice(0, 2) };
+    }
+    function compare(a, b) { return validAnswers(a) && validAnswers(b) ? a.reduce((sum, n, i) => sum + Number(n === b[i]), 0) : null; }
+    return { version, questions, articles, validAnswers, encode, decode, summarize, buildEnding, compare };
+  })();
+
+  /* ---------- 밸런스 게임: 화면 (balance-game.js) ----------
+     그림은 클래스로 고른다 (.jb-art-house 등, style.css). 미리 받기(preload)에만 주소를 쓴다 */
+  const asset = name => IMG + 'village-test/' + name;
+  const art = name => IMG + 'balance-v2/' + name + '.webp';
+  const scene = (name, side, extra) => '<span class="jb-scene jb-scene-' + side + ' jb-art-' + name + (extra ? ' ' + extra : '') + '" aria-hidden="true"></span>';
+  const friend = D.decode(params.get('friend'));
+  const storeKey = 'ijejumin.balance.v1.' + (friend ? friend.join('') : 'solo');
+  /* 엽서 그림의 작은 글자: 웹진 본문 글꼴 (G마켓 산스는 동네 테스트 글자만 들어 있다) */
+  const CANVAS_BODY = 'Pretendard, "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", sans-serif';
+  let state = { answers: Array(8).fill(null), index: 0, phase: 'start' };
+  let activeMode = 'village', dialogReturn = null, imageUrl = null, toastTimer = null, editingResult = false, alternativeAnswers = null;
+  let startedAt = 0, visibleSince = 0, visibleMs = 0, completed = false;
+  try {
+    const saved = JSON.parse(sessionStorage.getItem(storeKey));
+    if (saved && Array.isArray(saved.answers) && saved.answers.length === 8 && saved.answers.every(n => n === null || n === 0 || n === 1)) {
+      state.answers = saved.answers;
+      state.index = Number.isInteger(saved.index) ? Math.max(0, Math.min(7, saved.index)) : 0;
+      state.phase = saved.phase === 'result' && D.validAnswers(saved.answers) ? 'result' : 'start';
+    }
+  } catch (_) { /* 브라우저 저장소를 못 써도 게임은 된다 */ }
+  const root = document.createElement('section');
+  root.id = 'jeju-balance';
+  root.className = 'vt';
+  root.lang = 'ko';
+  root.hidden = true;
+  root.setAttribute('aria-label', '제주살이 밸런스 게임');
+  const paths = {
+    house: '<path d="m3 10 9-7 9 7M5 9v12h14V9M10 21v-7h4v7"/>',
+    share: '<path d="M12 16V3m-4 4 4-4 4 4M5 12v9h14v-9"/>',
+    laptop: '<rect x="5" y="4" width="14" height="12" rx="1"/><path d="m5 16-3 4h20l-3-4"/>',
+    people: '<circle cx="9" cy="8" r="3"/><path d="M3 21v-3c0-6 12-6 12 0v3M17 5a3 3 0 0 1 0 6m1 4c3 0 4 2 4 5"/>',
+    leaf: '<path d="M4 21C2 9 10 3 21 3c0 12-5 18-17 18Zm0 0L15 10"/>',
+    sun: '<circle cx="12" cy="12" r="4"/><path d="M12 1v3m0 16v3M1 12h3m16 0h3M4 4l2 2m12 12 2 2M4 20l2-2M18 6l2-2"/>'
+  };
+  const icon = name => '<svg viewBox="0 0 24 24" aria-hidden="true">' + paths[name] + '</svg>';
+  root.innerHTML = '<div class="jb-photo" aria-hidden="true"></div><div class="jb-app"><div class="jb-header"><a href="../index.html" aria-label="이제주민 웹진으로"><img class="jb-logo" src="' + asset('logo.webp') + '" alt="이제주민" width="39" height="43"></a><div class="jb-actions"><button class="jb-pill" type="button" data-jb="home">' + icon('house') + '홈</button><button class="jb-pill" type="button" data-jb="share" data-track="share_copy">' + icon('share') + '공유</button><span class="jb-pill jb-language" lang="ko">한국어</span></div></div>' + switches('balance') + '<div class="jb-screen" id="jb-screen"></div></div><div class="jb-overlay" id="jb-overlay" hidden><section class="jb-dialog" role="dialog" aria-modal="true" aria-labelledby="jb-dialog-title"><div id="jb-dialog-content"></div><button class="jb-cta jb-cta-white" type="button" data-jb="close-dialog">닫기</button></section></div><div class="jb-toast" id="jb-toast" role="status" hidden></div><p class="sr-only" id="jb-announcement" aria-live="polite"></p>';
+  main.append(root);
+  const screen = root.querySelector('#jb-screen');
+  const overlay = root.querySelector('#jb-overlay');
+  const announcement = root.querySelector('#jb-announcement');
+  const vtHdr = village.querySelector('.hdr');
+  if (vtHdr) vtHdr.insertAdjacentHTML('afterend', switches('village'));
+  function track(event, extra) {
+    const details = Object.assign({ event: 'balance_' + event, game_version: D.version }, extra || {});
+    if (Array.isArray(window.dataLayer)) window.dataLayer.push(details);
+    root.dispatchEvent(new CustomEvent('jeju-balance:event', { bubbles: true, detail: details }));
+  }
+  function save() { try { sessionStorage.setItem(storeKey, JSON.stringify(state)); } catch (_) {} }
+  function stopClock() { if (visibleSince) visibleMs += performance.now() - visibleSince; visibleSince = 0; }
+  function resumeClock() { if (startedAt && !completed && state.phase === 'quiz' && activeMode === 'balance' && !document.hidden && !visibleSince) visibleSince = performance.now(); }
+  document.addEventListener('visibilitychange', () => document.hidden ? stopClock() : resumeClock());
+  function talk(pose, text) { return '<div class="jb-talk"><img class="jb-character" src="' + asset(pose + '.webp') + '" alt="" width="90" height="112"><p class="jb-bubble" id="jb-bubble">' + br(text) + '</p></div>'; }
+  function setScreen(html, phase, focus) {
+    root.dataset.phase = phase;
+    screen.innerHTML = html;
+    screen.classList.remove('jb-enter');
+    requestAnimationFrame(() => screen.classList.add('jb-enter'));
+    if (focus) {
+      const heading = screen.querySelector('h1,h2');
+      if (heading) { heading.setAttribute('tabindex', '-1'); heading.focus({ preventScroll: true }); }
+      window.scrollTo({ top: 0, behavior: 'instant' });
+    }
+    save();
+  }
+  function startScreen(focus) {
+    state.phase = 'start'; stopClock();
+    const hasProgress = state.answers.some(n => n !== null);
+    const invalid = params.has('friend') && !friend;
+    setScreen((friend ? '<p class="jb-invite">친구가 같은 8개 질문을 보냈어요.<br><strong>서로의 선택은 끝난 뒤에 공개!</strong></p>' : '') + (invalid ? '<p class="jb-invite">비교 링크를 확인할 수 없어 일반 게임으로 열었어요.</p>' : '') + '<div class="jb-hero"><p class="jb-kicker">하르방과 고르는 나의 제주 일상</p><h2 class="jb-title"><span>제주살이</span><span>밸런스 게임</span></h2><div class="jb-hero-pair">' + scene('house', 0) + '<span class="jb-hero-vs">VS</span>' + scene('house', 1) + '</div><p class="jb-sub">매일 보는 바다도, 집 앞 편의점도 좋은데…<br>하나만 고른다면?</p></div><button class="jb-cta" type="button" data-jb="start">' + (hasProgress ? '이어서 내 제주살이 고르기' : '골라보자, 나의 제주살이!') + ' →</button><p class="jb-meta">8번의 선택 · 약 2분 · 정답 없는 고민</p>' + (hasProgress ? '<button class="jb-textbutton" type="button" data-jb="restart">처음부터 새로 고르기</button>' : '') + talk('pose-a-06', '제주에 산다면,\n이건 포기할 수 있겠어?') + '<p class="jb-assumption">선택지의 시간과 조건은 게임을 위한 가정이에요.<br>서로 다른 상황에서 끌리는 쪽을 골라주세요.</p>', 'start', focus);
+  }
+  function start(restart) {
+    editingResult = false;
+    if (restart) { state.answers = Array(8).fill(null); completed = false; visibleMs = 0; }
+    if (D.validAnswers(state.answers) && !restart) { resultScreen(true); return; }
+    const unanswered = state.answers.indexOf(null);
+    state.index = unanswered === -1 ? 0 : unanswered;
+    state.phase = 'quiz'; startedAt = performance.now(); completed = false;
+    track(restart ? 'replay' : 'start', { comparison: Boolean(friend) });
+    questionScreen(true); resumeClock();
+  }
+  function questionScreen(focus) {
+    state.phase = 'quiz';
+    const i = state.index, q = D.questions[i], picked = state.answers[i];
+    const answered = state.answers.filter(n => n !== null).length;
+    const categories = [{ name: '집', icon: 'house' }, { name: '일', icon: 'laptop' }, { name: '관계', icon: 'people' }, { name: '일상', icon: 'leaf' }];
+    setScreen('<div class="jb-question-top"><button type="button" class="jb-back" data-jb="back">← ' + (i ? '이전' : '시작 화면') + '</button><div class="jb-categories" aria-label="현재 주제: ' + q.category + '">' + categories.map(c => '<span class="jb-category"' + (c.name === q.category ? ' aria-current="step"' : '') + ' aria-label="' + c.name + '">' + icon(c.icon) + (c.name === q.category ? c.name : '') + '</span>').join('') + '</div></div><div class="jb-paper"><p class="jb-qno">Q' + (i + 1) + '<small> / 8</small></p><h2 class="jb-question">' + br(q.title) + '</h2></div><div class="jb-progress-track" role="progressbar" aria-label="답변한 문항" aria-valuemin="0" aria-valuemax="8" aria-valuenow="' + answered + '"><div class="jb-progress-value"></div></div><div class="jb-options" role="group" aria-label="둘 중 하나 선택">' + q.options.map((o, n) => (n ? '<span class="jb-versus" aria-hidden="true">VS</span>' : '') + '<button class="jb-option" type="button" data-jb-choice="' + n + '" aria-pressed="' + (picked === n) + '"><span class="jb-letter">' + (n ? 'B' : 'A') + '</span>' + scene(q.art, n, 'jb-option-art') + '<span class="jb-option-title">' + esc(o.title) + '</span><span class="jb-option-detail">' + esc(o.detail) + '</span><span class="jb-option-cost">' + esc(o.cost) + '</span></button>').join('') + '</div>' + talk(q.pose, picked === null ? q.talk : q.options[picked].reaction) + '<button class="jb-cta" type="button" data-jb="next"' + (picked === null ? ' disabled' : '') + '>' + (i === 7 ? '내가 고른 제주살이 보기' : '다음 고민') + ' →</button>', 'quiz', focus);
+    screen.querySelector('.jb-progress-value').style.width = answered / 8 * 100 + '%';
+    if (D.questions[i + 1]) { const preload = new Image(); preload.src = art(D.questions[i + 1].art); }
+    if (editingResult) screen.querySelector('[data-jb="next"]').textContent = '수정한 결과 보기 →';
+    resumeClock();
+  }
+  function choose(n) {
+    if (state.phase !== 'quiz' || (n !== 0 && n !== 1)) return;
+    const i = state.index, q = D.questions[i];
+    state.answers[i] = n;
+    screen.querySelectorAll('[data-jb-choice]').forEach(button => button.setAttribute('aria-pressed', String(Number(button.dataset.jbChoice) === n)));
+    screen.querySelector('#jb-bubble').textContent = q.options[n].reaction;
+    screen.querySelector('[data-jb="next"]').disabled = false;
+    const answered = state.answers.filter(a => a !== null).length;
+    screen.querySelector('[role="progressbar"]').setAttribute('aria-valuenow', String(answered));
+    screen.querySelector('.jb-progress-value').style.width = answered / 8 * 100 + '%';
+    announcement.textContent = q.options[n].title + ' 선택. ' + q.options[n].reaction;
+    save(); track('answer', { question_id: q.id, choice: n === 0 ? 'A' : 'B' });
+  }
+  function next() {
+    if (state.phase !== 'quiz' || state.answers[state.index] === null) return;
+    if (editingResult) { editingResult = false; resultScreen(true); return; }
+    if (state.index < 7) { state.index++; questionScreen(true); }
+    else resultScreen(true);
+  }
+  function comparisonHTML() {
+    if (!friend) return '';
+    const matches = D.compare(state.answers, friend);
+    const rows = D.questions.map((q, i) => ({ q, i })).filter(({ i }) => state.answers[i] !== friend[i]);
+    return '<section class="jb-comparison" aria-labelledby="jb-comparison-title"><h3 id="jb-comparison-title">우리는 8개 중 ' + matches + '개를<br>똑같이 골랐어요!</h3><p>' + (matches === 8 ? '모든 선택이 같네요. 가장 고민한 질문도 같을까요?' : '선택이 갈린 질문, 같이 이야기해볼까요?') + '</p>' + rows.map(({ q, i }) => '<div class="jb-compare-row"><strong>Q' + (i + 1) + '. ' + esc(q.category) + '에서 갈린 선택</strong><div>나 · ' + esc(q.options[state.answers[i]].title) + '</div><div>친구 · ' + esc(q.options[friend[i]].title) + '</div></div>').join('') + '</section>';
+  }
+  function endingContent(ending) {
+    const frames = ending.scenes.map(frame => '<article class="jb-ending-frame">' + scene(frame.art, frame.side, 'jb-ending-art') + '<span class="jb-ending-slot">' + esc(frame.slot) + '</span><div class="jb-ending-frame-copy"><h4>' + esc(frame.title) + '</h4><p>' + esc(frame.text) + '</p></div></article>').join('');
+    const reveals = ending.realities.map((reality, index) => '<button class="jb-ending-flip" type="button" data-jb-reveal="' + index + '" data-question="' + reality.question + '" aria-pressed="false" aria-label="' + esc(reality.title) + ', 함께 따라오는 생활 보기"><span class="jb-ending-flip-front"><span class="jb-ending-card-no">0' + (index + 1) + '</span><small>내가 고른 로망</small><strong>' + esc(reality.title) + '</strong><span class="jb-ending-flip-hint">뒤집어보기 ↻</span></span><span class="jb-ending-flip-back" hidden><small>함께 따라오는 생활</small><strong>' + esc(reality.cost) + '</strong><span class="jb-ending-reality-note">' + esc(reality.comment) + '</span><span class="jb-ending-flip-hint">앞면 다시 보기 ↻</span></span></button>').join('');
+    return '<section class="jb-ending-section" aria-labelledby="jb-storyboard-title"><div class="jb-ending-section-head"><span class="jb-ending-kicker">MY JEJU TRAILER</span><h3 id="jb-storyboard-title">내 선택으로 그린 제주살이 4컷</h3><p>고른 장면들을 엮어 꾸민 가상의 일상이에요.</p></div><div class="jb-ending-frames">' + frames + '</div></section>' +
+      '<section class="jb-ending-section" aria-labelledby="jb-reveal-title"><div class="jb-ending-section-head"><span class="jb-ending-kicker">BEHIND THE SCENES</span><h3 id="jb-reveal-title">로망의 뒷면도 열어볼까?</h3><p>카드를 누르면, 내 선택에 따라오는 생활이 보여요.</p></div><div class="jb-ending-flips">' + reveals + '</div></section>' +
+      '<section class="jb-ending-alternative" aria-labelledby="jb-alternative-title"><span class="jb-ending-kicker">ANOTHER ENDING</span><h3 id="jb-alternative-title">선택 하나, 다른 엔딩</h3><p>다른 답을 골랐다면 어떤 장면이 기다릴까요?</p><button type="button" class="jb-cta jb-cta-white" data-jb="preview-alternative">' + esc(ending.alternativeLabel) + ' →</button></section>' +
+      '<section class="jb-ending-friend" aria-labelledby="jb-friend-talk-title"><span class="jb-ending-kicker">ENDING TALK</span><h3 id="jb-friend-talk-title">친구와 엔딩 후 토크</h3><blockquote>“' + esc(ending.friendQuestion) + '”</blockquote><button class="jb-cta jb-cta-blue" type="button" data-jb="invite" data-track="share_copy">친구도 고르게 해보기 →</button></section>';
+  }
+  function previewAlternative() {
+    if (!D.validAnswers(state.answers)) return;
+    const index = D.buildEnding(state.answers).alternativeQuestion;
+    alternativeAnswers = state.answers.slice();
+    alternativeAnswers[index] = 1 - alternativeAnswers[index];
+    const preview = D.summarize(alternativeAnswers), frame = preview.ending.scenes.find(item => item.question === index);
+    openDialog('<h2 id="jb-dialog-title">다른 엔딩 살짝 보기</h2><div class="jb-ending-preview">' + scene(frame.art, frame.side, 'jb-ending-preview-art') + '<span class="jb-ending-kicker">선택 하나를 바꾼 가상 엔딩</span><h3>' + br(preview.title) + '</h3><p>' + esc(frame.text) + '</p><p class="jb-ending-preview-note">현재 결과는 그대로예요. 마음에 들면 이 선택으로 바꿔보세요.</p></div><button type="button" class="jb-cta" data-jb="apply-alternative">이 선택으로 내 결과 바꾸기</button>');
+    track('ending_preview', { question_id: D.questions[index].id });
+  }
+  function resultScreen(focus) {
+    if (!D.validAnswers(state.answers)) { startScreen(focus); return; }
+    state.phase = 'result'; stopClock();
+    if (!completed && startedAt) {
+      completed = true;
+      track('complete', { visible_seconds: Math.round(visibleMs / 1000), comparison: Boolean(friend), same_answers: friend ? D.compare(state.answers, friend) : undefined });
+    }
+    const r = D.summarize(state.answers);
+    const postcard = '<p class="jb-result-label">나의 제주살이 엔딩</p><div class="jb-paper jb-postcard" id="jb-postcard"><p class="jb-postmark">이제주민 · MY JEJU ENDING</p><p class="jb-ending-genre">' + esc(r.ending.genre) + '</p><h2 class="jb-result-title">' + br(r.title) + '</h2><p class="jb-description">' + esc(r.description) + '</p><p class="jb-ending-evidence-label">하르방이 발견한 취향 조합</p><div class="jb-tags">' + r.ending.evidence.map(item => '<span class="jb-tag">' + esc(item.text) + '</span>').join('') + '</div>' + talk('pose-a-06', r.ending.comment) + '<p class="jb-stamp">정답은 없어. 네가 고른 하루니까!</p></div>';
+    const actions = '<div class="jb-result-actions"><button class="jb-cta" type="button" data-jb="invite" data-track="share_copy">친구는 어떤 엔딩일까? 같은 질문 보내기</button><button class="jb-cta jb-cta-white" type="button" data-jb="save-image">내 제주살이 엽서 저장 ↓</button></div>';
+    const answers = '<details class="jb-summary"><summary>내 선택 8개 다시 보기 · 수정하기</summary><ol class="jb-answer-list">' + D.questions.map((q, i) => '<li><button type="button" data-jb-edit="' + i + '"><small>Q' + (i + 1) + ' · ' + q.category + '</small>' + esc(q.options[state.answers[i]].title) + ' ↗</button></li>').join('') + '</ol></details>';
+    const related = '<section class="jb-related" aria-labelledby="jb-related-title"><h3 id="jb-related-title">이런 제주살이,<br>먼저 살아본 사람은?</h3>' + r.articles.map(a => '<a class="jb-story" href="./' + a.path + '" data-jb-article="' + a.id + '" data-track="related_article"><small>' + a.name + '</small><strong>' + a.title + ' →</strong><span>' + a.description + '</span></a>').join('') + '</section>';
+    setScreen(postcard + actions + comparisonHTML() + endingContent(r.ending) + answers + related + '<button class="jb-cta jb-cta-blue" type="button" data-jb="village">그럼, 나는 제주 어디 주민?</button><button class="jb-textbutton" type="button" data-jb="restart">다시 골라보기 ↻</button><p class="jb-assumption">선택을 엮어 꾸민 재미용 가상 엔딩이에요. 제주 이주 적합도를 평가하지 않아요.</p>', 'result', focus);
+  }
+  function toast(message) {
+    const el = root.querySelector('#jb-toast');
+    el.textContent = message; el.hidden = false;
+    clearTimeout(toastTimer); toastTimer = setTimeout(() => { el.hidden = true; }, 2800);
+  }
+  function openDialog(content) {
+    dialogReturn = document.activeElement;
+    root.querySelector('#jb-dialog-content').innerHTML = content;
+    overlay.hidden = false;
+    overlay.querySelector('button,textarea,a').focus();
+  }
+  function closeDialog() {
+    overlay.hidden = true;
+    alternativeAnswers = null;
+    if (imageUrl) { URL.revokeObjectURL(imageUrl); imageUrl = null; }
+    if (dialogReturn && dialogReturn.isConnected) dialogReturn.focus();
+  }
+  function shareUrl(invite) {
+    const url = new URL(location.href);
+    url.search = ''; url.hash = '';
+    url.searchParams.set('lang', 'ko');
+    url.searchParams.set('mode', 'balance');
+    if (invite && D.validAnswers(state.answers)) url.searchParams.set('friend', D.encode(state.answers));
+    return url.href;
+  }
+  async function share(invite) {
+    if (location.protocol === 'file:') {
+      openDialog('<h2 id="jb-dialog-title">친구와 함께 고르려면</h2><p>친구와의 선택 비교는 웹에서 이용할 수 있어요. 지금은 내 제주살이를 고르고 엽서를 저장해보세요.</p>');
+      return;
+    }
+    const comparison = Boolean(invite && D.validAnswers(state.answers));
+    const url = shareUrl(comparison);
+    const result = comparison ? D.summarize(state.answers) : null;
+    const text = comparison ? '내 제주살이 엔딩은 “' + result.title.replace(/\n/g, ' ') + '”!\n' + result.ending.friendQuestion + '\n같은 8개 질문에 답하고 우리 선택을 비교해봐.' : '바다 앞 집 vs 집 앞 마트? 8번의 선택으로 고르는 나의 제주살이!';
+    if (navigator.share) {
+      try { await navigator.share({ title: '제주살이 밸런스 게임', text, url }); track('share', { method: 'native', comparison }); return; }
+      catch (error) { if (error.name === 'AbortError') return; }
+    }
+    try {
+      if (!navigator.clipboard || !window.isSecureContext) throw new Error('Clipboard unavailable');
+      await navigator.clipboard.writeText(text + '\n' + url);
+      toast('링크를 복사했어요. 친구에게 보내보세요!'); track('share', { method: 'copy', comparison });
+    } catch (_) {
+      openDialog('<h2 id="jb-dialog-title">친구에게 같은 질문 보내기</h2><p>아래 문구를 선택해 복사한 뒤, 카톡이나 메시지에 붙여넣어 주세요.</p><textarea aria-label="공유 문구" readonly>' + esc(text + '\n' + url) + '</textarea>');
+      overlay.querySelector('textarea').select(); track('share_open', { method: 'manual', comparison });
+    }
+  }
+  function rounded(ctx, x, y, w, h, radius, fill) {
+    ctx.fillStyle = fill; ctx.beginPath(); ctx.roundRect(x, y, w, h, radius); ctx.fill();
+  }
+  function wrapped(ctx, text, x, y, width, lineHeight) {
+    let line = '', lines = 0;
+    for (const word of text.split(' ')) {
+      if (line && ctx.measureText(line + ' ' + word).width > width) { ctx.fillText(line, x, y + lines++ * lineHeight); line = word; }
+      else line += (line ? ' ' : '') + word;
+    }
+    if (line) ctx.fillText(line, x, y + lines++ * lineHeight);
+    return lines;
+  }
+  function loadImage(url) { return new Promise((resolve, reject) => { const image = new Image(); image.onload = () => resolve(image); image.onerror = reject; image.src = url; }); }
+  async function saveImage(button) {
+    if (!D.validAnswers(state.answers)) return;
+    button.disabled = true;
+    const initialText = button.textContent; button.textContent = '엽서를 만들고 있어요…';
+    try {
+      const r = D.summarize(state.answers);
+      await document.fonts.ready;
+      await Promise.all([document.fonts.load('400 64px BalanceBagel', r.title), document.fonts.load('400 38px BalanceJua', r.description)]);
+      const [character, logo] = await Promise.all([loadImage(asset('pose-a-06.webp')), loadImage(asset('logo.webp'))]);
+      const canvas = document.createElement('canvas'); canvas.width = 1080; canvas.height = 1350;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) throw new Error('Canvas unavailable');
+      const gradient = ctx.createLinearGradient(0, 0, 0, 1350); gradient.addColorStop(0, '#e6daef'); gradient.addColorStop(1, '#d7e9de');
+      ctx.fillStyle = gradient; ctx.fillRect(0, 0, 1080, 1350);
+      ctx.drawImage(logo, 68, 43, 56, 61); ctx.fillStyle = '#594172'; ctx.font = '400 40px BalanceJua'; ctx.textAlign = 'center'; ctx.fillText('내가 고른 제주살이', 554, 90);
+      ctx.save(); ctx.shadowColor = 'rgba(65,43,87,.14)'; ctx.shadowBlur = 24; ctx.shadowOffsetY = 10;
+      rounded(ctx, 65, 155, 950, 1045, 32, '#fffbf2'); ctx.restore();
+      ctx.fillStyle = '#8a7399'; ctx.font = '700 24px ' + CANVAS_BODY; ctx.fillText('이제주민 · MY JEJU LIFE', 540, 225);
+      ctx.fillStyle = '#594172'; ctx.font = '400 76px BalanceBagel';
+      r.title.split('\n').forEach((line, i) => ctx.fillText(line, 540, 342 + i * 102));
+      ctx.fillStyle = '#624c78'; ctx.font = '400 36px BalanceJua';
+      wrapped(ctx, r.description, 540, 535, 780, 53);
+      r.tags.forEach((tag, i) => {
+        const x = i % 2 === 0 ? 134 : 556, y = 725 + Math.floor(i / 2) * 70;
+        rounded(ctx, x, y, 390, 51, 25, state.answers[i] === 0 ? '#e1f2e6' : '#ece4f8');
+        ctx.fillStyle = '#594172'; ctx.font = '700 26px ' + CANVAS_BODY; ctx.fillText(tag, x + 195, y + 34);
+      });
+      ctx.drawImage(character, 177, 1026, 116, 145);
+      rounded(ctx, 326, 1044, 568, 92, 26, '#eee6f5');
+      ctx.fillStyle = '#594172'; ctx.font = '400 33px BalanceJua'; ctx.fillText('정답은 없어. 네가 고른 하루니까!', 610, 1101);
+      ctx.fillStyle = '#594172'; ctx.font = '400 28px BalanceJua'; ctx.fillText('제주살이 밸런스 게임 · 이제주민', 540, 1287);
+      const blob = await new Promise((resolve, reject) => canvas.toBlob(value => value ? resolve(value) : reject(new Error('Image export failed')), 'image/png'));
+      if (imageUrl) URL.revokeObjectURL(imageUrl); imageUrl = URL.createObjectURL(blob);
+      openDialog('<h2 id="jb-dialog-title">내 제주살이 엽서</h2><img class="jb-saved-image" src="' + imageUrl + '" alt="' + esc(r.title.replace(/\n/g, ' ') + '. ' + r.tags.join(', ')) + '"><p>휴대폰에서는 이미지를 꾹 눌러 저장할 수 있어요.</p><a class="jb-cta" href="' + imageUrl + '" download="나의-제주살이-엽서.png">이미지 내려받기 ↓</a>');
+      track('image_created');
+    } catch (_) { toast('엽서를 만들지 못했어요. 잠시 후 다시 시도해주세요.'); }
+    finally { button.disabled = false; button.textContent = initialText; }
+  }
+  root.addEventListener('click', event => {
+    const reveal = event.target.closest('[data-jb-reveal]');
+    if (reveal) {
+      const open = reveal.getAttribute('aria-pressed') !== 'true';
+      reveal.setAttribute('aria-pressed', String(open));
+      reveal.querySelector('.jb-ending-flip-front').hidden = open;
+      reveal.querySelector('.jb-ending-flip-back').hidden = !open;
+      const index = Number(reveal.dataset.question), option = D.questions[index].options[state.answers[index]];
+      reveal.setAttribute('aria-label', option.title + (open ? ', 로망 앞면 다시 보기' : ', 함께 따라오는 생활 보기'));
+      announcement.textContent = open ? option.cost : option.title;
+      track('ending_reveal', { question_id: D.questions[index].id, open });
+      return;
+    }
+    const choice = event.target.closest('[data-jb-choice]');
+    if (choice) { choose(Number(choice.dataset.jbChoice)); return; }
+    const edit = event.target.closest('[data-jb-edit]');
+    if (edit) { editingResult = true; state.index = Number(edit.dataset.jbEdit); questionScreen(true); return; }
+    const article = event.target.closest('[data-jb-article]');
+    if (article) track('article_click', { article_id: article.dataset.jbArticle });
+    const button = event.target.closest('[data-jb]');
+    if (!button || button.disabled) return;
+    switch (button.dataset.jb) {
+      case 'start': start(false); break;
+      case 'restart': start(true); break;
+      case 'next': next(); break;
+      case 'back': if (state.index > 0) { state.index--; questionScreen(true); } else startScreen(true); break;
+      case 'home': startScreen(true); break;
+      case 'share': share(state.phase === 'result'); break;
+      case 'invite': share(true); break;
+      case 'save-image': saveImage(button); break;
+      case 'preview-alternative': previewAlternative(); break;
+      case 'apply-alternative': {
+        const nextAnswers = alternativeAnswers && alternativeAnswers.slice();
+        if (!D.validAnswers(nextAnswers)) break;
+        closeDialog(); state.answers = nextAnswers; save();
+        track('ending_change', { question_id: D.questions[3].id }); resultScreen(true); break;
+      }
+      case 'village': setMode('village', true, true); break;
+      case 'close-dialog': closeDialog(); break;
+    }
+    if (event.target === overlay) closeDialog();
+  });
+  overlay.addEventListener('click', event => { if (event.target === overlay) closeDialog(); });
+  root.addEventListener('keydown', event => {
+    if (overlay.hidden) return;
+    if (event.key === 'Escape') { event.preventDefault(); closeDialog(); }
+    if (event.key === 'Tab') {
+      const items = overlay.querySelectorAll('button:not([disabled]),a[href],textarea');
+      const first = items[0], last = items[items.length - 1];
+      if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+      else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+    }
+  });
+  if (state.phase === 'result') resultScreen(false); else startScreen(false);
+
+  /* ---------- 제주살이, 실화냐? (rq-block.js) ----------
+     - 1탄 생활편(life)·2탄 이주민편(people). 카드마다 '실화'인지 '가짜'인지 고른다. 실화 카드는 인터뷰 원고·공식 자료에 있는 사실만 쓴다.
+       가짜 카드는 실제 정보와 헷갈리지 않게 웃긴 쪽으로 지어내고, 정답 화면에서 가짜라고 밝힌다
+     - 문제 중간에는 이주민 이름을 내지 않는다. 결과 화면에서 '실화의 주인공'으로 처음 소개한다
+     - 기록: 마지막 점수만 이 브라우저(localStorage)에 남긴다. 개인정보 없음
+     - 편을 바꾸면 #rq 칸을 새로 만든다 (1탄 결과 → 2탄, 2탄 결과 → 1탄)
+     - 기사 문장을 고치면 RQ_CARDS_PEOPLE의 quote도, 기사 제목을 고치면 RQ_PEOPLE의 title도 같이 고친다 */
+  /* 실화의 주인공. title = 기사 제목(2026-11-03 확인) */
+  const RQ_PEOPLE = {
+    ahn:   { name: '안세은 선생님', brand: '아인학교', url: './ain-school.html',
+             title: '바람 부는 조천에서, 학교라는 숲을 짓습니다',
+             line: '연세 낼 목돈이 없어 한 달 살기 숙소를 옮겨 다니다, 지금은 조천에서 학교를 준비하는 사람' },
+    lee:   { name: '이재은 대표', brand: '백록마케팅', url: './lee-jaeeun.html',
+             title: '제주에서 일하고 살아간다는 것, 백록마케팅 이재은 대표의 5년',
+             line: '휴가로 왔다가 이주를 결심하고, 3년을 헤맨 끝에 제주에서 회사를 꾸린 사람' },
+    lim:   { name: '임하람 작가', brand: '파랑오브레코즈샵', url: './paarang-of-records.html',
+             title: '50만 원 들고 온 제주, 더 잘 살기 위해 남았다',
+             line: '50만 원을 들고 도망치듯 내려와, 사진관과 소품숍을 연 사람' },
+    emily: { name: '에밀리 트레이너', brand: '엠아이티도그', url: './emily.html',
+             title: '출장지였던 제주가 ‘사는 곳’이 되기까지',
+             line: '부모님 곁에 머물다 한림에 자리 잡은 반려견 트레이너' }
+  };
+  /* 1탄 생활편: 인터뷰 밖, 공식 자료·사전·통계로 확인한 제주 생활 이야기. real = 실화면 true, src = 출처 표시 */
+  const RQ_CARDS_LIFE = [
+    { claim: '제주에는 ‘신들이 하늘로 올라가 자리를 비운’ 일주일 동안 이사하는 풍습이 있다.', real: true,
+      reveal: '‘신구간’이에요.\n대한 뒤 5일부터 입춘 전 3일 무렵까지, 세상의 신들이 옥황상제에게 보고하러 하늘에 올라간 틈에 이사하고 집을 고쳤대요.',
+      src: '한국민족문화대백과사전 「신구간」' },
+    { claim: '제주에선 귤이 남아돌아서, 월세를 귤로 내는 집도 있다.', real: false,
+      reveal: '귤로 내는 방세는 없어요.\n대신 1년 치 방세를 한 번에 내는 ‘연세’라는 게 있어요.\n이건 진짜예요!',
+      src: '재미로 지어낸 가짜 카드' },
+    { claim: '옛 제주 집은 대문 대신, 걸쳐 둔 나무 막대 개수로 집에 사람이 있는지 알렸다.', real: true,
+      reveal: '‘정낭’이에요.\n문짝 달린 대문 대신 나무 막대를 걸쳐 두고, 그 개수로 집에 사람이 있는지 없는지를 알렸대요.',
+      src: '제주 정낭 관련 지역 언론 보도' },
+    { claim: '한라산 백록담 정상은 아무 때나 예약 없이 올라갈 수 있다.', real: false,
+      reveal: '정상까지 가는 성판악·관음사 코스는 미리 예약해야 해요(무료).\n정상이 아닌 다른 코스는 대부분 예약 없이 갈 수 있고요.',
+      src: '한라산국립공원 탐방예약 안내 · 관련 보도' },
+    { claim: '제주 마을 바다에서 소라·전복을 주워 가면 절도가 될 수 있다.', real: true,
+      reveal: '마을 바다(마을어장)는 어촌계가 관리하고 해녀들이 가꾸는 곳이에요.\n그곳 해산물을 가져가면 절도로 처벌받을 수 있어요.',
+      src: '해양경찰 안내(수산자원관리법) · 관련 보도' },
+    { claim: '제주로 이사 오면 1년 안에 ‘제주어 시험’을 통과해야 한다.', real: false,
+      reveal: '시험은 없어요!\n다만 제주어는 유네스코가 ‘아주 심각한 위기’에 처한 언어로 분류해서, 지키려는 노력이 이어지고 있어요.',
+      src: '재미로 지어낸 가짜 카드 · 유네스코 소멸 위기 언어 분류(2010)' },
+    { claim: '제주에선 친척이 아니어도 동네 어른을 ‘삼춘’이라고 부른다.', real: true,
+      reveal: '성별이나 촌수를 크게 따지지 않고, 동네 어른을 친근하게 부르는 말이에요.\n가게 사장님도, 옆집 어른도 삼춘!',
+      src: '제주대학교 「제주 방언의 친척 명칭 연구」' },
+    { claim: '요즘 제주는 들어오는 사람보다 떠나는 사람이 더 많다.', real: true,
+      reveal: '2023년부터 3년 연속 그래요.\n2025년엔 떠난 사람이 4,273명 더 많았어요.\n그래도, 남아서 살아가는 사람들이 있죠.',
+      src: '국가데이터처 국내인구이동통계 · 「2025년 연간 제주 지역경제동향」' }
+  ];
+  /* 2탄 이주민편: 이제주민 인터뷰 속 실화. who = 그 실화의 주인공(없으면 통계·자료), quote = 기사 본문에서 찾을 문장 */
+  const RQ_CARDS_PEOPLE = [
+    { claim: '제주에서 1만 원짜리 물건을 온라인으로 샀더니, 배송비가 5천~6천 원 더 붙었다.', real: true, who: 'ahn',
+      reveal: '물건값의 절반이 넘죠.\n한 이주민은 지금도 이럴 때마다 헛웃음이 나온대요.',
+      src: '이제주민 인터뷰', quote: '추가 배송비로 5천~6천 원' },
+    { claim: '제주에선 귤이 남아돌아서, 월세를 귤로 내는 집도 있다.', real: false,
+      reveal: '귤로 내는 방세는 없어요.\n대신 1년 치 방세를 한 번에 내는 방식이라면 있답니다.\n다음 카드에서 확인!',
+      src: '재미로 지어낸 가짜 카드' },
+    { claim: '제주에는 1년 치 방세를 한 번에 내는 ‘연세’라는 게 있다.', real: true, who: 'ahn',
+      reveal: '목돈이 한 번에 필요해서, 한 이주민은 처음엔 캐리어를 끌고 한 달 살기 숙소를 옮겨 다니며 버텼대요.',
+      src: '이제주민 인터뷰', quote: '1년 치 방세를 한 번에 내는' },
+    { claim: '서울 직장 시절 연봉보다 제주에서 매출이 10배 넘게 늘었다는 이주민이 있다.', real: true, who: 'lee',
+      reveal: '한 마케팅 대표의 이야기예요.\n물론 개인의 경험이고, 그가 쌓아 온 경험과 고객 관계가 함께 만든 결과예요.\n그 전엔 3년의 시행착오가 있었대요.',
+      src: '이제주민 인터뷰', quote: '매출이 10배 이상' },
+    { claim: '제주로 이사 오면 첫 1년 안에 ‘제주어 시험’을 통과해야 한다.', real: false,
+      reveal: '시험은 없어요!\n다만 제주어는 유네스코가 ‘아주 심각한 위기’에 처한 언어로 분류해서, 지키려는 노력이 이어지고 있어요.',
+      src: '재미로 지어낸 가짜 카드 · 유네스코 소멸 위기 언어 분류(2010)' },
+    { claim: '요즘 제주는 들어오는 사람보다 떠나는 사람이 더 많다.', real: true, who: null,
+      reveal: '2023년부터 3년 연속 그래요.\n2025년엔 떠난 사람이 4,273명 더 많았어요.\n그래도 남은 사람들이 있죠.',
+      src: '국가데이터처 국내인구이동통계 · 「2025년 연간 제주 지역경제동향」', read: 'lim', quote: '전출한 사람이 4,273명' },
+    { claim: '제주 3년 차 이주민이 이렇게 말했다. “그냥 자연이 좋아서 오는 건 조금 위험할 수도 있어요.”', real: true, who: 'emily',
+      reveal: '제주에 사는 사람이 한 말이라 더 의외죠?\n대신 진짜 하고 싶은 게 있어서 온다면 가능성이 무궁무진하대요.',
+      src: '이제주민 인터뷰', quote: '단순히 자연이 좋아서' },
+    { claim: '통장에 50만 원만 들고 제주에 내려와, 사진관과 소품숍을 차린 사람이 있다.', real: true, who: 'lim',
+      reveal: '진짜예요.\n처음엔 정착할 생각도 없었대요.\n그 사이의 이야기는, 잠시 뒤 결과에서!',
+      src: '이제주민 인터뷰', quote: '손에 들린 돈은 50만 원' }
+  ];
+  /* 현실 감각 유형 (맞힌 개수 min 이상) */
+  const RQ_TYPES = [
+    { min: 0, name: '낭만 가득 여행자', img: 'pose-b-05.webp',
+      desc: '아직 제주는 바다와 귤의 섬!\n그 낭만, 나쁘지 않아요.\n진짜 제주살이가 궁금하다면 아래 이야기부터.' },
+    { min: 4, name: '한달살기 체험러', img: 'pose-a-04.webp',
+      desc: '낭만과 현실 사이 어딘가.\n제주에 한 달쯤 살아 보면 나머지가 보일 거예요.' },
+    { min: 6, name: '현실파 예비 주민', img: 'pose-a-01.webp',
+      desc: '웬만한 제주 현실엔 안 속아요.\n이제 남은 건 직접 살아 보는 일!' },
+    { min: 8, name: '제주 삼춘 인정', img: 'pose-b-08.webp',
+      desc: '하나도 안 속았어요.\n이 정도면 육지 친구들에게 제주살이를 알려 줘도 되겠어요.' }
+  ];
+  /* 다음 편·마을 테스트로 가는 카드 (전달받은 두 페이지의 결과 화면 글 그대로, 주소만 이 페이지의 ?mode=) */
+  const RQ_NEXT_PEOPLE = '<a class="rq-next-test rq-sequel" href="./jeju-village-test.html?lang=ko&amp;mode=real2" data-rq-next="people"><span class="rq-next-kicker">2탄 · 이주민편 · 카드 8장</span><span class="rq-next-name">1만 원짜리에 배송비 6천 원?<br>통장 50만 원으로 가게를 차렸다?</span><span class="rq-next-desc">진짜 이주민 4명의 이야기, 실화일까 가짜일까</span></a>';
+  const RQ_NEXT_LIFE = '<a class="rq-next-test rq-sequel" href="./jeju-village-test.html?lang=ko&amp;mode=real1" data-rq-next="life"><span class="rq-next-kicker">1탄 · 생활편 · 카드 8장</span><span class="rq-next-name">신들이 없을 때 이사한다?<br>월세를 귤로 낸다?</span><span class="rq-next-desc">여행으론 잘 모르는 제주 생활, 실화일까 가짜일까</span></a>';
+  /* 편마다 다른 것: 카드, 기록 키, 공유 문구, 시작·결과 화면 글 */
+  const RQ_SETS = {
+    life: {
+      cards: RQ_CARDS_LIFE, store: 'ijejumin-real-or-not-life', mode: 'real1', campaign: 'real_or_not_life',
+      title: '제주살이, 실화냐? 생활편',
+      hook: '신들이 하늘에 간 사이에 이사한다는 게 실화래. 너도 속나 봐',
+      sub: '여행으론 잘 모르는 제주 생활 이야기 8장.<br>실화인지 가짜인지 맞혀 보세요.',
+      preview: ['신들이 없을 때<br>이사한다?', '대문 대신<br>나무 막대?', '월세를<br>귤로 낸다?'],
+      after: '<section class="rq-people" aria-labelledby="rq-sequel-title"><h3 class="rq-people-title" id="rq-sequel-title">떠나는 사람이 더 많은 섬,<br>그래도 남은 사람들</h3><p class="rq-people-sub">이번엔 제주에 살러 온 사람들의 실화예요.<br>이것도 맞힐 수 있을까요?</p>' + RQ_NEXT_PEOPLE + '</section>' +
+        '<section class="rq-people" aria-labelledby="rq-people-title"><h3 class="rq-people-title" id="rq-people-title">먼저 살아 본 사람들의 진짜 이야기</h3><p class="rq-people-sub">제주에 살러 온 네 사람을 만나 봤어요.</p><ul class="rq-list" id="rq-list"></ul></section>',
+      note: '재미로 보는 테스트예요.<br>실화 카드는 사전·공식 자료·통계와 관련 보도로 확인했고,<br>가짜 카드는 재미로 지어낸 이야기예요.'
+    },
+    people: {
+      cards: RQ_CARDS_PEOPLE, store: 'ijejumin-real-or-not', mode: 'real2', campaign: 'real_or_not',
+      title: '제주살이, 실화냐? 이주민편',
+      hook: '1만 원짜리에 배송비 6천 원이 실화래. 너도 속나 봐',
+      sub: '먼저 살아 본 사람들의 제주 이야기 8장.<br>실화인지 가짜인지 맞혀 보세요.',
+      preview: ['1만 원짜리에<br>배송비 6천 원?', '1년 치 방세를<br>한 번에?', '통장 50만 원으로<br>가게를 차렸다?'],
+      after: '<section class="rq-people" aria-labelledby="rq-people-title"><h3 class="rq-people-title" id="rq-people-title">방금 본 실화, 주인공이 있어요</h3><p class="rq-people-sub">모두 제주에 먼저 살러 온 사람들의 진짜 이야기예요.</p><ul class="rq-list" id="rq-list"></ul></section>' +
+        '<section class="rq-people" aria-labelledby="rq-prequel-title"><h3 class="rq-people-title" id="rq-prequel-title">1탄도 풀어 볼까요?</h3><p class="rq-people-sub">이번엔 여행으론 잘 모르는 제주 생활 이야기예요.</p>' + RQ_NEXT_LIFE + '</section>',
+      note: '재미로 보는 테스트예요.<br>실화 카드는 이제주민 인터뷰와 공식 통계·자료에서 가져왔고,<br>가짜 카드는 재미로 지어낸 이야기예요.'
+    }
+  };
+  /* 공유 주소: 실제 웹진의 이 페이지 (공통 기준: 공유에는 실제 주소만) */
+  const RQ_PAGE = 'https://lxwebzine.hankyung.com/2026-1/team3/articles/jeju-village-test.html';
+  let rqRoot = null;
+  function rqMarkup(SET) {
+    return switches('real') +
+      '<noscript><p class="rq-noscript">자바스크립트를 켜야 테스트를 할 수 있어요.</p></noscript>' +
+      /* 시작 */
+      '<div class="rq-screen" id="rq-start"><p class="rq-kicker">진짜일까, 가짜일까?</p><h2 class="rq-title" id="rq-title">제주살이,<br><em>실화냐?</em></h2>' +
+      '<p class="rq-sub">' + SET.sub + '</p><div class="rq-preview" aria-hidden="true">' + SET.preview.map(p => '<span class="rq-preview-card">' + p + '</span>').join('') + '</div>' +
+      '<p class="rq-challenge" id="rq-challenge" hidden></p><p class="rq-again" id="rq-again" hidden></p><button class="rq-cta" id="rq-go" type="button">시작하기</button><p class="rq-meta">카드 8장 · 약 1분</p></div>' +
+      /* 카드 */
+      '<div class="rq-screen" id="rq-play" hidden><div class="rq-top"><span class="rq-count" id="rq-count">1 / 8</span><ol class="rq-dots" id="rq-dots" aria-hidden="true"></ol></div>' +
+      '<div class="rq-ask"><img class="rq-ask-img" src="' + IMG + 'village-test/pose-a-06.webp" alt="손가락으로 가리키며 말하는 하르방" width="279" height="348"><div class="rq-card" id="rq-card"><p class="rq-card-label">하르방이 들은 제주살이 이야기</p><h3 class="rq-claim" id="rq-claim" tabindex="-1"></h3><p class="rq-stamp" id="rq-stamp" hidden></p></div></div>' +
+      '<div class="rq-choices" id="rq-choices" role="group" aria-label="실화인지 가짜인지 고르기"><button class="rq-choice rq-choice--real" type="button" data-pick="real">실화다</button><button class="rq-choice rq-choice--fake" type="button" data-pick="fake">에이, 가짜</button></div>' +
+      '<div class="rq-reveal" id="rq-reveal" aria-live="polite" hidden><p class="rq-reveal-head" id="rq-reveal-head"></p><p class="rq-reveal-text" id="rq-reveal-text"></p><p class="rq-reveal-src" id="rq-reveal-src"></p>' +
+      '<a class="rq-reveal-read" id="rq-reveal-read" href="#" target="_blank" rel="noopener" data-track="related_article" hidden><span class="rq-reveal-read-main">이 이야기, 본문에서 바로 읽기 ↗</span><span class="rq-reveal-read-title" id="rq-reveal-read-title"></span></a>' +
+      '<button class="rq-next" id="rq-next" type="button">다음 카드</button></div></div>' +
+      /* 결과 */
+      '<div class="rq-screen" id="rq-result" hidden><div class="rq-card rq-score"><p class="rq-score-kicker">나의 제주 현실 감각</p><p class="rq-score-num" id="rq-score-num">0%</p><h3 class="rq-score-name" id="rq-score-name" tabindex="-1"></h3><p class="rq-score-desc" id="rq-score-desc"></p><img class="rq-score-img" id="rq-score-img" src="' + IMG + 'village-test/pose-b-08.webp" alt="" width="279" height="348"></div>' +
+      SET.after +
+      '<section class="rq-more" aria-labelledby="rq-more-title"><h3 class="rq-people-title" id="rq-more-title">그럼, 나는 어디서 살아 볼까?</h3><a class="rq-next-test" href="./jeju-village-test.html?lang=ko&amp;mode=village" data-rq-next="village-test"><span class="rq-next-kicker">질문 5개 · 약 30초</span><span class="rq-next-name">나는 제주 어디 주민?</span><span class="rq-next-desc">나에게 맞는 제주 한 달 살기 동네 찾기</span></a></section>' +
+      '<button class="rq-ghost rq-retry" id="rq-retry" type="button">다시 하기</button><div class="rq-share"><button class="rq-link" id="rq-copy" type="button" data-track="share_copy">결과 링크 복사</button><p class="rq-toast" id="rq-toast" role="status" hidden></p></div>' +
+      '<p class="rq-note">' + SET.note + '</p></div>';
+  }
+  function rqMount(setName) {
+    if (rqRoot && rqRoot.dataset.rqSet === setName) { rqRoot.hidden = false; return; }
+    const el = document.createElement('section');
+    el.className = 'rq'; el.id = 'rq'; el.lang = 'ko';
+    el.dataset.rqSet = setName;
+    el.setAttribute('aria-labelledby', 'rq-title');
+    el.innerHTML = rqMarkup(RQ_SETS[setName]);
+    if (rqRoot) rqRoot.replaceWith(el); else main.append(el);
+    rqRoot = el;
+    rqRun(el, RQ_SETS[setName]);
+  }
+  function rqRun(rq, SET) {
+    const RQ_CARDS = SET.cards, STORE_KEY = SET.store, TOTAL = RQ_CARDS.length;
+    const $ = id => document.getElementById(id);
+    const screens = { start: $('rq-start'), play: $('rq-play'), result: $('rq-result') };
+    let state;
+    function reset() { state = { i: 0, score: 0, missed: [] }; }
+    reset();
+    function track(event, params) {
+      window.dataLayer = window.dataLayer || [];
+      const data = { event: event };
+      for (const k in params) if (Object.prototype.hasOwnProperty.call(params, k)) data[k] = params[k];
+      window.dataLayer.push(data);
+    }
+    function readStore() { try { return JSON.parse(localStorage.getItem(STORE_KEY) || 'null'); } catch (e) { return null; } }
+    function writeStore(v) { try { localStorage.setItem(STORE_KEY, JSON.stringify(v)); } catch (e) { /* 시크릿 창 등 */ } }
+    function percent(score) { return Math.round(score / TOTAL * 100); }
+    function typeOf(score) {
+      let t = RQ_TYPES[0];
+      RQ_TYPES.forEach(x => { if (score >= x.min) t = x; });
+      return t;
+    }
+    function show(name) {
+      Object.keys(screens).forEach(k => { screens[k].hidden = (k !== name); });
+      rq.scrollIntoView({ block: 'start' });
+    }
+    /* 시작: 친구 도전(?score=)과 지난 기록 */
+    const m = /[?&]score=(\d{1,3})/.exec(location.search);
+    if (m && +m[1] <= 100 && params.get('mode') === SET.mode) {
+      const c = $('rq-challenge');
+      c.textContent = '친구의 제주 현실 감각은 ' + m[1] + '%. 나는 몇 % 나올까?';
+      c.hidden = false;
+    }
+    const last = readStore();
+    if (last && typeof last.score === 'number') {
+      const a = $('rq-again');
+      a.textContent = '지난 기록: 현실 감각 ' + percent(last.score) + '% · ' + typeOf(last.score).name;
+      a.hidden = false;
+    }
+    function drawDots() {
+      const ol = $('rq-dots');
+      ol.innerHTML = '';
+      for (let i = 0; i < TOTAL; i++) {
+        const li = document.createElement('li');
+        if (i < state.i) li.className = state.missed.indexOf(i) > -1 ? 'is-miss' : 'is-hit';
+        else if (i === state.i) li.className = 'is-now';
+        ol.appendChild(li);
+      }
+    }
+    function render() {
+      const c = RQ_CARDS[state.i];
+      $('rq-count').textContent = (state.i + 1) + ' / ' + TOTAL;
+      drawDots();
+      $('rq-card').className = 'rq-card';
+      $('rq-claim').textContent = c.claim;
+      $('rq-stamp').hidden = true;
+      Array.prototype.forEach.call($('rq-choices').children, b => { b.disabled = false; b.className = b.className.replace(/ is-\w+/g, ''); });
+      $('rq-choices').hidden = false;
+      $('rq-reveal').hidden = true;
+      $('rq-claim').focus({ preventScroll: true });
+    }
+    function pick(choice) {
+      const c = RQ_CARDS[state.i];
+      const ok = (choice === 'real') === c.real;
+      if (ok) state.score++; else state.missed.push(state.i);
+      Array.prototype.forEach.call($('rq-choices').children, b => {
+        b.disabled = true;
+        if (b.getAttribute('data-pick') === choice) b.className += ok ? ' is-right' : ' is-wrong';
+      });
+      const stamp = $('rq-stamp');
+      stamp.textContent = c.real ? '실화' : '가짜';
+      stamp.className = 'rq-stamp ' + (c.real ? 'rq-stamp--real' : 'rq-stamp--fake');
+      stamp.hidden = false;
+      $('rq-card').className = 'rq-card ' + (c.real ? 'is-real' : 'is-fake');
+      $('rq-reveal-head').textContent = ok ? (c.real ? '맞아요, 실화예요!' : '맞아요, 가짜예요!')
+                                           : (c.real ? '속았죠? 이거 실화예요!' : '속았죠? 이건 가짜예요!');
+      $('rq-reveal-head').className = 'rq-reveal-head ' + (ok ? 'is-right' : 'is-wrong');
+      $('rq-reveal-text').textContent = c.reveal;
+      /* 인터뷰 속 실화는 '출처' 대신 본문의 그 문장으로 바로 가는 링크(새 탭). 주소 끝 #rq-find=문장 → 기사 페이지의 '본문 문장 찾기' */
+      const key = c.read || c.who;
+      const read = $('rq-reveal-read');
+      if (c.quote && key) {
+        read.href = RQ_PEOPLE[key].url + '#rq-find=' + encodeURIComponent(c.quote);
+        read.setAttribute('data-rq-source', key);
+        $('rq-reveal-read-title').textContent = '‘' + RQ_PEOPLE[key].title + '’ · ' + RQ_PEOPLE[key].name;
+        read.hidden = false;
+        $('rq-reveal-src').hidden = true;
+      } else {
+        read.hidden = true;
+        $('rq-reveal-src').textContent = '출처: ' + c.src;
+        $('rq-reveal-src').hidden = false;
+      }
+      $('rq-next').textContent = state.i === TOTAL - 1 ? '결과 보기' : '다음 카드';
+      $('rq-reveal').hidden = false;
+      $('rq-reveal').scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+      track('rq_answer', { rq_card: state.i + 1, rq_correct: ok });
+    }
+    Array.prototype.forEach.call($('rq-choices').children, b => {
+      b.addEventListener('click', () => { pick(b.getAttribute('data-pick')); });
+    });
+    function result() {
+      const t = typeOf(state.score);
+      const pct = percent(state.score);
+      $('rq-score-num').textContent = pct + '%';
+      $('rq-score-name').textContent = t.name;
+      $('rq-score-desc').textContent = t.desc;
+      $('rq-score-img').src = IMG + 'village-test/' + t.img;
+      $('rq-score-img').alt = '결과를 알려 주는 하르방';
+      /* 실화의 주인공: '가짜'라고 했던(믿지 못한) 실화의 주인공을 먼저 */
+      const doubted = {};
+      state.missed.forEach(i => { const c = RQ_CARDS[i]; if (c.real && c.who) doubted[c.who] = c.claim; });
+      const order = Object.keys(RQ_PEOPLE).sort((a, b) => (doubted[b] ? 1 : 0) - (doubted[a] ? 1 : 0));
+      const list = $('rq-list');
+      list.innerHTML = '';
+      order.forEach(who => {
+        const p = RQ_PEOPLE[who];
+        const li = document.createElement('li');
+        const a = document.createElement('a');
+        a.className = 'rq-person' + (doubted[who] ? ' is-doubted' : '');
+        a.href = p.url;
+        a.setAttribute('data-rq-article', who);
+        a.setAttribute('data-track', 'related_article');
+        a.innerHTML = '<span class="rq-person-tag"></span><span class="rq-person-name"></span><span class="rq-person-line"></span><span class="rq-person-go">이야기 읽기 →</span>';
+        a.children[0].textContent = doubted[who] ? '당신이 ‘가짜’라고 했던 실화' : p.brand;
+        a.children[1].textContent = p.name + (doubted[who] ? ' · ' + p.brand : '');
+        a.children[2].textContent = p.line;
+        li.appendChild(a);
+        list.appendChild(li);
+      });
+      writeStore({ score: state.score, at: Date.now() });
+      track('rq_complete', { rq_score: pct, rq_type: t.name });
+      show('result');
+      $('rq-score-name').focus({ preventScroll: true });
+    }
+    /* 공유: 결과 맨 아래 작은 '결과 링크 복사' 하나만 (받은 사람 첫 화면에 "친구의 제주 현실 감각은 N%") */
+    function shareUrl() {
+      return RQ_PAGE + '?lang=ko&mode=' + SET.mode + '&utm_source=friends&utm_medium=send&utm_campaign=' + SET.campaign + '&score=' + percent(state.score);
+    }
+    function shareText() { return SET.title + ', 내 현실 감각 ' + percent(state.score) + '% 나옴ㅋㅋ ' + SET.hook; }
+    let toastTimer = 0;
+    function toast(msg) {
+      const t = $('rq-toast');
+      t.textContent = msg;
+      t.hidden = false;
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => { t.hidden = true; }, 2500);
+    }
+    function fallbackCopy(text) {
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      ta.setAttribute('readonly', '');
+      ta.className = 'rq-copybox';
+      document.body.appendChild(ta);
+      ta.select();
+      let ok = false;
+      try { ok = document.execCommand('copy'); } catch (e) { /* 지원 안 함 */ }
+      ta.remove();
+      toast(ok ? '링크를 복사했어요. 친구에게 보내 보세요!' : '복사가 안 되는 브라우저예요. 주소창의 링크를 보내 주세요.');
+    }
+    function copy(text) {
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(text).then(() => { toast('링크를 복사했어요. 친구에게 보내 보세요!'); }, () => { fallbackCopy(text); });
+      } else fallbackCopy(text);
+    }
+    $('rq-copy').addEventListener('click', () => {
+      copy(shareText() + ' ' + shareUrl());
+      track('rq_share', { share_method: 'copy' });
+    });
+    function begin() { reset(); show('play'); render(); }
+    $('rq-go').addEventListener('click', () => { track('rq_start', {}); begin(); });
+    $('rq-retry').addEventListener('click', () => { track('rq_retry', {}); begin(); });
+    $('rq-next').addEventListener('click', () => {
+      if (state.i < TOTAL - 1) { state.i++; render(); $('rq-play').scrollIntoView({ block: 'start' }); }
+      else result();
+    });
+    rq.addEventListener('click', e => {
+      const a = e.target.closest ? e.target.closest('a') : null;
+      if (!a) return;
+      if (a.hasAttribute('data-rq-article')) track('rq_article_click', { rq_article: a.getAttribute('data-rq-article'), rq_doubted: a.classList.contains('is-doubted') });
+      if (a.hasAttribute('data-rq-source')) track('rq_source_click', { rq_card: state.i + 1, rq_article: a.getAttribute('data-rq-source') });
+      if (a.hasAttribute('data-rq-next')) {
+        const next = a.getAttribute('data-rq-next');
+        track('rq_next_test_click', { rq_next: next });
+        /* 다른 편·마을 테스트는 이 페이지 안에서 바꾼다 (새 탭으로 열 때는 링크 그대로) */
+        if (e.ctrlKey || e.metaKey || e.shiftKey || e.altKey) return;
+        e.preventDefault();
+        setMode(next === 'life' ? 'real1' : next === 'people' ? 'real2' : 'village', true, true);
+      }
+    });
+  }
+
+  /* ---------- 게임 바꾸기 ---------- */
+  function setMode(mode, updateUrl, focus) {
+    if (MODES.indexOf(mode) < 0) mode = 'village';
+    activeMode = mode;
+    village.hidden = mode !== 'village';
+    root.hidden = mode !== 'balance';
+    if (mode === 'real1' || mode === 'real2') rqMount(mode === 'real1' ? 'life' : 'people');
+    else if (rqRoot) rqRoot.hidden = true;
+    if (mode === 'balance') resumeClock(); else stopClock();
+    if (mode === 'village') window.dispatchEvent(new Event('resize'));   // 숨어 있던 동안 못 잰 테스트 칸 크기를 다시
+    document.title = TITLES[mode];
+    if (updateUrl) {
+      const url = new URL(location.href);
+      url.searchParams.set('mode', mode);
+      url.searchParams.delete('score');
+      url.hash = '';
+      history.pushState({ mode }, '', url);
+      window.scrollTo({ top: 0, behavior: 'instant' });
+    }
+    if (focus) {
+      const box = mode === 'village' ? village : mode === 'balance' ? root : rqRoot;
+      const target = mode === 'balance' ? screen.querySelector('h1,h2') : mode === 'village' ? box.querySelector('[data-jb-mode="village"]') : box.querySelector('#rq-title');
+      if (target) { if (mode !== 'village') target.setAttribute('tabindex', '-1'); target.focus({ preventScroll: true }); }
+    }
+  }
+  document.addEventListener('click', event => {
+    const switchButton = event.target.closest('[data-jb-mode]');
+    if (!switchButton || !main.contains(switchButton)) return;
+    const want = switchButton.dataset.jbMode;
+    /* 실화냐 칸에서 '실화냐'를 다시 누르면 지금 편 그대로 */
+    if (want === 'real1' && (activeMode === 'real1' || activeMode === 'real2')) return;
+    if (want === activeMode) return;
+    setMode(want, true, true);
+  });
+  window.addEventListener('popstate', () => setMode(new URLSearchParams(location.search).get('mode') || 'village', false, true));
+  setMode(params.get('mode') || 'village', false, false);
+})();
+
+/* ---------- 실화냐 → 본문 문장 찾기 (모든 기사 페이지) ----------
+   실화냐 2탄의 '본문에서 바로 읽기' 링크는 주소 끝에 #rq-find=문장 을 붙여 새 탭으로 연다.
+   그 문장이 든 문단으로 내려가 잠깐 강조한다(style.css .rq-hit). 기사 페이지의 스크롤 복원보다 늦게 돌도록 load 뒤에 두 번 맞춘다 */
+(function () {
+  var m = /^#rq-find=(.+)$/.exec(location.hash);
+  if (!m) return;
+  var text;
+  try { text = decodeURIComponent(m[1]); } catch (e) { return; }
+  function find() {
+    var nodes = document.querySelectorAll('main p, main li, main blockquote, main figcaption');
+    for (var i = 0; i < nodes.length; i++) {
+      if (nodes[i].textContent.indexOf(text) > -1) return nodes[i];
+    }
+    return null;
+  }
+  /* html의 부드러운 스크롤을 잠깐 끄고 바로 옮긴다 */
+  function go() {
+    var el = find();
+    if (!el) return;
+    el.classList.add('rq-hit');
+    var root = document.documentElement;
+    var y = Math.max(0, el.getBoundingClientRect().top + window.scrollY - window.innerHeight / 3);
+    root.style.scrollBehavior = 'auto';
+    try { window.scrollTo({ top: y, behavior: 'instant' }); } catch (e) { window.scrollTo(0, y); }
+    root.style.scrollBehavior = '';
+  }
+  function run() { setTimeout(go, 300); setTimeout(go, 900); }
+  if (document.readyState === 'complete') run();
+  else window.addEventListener('load', run);
+})();
+/* ===== 게임 고르기 블록 끝 ===== */
