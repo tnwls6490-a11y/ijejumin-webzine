@@ -169,7 +169,7 @@
         <p class="typing">済州での5年は、ロマンをそのまま実現した時間ではなく、ロマンを日常へとつなげていく方法を探してきた時間だった。</p>
       </section>
 
-      <a id="interview-video" class="video-card video-card--vertical" href="https://youtu.be/vXAJbUmxNME" data-video-id="vXAJbUmxNME" data-pip target="_blank" rel="noopener">
+      <a id="interview-video" class="video-card video-card--vertical" data-track="video_play" href="https://youtu.be/vXAJbUmxNME" data-video-id="vXAJbUmxNME" data-pip target="_blank" rel="noopener">
         <span class="video-card-thumb"><!-- 썸네일: <img src="../images/interview-02-video.jpg" alt="" width="1600" height="900" loading="lazy"> --></span>
         <span class="video-card-cap">済州で何をして食べていこう？ソウルを離れたマーケターの定着記 | ペンノク・⁠マーケティング イ・⁠ジェウン(韓国語) · YouTubeで見る</span>
       </a>
@@ -193,14 +193,14 @@
             <img class="isle-frame" src="../../images/jeju-frame-bike.webp" alt="" width="820" height="440">
           </div>
           <div class="isle-caption-row">
-            <button class="isle-nav" type="button" data-dir="-1" aria-label="前の写真">←</button>
+            <button class="isle-nav" type="button" data-dir="-1" data-track="card_prev" aria-label="前の写真">←</button>
             <div class="isle-caption" aria-live="polite">
               <p class="isle-cap-title"><span class="isle-cap-num">01.</span> <span class="isle-cap-name">山房山近くの道路</span></p>
               <p class="isle-cap-sub">ジェットコースターに乗っているようなスリル</p>
               <p class="isle-cap-desc">山房山の近くで下り坂に沿って走る区間で、ジェットコースターに乗っているような楽しさがある場所だ。イ代表がいちばん好きなコースで、一度訪れると同じ区間を3回も走るほど気に入っている。</p>
               <p class="isle-cap-credit">写真：済州観光公社、Visitjeju.net</p>
             </div>
-            <button class="isle-nav" type="button" data-dir="1" aria-label="次の写真">→</button>
+            <button class="isle-nav" type="button" data-dir="1" data-track="card_next" aria-label="次の写真">→</button>
           </div>
           <div class="isle-dots" role="group" aria-label="写真を選ぶ"><button class="isle-dot" type="button" data-i="0" aria-label="場所1" aria-current="true"><span></span></button><button class="isle-dot" type="button" data-i="1" aria-label="場所2" aria-current="false"><span></span></button><button class="isle-dot" type="button" data-i="2" aria-label="場所3" aria-current="false"><span></span></button></div>
         </div>
@@ -227,25 +227,25 @@
           <p>ほかの移住者の物語を短い動画で見てみてください。押すとYouTubeで開きます。</p>
         </div>
         <div class="reels-nav" hidden>
-          <button class="reels-btn" type="button" data-dir="-1" aria-label="前のショート">←</button>
-          <button class="reels-btn" type="button" data-dir="1" aria-label="次のショート">→</button>
+          <button class="reels-btn" type="button" data-dir="-1" data-track="card_prev" aria-label="前のショート">←</button>
+          <button class="reels-btn" type="button" data-dir="1" data-track="card_next" aria-label="次のショート">→</button>
         </div>
       </div>
       <ul class="reels" aria-label="ショート動画一覧">
         <!-- 연결: 안세은 영상 -->
-        <li class="reel reveal"><a href="https://youtu.be/H_aL8BV9Bmc" data-article="ain-school.html" target="_blank" rel="noopener">
+        <li class="reel reveal"><a href="https://youtu.be/H_aL8BV9Bmc" data-track="video_play" data-article="ain-school.html" target="_blank" rel="noopener">
           <span class="reel-frame reel-frame--thumb">
             <img src="../../images/reel-interview-01.jpg?v=2" alt="アイン学校 · アン・⁠セウン：恩師のひと言で来て、学校をつくっている" width="1080" height="1920" loading="lazy">
           </span>
         </a></li>
         <!-- 연결: 임하람 영상 -->
-        <li class="reel reveal"><a href="https://youtu.be/oV4E2pZ5D6I" data-article="paarang-of-records.html" target="_blank" rel="noopener">
+        <li class="reel reveal"><a href="https://youtu.be/oV4E2pZ5D6I" data-track="video_play" data-article="paarang-of-records.html" target="_blank" rel="noopener">
           <span class="reel-frame reel-frame--thumb">
             <img src="../../images/reel-interview-03.jpg?v=2" alt="パラン・⁠オブ・⁠レコーズ · イム・⁠ハラム：暮らすために来て、もっとよく暮らすために残った" width="1080" height="1920" loading="lazy">
           </span>
         </a></li>
         <!-- 연결: 에밀리 영상 -->
-        <li class="reel reveal"><a href="https://youtu.be/KXnepe10Qi0" data-article="emily.html" target="_blank" rel="noopener">
+        <li class="reel reveal"><a href="https://youtu.be/KXnepe10Qi0" data-track="video_play" data-article="emily.html" target="_blank" rel="noopener">
           <span class="reel-frame reel-frame--thumb">
             <img src="../../images/reel-interview-04.jpg?v=2" alt="MIT DOG · エミリー：出張で行き来するだけだったのが、犬の先生になった" width="1080" height="1920" loading="lazy">
           </span>
@@ -267,7 +267,7 @@
           </div>
         </div>
         <ul class="more-find__list" aria-label="私の済州探しのコンテンツ">
-          <li class="reveal"><a class="find__sub" href="./jeju-village-test.html?lang=ja">
+          <li class="reveal"><a class="find__sub" data-track="related_article" href="./jeju-village-test.html?lang=ja">
             <img class="find__sub-img more-find__img--test" src="../../images/og-village-test.jpg" width="1200" height="630" alt="『わたしは済州のどこの住民？』診断のタイトルと、それを指さすハルバンのキャラクター" loading="lazy">
             <span class="find__sub-body">
               <svg class="find__icon" viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><circle cx="12" cy="12" r="8.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M15 9l-1.8 4.2L9 15l1.8-4.2z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
@@ -277,7 +277,7 @@
             </span>
             <span class="find__sub-go" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20"><path d="M9.5 5.5l6.5 6.5-6.5 6.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
           </a></li>
-          <li class="reveal"><a class="find__sub" href="./find-my-jeju.html#checklist">
+          <li class="reveal"><a class="find__sub" data-track="related_article" href="./find-my-jeju.html#checklist">
             <img class="find__sub-img" src="../../images/find-checklist.webp?v=2" width="720" height="480" alt="チェックが入ったクリップボードとみかんのかごのイラスト" loading="lazy">
             <span class="find__sub-body">
               <svg class="find__icon" viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="3.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M8 12.5l3 3 5.5-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -287,7 +287,7 @@
             </span>
             <span class="find__sub-go" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20"><path d="M9.5 5.5l6.5 6.5-6.5 6.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
           </a></li>
-          <li class="reveal"><a class="find__sub" href="./find-my-jeju.html#policy">
+          <li class="reveal"><a class="find__sub" data-track="related_article" href="./find-my-jeju.html#policy">
             <img class="find__sub-img find__sub-img--right" src="../../images/find-village.webp?v=2" width="720" height="480" alt="みかんの木と菜の花、石垣の向こうの海辺に建つオレンジ色の屋根の家と遠くの山を描いたイラスト" loading="lazy">
             <span class="find__sub-body">
               <svg class="find__icon" viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M12 21.5s-7-6.4-7-11.5a7 7 0 0 1 14 0c0 5.1-7 11.5-7 11.5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><circle cx="12" cy="10" r="2.6" fill="none" stroke="currentColor" stroke-width="2"/></svg>
@@ -299,7 +299,7 @@
           </a></li>
         </ul>
       </section>
-      <a class="find__btn" href="../index.html"><span aria-hidden="true">←</span> ホームに戻る</a>
+      <a class="find__btn" href="../index.html" data-track="back_to_submain"><span aria-hidden="true">←</span> ホームに戻る</a>
     </div>
   </section>
 </main>

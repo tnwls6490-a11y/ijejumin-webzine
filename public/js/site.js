@@ -2198,8 +2198,10 @@ var wzPlace = (function () {
         link.href = article;
         link.removeAttribute("target");
         link.removeAttribute("rel");
+        link.setAttribute("data-track", "related_article");
         link.textContent = wzT("인터뷰 원문 보러 가기", "Read the full interview", "インタビュー全文を読む");
       } else {
+        link.removeAttribute("data-track");
         link.href = card.href;
         link.target = "_blank";
         link.rel = "noopener";
@@ -2311,11 +2313,11 @@ var wzPlace = (function () {
     page = Math.min(page, pages - 1);
     cards.forEach(function (c, i) { c.hidden = i < page * per || i >= (page + 1) * per; });
     first = page * per;
-    var h = '<button type="button" data-go="prev" aria-label="' + wzT('이전 쪽', 'Previous page', '前のページ') + '"' + (page === 0 ? ' disabled' : '') + '>' + arrow('M14.5 5.5 8 12l6.5 6.5') + '</button>';
+    var h = '<button type="button" data-go="prev" data-track="card_prev" aria-label="' + wzT('이전 쪽', 'Previous page', '前のページ') + '"' + (page === 0 ? ' disabled' : '') + '>' + arrow('M14.5 5.5 8 12l6.5 6.5') + '</button>';
     for (var i = 0; i < pages; i++) {
       h += '<button type="button" data-go="' + i + '" aria-label="' + wzT((i + 1) + '쪽', 'Page ' + (i + 1), (i + 1) + 'ページ') + '"' + (i === page ? ' aria-current="page"' : '') + '>' + (i + 1) + '</button>';
     }
-    h += '<button type="button" data-go="next" aria-label="' + wzT('다음 쪽', 'Next page', '次のページ') + '"' + (page >= pages - 1 ? ' disabled' : '') + '>' + arrow('M9.5 5.5 16 12l-6.5 6.5') + '</button>';
+    h += '<button type="button" data-go="next" data-track="card_next" aria-label="' + wzT('다음 쪽', 'Next page', '次のページ') + '"' + (page >= pages - 1 ? ' disabled' : '') + '>' + arrow('M9.5 5.5 16 12l-6.5 6.5') + '</button>';
     pager.innerHTML = h;
     pager.hidden = pages < 2;
   }

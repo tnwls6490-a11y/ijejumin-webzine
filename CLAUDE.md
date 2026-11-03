@@ -880,13 +880,24 @@ ijejumin-webzine/
 - 개발자 점검 (2026-10-26 14:24, 사이트에 떠 있던 10-23 버전 기준)
   - [x] 화면에 미완성 문구: 서브메인 설명 자리(10-25에 이미 고침), 기사 쇼츠 'COMING SOON' 빈 카드, 나의 제주찾기 '사진 준비 중' → 고침 (2026-10-26)
     - [ ] 단, 쇼츠 'COMING SOON 준비 중' 카드는 사용자 요청으로 10-27에 되돌렸다. 10-29 점검에서 다시 걸려 사용자 요청으로 1장만 남겼다(영상 3 + 1 = 4칸). 남은 1장은 계속 걸릴 수 있다
-  - [ ] data-track(클릭 이름표): 저장소의 `reference/webzine-common-rules.md`에는 규칙이 없다. 새 규칙 md(이름 목록)를 받으면 그대로 붙인다. 이름을 지어내지 않는다
-    - 2026-11-03 점검 3차에서도 '확인할 것'으로 나왔다. 저장소·Downloads·카톡 받은 파일·한경_제주도 폴더에 규칙 md가 없었다. 사용자에게 강의·운영 쪽에 받아 달라고 안내함
+  - [x] data-track(클릭 이름표): 사용자가 한경 웹진 템플릿 규칙(규칙/submain.md·article.md)의 이름 목록을 알려 줘 붙였다 (2026-11-03, 세 언어 21페이지)
+    - 이름 목록 (사용자가 준 것, 이 밖의 이름은 만들지 않는다)
+      - 서브메인: hero_cta(첫 화면 CTA) · sticky_cta(하단 고정 CTA) · article_card(대표 기사·기사 카드 링크) · external_article(외부 기사 링크) · subscribe(구독 띠 버튼) · video_play(YouTube 썸네일)
+      - 상세페이지: article_cta(기사 끝 CTA) · related_article(관련 기사 카드) · back_to_submain(서브메인으로 돌아가기) · share_copy(링크 복사·공유) · card_next / card_prev(카드뉴스 다음·이전) · video_play · bgm_on(배경음악 켜기)
+    - 붙인 곳
+      - 서브메인: '이야기 보러 가기'(`.landing__next`) hero_cta, '인터뷰 읽기' 4개·마을 테스트 카드 링크 3개(버튼·표지·화살표)·체크리스트/정책 카드 2개 article_card
+      - 인터뷰 기사 12편: 본문 영상 카드·쇼츠 3개 video_play, 장소 사진(`.isle-nav`)·쇼츠 줄(`.reels-btn`) ← → card_prev·card_next, '나의 제주찾기' 카드 3개 related_article, '← 홈으로 돌아가기' back_to_submain
+        - 쇼츠 창의 '인터뷰 원문 보러 가기'(스크립트가 만듦) related_article
+        - 본문 영상 카드는 스크립트가 YouTube 플레이어로 바꿔 끼우며 이름표가 빠진다(HTML 원본·스크립트 없을 때만 있음). 플레이어 안 클릭은 페이지가 못 세고, 재생은 GTM view_video가 센다
+      - 나의 제주찾기: 명소 카드 줄 ← → · 정책 카드 쪽 넘기기 ‹ ›(스크립트가 만듦) card_prev·card_next, '← 나의 제주찾기로 돌아가기'(서브메인 #cat-3) back_to_submain
+      - 마을 테스트: 위 줄 '공유'(PC는 링크 복사, 휴대폰은 공유 창) share_copy. `build.py`도 같이 붙이게 고쳤다
+    - 맞는 요소가 없어 안 붙인 이름: sticky_cta · external_article · subscribe · 서브메인 video_play · article_cta · bgm_on
+    - 새 버튼·카드를 만들면 같은 역할에 같은 이름을 붙인다. GTM 클릭 트리거(class·id)는 그대로라 서로 영향 없다
   - [x] JSON-LD(참고): 세 언어 서브메인 `<head>` 끝에 Article(headline = 그 페이지 og:title, image = og-main.jpg). 발행일은 넣지 않기로 사용자가 골랐다 (2026-10-29)
   - [ ] 같은 종류로 걸릴 수 있는 것: 기사 장소 사진 설명 '사진 네이버 지도 로드뷰 (임시 사용)' 1곳(백록마케팅 '남조로 도로', 화면에 보임. 사용자가 새 사진을 보냈다 — 파일을 받으면 바꾼다). 2026-10-29 나머지 4곳은 제주관광공사 사진으로 바꿨다. 아래 로드뷰 캡처 확인과 같이 정한다
   - 개발자 점검 2차 (2026-10-29 10:15, 사이트 기준). 사용자와 정한 것
     - 고쳐야 할 것 '미완성 문구'(쇼츠 COMING SOON): 3장 → 1장 (위 쇼츠 줄 참고)
-    - data-track 없음: 저장소의 공통 기준 원문에 규칙이 없다. 규칙 md(이름 목록)를 받으면 붙인다 (지어내지 않는다)
+    - data-track 없음: 2026-11-03 사용자가 준 이름 목록대로 붙였다 (위 data-track 항목)
     - 작업용 제목: 마을 테스트 title·og:title의 '테스트'·'test'라는 낱말 때문에 걸렸다(실제로 테스트 페이지). 일본어는 '診断'이라 안 걸림
       - 사용자가 정한 새 제목으로 바꿨다(2026-10-29): '나는 제주도 어느 동네가 어울릴까? 제주 한 달 살기 동네 테스트 | 이제, 주민' ('테스트'는 사용자 뜻대로 남김)
       - 영어 'Which Jeju neighborhood suits me? A one-month Jeju stay neighborhood test', 일본어 'わたしに合う済州の町はどこ？ 済州1ヶ月暮らし 住む町診断'으로 같이 옮김

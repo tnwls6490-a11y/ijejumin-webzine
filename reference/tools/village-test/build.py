@@ -150,6 +150,7 @@ mk = rep(mk, '<div class="hero">', '<div class="vt-hero">')
 mk = rep(mk, '<div class="topbar">', '<div class="vt-topbar">')
 mk = rep(mk, '<div class="progress" id="progress">', '<div class="vt-progress" id="progress">')
 mk = rep(mk, ' style="width:100%"', '')
+mk = rep(mk, '<button class="pill" type="button" data-act="share">', '<button class="pill" type="button" data-act="share" data-track="share_copy">')   # 한경 웹진 규칙의 클릭 이름표 (2026-11-03)
 mk = pose(mk).replace('src="img/', 'src="' + IMG)
 assert 'style=' not in mk and 'img/' not in mk.replace(IMG, '')
 
