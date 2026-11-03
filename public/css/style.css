@@ -4322,12 +4322,58 @@ body.page-interview :is(.topbar, .wz-header, .site-footer) { font-family: var(--
 #jeju-balance[data-phase=quiz] .jb-switch .jb-game-copy strong{font-size:13px}
 /* 엽서 저장·공유 창과 안내가 웹진 헤더(z-index 50) 위로 (동네 테스트의 .sheet와 같게). 밸런스 칸이 따로 쌓이는 층을 만들지 않게 */
 #jeju-balance{isolation:auto}
+/* 게임 위쪽 줄(로고 · 홈 · 공유 · Language): 동네 테스트(.vt .hdr …)와 같은 구성·모양, 색만 게임마다 (사용자 요청 2026-11-03)
+   밸런스 칸은 .vt라 동네 테스트 규칙이 그대로 쓰이고 색만 덮는다. 실화냐 칸(.rq)은 같은 규칙을 .rq로 옮겼다 */
+#jeju-balance .hdr{margin-bottom:0}
+#jeju-balance .pill,#jeju-balance .langmenu button{font-family:var(--f-body)}
+#jeju-balance .pill{min-height:44px;background:#fffbf2;color:#594172;box-shadow:0 3px 7px rgba(65,43,87,.12)}
+#jeju-balance .pill.on{background:#594172;color:#fffbf2}
+#jeju-balance .langmenu{background:#fffbf2;box-shadow:0 10px 24px rgba(65,43,87,.2)}
+#jeju-balance .langmenu button{color:#594172}
+#jeju-balance .langmenu button[aria-checked=true]{background:#ece4f8;color:#594172}
+.rq .hdr{display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:52px;margin-bottom:10px}
+.rq .logo-btn{border:0;background:none;padding:0;cursor:pointer;display:block;flex:none}
+.rq .logo{width:52px;height:auto;display:block;filter:drop-shadow(0 1px 2px rgba(0,0,0,.15))}
+.rq .hdr-actions{display:flex;gap:8px}
+.rq .pill{display:inline-flex;align-items:center;gap:6px;min-height:44px;border:0;cursor:pointer;background:#fff;color:var(--ink);border-radius:999px;padding:9px 14px 7px 11px;font:700 14px/1 Gmarket,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;letter-spacing:-.01em;white-space:nowrap;box-shadow:0 3px 8px rgba(18,35,58,.16)}
+.rq .pill svg{width:19px;height:19px;flex:none}
+.rq .icon{width:100%;height:100%;fill:none;stroke:currentColor;stroke-width:3.6;stroke-linecap:round;stroke-linejoin:round}
+.rq .pill.on{background:var(--ink);color:#fff}
+.rq .langwrap{position:relative}
+.rq .langmenu{position:absolute;right:0;top:calc(100% + 8px);z-index:45;min-width:150px;display:flex;flex-direction:column;gap:2px;background:#fff;border-radius:16px;padding:6px;box-shadow:0 10px 24px rgba(18,35,58,.22)}
+.rq .langmenu button{display:flex;justify-content:space-between;align-items:center;gap:12px;min-height:44px;border:0;background:none;cursor:pointer;text-align:left;padding:12px 12px 10px;border-radius:10px;font:700 15px/1 Gmarket,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;color:var(--ink)}
+.rq .langmenu button[aria-checked=true]{background:var(--peach);color:var(--orange-ink)}
+.rq .langmenu button[aria-checked=true]::after{content:'✓'}
+/* 좁은 휴대폰: 동네 테스트처럼 홈은 그림만(c1), 그다음 칸 사이를 좁게(c2) — site.js fitHdr */
+.rq .hdr.c1 .is-home .txt,#jeju-balance .hdr.c1 .is-home .txt{display:none}
+.rq .hdr.c1 .is-home,#jeju-balance .hdr.c1 .is-home{padding-inline:10px}
+.rq .hdr.c2 .hdr-actions,#jeju-balance .hdr.c2 .hdr-actions{gap:5px}
+.rq .hdr.c2 .pill,#jeju-balance .hdr.c2 .pill{padding-inline:9px 10px;gap:4px}
+.rq .hdr.c2 .is-home,#jeju-balance .hdr.c2 .is-home{padding-inline:8px}
+/* 밸런스 게임 문제 화면 아래 '← 돌아가기' (고르면 바로 다음 문제로 넘어가서 '다음 고민' 버튼 대신, 사용자 요청 2026-11-03) */
+#jeju-balance .jb-goback{margin-top:2px}
+/* 친구에게 공유: 동네 테스트의 안내(.toast)·복사 창(#copybox)과 같은 모양 (사용자 요청 2026-11-03) */
+.jb-share-toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:2100;width:max-content;max-width:calc(100% - 32px);background:rgba(16,38,70,.92);color:#fff;font:700 14px/1.4 Gmarket,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;padding:12px 18px 10px;border-radius:999px;text-align:center;text-wrap:balance;white-space:pre-line}
+.jb-share-sheet{position:fixed;inset:0;z-index:2100;overflow-y:auto;background:rgba(10,25,45,.82);padding:max(16px,env(safe-area-inset-top,0px)) 16px max(16px,env(safe-area-inset-bottom,0px))}
+.jb-share-toast[hidden],.jb-share-sheet[hidden]{display:none}
+.jb-share-in{margin:auto;min-height:100%;width:min(100%,440px);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding-block:8px}
+.jb-share-in p{margin:0;color:#fff;text-align:center;font:700 16px/1.5 Gmarket,"Apple SD Gothic Neo","Malgun Gothic",sans-serif}
+.jb-share-in textarea{width:100%;min-height:110px;border:0;border-radius:14px;padding:12px 14px;font:500 16px/1.5 var(--font);color:#2668B9;background:#fff;resize:none}
+.jb-share-close{width:100%;min-height:60px;border:0;border-radius:999px;background:#fff;color:#2668B9;font:700 20px/1 Gmarket,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;cursor:pointer;box-shadow:0 6px 0 #B9CFE8,0 10px 18px rgba(0,40,90,.18)}
+/* 결과 맨 아래 '친구에게 공유하기'(노랑)·'다시 하기'(파랑): 동네 테스트 결과 버튼과 같은 모양 (사용자 요청 2026-11-03) */
+.jb-endbtns{display:flex;flex-direction:column;gap:16px;width:100%;max-width:520px;margin:32px auto 6px}
+.jb-endbtn,#jeju-balance .jb-endbtn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;min-height:60px;padding:14px 22px 12px;border:0;border-radius:999px;font:700 20px/1.3 Gmarket,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;letter-spacing:-.02em;cursor:pointer;transition:transform .12s,box-shadow .12s}
+.jb-endbtn--share,#jeju-balance .jb-endbtn--share{min-height:74px;font-size:18px;background:#FFD43B;color:#3B2A22;box-shadow:0 6px 0 #D4A90F,0 10px 18px rgba(0,40,90,.22)}
+.jb-endbtn--share svg{width:22px;height:22px;flex:none;fill:none;stroke:currentColor;stroke-width:3.6;stroke-linecap:round;stroke-linejoin:round}
+.jb-endbtn--again,#jeju-balance .jb-endbtn--again{background:#4085E0;color:#fff;box-shadow:0 6px 0 #2B66B5,0 10px 18px rgba(0,40,90,.25)}
+.jb-endbtn:active{transform:translateY(4px)}
+.jb-endbtn:focus-visible{outline:3px solid #12233A;outline-offset:4px}
+#jeju-balance .jb-endbtns{margin-top:4px}
+@media(prefers-reduced-motion:reduce){.jb-endbtn{transition:none}}
 /* 동네 테스트 칸은 화면 높이에 맞춰 줄어드는데, 게임 고르기 줄은 줄어들지 않게 */
 #vt .app.fit>.jb-switch{flex-shrink:0}
 /* 공통 기준(누르는 요소 44px 이상, 본문 글자 16px 이상)에 맞춰 키운 것. 분류·NEW·안내 같은 작은 이름표는 그대로
    ([data-phase]: 문제 화면·좁은 화면 규칙보다 앞서게) */
-#jeju-balance.vt[data-phase] .jb-pill{min-height:44px;font-size:14px}
-#jeju-balance.vt[data-phase] .jb-header>a{display:inline-flex;align-items:center;min-width:44px;min-height:44px}
 #jeju-balance.vt[data-phase] .jb-back,#jeju-balance.vt[data-phase] .jb-textbutton{min-height:44px;font-size:16px}
 #jeju-balance.vt[data-phase] .jb-back{white-space:nowrap}
 #jeju-balance.vt[data-phase] .jb-question-top{flex-wrap:wrap}
@@ -4540,8 +4586,19 @@ body.page-interview :is(.topbar, .wz-header, .site-footer) { font-family: var(--
 .rq p, .rq span, .rq li { text-wrap: pretty; }
 .rq-title, .rq-claim, .rq-people-title, .rq-score-name, .rq-next-name, .rq-reveal-head { text-wrap: balance; }
 
-/* 웹진에 옮기며 더한 것: 맨 위 게임 고르기 줄, 화면을 바꿀 때 헤더 아래에 멈추게 */
-.rq .jb-switch{max-width:520px;margin:0 auto 24px}
+/* 웹진에 옮기며 더한 것
+   - 동네 테스트·밸런스 게임과 같은 틀: 화면 높이를 채우는 가운데 칸(460px) 안에 위쪽 줄 → 게임 고르기 → 화면. 색은 실화냐 그대로 (사용자 요청 2026-11-03) */
+.rq{position:relative;padding:0}
+.rq-app{max-width:460px;margin:0 auto;min-height:calc(100vh - var(--hdr-h,0px));min-height:calc(100svh - var(--hdr-h,0px));padding:14px max(16px,env(safe-area-inset-right,0px)) 40px max(16px,env(safe-area-inset-left,0px));display:flex;flex-direction:column}
+.rq .rq-screen{max-width:none;margin:0}
+.rq .jb-switch{margin:0 0 20px}
+.rq #rq-start{flex:1;display:flex;flex-direction:column;align-items:center;padding-top:4px}
+.rq #rq-start .rq-cta{width:100%}
+/* 첫 화면 아래 하르방 말풍선 (동네 테스트·밸런스 게임처럼) */
+.rq-talk{display:flex;align-items:center;justify-content:center;gap:12px;margin-top:auto;padding-top:22px}
+.rq-talk img{width:86px;height:auto;flex:none}
+.rq-bubble{position:relative;margin:0;padding:12px 16px;border:2px solid var(--ink);border-radius:18px;background:#fff;color:var(--ink);font-size:17px;font-weight:800;line-height:1.5;text-align:left;white-space:pre-line;box-shadow:0 4px 0 var(--ink)}
+.rq-bubble::before{content:"";position:absolute;left:-9px;top:42%;width:14px;height:14px;background:#fff;border-left:2px solid var(--ink);border-bottom:2px solid var(--ink);transform:rotate(45deg)}
 .rq,.rq-screen,.rq-reveal{scroll-margin-top:var(--hdr-h,64px)}
 /* 공통 기준(본문 글자 16px 이상)에 맞춰 키운 것. 이름표·안내(카드 8장 · 약 1분 등)와 흐린 '출처:' 줄(전달 메모의 결정)은 그대로 */
 .rq .rq-reveal-read-main,.rq .rq-link,.rq .rq-person-line,.rq .rq-people-sub,.rq .rq-next-desc{font-size:16px}

@@ -3681,6 +3681,92 @@ document.fonts && document.fonts.addEventListener && document.fonts.addEventList
     '<button type="button" class="jb-game-balance" data-jb-mode="balance" aria-pressed="' + (game === 'balance') + '"><span class="jb-new">NEW</span><span class="jb-game-cover" aria-hidden="true"><span>A / B</span></span><span class="jb-game-copy"><strong>밸런스 게임</strong><small>살고 싶은 하루 고르기</small></span></button>' +
     '<button type="button" class="jb-game-real" data-jb-mode="real1" aria-pressed="' + (game === 'real') + '"><span class="jb-new">NEW</span><span class="jb-game-cover" aria-hidden="true"><span>O / X</span></span><span class="jb-game-copy"><strong><span class="jb-game-pre">제주살이,&nbsp;</span><span>실화냐?</span></strong><small>진짜일까, 가짜일까</small></span></button></div>';
 
+  /* ---------- 게임 위쪽 줄: 세 게임 모두 동네 테스트(.hdr)와 같은 구성 — 로고 · 홈 · 공유 · Language. 색만 게임마다 (사용자 요청 2026-11-03) ----------
+     - 로고·홈: 그 게임의 첫 화면으로 (첫 화면에서는 홈이 칠해진다, 동네 테스트의 .pill.on). 공유: 아래 '친구에게 공유'
+     - Language: 게임 글은 한국어뿐이라, 다른 언어를 고르면 그 언어의 동네 테스트로 간다 */
+  const GICON = {
+    house: '<path d="M6 23 L24 8 L42 23"/><path d="M11 19 V41 H37 V19"/><path d="M20 41 V30 H28 V41"/>',
+    share: '<path d="M24 7 V29"/><path d="M15 15.5 L24 6.5 L33 15.5"/><path d="M13 23 V40 H35 V23"/>',
+    globe: '<circle cx="24" cy="24" r="18"/><path d="M6 24 H42"/><path d="M24 6 C15 13 15 35 24 42 C33 35 33 13 24 6 Z"/>'
+  };
+  const gIcon = name => '<svg class="icon" viewBox="0 0 48 48" aria-hidden="true">' + GICON[name] + '</svg>';
+  const GLANGS = [['ko', '한국어', ''], ['en', 'English', '../en/articles/jeju-village-test.html?lang=en'], ['ja', '日本語', '../ja/articles/jeju-village-test.html?lang=ja'], ['zh', '中文', './jeju-village-test.html?lang=zh&mode=village']];
+  const gameHeader = () => '<div class="hdr"><button class="logo-btn" type="button" data-g="home" aria-label="처음 화면으로"><img class="logo" src="' + IMG + 'village-test/logo.webp" alt="이제주민" width="261" height="285"></button>' +
+    '<div class="hdr-actions"><button class="pill is-home" type="button" data-g="home" aria-label="홈">' + gIcon('house') + '<span class="txt">홈</span></button>' +
+    '<button class="pill" type="button" data-g="share" data-track="share_copy">' + gIcon('share') + '<span>공유</span></button>' +
+    '<div class="langwrap"><button class="pill" type="button" data-g="lang" aria-haspopup="true" aria-expanded="false">' + gIcon('globe') + '<span lang="en">Language</span></button>' +
+    '<div class="langmenu" role="menu" aria-label="Language" hidden>' + GLANGS.map(([k, n]) => '<button type="button" role="menuitemradio" lang="' + k + '" aria-checked="' + (k === 'ko') + '" data-g="setlang" data-lang="' + k + '">' + n + '</button>').join('') + '</div></div></div></div>';
+  /* 좁은 휴대폰: 동네 테스트 fitHeader처럼 한 줄에 안 들어가면 홈은 그림만(c1), 그다음 칸 사이를 좁게(c2) */
+  function fitHdr(box) {
+    const h = box && box.querySelector('.hdr');
+    if (!h || !h.offsetWidth) return;
+    h.classList.remove('c1', 'c2');
+    for (const c of ['c1', 'c2']) { if (h.scrollWidth <= h.clientWidth + 1) return; h.classList.add(c); }
+  }
+  function closeGameLang() {
+    main.querySelectorAll('#jeju-balance .langmenu, #rq .langmenu').forEach(m => {
+      m.hidden = true;
+      const b = m.parentElement.querySelector('[data-g="lang"]');
+      if (b) b.setAttribute('aria-expanded', 'false');
+    });
+  }
+  function bindHeader(box, onHome, onShare) {
+    box.addEventListener('click', e => {
+      const b = e.target.closest('[data-g]');
+      if (!b || !box.contains(b)) return;
+      const g = b.dataset.g;
+      if (g === 'home') { closeGameLang(); onHome(); }
+      else if (g === 'share') { closeGameLang(); onShare(); }
+      else if (g === 'lang') {
+        const m = b.parentElement.querySelector('.langmenu'), open = m.hidden;
+        closeGameLang(); m.hidden = !open; b.setAttribute('aria-expanded', String(open));
+      } else if (g === 'setlang') {
+        closeGameLang();
+        const to = GLANGS.find(x => x[0] === b.dataset.lang);
+        if (to && to[2]) location.href = to[2];
+      }
+    });
+  }
+  document.addEventListener('click', e => { if (!e.target.closest('#jeju-balance .langwrap, #rq .langwrap')) closeGameLang(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeGameLang(); });
+
+  /* ---------- 친구에게 공유: 동네 테스트(copyText·shareTest)와 같은 방식·같은 안내 (사용자 요청 2026-11-03) ----------
+     - 공유 문구('… 👉 주소')를 복사하고 화면 아래에 '공유 문구를 복사했어요! …'. 복사가 막히면 문구를 길게 눌러 복사하는 창
+     - 밸런스 게임은 동네 테스트처럼 휴대폰(카톡 등 앱 안 브라우저 제외)에서 휴대폰 공유 창. 실화냐 '결과 링크 복사'는 이름대로 늘 복사 */
+  const IN_APP = /KAKAOTALK|Instagram|FBAN|FBAV|FB_IAB|NAVER\(inapp|Line\/|DaumApps|everytimeApp|BAND\/|MicroMessenger|Weibo/i.test(navigator.userAgent || '');
+  const shareLayer = document.createElement('div');
+  shareLayer.className = 'jb-share';
+  shareLayer.lang = 'ko';
+  shareLayer.innerHTML = '<div class="jb-share-toast" role="status" hidden></div><div class="jb-share-sheet" role="dialog" aria-modal="true" aria-label="공유 문구 복사" hidden><div class="jb-share-in"><p>아래 문구를 길게 눌러 전체 선택 → 복사한 뒤<br>카톡이나 DM에 붙여넣어 주세요</p><textarea readonly aria-label="공유 문구"></textarea><button class="jb-share-close" type="button">닫기</button></div></div>';
+  main.append(shareLayer);
+  const shareToastEl = shareLayer.querySelector('.jb-share-toast'), shareSheet = shareLayer.querySelector('.jb-share-sheet'), shareBox = shareSheet.querySelector('textarea');
+  let shareTimer = 0, shareReturn = null;
+  function shareToast(msg) {
+    shareToastEl.textContent = msg; shareToastEl.hidden = false;
+    clearTimeout(shareTimer); shareTimer = setTimeout(() => { shareToastEl.hidden = true; }, 2600);
+  }
+  function closeShareSheet() { shareSheet.hidden = true; if (shareReturn && shareReturn.isConnected) shareReturn.focus(); }
+  shareSheet.querySelector('.jb-share-close').addEventListener('click', closeShareSheet);
+  shareSheet.addEventListener('keydown', e => { if (e.key === 'Escape') closeShareSheet(); });
+  /* 복사는 누른 순간 안에서 시작해야 한다. 막히면(http 미리보기 주소 등) 문구를 보여 주고 길게 눌러 복사하게 */
+  function copyShare(text, done) {
+    const fallback = () => { shareReturn = document.activeElement; shareBox.value = text; shareSheet.hidden = false; setTimeout(() => { shareBox.focus(); shareBox.select(); }, 50); done('copy_box'); };
+    try {
+      navigator.clipboard.writeText(text).then(() => { shareToast('공유 문구를 복사했어요! 카톡이나 DM에 붙여넣어 친구에게 보내 주세요.'); done('copy'); }, fallback);
+    } catch (e) { fallback(); }
+  }
+  /* 결과 맨 아래 '친구에게 공유하기'·'다시 하기' (동네 테스트 결과 버튼과 같은 모양, 사용자 요청 2026-11-03) */
+  const endButtons = (shareAttr, againAttr) => '<div class="jb-endbtns"><button class="jb-endbtn jb-endbtn--share" type="button" ' + shareAttr + ' data-track="share_copy"><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M24 7 V29"/><path d="M15 15.5 L24 6.5 L33 15.5"/><path d="M13 23 V40 H35 V23"/></svg><span>친구에게 공유하기</span></button><button class="jb-endbtn jb-endbtn--again" type="button" ' + againAttr + '>다시 하기</button></div>';
+  function shareOrCopy(title, msg, url, done) {
+    const text = msg + ' 👉 ' + url;
+    const touch = (navigator.maxTouchPoints || 0) > 0 || (window.matchMedia && matchMedia('(pointer: coarse)').matches);   // PC: 윈도우 공유 창보다 복사가 낫다
+    if (navigator.share && !IN_APP && touch) {
+      navigator.share({ title, text: msg, url }).then(() => done('share_sheet'), e => { if (!e || e.name !== 'AbortError') copyShare(text, done); });
+      return;
+    }
+    copyShare(text, done);
+  }
+
   /* ---------- 밸런스 게임: 문항·엔딩 (balance-data.js 그대로) ---------- */
   const D = (function () {
     const version = 'v1';
@@ -3821,7 +3907,7 @@ document.fonts && document.fonts.addEventListener && document.fonts.addEventList
   const CANVAS_BODY = 'Pretendard, "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", sans-serif';
   let state = { answers: Array(8).fill(null), index: 0, phase: 'start' };
   let activeMode = 'village', dialogReturn = null, imageUrl = null, toastTimer = null, editingResult = false, alternativeAnswers = null;
-  let startedAt = 0, visibleSince = 0, visibleMs = 0, completed = false;
+  let startedAt = 0, visibleSince = 0, visibleMs = 0, completed = false, advanceTimer = 0;
   try {
     const saved = JSON.parse(sessionStorage.getItem(storeKey));
     if (saved && Array.isArray(saved.answers) && saved.answers.length === 8 && saved.answers.every(n => n === null || n === 0 || n === 1)) {
@@ -3845,9 +3931,10 @@ document.fonts && document.fonts.addEventListener && document.fonts.addEventList
     sun: '<circle cx="12" cy="12" r="4"/><path d="M12 1v3m0 16v3M1 12h3m16 0h3M4 4l2 2m12 12 2 2M4 20l2-2M18 6l2-2"/>'
   };
   const icon = name => '<svg viewBox="0 0 24 24" aria-hidden="true">' + paths[name] + '</svg>';
-  root.innerHTML = '<div class="jb-photo" aria-hidden="true"></div><div class="jb-app"><div class="jb-header"><a href="../index.html" aria-label="이제주민 웹진으로"><img class="jb-logo" src="' + asset('logo.webp') + '" alt="이제주민" width="39" height="43"></a><div class="jb-actions"><button class="jb-pill" type="button" data-jb="home">' + icon('house') + '홈</button><button class="jb-pill" type="button" data-jb="share" data-track="share_copy">' + icon('share') + '공유</button><span class="jb-pill jb-language" lang="ko">한국어</span></div></div>' + switches('balance') + '<div class="jb-screen" id="jb-screen"></div></div><div class="jb-overlay" id="jb-overlay" hidden><section class="jb-dialog" role="dialog" aria-modal="true" aria-labelledby="jb-dialog-title"><div id="jb-dialog-content"></div><button class="jb-cta jb-cta-white" type="button" data-jb="close-dialog">닫기</button></section></div><div class="jb-toast" id="jb-toast" role="status" hidden></div><p class="sr-only" id="jb-announcement" aria-live="polite"></p>';
+  root.innerHTML = '<div class="jb-photo" aria-hidden="true"></div><div class="jb-app">' + gameHeader() + switches('balance') + '<div class="jb-screen" id="jb-screen"></div></div><div class="jb-overlay" id="jb-overlay" hidden><section class="jb-dialog" role="dialog" aria-modal="true" aria-labelledby="jb-dialog-title"><div id="jb-dialog-content"></div><button class="jb-cta jb-cta-white" type="button" data-jb="close-dialog">닫기</button></section></div><div class="jb-toast" id="jb-toast" role="status" hidden></div><p class="sr-only" id="jb-announcement" aria-live="polite"></p>';
   main.append(root);
   const screen = root.querySelector('#jb-screen');
+  bindHeader(root, () => startScreen(true), () => share(state.phase === 'result'));
   const overlay = root.querySelector('#jb-overlay');
   const announcement = root.querySelector('#jb-announcement');
   const vtHdr = village.querySelector('.hdr');
@@ -3864,6 +3951,7 @@ document.fonts && document.fonts.addEventListener && document.fonts.addEventList
   function talk(pose, text) { return '<div class="jb-talk"><img class="jb-character" src="' + asset(pose + '.webp') + '" alt="" width="90" height="112"><p class="jb-bubble" id="jb-bubble">' + br(text) + '</p></div>'; }
   function setScreen(html, phase, focus) {
     root.dataset.phase = phase;
+    root.querySelector('.is-home').classList.toggle('on', phase === 'start');
     screen.innerHTML = html;
     screen.classList.remove('jb-enter');
     requestAnimationFrame(() => screen.classList.add('jb-enter'));
@@ -3895,10 +3983,9 @@ document.fonts && document.fonts.addEventListener && document.fonts.addEventList
     const i = state.index, q = D.questions[i], picked = state.answers[i];
     const answered = state.answers.filter(n => n !== null).length;
     const categories = [{ name: '집', icon: 'house' }, { name: '일', icon: 'laptop' }, { name: '관계', icon: 'people' }, { name: '일상', icon: 'leaf' }];
-    setScreen('<div class="jb-question-top"><button type="button" class="jb-back" data-jb="back">← ' + (i ? '이전' : '시작 화면') + '</button><div class="jb-categories" aria-label="현재 주제: ' + q.category + '">' + categories.map(c => '<span class="jb-category"' + (c.name === q.category ? ' aria-current="step"' : '') + ' aria-label="' + c.name + '">' + icon(c.icon) + (c.name === q.category ? c.name : '') + '</span>').join('') + '</div></div><div class="jb-paper"><p class="jb-qno">Q' + (i + 1) + '<small> / 8</small></p><h2 class="jb-question">' + br(q.title) + '</h2></div><div class="jb-progress-track" role="progressbar" aria-label="답변한 문항" aria-valuemin="0" aria-valuemax="8" aria-valuenow="' + answered + '"><div class="jb-progress-value"></div></div><div class="jb-options" role="group" aria-label="둘 중 하나 선택">' + q.options.map((o, n) => (n ? '<span class="jb-versus" aria-hidden="true">VS</span>' : '') + '<button class="jb-option" type="button" data-jb-choice="' + n + '" aria-pressed="' + (picked === n) + '"><span class="jb-letter">' + (n ? 'B' : 'A') + '</span>' + scene(q.art, n, 'jb-option-art') + '<span class="jb-option-title">' + esc(o.title) + '</span><span class="jb-option-detail">' + esc(o.detail) + '</span><span class="jb-option-cost">' + esc(o.cost) + '</span></button>').join('') + '</div>' + talk(q.pose, picked === null ? q.talk : q.options[picked].reaction) + '<button class="jb-cta" type="button" data-jb="next"' + (picked === null ? ' disabled' : '') + '>' + (i === 7 ? '내가 고른 제주살이 보기' : '다음 고민') + ' →</button>', 'quiz', focus);
+    setScreen('<div class="jb-question-top"><button type="button" class="jb-back" data-jb="back">← ' + (i ? '이전' : '시작 화면') + '</button><div class="jb-categories" aria-label="현재 주제: ' + q.category + '">' + categories.map(c => '<span class="jb-category"' + (c.name === q.category ? ' aria-current="step"' : '') + ' aria-label="' + c.name + '">' + icon(c.icon) + (c.name === q.category ? c.name : '') + '</span>').join('') + '</div></div><div class="jb-paper"><p class="jb-qno">Q' + (i + 1) + '<small> / 8</small></p><h2 class="jb-question">' + br(q.title) + '</h2></div><div class="jb-progress-track" role="progressbar" aria-label="답변한 문항" aria-valuemin="0" aria-valuemax="8" aria-valuenow="' + answered + '"><div class="jb-progress-value"></div></div><div class="jb-options" role="group" aria-label="둘 중 하나 선택">' + q.options.map((o, n) => (n ? '<span class="jb-versus" aria-hidden="true">VS</span>' : '') + '<button class="jb-option" type="button" data-jb-choice="' + n + '" aria-pressed="' + (picked === n) + '"><span class="jb-letter">' + (n ? 'B' : 'A') + '</span>' + scene(q.art, n, 'jb-option-art') + '<span class="jb-option-title">' + esc(o.title) + '</span><span class="jb-option-detail">' + esc(o.detail) + '</span><span class="jb-option-cost">' + esc(o.cost) + '</span></button>').join('') + '</div>' + talk(q.pose, picked === null ? q.talk : q.options[picked].reaction) + '<button class="jb-cta jb-cta-white jb-goback" type="button" data-jb="back">← 돌아가기</button>', 'quiz', focus);
     screen.querySelector('.jb-progress-value').style.width = answered / 8 * 100 + '%';
     if (D.questions[i + 1]) { const preload = new Image(); preload.src = art(D.questions[i + 1].art); }
-    if (editingResult) screen.querySelector('[data-jb="next"]').textContent = '수정한 결과 보기 →';
     resumeClock();
   }
   function choose(n) {
@@ -3907,12 +3994,15 @@ document.fonts && document.fonts.addEventListener && document.fonts.addEventList
     state.answers[i] = n;
     screen.querySelectorAll('[data-jb-choice]').forEach(button => button.setAttribute('aria-pressed', String(Number(button.dataset.jbChoice) === n)));
     screen.querySelector('#jb-bubble').textContent = q.options[n].reaction;
-    screen.querySelector('[data-jb="next"]').disabled = false;
     const answered = state.answers.filter(a => a !== null).length;
     screen.querySelector('[role="progressbar"]').setAttribute('aria-valuenow', String(answered));
     screen.querySelector('.jb-progress-value').style.width = answered / 8 * 100 + '%';
     announcement.textContent = q.options[n].title + ' 선택. ' + q.options[n].reaction;
     save(); track('answer', { question_id: q.id, choice: n === 0 ? 'A' : 'B' });
+    /* 고르면 바로 다음 문제로 (동네 테스트 pick과 같은 0.26초, 사용자 요청 2026-11-03. 전에는 '다음 고민 →' 버튼) */
+    const at = state.index;
+    clearTimeout(advanceTimer);
+    advanceTimer = setTimeout(() => { if (state.phase === 'quiz' && state.index === at) next(); }, 260);
   }
   function next() {
     if (state.phase !== 'quiz' || state.answers[state.index] === null) return;
@@ -3926,11 +4016,13 @@ document.fonts && document.fonts.addEventListener && document.fonts.addEventList
     const rows = D.questions.map((q, i) => ({ q, i })).filter(({ i }) => state.answers[i] !== friend[i]);
     return '<section class="jb-comparison" aria-labelledby="jb-comparison-title"><h3 id="jb-comparison-title">우리는 8개 중 ' + matches + '개를<br>똑같이 골랐어요!</h3><p>' + (matches === 8 ? '모든 선택이 같네요. 가장 고민한 질문도 같을까요?' : '선택이 갈린 질문, 같이 이야기해볼까요?') + '</p>' + rows.map(({ q, i }) => '<div class="jb-compare-row"><strong>Q' + (i + 1) + '. ' + esc(q.category) + '에서 갈린 선택</strong><div>나 · ' + esc(q.options[state.answers[i]].title) + '</div><div>친구 · ' + esc(q.options[friend[i]].title) + '</div></div>').join('') + '</section>';
   }
+  /* 내 선택으로 그린 제주살이 4컷: 엔딩 엽서 칸 안, 설명 글 없이 큰 제목만 (사용자 요청 2026-11-03. 전에는 엽서 아래 따로 된 칸에 설명 글과 함께) */
+  function framesHTML(ending) {
+    return '<h3 class="jb-ending-evidence-label">내 선택으로 그린 제주살이 4컷</h3><div class="jb-ending-frames">' + ending.scenes.map(frame => '<article class="jb-ending-frame">' + scene(frame.art, frame.side, 'jb-ending-art') + '<span class="jb-ending-slot">' + esc(frame.slot) + '</span><div class="jb-ending-frame-copy"><h4>' + esc(frame.title) + '</h4></div></article>').join('') + '</div>';
+  }
   function endingContent(ending) {
-    const frames = ending.scenes.map(frame => '<article class="jb-ending-frame">' + scene(frame.art, frame.side, 'jb-ending-art') + '<span class="jb-ending-slot">' + esc(frame.slot) + '</span><div class="jb-ending-frame-copy"><h4>' + esc(frame.title) + '</h4><p>' + esc(frame.text) + '</p></div></article>').join('');
     const reveals = ending.realities.map((reality, index) => '<button class="jb-ending-flip" type="button" data-jb-reveal="' + index + '" data-question="' + reality.question + '" aria-pressed="false" aria-label="' + esc(reality.title) + ', 함께 따라오는 생활 보기"><span class="jb-ending-flip-front"><span class="jb-ending-card-no">0' + (index + 1) + '</span><small>내가 고른 로망</small><strong>' + esc(reality.title) + '</strong><span class="jb-ending-flip-hint">뒤집어보기 ↻</span></span><span class="jb-ending-flip-back" hidden><small>함께 따라오는 생활</small><strong>' + esc(reality.cost) + '</strong><span class="jb-ending-reality-note">' + esc(reality.comment) + '</span><span class="jb-ending-flip-hint">앞면 다시 보기 ↻</span></span></button>').join('');
-    return '<section class="jb-ending-section" aria-labelledby="jb-storyboard-title"><div class="jb-ending-section-head"><span class="jb-ending-kicker">MY JEJU TRAILER</span><h3 id="jb-storyboard-title">내 선택으로 그린 제주살이 4컷</h3><p>고른 장면들을 엮어 꾸민 가상의 일상이에요.</p></div><div class="jb-ending-frames">' + frames + '</div></section>' +
-      '<section class="jb-ending-section" aria-labelledby="jb-reveal-title"><div class="jb-ending-section-head"><span class="jb-ending-kicker">BEHIND THE SCENES</span><h3 id="jb-reveal-title">로망의 뒷면도 열어볼까?</h3><p>카드를 누르면, 내 선택에 따라오는 생활이 보여요.</p></div><div class="jb-ending-flips">' + reveals + '</div></section>' +
+    return '<section class="jb-ending-section" aria-labelledby="jb-reveal-title"><div class="jb-ending-section-head"><span class="jb-ending-kicker">BEHIND THE SCENES</span><h3 id="jb-reveal-title">로망의 뒷면도 열어볼까?</h3><p>카드를 누르면, 내 선택에 따라오는 생활이 보여요.</p></div><div class="jb-ending-flips">' + reveals + '</div></section>' +
       '<section class="jb-ending-alternative" aria-labelledby="jb-alternative-title"><span class="jb-ending-kicker">ANOTHER ENDING</span><h3 id="jb-alternative-title">선택 하나, 다른 엔딩</h3><p>다른 답을 골랐다면 어떤 장면이 기다릴까요?</p><button type="button" class="jb-cta jb-cta-white" data-jb="preview-alternative">' + esc(ending.alternativeLabel) + ' →</button></section>' +
       '<section class="jb-ending-friend" aria-labelledby="jb-friend-talk-title"><span class="jb-ending-kicker">ENDING TALK</span><h3 id="jb-friend-talk-title">친구와 엔딩 후 토크</h3><blockquote>“' + esc(ending.friendQuestion) + '”</blockquote><button class="jb-cta jb-cta-blue" type="button" data-jb="invite" data-track="share_copy">친구도 고르게 해보기 →</button></section>';
   }
@@ -3951,11 +4043,11 @@ document.fonts && document.fonts.addEventListener && document.fonts.addEventList
       track('complete', { visible_seconds: Math.round(visibleMs / 1000), comparison: Boolean(friend), same_answers: friend ? D.compare(state.answers, friend) : undefined });
     }
     const r = D.summarize(state.answers);
-    const postcard = '<p class="jb-result-label">나의 제주살이 엔딩</p><div class="jb-paper jb-postcard" id="jb-postcard"><p class="jb-postmark">이제주민 · MY JEJU ENDING</p><p class="jb-ending-genre">' + esc(r.ending.genre) + '</p><h2 class="jb-result-title">' + br(r.title) + '</h2><p class="jb-description">' + esc(r.description) + '</p><p class="jb-ending-evidence-label">하르방이 발견한 취향 조합</p><div class="jb-tags">' + r.ending.evidence.map(item => '<span class="jb-tag">' + esc(item.text) + '</span>').join('') + '</div>' + talk('pose-a-06', r.ending.comment) + '<p class="jb-stamp">정답은 없어. 네가 고른 하루니까!</p></div>';
+    const postcard = '<p class="jb-result-label">나의 제주살이 엔딩</p><div class="jb-paper jb-postcard" id="jb-postcard"><p class="jb-postmark">이제주민 · MY JEJU ENDING</p><p class="jb-ending-genre">' + esc(r.ending.genre) + '</p><h2 class="jb-result-title">' + br(r.title) + '</h2><p class="jb-description">' + esc(r.description) + '</p>' + framesHTML(r.ending) + '<p class="jb-ending-evidence-label">하르방이 발견한 취향 조합</p><div class="jb-tags">' + r.ending.evidence.map(item => '<span class="jb-tag">' + esc(item.text) + '</span>').join('') + '</div>' + talk('pose-a-06', r.ending.comment) + '<p class="jb-stamp">정답은 없어. 네가 고른 하루니까!</p></div>';
     const actions = '<div class="jb-result-actions"><button class="jb-cta" type="button" data-jb="invite" data-track="share_copy">친구는 어떤 엔딩일까? 같은 질문 보내기</button><button class="jb-cta jb-cta-white" type="button" data-jb="save-image">내 제주살이 엽서 저장 ↓</button></div>';
     const answers = '<details class="jb-summary"><summary>내 선택 8개 다시 보기 · 수정하기</summary><ol class="jb-answer-list">' + D.questions.map((q, i) => '<li><button type="button" data-jb-edit="' + i + '"><small>Q' + (i + 1) + ' · ' + q.category + '</small>' + esc(q.options[state.answers[i]].title) + ' ↗</button></li>').join('') + '</ol></details>';
     const related = '<section class="jb-related" aria-labelledby="jb-related-title"><h3 id="jb-related-title">이런 제주살이,<br>먼저 살아본 사람은?</h3>' + r.articles.map(a => '<a class="jb-story" href="./' + a.path + '" data-jb-article="' + a.id + '" data-track="related_article"><small>' + a.name + '</small><strong>' + a.title + ' →</strong><span>' + a.description + '</span></a>').join('') + '</section>';
-    setScreen(postcard + actions + comparisonHTML() + endingContent(r.ending) + answers + related + '<button class="jb-cta jb-cta-blue" type="button" data-jb="village">그럼, 나는 제주 어디 주민?</button><button class="jb-textbutton" type="button" data-jb="restart">다시 골라보기 ↻</button><p class="jb-assumption">선택을 엮어 꾸민 재미용 가상 엔딩이에요. 제주 이주 적합도를 평가하지 않아요.</p>', 'result', focus);
+    setScreen(postcard + actions + comparisonHTML() + endingContent(r.ending) + answers + related + '<button class="jb-cta jb-cta-blue" type="button" data-jb="village">그럼, 나는 제주 어디 주민?</button>' + endButtons('data-jb="invite"', 'data-jb="restart"') + '<p class="jb-assumption">선택을 엮어 꾸민 재미용 가상 엔딩이에요. 제주 이주 적합도를 평가하지 않아요.</p>', 'result', focus);
   }
   function toast(message) {
     const el = root.querySelector('#jb-toast');
@@ -3982,7 +4074,8 @@ document.fonts && document.fonts.addEventListener && document.fonts.addEventList
     if (invite && D.validAnswers(state.answers)) url.searchParams.set('friend', D.encode(state.answers));
     return url.href;
   }
-  async function share(invite) {
+  /* 공유: 동네 테스트와 같은 방식(위 '친구에게 공유'). 공유 문구는 전달받은 그대로 */
+  function share(invite) {
     if (location.protocol === 'file:') {
       openDialog('<h2 id="jb-dialog-title">친구와 함께 고르려면</h2><p>친구와의 선택 비교는 웹에서 이용할 수 있어요. 지금은 내 제주살이를 고르고 엽서를 저장해보세요.</p>');
       return;
@@ -3991,18 +4084,7 @@ document.fonts && document.fonts.addEventListener && document.fonts.addEventList
     const url = shareUrl(comparison);
     const result = comparison ? D.summarize(state.answers) : null;
     const text = comparison ? '내 제주살이 엔딩은 “' + result.title.replace(/\n/g, ' ') + '”!\n' + result.ending.friendQuestion + '\n같은 8개 질문에 답하고 우리 선택을 비교해봐.' : '바다 앞 집 vs 집 앞 마트? 8번의 선택으로 고르는 나의 제주살이!';
-    if (navigator.share) {
-      try { await navigator.share({ title: '제주살이 밸런스 게임', text, url }); track('share', { method: 'native', comparison }); return; }
-      catch (error) { if (error.name === 'AbortError') return; }
-    }
-    try {
-      if (!navigator.clipboard || !window.isSecureContext) throw new Error('Clipboard unavailable');
-      await navigator.clipboard.writeText(text + '\n' + url);
-      toast('링크를 복사했어요. 친구에게 보내보세요!'); track('share', { method: 'copy', comparison });
-    } catch (_) {
-      openDialog('<h2 id="jb-dialog-title">친구에게 같은 질문 보내기</h2><p>아래 문구를 선택해 복사한 뒤, 카톡이나 메시지에 붙여넣어 주세요.</p><textarea aria-label="공유 문구" readonly>' + esc(text + '\n' + url) + '</textarea>');
-      overlay.querySelector('textarea').select(); track('share_open', { method: 'manual', comparison });
-    }
+    shareOrCopy('제주살이 밸런스 게임', text, url, method => track(method === 'copy_box' ? 'share_open' : 'share', { method, comparison }));
   }
   function rounded(ctx, x, y, w, h, radius, fill) {
     ctx.fillStyle = fill; ctx.beginPath(); ctx.roundRect(x, y, w, h, radius); ctx.fill();
@@ -4080,9 +4162,7 @@ document.fonts && document.fonts.addEventListener && document.fonts.addEventList
       case 'start': start(false); break;
       case 'restart': start(true); break;
       case 'next': next(); break;
-      case 'back': if (state.index > 0) { state.index--; questionScreen(true); } else startScreen(true); break;
-      case 'home': startScreen(true); break;
-      case 'share': share(state.phase === 'result'); break;
+      case 'back': clearTimeout(advanceTimer); editingResult = false; if (state.index > 0) { state.index--; questionScreen(true); } else startScreen(true); break;
       case 'invite': share(true); break;
       case 'save-image': saveImage(button); break;
       case 'preview-alternative': previewAlternative(); break;
@@ -4206,9 +4286,11 @@ document.fonts && document.fonts.addEventListener && document.fonts.addEventList
       cards: RQ_CARDS_LIFE, store: 'ijejumin-real-or-not-life', mode: 'real1', campaign: 'real_or_not_life',
       title: '제주살이, 실화냐? 생활편',
       hook: '신들이 하늘에 간 사이에 이사한다는 게 실화래. 너도 속나 봐',
+      invite: '신들이 하늘에 간 사이에 이사한다? 실화일까 가짜일까?',
       sub: '여행으론 잘 모르는 제주 생활 이야기 8장.<br>실화인지 가짜인지 맞혀 보세요.',
       preview: ['신들이 없을 때<br>이사한다?', '대문 대신<br>나무 막대?', '월세를<br>귤로 낸다?'],
-      after: '<section class="rq-people" aria-labelledby="rq-sequel-title"><h3 class="rq-people-title" id="rq-sequel-title">떠나는 사람이 더 많은 섬,<br>그래도 남은 사람들</h3><p class="rq-people-sub">이번엔 제주에 살러 온 사람들의 실화예요.<br>이것도 맞힐 수 있을까요?</p>' + RQ_NEXT_PEOPLE + '</section>' +
+      /* 2탄 카드 위 제목·설명('떠나는 사람이 더 많은 섬, 그래도 남은 사람들')은 사용자 요청으로 지웠다 (2026-11-03) */
+      after: '<section class="rq-people" aria-label="2탄 이주민편">' + RQ_NEXT_PEOPLE + '</section>' +
         '<section class="rq-people" aria-labelledby="rq-people-title"><h3 class="rq-people-title" id="rq-people-title">먼저 살아 본 사람들의 진짜 이야기</h3><p class="rq-people-sub">제주에 살러 온 네 사람을 만나 봤어요.</p><ul class="rq-list" id="rq-list"></ul></section>',
       note: '재미로 보는 테스트예요.<br>실화 카드는 사전·공식 자료·통계와 관련 보도로 확인했고,<br>가짜 카드는 재미로 지어낸 이야기예요.'
     },
@@ -4216,6 +4298,7 @@ document.fonts && document.fonts.addEventListener && document.fonts.addEventList
       cards: RQ_CARDS_PEOPLE, store: 'ijejumin-real-or-not', mode: 'real2', campaign: 'real_or_not',
       title: '제주살이, 실화냐? 이주민편',
       hook: '1만 원짜리에 배송비 6천 원이 실화래. 너도 속나 봐',
+      invite: '1만 원짜리에 배송비 6천 원, 실화일까 가짜일까?',
       sub: '먼저 살아 본 사람들의 제주 이야기 8장.<br>실화인지 가짜인지 맞혀 보세요.',
       preview: ['1만 원짜리에<br>배송비 6천 원?', '1년 치 방세를<br>한 번에?', '통장 50만 원으로<br>가게를 차렸다?'],
       after: '<section class="rq-people" aria-labelledby="rq-people-title"><h3 class="rq-people-title" id="rq-people-title">방금 본 실화, 주인공이 있어요</h3><p class="rq-people-sub">모두 제주에 먼저 살러 온 사람들의 진짜 이야기예요.</p><ul class="rq-list" id="rq-list"></ul></section>' +
@@ -4227,12 +4310,14 @@ document.fonts && document.fonts.addEventListener && document.fonts.addEventList
   const RQ_PAGE = 'https://lxwebzine.hankyung.com/2026-1/team3/articles/jeju-village-test.html';
   let rqRoot = null;
   function rqMarkup(SET) {
-    return switches('real') +
+    return '<div class="rq-app">' + gameHeader() + switches('real') +
       '<noscript><p class="rq-noscript">자바스크립트를 켜야 테스트를 할 수 있어요.</p></noscript>' +
       /* 시작 */
       '<div class="rq-screen" id="rq-start"><p class="rq-kicker">진짜일까, 가짜일까?</p><h2 class="rq-title" id="rq-title">제주살이,<br><em>실화냐?</em></h2>' +
       '<p class="rq-sub">' + SET.sub + '</p><div class="rq-preview" aria-hidden="true">' + SET.preview.map(p => '<span class="rq-preview-card">' + p + '</span>').join('') + '</div>' +
-      '<p class="rq-challenge" id="rq-challenge" hidden></p><p class="rq-again" id="rq-again" hidden></p><button class="rq-cta" id="rq-go" type="button">시작하기</button><p class="rq-meta">카드 8장 · 약 1분</p></div>' +
+      '<p class="rq-challenge" id="rq-challenge" hidden></p><p class="rq-again" id="rq-again" hidden></p><button class="rq-cta" id="rq-go" type="button">시작하기</button><p class="rq-meta">카드 8장 · 약 1분</p>' +
+      /* 다른 게임처럼 첫 화면 아래 하르방 말풍선 (글은 카드 이름표와 시작 문구에서) */
+      '<div class="rq-talk"><img src="' + IMG + 'village-test/pose-a-06.webp" alt="" width="279" height="348"><p class="rq-bubble">하르방이 들은 제주살이 이야기,\n실화일까 가짜일까?</p></div></div>' +
       /* 카드 */
       '<div class="rq-screen" id="rq-play" hidden><div class="rq-top"><span class="rq-count" id="rq-count">1 / 8</span><ol class="rq-dots" id="rq-dots" aria-hidden="true"></ol></div>' +
       '<div class="rq-ask"><img class="rq-ask-img" src="' + IMG + 'village-test/pose-a-06.webp" alt="손가락으로 가리키며 말하는 하르방" width="279" height="348"><div class="rq-card" id="rq-card"><p class="rq-card-label">하르방이 들은 제주살이 이야기</p><h3 class="rq-claim" id="rq-claim" tabindex="-1"></h3><p class="rq-stamp" id="rq-stamp" hidden></p></div></div>' +
@@ -4242,10 +4327,11 @@ document.fonts && document.fonts.addEventListener && document.fonts.addEventList
       '<button class="rq-next" id="rq-next" type="button">다음 카드</button></div></div>' +
       /* 결과 */
       '<div class="rq-screen" id="rq-result" hidden><div class="rq-card rq-score"><p class="rq-score-kicker">나의 제주 현실 감각</p><p class="rq-score-num" id="rq-score-num">0%</p><h3 class="rq-score-name" id="rq-score-name" tabindex="-1"></h3><p class="rq-score-desc" id="rq-score-desc"></p><img class="rq-score-img" id="rq-score-img" src="' + IMG + 'village-test/pose-b-08.webp" alt="" width="279" height="348"></div>' +
+      /* '그럼, 나는 어디서 살아 볼까?'(마을 테스트 카드)는 사용자 요청으로 지웠다. 맨 위 게임 고르기로 간다 (2026-11-03)
+         '다시 하기'·작은 '결과 링크 복사' 대신 동네 테스트 같은 '친구에게 공유하기'·'다시 하기' */
       SET.after +
-      '<section class="rq-more" aria-labelledby="rq-more-title"><h3 class="rq-people-title" id="rq-more-title">그럼, 나는 어디서 살아 볼까?</h3><a class="rq-next-test" href="./jeju-village-test.html?lang=ko&amp;mode=village" data-rq-next="village-test"><span class="rq-next-kicker">질문 5개 · 약 30초</span><span class="rq-next-name">나는 제주 어디 주민?</span><span class="rq-next-desc">나에게 맞는 제주 한 달 살기 동네 찾기</span></a></section>' +
-      '<button class="rq-ghost rq-retry" id="rq-retry" type="button">다시 하기</button><div class="rq-share"><button class="rq-link" id="rq-copy" type="button" data-track="share_copy">결과 링크 복사</button><p class="rq-toast" id="rq-toast" role="status" hidden></p></div>' +
-      '<p class="rq-note">' + SET.note + '</p></div>';
+      endButtons('id="rq-copy"', 'id="rq-retry"') +
+      '<p class="rq-note">' + SET.note + '</p></div></div>';
   }
   function rqMount(setName) {
     if (rqRoot && rqRoot.dataset.rqSet === setName) { rqRoot.hidden = false; return; }
@@ -4281,6 +4367,7 @@ document.fonts && document.fonts.addEventListener && document.fonts.addEventList
     }
     function show(name) {
       Object.keys(screens).forEach(k => { screens[k].hidden = (k !== name); });
+      rq.querySelector('.is-home').classList.toggle('on', name === 'start');
       rq.scrollIntoView({ block: 'start' });
     }
     /* 시작: 친구 도전(?score=)과 지난 기록 */
@@ -4391,39 +4478,18 @@ document.fonts && document.fonts.addEventListener && document.fonts.addEventList
       show('result');
       $('rq-score-name').focus({ preventScroll: true });
     }
-    /* 공유: 결과 맨 아래 작은 '결과 링크 복사' 하나만 (받은 사람 첫 화면에 "친구의 제주 현실 감각은 N%") */
+    /* 공유: 결과 맨 아래 '친구에게 공유하기' (동네 테스트와 같은 방식, 위 '친구에게 공유'). 받은 사람 첫 화면에 "친구의 제주 현실 감각은 N%" */
     function shareUrl() {
       return RQ_PAGE + '?lang=ko&mode=' + SET.mode + '&utm_source=friends&utm_medium=send&utm_campaign=' + SET.campaign + '&score=' + percent(state.score);
     }
     function shareText() { return SET.title + ', 내 현실 감각 ' + percent(state.score) + '% 나옴ㅋㅋ ' + SET.hook; }
-    let toastTimer = 0;
-    function toast(msg) {
-      const t = $('rq-toast');
-      t.textContent = msg;
-      t.hidden = false;
-      clearTimeout(toastTimer);
-      toastTimer = setTimeout(() => { t.hidden = true; }, 2500);
-    }
-    function fallbackCopy(text) {
-      const ta = document.createElement('textarea');
-      ta.value = text;
-      ta.setAttribute('readonly', '');
-      ta.className = 'rq-copybox';
-      document.body.appendChild(ta);
-      ta.select();
-      let ok = false;
-      try { ok = document.execCommand('copy'); } catch (e) { /* 지원 안 함 */ }
-      ta.remove();
-      toast(ok ? '링크를 복사했어요. 친구에게 보내 보세요!' : '복사가 안 되는 브라우저예요. 주소창의 링크를 보내 주세요.');
-    }
-    function copy(text) {
-      if (navigator.clipboard && window.isSecureContext) {
-        navigator.clipboard.writeText(text).then(() => { toast('링크를 복사했어요. 친구에게 보내 보세요!'); }, () => { fallbackCopy(text); });
-      } else fallbackCopy(text);
-    }
     $('rq-copy').addEventListener('click', () => {
-      copy(shareText() + ' ' + shareUrl());
-      track('rq_share', { share_method: 'copy' });
+      shareOrCopy(SET.title, shareText(), shareUrl(), method => track('rq_share', { share_method: method }));
+    });
+    rq.querySelector('.is-home').classList.add('on');
+    bindHeader(rq, () => show('start'), () => {
+      if (!screens.result.hidden) shareOrCopy(SET.title, shareText(), shareUrl(), method => track('rq_share', { share_method: method }));
+      else shareOrCopy(SET.title, SET.invite, RQ_PAGE + '?lang=ko&mode=' + SET.mode, method => track('rq_share', { share_method: method, rq_screen: 'start' }));
     });
     function begin() { reset(); show('play'); render(); }
     $('rq-go').addEventListener('click', () => { track('rq_start', {}); begin(); });
@@ -4459,6 +4525,7 @@ document.fonts && document.fonts.addEventListener && document.fonts.addEventList
     if (mode === 'balance') resumeClock(); else stopClock();
     if (mode === 'village') window.dispatchEvent(new Event('resize'));   // 숨어 있던 동안 못 잰 테스트 칸 크기를 다시
     document.title = TITLES[mode];
+    fitHdr(mode === 'balance' ? root : mode === 'village' ? null : rqRoot);
     if (updateUrl) {
       const url = new URL(location.href);
       url.searchParams.set('mode', mode);
@@ -4482,6 +4549,7 @@ document.fonts && document.fonts.addEventListener && document.fonts.addEventList
     if (want === activeMode) return;
     setMode(want, true, true);
   });
+  window.addEventListener('resize', () => { fitHdr(root); fitHdr(rqRoot); });
   window.addEventListener('popstate', () => setMode(new URLSearchParams(location.search).get('mode') || 'village', false, true));
   setMode(params.get('mode') || 'village', false, false);
 })();
