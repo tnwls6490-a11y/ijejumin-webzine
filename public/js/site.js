@@ -1389,6 +1389,20 @@ var wzPlace = (function () {
     markUser();                 // 손으로 출발한 것으로 보고, 빨려 들어가는 동안 페이지를 제자리에 붙잡는다 (holdPlace)
     jumpTo(marks().rest);       // 첫 화면 위 40px로 옮기면 그 스크롤로 빨려 들어가기가 시작된다
   }
+  /* 가리개를 열면 스크롤하지 않아도 바로 줌인해서 제주로 들어간다 (사용자 요청 2026-11-03 "비행기 창문 열면 바로 줌인해서 입장되는 걸로").
+     가리개가 올라가는 모습(0.8초 중 대부분)이 보이도록 OPEN_TO_GO_MS 뒤에 출발하고, 그사이 다시 닫으면 그만둔다.
+     누르기·끌어 올리기·키보드 모두. 제주에서 맨 위로 돌아와 창이 열린 채일 때는 저절로 들어가지 않는다 */
+  var OPEN_TO_GO_MS = 550;
+  var goTimer = 0;
+  function openAndGo() {
+    setOpen(true);
+    window.clearTimeout(goTimer);
+    goTimer = window.setTimeout(function () { if (isOpen) goIn(); }, reduced() ? 0 : OPEN_TO_GO_MS);
+  }
+  function closeShade() {
+    window.clearTimeout(goTimer);
+    setOpen(false);
+  }
 
   shade.addEventListener('pointerdown', function (e) {
     if (e.button !== undefined && e.button !== 0) return;
@@ -1418,7 +1432,9 @@ var wzPlace = (function () {
       stage.classList.remove('is-dragging');
       suppressClick = true;
       var target = Math.abs(drag.value - drag.start) > 0.25 ? !(drag.start === 1) : drag.start === 1;
-      setOpen(target);
+      if (target && drag.start === 0) openAndGo();
+      else if (!target) closeShade();
+      else setOpen(true);
     }
     drag = null;
   }
@@ -1430,7 +1446,7 @@ var wzPlace = (function () {
     lastPointer = '';
     if (suppressClick) { suppressClick = false; return; }
     if (isOpen && touched) { goIn(); return; }   // 휴대폰: 열린 창 속 하늘을 누르면 들어간다
-    setOpen(!isOpen);
+    if (isOpen) closeShade(); else openAndGo();
   });
 
   /* 창 크기에 맞춰 화면을 다 덮을 만큼의 확대 배율 계산 */
