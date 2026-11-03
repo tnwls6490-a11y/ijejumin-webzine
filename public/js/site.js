@@ -4043,10 +4043,10 @@ document.fonts && document.fonts.addEventListener && document.fonts.addEventList
       track('complete', { visible_seconds: Math.round(visibleMs / 1000), comparison: Boolean(friend), same_answers: friend ? D.compare(state.answers, friend) : undefined });
     }
     const r = D.summarize(state.answers);
-    const postcard = '<p class="jb-result-label">나의 제주살이 엔딩</p><div class="jb-paper jb-postcard" id="jb-postcard"><p class="jb-postmark">이제주민 · MY JEJU ENDING</p><p class="jb-ending-genre">' + esc(r.ending.genre) + '</p><h2 class="jb-result-title">' + br(r.title) + '</h2><p class="jb-description">' + esc(r.description) + '</p>' + framesHTML(r.ending) + '<p class="jb-ending-evidence-label">하르방이 발견한 취향 조합</p><div class="jb-tags">' + r.ending.evidence.map(item => '<span class="jb-tag">' + esc(item.text) + '</span>').join('') + '</div>' + talk('pose-a-06', r.ending.comment) + '<p class="jb-stamp">정답은 없어. 네가 고른 하루니까!</p></div>';
+    const postcard = '<p class="jb-result-label">나의 제주살이 엔딩</p><div class="jb-paper jb-postcard" id="jb-postcard"><p class="jb-postmark">이제주민</p><p class="jb-ending-genre">' + esc(r.ending.genre) + '</p><h2 class="jb-result-title">' + br(r.title) + '</h2><p class="jb-description">' + esc(r.description) + '</p>' + framesHTML(r.ending) + '<p class="jb-ending-evidence-label">하르방이 발견한 취향 조합</p><div class="jb-tags">' + r.ending.evidence.map(item => '<span class="jb-tag">' + esc(item.text) + '</span>').join('') + '</div>' + talk('pose-a-06', r.ending.comment) + '<p class="jb-stamp">정답은 없어. 네가 고른 하루니까!</p></div>';
     const actions = '<div class="jb-result-actions"><button class="jb-cta" type="button" data-jb="invite" data-track="share_copy">친구는 어떤 엔딩일까? 같은 질문 보내기</button><button class="jb-cta jb-cta-white" type="button" data-jb="save-image">내 제주살이 엽서 저장 ↓</button></div>';
     const answers = '<details class="jb-summary"><summary>내 선택 8개 다시 보기 · 수정하기</summary><ol class="jb-answer-list">' + D.questions.map((q, i) => '<li><button type="button" data-jb-edit="' + i + '"><small>Q' + (i + 1) + ' · ' + q.category + '</small>' + esc(q.options[state.answers[i]].title) + ' ↗</button></li>').join('') + '</ol></details>';
-    const related = '<section class="jb-related" aria-labelledby="jb-related-title"><h3 id="jb-related-title">이런 제주살이,<br>먼저 살아본 사람은?</h3>' + r.articles.map(a => '<a class="jb-story" href="./' + a.path + '" data-jb-article="' + a.id + '" data-track="related_article"><small>' + a.name + '</small><strong>' + a.title + ' →</strong><span>' + a.description + '</span></a>').join('') + '</section>';
+    const related = '<section class="jb-related" aria-labelledby="jb-related-title"><h3 id="jb-related-title">이런 제주살이 먼저 살아본 사람들의 이야기 보러가기</h3>' + r.articles.map(a => '<a class="jb-story" href="./' + a.path + '" data-jb-article="' + a.id + '" data-track="related_article"><small>' + a.name + '</small><strong>' + a.title + ' →</strong><span>' + a.description + '</span></a>').join('') + '</section>';
     setScreen(postcard + actions + comparisonHTML() + endingContent(r.ending) + answers + related + '<button class="jb-cta jb-cta-blue" type="button" data-jb="village">그럼, 나는 제주 어디 주민?</button>' + endButtons('data-jb="invite"', 'data-jb="restart"') + '<p class="jb-assumption">선택을 엮어 꾸민 재미용 가상 엔딩이에요. 제주 이주 적합도를 평가하지 않아요.</p>', 'result', focus);
   }
   function toast(message) {
@@ -4106,33 +4106,43 @@ document.fonts && document.fonts.addEventListener && document.fonts.addEventList
     try {
       const r = D.summarize(state.answers);
       await document.fonts.ready;
-      await Promise.all([document.fonts.load('400 64px BalanceBagel', r.title), document.fonts.load('400 38px BalanceJua', r.description)]);
-      const [character, logo] = await Promise.all([loadImage(asset('pose-a-06.webp')), loadImage(asset('logo.webp'))]);
+      await Promise.all([document.fonts.load('400 64px BalanceBagel', r.title), document.fonts.load('400 30px BalanceJua', r.ending.scenes.map(sc => sc.title).join(''))]);
+      /* 엽서 그림 = 내가 고른 제주 네컷 (사용자 요청 2026-11-03. 전에는 설명 글·취향 8개·하르방 말풍선)
+         엔딩 이름 아래 4컷(그림 + 시간 딱지 + 큰 제목)을 2×2로. 그림은 A·B 두 장면이 나란한 그림의 한쪽(정사각)을 가운데 기준 4:3으로 */
+      const [logo, ...arts] = await Promise.all([loadImage(asset('logo.webp'))].concat(r.ending.scenes.map(sc => loadImage(art(sc.art)))));
       const canvas = document.createElement('canvas'); canvas.width = 1080; canvas.height = 1350;
       const ctx = canvas.getContext('2d');
       if (!ctx) throw new Error('Canvas unavailable');
       const gradient = ctx.createLinearGradient(0, 0, 0, 1350); gradient.addColorStop(0, '#e6daef'); gradient.addColorStop(1, '#d7e9de');
       ctx.fillStyle = gradient; ctx.fillRect(0, 0, 1080, 1350);
-      ctx.drawImage(logo, 68, 43, 56, 61); ctx.fillStyle = '#594172'; ctx.font = '400 40px BalanceJua'; ctx.textAlign = 'center'; ctx.fillText('내가 고른 제주살이', 554, 90);
+      ctx.drawImage(logo, 68, 43, 56, 61); ctx.fillStyle = '#594172'; ctx.font = '400 40px BalanceJua'; ctx.textAlign = 'center'; ctx.fillText('내가 고른 제주 네컷', 554, 90);
       ctx.save(); ctx.shadowColor = 'rgba(65,43,87,.14)'; ctx.shadowBlur = 24; ctx.shadowOffsetY = 10;
       rounded(ctx, 65, 155, 950, 1045, 32, '#fffbf2'); ctx.restore();
-      ctx.fillStyle = '#8a7399'; ctx.font = '700 24px ' + CANVAS_BODY; ctx.fillText('이제주민 · MY JEJU LIFE', 540, 225);
-      ctx.fillStyle = '#594172'; ctx.font = '400 76px BalanceBagel';
-      r.title.split('\n').forEach((line, i) => ctx.fillText(line, 540, 342 + i * 102));
-      ctx.fillStyle = '#624c78'; ctx.font = '400 36px BalanceJua';
-      wrapped(ctx, r.description, 540, 535, 780, 53);
-      r.tags.forEach((tag, i) => {
-        const x = i % 2 === 0 ? 134 : 556, y = 725 + Math.floor(i / 2) * 70;
-        rounded(ctx, x, y, 390, 51, 25, state.answers[i] === 0 ? '#e1f2e6' : '#ece4f8');
-        ctx.fillStyle = '#594172'; ctx.font = '700 26px ' + CANVAS_BODY; ctx.fillText(tag, x + 195, y + 34);
+      ctx.fillStyle = '#8a7399'; ctx.font = '700 24px ' + CANVAS_BODY; ctx.fillText('이제주민 · MY JEJU LIFE', 540, 218);
+      ctx.fillStyle = '#594172'; ctx.font = '400 64px BalanceBagel';
+      r.title.split('\n').forEach((line, i) => ctx.fillText(line, 540, 305 + i * 82));
+      const CW = 420, IH = 300, GX = [105, 555], GY = [436, 816];
+      r.ending.scenes.forEach((sc, i) => {
+        const x = GX[i % 2], y = GY[Math.floor(i / 2)], img = arts[i];
+        const half = img.naturalWidth / 2, sh = Math.min(img.naturalHeight, half * IH / CW);
+        ctx.save(); ctx.beginPath(); ctx.roundRect(x, y, CW, IH, 22); ctx.clip();
+        ctx.fillStyle = '#fff9ec'; ctx.fillRect(x, y, CW, IH);
+        ctx.drawImage(img, sc.side * half, (img.naturalHeight - sh) / 2, half, sh, x, y, CW, IH);
+        ctx.restore();
+        ctx.font = '700 22px ' + CANVAS_BODY;
+        const bw = ctx.measureText(sc.slot).width + 30;
+        rounded(ctx, x + 14, y + 14, bw, 40, 20, 'rgba(255,251,242,.95)');
+        ctx.fillStyle = '#594172'; ctx.textAlign = 'left'; ctx.fillText(sc.slot, x + 29, y + 42); ctx.textAlign = 'center';
+        let fs = 30;
+        ctx.font = '400 ' + fs + 'px BalanceJua';
+        while (ctx.measureText(sc.title).width > CW - 12 && fs > 20) { fs -= 2; ctx.font = '400 ' + fs + 'px BalanceJua'; }
+        ctx.fillText(sc.title, x + CW / 2, y + IH + 46);
       });
-      ctx.drawImage(character, 177, 1026, 116, 145);
-      rounded(ctx, 326, 1044, 568, 92, 26, '#eee6f5');
-      ctx.fillStyle = '#594172'; ctx.font = '400 33px BalanceJua'; ctx.fillText('정답은 없어. 네가 고른 하루니까!', 610, 1101);
-      ctx.fillStyle = '#594172'; ctx.font = '400 28px BalanceJua'; ctx.fillText('제주살이 밸런스 게임 · 이제주민', 540, 1287);
+      ctx.fillStyle = '#594172'; ctx.font = '400 32px BalanceJua'; ctx.fillText('정답은 없어. 네가 고른 하루니까!', 540, 1262);
+      ctx.fillStyle = '#7d6990'; ctx.font = '400 24px BalanceJua'; ctx.fillText('제주살이 밸런스 게임 · 이제주민', 540, 1310);
       const blob = await new Promise((resolve, reject) => canvas.toBlob(value => value ? resolve(value) : reject(new Error('Image export failed')), 'image/png'));
       if (imageUrl) URL.revokeObjectURL(imageUrl); imageUrl = URL.createObjectURL(blob);
-      openDialog('<h2 id="jb-dialog-title">내 제주살이 엽서</h2><img class="jb-saved-image" src="' + imageUrl + '" alt="' + esc(r.title.replace(/\n/g, ' ') + '. ' + r.tags.join(', ')) + '"><p>휴대폰에서는 이미지를 꾹 눌러 저장할 수 있어요.</p><a class="jb-cta" href="' + imageUrl + '" download="나의-제주살이-엽서.png">이미지 내려받기 ↓</a>');
+      openDialog('<h2 id="jb-dialog-title">내 제주살이 엽서</h2><img class="jb-saved-image" src="' + imageUrl + '" alt="' + esc('내가 고른 제주 네컷: ' + r.title.replace(/\n/g, ' ') + '. ' + r.ending.scenes.map(sc => sc.slot + ' ' + sc.title).join(', ')) + '"><p>휴대폰에서는 이미지를 꾹 눌러 저장할 수 있어요.</p><a class="jb-cta" href="' + imageUrl + '" download="나의-제주살이-엽서.png">이미지 내려받기 ↓</a>');
       track('image_created');
     } catch (_) { toast('엽서를 만들지 못했어요. 잠시 후 다시 시도해주세요.'); }
     finally { button.disabled = false; button.textContent = initialText; }
@@ -4313,7 +4323,7 @@ document.fonts && document.fonts.addEventListener && document.fonts.addEventList
     return '<div class="rq-app">' + gameHeader() + switches('real') +
       '<noscript><p class="rq-noscript">자바스크립트를 켜야 테스트를 할 수 있어요.</p></noscript>' +
       /* 시작 */
-      '<div class="rq-screen" id="rq-start"><p class="rq-kicker">진짜일까, 가짜일까?</p><h2 class="rq-title" id="rq-title">제주살이,<br><em>실화냐?</em></h2>' +
+      '<div class="rq-screen" id="rq-start"><p class="rq-kicker">진짜일까, 가짜일까?</p><h2 class="rq-title" id="rq-title"><span>제주살이,</span> <em>실화냐?</em></h2>' +
       '<p class="rq-sub">' + SET.sub + '</p><div class="rq-preview" aria-hidden="true">' + SET.preview.map(p => '<span class="rq-preview-card">' + p + '</span>').join('') + '</div>' +
       '<p class="rq-challenge" id="rq-challenge" hidden></p><p class="rq-again" id="rq-again" hidden></p><button class="rq-cta" id="rq-go" type="button">시작하기</button><p class="rq-meta">카드 8장 · 약 1분</p>' +
       /* 다른 게임처럼 첫 화면 아래 하르방 말풍선 (글은 카드 이름표와 시작 문구에서) */

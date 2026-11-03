@@ -1,13 +1,14 @@
 # 밸런스 게임 글꼴: 게임에 쓰는 글자만 Google Fonts(text= 기능)에서 받아 woff2로 (Bagel Fat One·Jua, SIL OFL 1.1)
 # 밸런스 게임 글(문항·엔딩)을 바꾸면 다시 돌린다. 새 글자는 기기 글꼴로 보인다
 # 실행: py -I reference/tools/games/fonts.py public/js/site.js public/css/fonts
-#   (site.js '게임 고르기 블록'의 '밸런스 게임: 문항' ~ '제주살이, 실화냐? (rq-block.js)' 사이 글자를 모은다)
+#   (site.js '게임 고르기 블록'의 '밸런스 게임: 문항' ~ '제주살이, 실화냐? (rq-block.js)' 사이 글자와,
+#    실화냐 첫 화면 글이 든 'const RQ_SETS = {' ~ 'function rqRun(' 사이 글자를 모은다. 실화냐 첫 화면도 이 글꼴을 쓴다, 2026-11-03)
 # 같은 이름으로 바꾸면 style.css의 글꼴 주소 끝에 ?v=N을 붙인다 (휴대폰 캐시)
 import sys, re, urllib.parse, urllib.request, os
 sys.stdout.reconfigure(encoding='utf-8')
 SRC, OUT = sys.argv[1], sys.argv[2]
 js = open(SRC, encoding='utf-8').read()
-part = js[js.index('밸런스 게임: 문항'):js.index('제주살이, 실화냐? (rq-block.js)')]
+part = js[js.index('밸런스 게임: 문항'):js.index('제주살이, 실화냐? (rq-block.js)')] + js[js.index('const RQ_SETS = {'):js.index('function rqRun(')]
 chars = set()
 for ch in part:
     o = ord(ch)
