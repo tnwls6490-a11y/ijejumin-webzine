@@ -16,7 +16,7 @@ BASE = 'https://lxwebzine.hankyung.com/2026-1/team3/'
 KO_PATH = os.path.join(PUB, 'articles', 'jeju-village-test.html')
 TEXT = {
     'en': {
-        'title': 'Which Jeju neighborhood suits me? A one-month Jeju stay neighborhood test | ejejumin · Hankyung Webzine',
+        'title': 'Which Jeju neighborhood suits me? A one-month Jeju stay neighborhood quiz | ejejumin · Hankyung Webzine',
         'desc': 'Find the Jeju neighborhood that suits you for a one-month stay in 5 questions. Out of 10 Jeju neighborhoods, see the one that fits you and what a day there looks like.',
         'site': 'ejejumin · Hankyung Webzine',
         'h1': 'Which Jeju Local Are You? A one-month Jeju stay neighborhood test',
