@@ -4143,7 +4143,7 @@ body.page-interview :is(.topbar, .wz-header, .site-footer) { font-family: var(--
 #jeju-balance .jb-app{width:min(100%,500px);gap:15px}
 #jeju-balance .jb-pill{background:#fffbf2;color:#594172;box-shadow:0 3px 7px rgba(65,43,87,.09)}
 #jeju-balance button:focus-visible,#jeju-balance a:focus-visible,.jb-switch button:focus-visible{outline-color:#533b72}
-.jb-switch{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;padding:6px;border-radius:20px;background:rgba(255,251,242,.83);box-shadow:0 4px 10px rgba(48,43,65,.08)}
+.jb-switch{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px;padding:6px;border-radius:20px;background:rgba(255,251,242,.83);box-shadow:0 4px 10px rgba(48,43,65,.08)}
 .jb-switch button{display:flex;flex:initial;justify-content:flex-start;gap:9px;min-height:74px;border-radius:15px;padding:8px;color:#594172;background:transparent;text-align:left;min-width:0;box-shadow:none}
 .jb-switch .jb-game-cover{position:relative;display:block;width:57px;height:57px;flex:none;border-radius:12px;background-color:#dbeaf6;background-size:cover;background-position:center;overflow:hidden;box-shadow:0 2px 5px rgba(40,45,60,.1)}
 .jb-switch .jb-game-cover>span{position:absolute;inset:auto 0 0;background:rgba(36,79,119,.72);color:#fff;text-align:center;padding:3px 2px 2px;font:700 10px/1.3 var(--font);letter-spacing:.05em}
@@ -4335,25 +4335,25 @@ body.page-interview :is(.topbar, .wz-header, .site-footer) { font-family: var(--
 #jeju-balance .langmenu{background:#fffbf2;box-shadow:0 10px 24px rgba(65,43,87,.2)}
 #jeju-balance .langmenu button{color:#594172}
 #jeju-balance .langmenu button[aria-checked=true]{background:#ece4f8;color:#594172}
-.rq .hdr{display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:52px;margin-bottom:10px}
-.rq .logo-btn{border:0;background:none;padding:0;cursor:pointer;display:block;flex:none}
-.rq .logo{width:52px;height:auto;display:block;filter:drop-shadow(0 1px 2px rgba(0,0,0,.15))}
-.rq .hdr-actions{display:flex;gap:8px}
-.rq .pill{display:inline-flex;align-items:center;gap:6px;min-height:44px;border:0;cursor:pointer;background:#fff;color:var(--ink);border-radius:999px;padding:9px 14px 7px 11px;font:700 14px/1 Gmarket,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;letter-spacing:-.01em;white-space:nowrap;box-shadow:0 3px 8px rgba(18,35,58,.16)}
-.rq .pill svg{width:19px;height:19px;flex:none}
-.rq .icon{width:100%;height:100%;fill:none;stroke:currentColor;stroke-width:3.6;stroke-linecap:round;stroke-linejoin:round}
-.rq .pill.on{background:var(--ink);color:#fff}
-.rq .langwrap{position:relative}
-.rq .langmenu{position:absolute;right:0;top:calc(100% + 8px);z-index:45;min-width:150px;display:flex;flex-direction:column;gap:2px;background:#fff;border-radius:16px;padding:6px;box-shadow:0 10px 24px rgba(18,35,58,.22)}
-.rq .langmenu button{display:flex;justify-content:space-between;align-items:center;gap:12px;min-height:44px;border:0;background:none;cursor:pointer;text-align:left;padding:12px 12px 10px;border-radius:10px;font:700 15px/1 Gmarket,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;color:var(--ink)}
-.rq .langmenu button[aria-checked=true]{background:var(--peach);color:var(--orange-ink)}
-.rq .langmenu button[aria-checked=true]::after{content:'✓'}
+:is(.rq,.jl) .hdr{display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:52px;margin-bottom:10px}
+:is(.rq,.jl) .logo-btn{border:0;background:none;padding:0;cursor:pointer;display:block;flex:none}
+:is(.rq,.jl) .logo{width:52px;height:auto;display:block;filter:drop-shadow(0 1px 2px rgba(0,0,0,.15))}
+:is(.rq,.jl) .hdr-actions{display:flex;gap:8px}
+:is(.rq,.jl) .pill{display:inline-flex;align-items:center;gap:6px;min-height:44px;border:0;cursor:pointer;background:#fff;color:var(--ink);border-radius:999px;padding:9px 14px 7px 11px;font:700 14px/1 Gmarket,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;letter-spacing:-.01em;white-space:nowrap;box-shadow:0 3px 8px rgba(18,35,58,.16)}
+:is(.rq,.jl) .pill svg{width:19px;height:19px;flex:none}
+:is(.rq,.jl) .icon{width:100%;height:100%;fill:none;stroke:currentColor;stroke-width:3.6;stroke-linecap:round;stroke-linejoin:round}
+:is(.rq,.jl) .pill.on{background:var(--ink);color:#fff}
+:is(.rq,.jl) .langwrap{position:relative}
+:is(.rq,.jl) .langmenu{position:absolute;right:0;top:calc(100% + 8px);z-index:45;min-width:150px;display:flex;flex-direction:column;gap:2px;background:#fff;border-radius:16px;padding:6px;box-shadow:0 10px 24px rgba(18,35,58,.22)}
+:is(.rq,.jl) .langmenu button{display:flex;justify-content:space-between;align-items:center;gap:12px;min-height:44px;border:0;background:none;cursor:pointer;text-align:left;padding:12px 12px 10px;border-radius:10px;font:700 15px/1 Gmarket,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;color:var(--ink)}
+:is(.rq,.jl) .langmenu button[aria-checked=true]{background:var(--peach);color:var(--orange-ink)}
+:is(.rq,.jl) .langmenu button[aria-checked=true]::after{content:'✓'}
 /* 좁은 휴대폰: 동네 테스트처럼 홈은 그림만(c1), 그다음 칸 사이를 좁게(c2) — site.js fitHdr */
-.rq .hdr.c1 .is-home .txt,#jeju-balance .hdr.c1 .is-home .txt{display:none}
-.rq .hdr.c1 .is-home,#jeju-balance .hdr.c1 .is-home{padding-inline:10px}
-.rq .hdr.c2 .hdr-actions,#jeju-balance .hdr.c2 .hdr-actions{gap:5px}
-.rq .hdr.c2 .pill,#jeju-balance .hdr.c2 .pill{padding-inline:9px 10px;gap:4px}
-.rq .hdr.c2 .is-home,#jeju-balance .hdr.c2 .is-home{padding-inline:8px}
+:is(.rq,.jl) .hdr.c1 .is-home .txt,#jeju-balance .hdr.c1 .is-home .txt{display:none}
+:is(.rq,.jl) .hdr.c1 .is-home,#jeju-balance .hdr.c1 .is-home{padding-inline:10px}
+:is(.rq,.jl) .hdr.c2 .hdr-actions,#jeju-balance .hdr.c2 .hdr-actions{gap:5px}
+:is(.rq,.jl) .hdr.c2 .pill,#jeju-balance .hdr.c2 .pill{padding-inline:9px 10px;gap:4px}
+:is(.rq,.jl) .hdr.c2 .is-home,#jeju-balance .hdr.c2 .is-home{padding-inline:8px}
 /* 밸런스 게임 문제 화면 아래 '← 돌아가기' (고르면 바로 다음 문제로 넘어가서 '다음 고민' 버튼 대신, 사용자 요청 2026-11-03) */
 #jeju-balance .jb-goback{margin-top:2px}
 /* 친구에게 공유: 동네 테스트의 안내(.toast)·복사 창(#copybox)과 같은 모양 (사용자 요청 2026-11-03) */
@@ -4390,16 +4390,16 @@ body.page-interview :is(.topbar, .wz-header, .site-footer) { font-family: var(--
 @media(prefers-reduced-motion:reduce){.jb-endbtn{transition:none}}
 /* 일본어·중국어(동네 테스트 Language로 바꾼 게임 글, 2026-11-03): 한국어 낱말 단위 줄바꿈(keep-all)을 풀어 줄이 바뀌게.
    Bagel·Jua 글꼴에는 일본어·중국어 글자가 없어 그 글자는 기기 글꼴로 보인다 */
-#jeju-balance:is(:lang(ja),:lang(zh)) :is(h1,h2,h3,h4,p,span,strong,small,button,blockquote,summary,a),.rq:is(:lang(ja),:lang(zh)) :is(h2,h3,p,span,strong,em,button,a,li),.jb-share:is(:lang(ja),:lang(zh)) p,.vt:is(:lang(ja),:lang(zh)) .jb-switch :is(strong,small){word-break:normal;line-break:strict;overflow-wrap:anywhere}
+#jeju-balance:is(:lang(ja),:lang(zh)) :is(h1,h2,h3,h4,p,span,strong,small,button,blockquote,summary,a),.rq:is(:lang(ja),:lang(zh)) :is(h2,h3,p,span,strong,em,button,a,li),.jb-share:is(:lang(ja),:lang(zh)) p,.vt:is(:lang(ja),:lang(zh)) .jb-switch :is(strong,small),.jl:is(:lang(ja),:lang(zh)) :is(strong,small,p){word-break:normal;line-break:strict;overflow-wrap:anywhere}
 /* 일본어·중국어 글꼴: 그대로 두면 가나가 맑은 고딕으로(가늘고 자간이 넓게), 한자는 한국어 글꼴로 섞여 그려진다. 그 언어 글꼴을 먼저 쓰고,
    원래 둥근 굵은 글꼴(Bagel·Jua)을 쓰던 제목·말풍선 등은 굵게 */
-#jeju-balance:lang(ja),.rq:lang(ja),.jb-share:lang(ja),.vt:lang(ja) .jb-switch{--jb-title:BalanceBagel,"Hiragino Maru Gothic ProN","Hiragino Sans","Yu Gothic UI","Yu Gothic",Meiryo,sans-serif;--jb-body:"Hiragino Sans","Hiragino Kaku Gothic ProN","Yu Gothic UI","Yu Gothic",Meiryo,sans-serif;--font:var(--jb-body)}
-#jeju-balance:lang(zh),.rq:lang(zh),.jb-share:lang(zh),.vt:lang(zh) .jb-switch{--jb-title:BalanceBagel,"PingFang SC","Microsoft YaHei","Noto Sans SC",sans-serif;--jb-body:"PingFang SC","Microsoft YaHei","Noto Sans SC",sans-serif;--font:var(--jb-body)}
+#jeju-balance:lang(ja),.rq:lang(ja),.jl:lang(ja),.jb-share:lang(ja),.vt:lang(ja) .jb-switch{--jb-title:BalanceBagel,"Hiragino Maru Gothic ProN","Hiragino Sans","Yu Gothic UI","Yu Gothic",Meiryo,sans-serif;--jb-body:"Hiragino Sans","Hiragino Kaku Gothic ProN","Yu Gothic UI","Yu Gothic",Meiryo,sans-serif;--font:var(--jb-body)}
+#jeju-balance:lang(zh),.rq:lang(zh),.jl:lang(zh),.jb-share:lang(zh),.vt:lang(zh) .jb-switch{--jb-title:BalanceBagel,"PingFang SC","Microsoft YaHei","Noto Sans SC",sans-serif;--jb-body:"PingFang SC","Microsoft YaHei","Noto Sans SC",sans-serif;--font:var(--jb-body)}
 #jeju-balance:is(:lang(ja),:lang(zh)) :is(.jb-sub,.jb-bubble,.jb-option-title,.jb-description,.jb-invite,.jb-stamp,.jb-result-label,.jb-related h3,.jb-story strong,.jb-ending-section-head h3,.jb-ending-alternative h3,.jb-ending-friend h3,.jb-ending-frame h4,.jb-ending-flip strong,.jb-ending-friend blockquote,.jb-dialog h2),
 .rq:is(:lang(ja),:lang(zh)) :is(.rq-sub,.rq-preview-card,.rq-bubble){font-family:var(--jb-body);font-weight:700}
 #jeju-balance:is(:lang(ja),:lang(zh)) :is(.jb-title span,.jb-question,.jb-result-title,.jb-ending-preview h3),.rq:is(:lang(ja),:lang(zh)) .rq-title{font-weight:800;letter-spacing:-.01em}
 /* 위쪽 줄 버튼 글자는 줄을 바꾸지 않는다 (실화냐의 .rq span{text-wrap:pretty}가 줄 안 바꿈을 덮어, 일본어처럼 긴 글이 버튼 안에서 접혔다) */
-.rq .pill *,#jeju-balance .pill *{white-space:nowrap}
+:is(.rq,.jl) .pill *,#jeju-balance .pill *{white-space:nowrap}
 /* 동네 테스트 칸은 화면 높이에 맞춰 줄어드는데, 게임 고르기 줄은 줄어들지 않게 */
 #vt .app.fit>.jb-switch{flex-shrink:0}
 /* 공통 기준(누르는 요소 44px 이상, 본문 글자 16px 이상)에 맞춰 키운 것. 분류·NEW·안내 같은 작은 이름표는 그대로
@@ -4667,4 +4667,24 @@ body.page-interview :is(.topbar, .wz-header, .site-footer) { font-family: var(--
 .rq,.rq-screen,.rq-reveal{scroll-margin-top:var(--hdr-h,64px)}
 /* 공통 기준(본문 글자 16px 이상)에 맞춰 키운 것. 이름표·안내(카드 8장 · 약 1분 등)와 흐린 '출처:' 줄(전달 메모의 결정)은 그대로 */
 .rq .rq-reveal-read-main,.rq .rq-link,.rq .rq-person-line,.rq .rq-people-sub,.rq .rq-next-desc{font-size:16px}
+/* --- 제주 라이프 (#jeju-life): 팀이 만든 3D 제주 산책 게임을 iframe으로 (사용자 요청 2026-11-04, '제주 라이프 게임 웹진 삽입 안내.pdf') ---
+   - 위쪽 줄·게임 고르기는 다른 게임과 같은 가운데 칸(460px). 게임 화면은 그 아래 넓게
+   - 크기는 안내대로 PC 16:10(최대 1100px)·휴대폰 화면 높이의 78%. PC는 위쪽 줄·고르기와 함께 한 화면에 들어오게 높이로도 줄인다(최소 폭 560px)
+     (게임 위에서 휠을 굴리면 게임만 확대·축소되어, 화면보다 크면 페이지를 넘기기 어렵다)
+   - 휴대폰은 양옆 16px를 남겨 게임 바깥을 끌어 페이지를 넘길 수 있게 */
+.jb-switch .jb-game-pre{display:none}
+.jb-switch .jb-game-copy small{text-wrap:balance}
+.jl[hidden],.jl [hidden]{display:none!important}
+.jb-switch .jb-game-life{color:#0d6f63}
+.jb-switch .jb-game-life .jb-game-cover{background:#cdeeff url(../images/jeju-life-cover.webp) 50% 70%/cover no-repeat}
+.jb-switch .jb-game-life .jb-game-cover>span{background:rgba(13,59,58,.82)}
+.jb-switch .jb-game-life[aria-pressed=true]{background:#0d3b3a;color:#fff;box-shadow:0 3px 0 #11a08f}
+.jl{--ink:#0d3b3a;position:relative;min-height:calc(100vh - var(--hdr-h,0px));min-height:calc(100svh - var(--hdr-h,0px));padding:0 0 40px;background:linear-gradient(180deg,#f3fbff 0,#dcf2ff 55%,#cdeeff 100%);color:var(--ink)}
+.jl-app{max-width:460px;margin:0 auto;padding:14px max(16px,env(safe-area-inset-right,0px)) 0 max(16px,env(safe-area-inset-left,0px))}
+.jl .jb-switch{margin:0 0 20px}
+.jl .langmenu button[aria-checked=true]{background:#d6f1ee;color:#0d3b3a}
+.jl-frame{position:relative;width:min(calc(100% - 32px),1100px,max(560px,calc((100svh - var(--hdr-h,66px) - 250px) * 1.6)));margin:0 auto;aspect-ratio:16/10;border-radius:16px;overflow:hidden;background:#cdeeff;box-shadow:0 8px 30px rgba(0,0,0,.15)}
+.jl-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+@media(max-width:600px){.jl-frame{width:calc(100% - 32px);aspect-ratio:auto;height:78vh;height:78svh;border-radius:12px}}
+.jl-note{max-width:460px;margin:14px auto 0;padding:0 16px;font-size:16px;line-height:1.5;text-align:center;color:var(--ink)}
 /* ===== 게임 고르기 블록 끝 ===== */
