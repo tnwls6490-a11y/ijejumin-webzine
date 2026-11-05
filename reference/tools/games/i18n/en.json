@@ -5,8 +5,8 @@
     "villageSub": "Find your neighborhood",
     "balance": "Balance Game",
     "balanceSub": "Pick the day you’d live",
-    "realPre": "Jeju Life, ",
-    "real": "Real or Not?",
+    "realPre": "",
+    "real": "Believe It or Not",
     "realSub": "True or fake",
     "toTop": "Back to start",
     "home": "Home",
@@ -20,8 +20,8 @@
     "endShare": "Share with friends",
     "endAgain": "Take it again",
     "titleBalance": "Jeju Life Balance Game | ejejumin · Hankyung Webzine",
-    "titleReal1": "Jeju Life, Real or Not? Daily Life Edition | ejejumin · Hankyung Webzine",
-    "titleReal2": "Jeju Life, Real or Not? Settlers Edition | ejejumin · Hankyung Webzine",
+    "titleReal1": "Believe It or Not, Jeju Life Part 1: Daily Life Edition — True or fake? A Jeju reality-sense test | ejejumin · Hankyung Webzine",
+    "titleReal2": "Believe It or Not, Jeju Life Part 2: Settlers Edition — True or fake? A Jeju reality-sense test | ejejumin · Hankyung Webzine",
     "life": "Jeju Local Experience",
     "lifeSub": "A 3D walk together",
     "lifeTitle": "Jeju Local Experience - A 3D Jeju walk together",
@@ -421,8 +421,8 @@
   },
   "rq": {
     "kicker": "True or fake?",
-    "title1": "Jeju Life,",
-    "title2": "Real or Not?",
+    "title1": "Believe It or Not,",
+    "title2": "Jeju Life",
     "meta": "8 cards · About 1 min",
     "go": "Start",
     "bubble": "Jeju life stories Hareubang heard:\ntrue or fake?",
@@ -594,7 +594,7 @@
     "sequelAria": "Part 2: Settlers Edition",
     "sets": {
       "life": {
-        "title": "Jeju Life, Real or Not? Daily Life Edition",
+        "title": "Believe It or Not, Jeju Life Part 1: Daily Life Edition",
         "hook": "Apparently moving house while the gods are up in the sky is real. Let’s see if you get fooled too",
         "invite": "Moving house while the gods are up in the sky? True or fake?",
         "sub": "Jeju life you won’t learn on a trip<br>Guess whether each one is true or fake.",
@@ -608,7 +608,7 @@
         "note": "This test is just for fun.<br>True cards were checked against encyclopedias, official sources, statistics and news reports,<br>and fake cards are stories made up for fun."
       },
       "people": {
-        "title": "Jeju Life, Real or Not? Settlers Edition",
+        "title": "Believe It or Not, Jeju Life Part 2: Settlers Edition",
         "hook": "Apparently ₩6,000 shipping on a ₩10,000 item is real. Let’s see if you get fooled too",
         "invite": "₩6,000 shipping on a ₩10,000 item: true or fake?",
         "sub": "8 Jeju stories from people who lived here first.<br>Guess whether each one is true or fake.",
@@ -624,6 +624,9 @@
         "note": "This test is just for fun.<br>True cards come from ejejumin interviews and official statistics and sources,<br>and fake cards are stories made up for fun."
       }
     },
-    "toSequel": "Play Jeju Life, Real or Not? Part 2 →"
+    "toSequel": "Play Believe It or Not, Jeju Life Part 2 →",
+    "prev": "Back",
+    "restart": "Start over",
+    "restartConfirm": "Go back to the start? Your answers so far will be cleared."
   }
 }
