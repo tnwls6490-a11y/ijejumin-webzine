@@ -3626,10 +3626,12 @@ body.page-interview { background: var(--iv-paper); }
 #interview-video { scroll-margin-top: 72px; }
 /* 맨 위 발행일은 조금 작게 */
 .story-date { font-size: 14px; }
-/* 맨 아래 발행 정보: 위아래 얇은 선 사이에 항목 이름과 내용을 나란히 */
+/* 맨 아래 발행 정보: 위아래 얇은 선 사이에 항목 이름과 내용을 나란히
+   발행일·인터뷰어를 한 줄에 (사용자 요청 2026-11-05. 전에는 세 줄이었고 인스타그램 줄은 지웠다). 좁아서 안 들어가면 다음 줄로 */
 .iv-credits { margin: 44px 0 48px; padding: 14px 0; border-top: 1px solid var(--rule-strong); border-bottom: 1px solid var(--rule-strong); }
-.iv-credits-list { margin: 0; }
-.iv-credits-row { display: grid; grid-template-columns: 6.5em 1fr; gap: 16px; align-items: center; min-height: var(--tap); font-size: 16px; }
+.iv-credits-list { margin: 0; display: flex; flex-wrap: wrap; align-items: center; column-gap: 48px; }
+.iv-credits-row { display: flex; gap: 16px; align-items: center; min-height: var(--tap); font-size: 16px; }
+@media (max-width: 600px) { .iv-credits-list { column-gap: 12px; } .iv-credits-row { gap: 6px; } }   /* 360px 휴대폰에서 영어·일본어도 한 줄 */
 .iv-credits-row dt { font-weight: 800; color: var(--iv-ink); }
 .iv-credits-row dd { margin: 0; color: var(--iv-ink); }
 .iv-credits-row a { display: inline-flex; align-items: center; min-height: var(--tap); color: var(--orange-text); font-weight: 700; text-decoration: underline; text-underline-offset: 3px; }
