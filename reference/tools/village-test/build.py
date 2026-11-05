@@ -258,6 +258,8 @@ js = rep(js, '<h1 class="region" style="margin:0">${r.region}<small>${r.area}</s
 js = rep(js, '<div class="topbar" style="min-height:0">', '<div class="vt-topbar is-plain">')
 js = rep(js, '<img src="img/${r.pose}.webp" alt="" loading="lazy">', '<img src="${IMG}${r.pose}.webp" alt="" loading="lazy">')
 js = js.replace(' style="margin:0"', '')
+# 결과 맨 아래 '베타 버전 · 동네 정보는 이제주민 팀이 검수하고 있어요.' 줄은 웹진에서 뺀다 (사용자 요청 2026-11-05)
+js = rep(js, "\n    <p class=\"beta\">${t('beta')}</p>`;", "`;")
 js = rep(js, "else if (act === 'home') { try { history.replaceState(null, '', '#'); } catch (e) {} show('start'); }",
              "else if (act === 'home') { try { history.replaceState(null, '', location.pathname + location.search); } catch (e) {} show('start'); }")
 js = rep(js, "document.addEventListener('click', e => {\n  const b = e.target.closest('[data-act]'); if (!b) return;",

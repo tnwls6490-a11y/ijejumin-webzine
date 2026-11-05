@@ -3277,8 +3277,7 @@ function renderResult(key, isMine) {
     })()}
     <button class="cta yellow combo" type="button" data-act="share"><span class="l1"><svg viewBox="0 0 48 48" aria-hidden="true"><use href="#i-share"/></svg><span>${t('shareBtn')}</span></span></button>
     ${isMine ? `<button class="cta blue" type="button" data-act="restart">${t('restart')}</button>` : ''}
-    ${isMine ? '' : (mine ? `<button class="cta ghost" type="button" data-act="mine">${t('backMine')}</button>` : `<button class="cta" type="button" data-act="restart">${t('tryToo')}</button>`)}
-    <p class="beta">${t('beta')}</p>`;
+    ${isMine ? '' : (mine ? `<button class="cta ghost" type="button" data-act="mine">${t('backMine')}</button>` : `<button class="cta" type="button" data-act="restart">${t('tryToo')}</button>`)}`;
   show('result');
   fitChips();
   try { history.replaceState(null, '', '#' + key); } catch (e) { /* hash is a convenience only */ }
