@@ -2006,7 +2006,8 @@ var wzPlace = (function () {
       (/^https?:$/.test(location.protocol) ? "&origin=" + encodeURIComponent(location.origin) : "");
     frame.addEventListener("load", function () { ytSend(frame, { event: "listening", id: 1, channel: "widget" }); });
     frame.title = title || wzT("인터뷰 영상", "Interview video", "インタビュー動画");
-    frame.allow = "autoplay; encrypted-media; picture-in-picture; fullscreen";
+    /* compute-pressure: YouTube 플레이어가 기기 처리량을 재는 기능. 허락하지 않으면 크롬 콘솔에 Permissions policy 경고가 남는다 (개발자 점검 2026-11-05) */
+    frame.allow = "autoplay; encrypted-media; picture-in-picture; fullscreen; compute-pressure";
     frame.setAttribute("allowfullscreen", "");
     frame.setAttribute("referrerpolicy", "strict-origin-when-cross-origin");
     frame.setAttribute("loading", "lazy");
@@ -2189,7 +2190,7 @@ var wzPlace = (function () {
       var frame = document.createElement("iframe");
       frame.src = "https://www.youtube-nocookie.com/embed/" + id + "?autoplay=1&rel=0&playsinline=1";
       frame.title = wzT("이제주민 쇼츠", "ejejumin shorts", "ejejumin ショート動画");
-      frame.allow = "autoplay; encrypted-media; picture-in-picture; fullscreen";
+      frame.allow = "autoplay; encrypted-media; picture-in-picture; fullscreen; compute-pressure";   /* 본문 영상과 같은 이유 */
       frame.setAttribute("allowfullscreen", "");
       frame.setAttribute("referrerpolicy", "strict-origin-when-cross-origin");
       frameBox.appendChild(frame);
