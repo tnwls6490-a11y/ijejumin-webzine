@@ -627,6 +627,8 @@
     "toSequel": "去玩信不信由你，济州生活 第2弹 →",
     "prev": "上一张",
     "restart": "回到开头",
-    "restartConfirm": "要回到开头吗？目前选的答案会被清除。"
+    "restartConfirm": "要回到开头吗？目前选的答案会被清除。",
+    "restartNo": "取消",
+    "restartYes": "确定"
   }
 }

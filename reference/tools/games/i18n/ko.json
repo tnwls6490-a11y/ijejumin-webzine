@@ -627,6 +627,8 @@
     "toSequel": "믿거나 말거나, 제주살이 2탄 하러 가기 →",
     "prev": "이전",
     "restart": "처음으로",
-    "restartConfirm": "처음으로 돌아갈까요? 지금까지 고른 답은 지워져요."
+    "restartConfirm": "처음으로 돌아갈까요? 지금까지 고른 답은 지워져요.",
+    "restartNo": "취소",
+    "restartYes": "확인"
   }
 }

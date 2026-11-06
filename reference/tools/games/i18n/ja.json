@@ -627,6 +627,8 @@
     "toSequel": "信じるか信じないか、済州暮らし 第2弾へ →",
     "prev": "戻る",
     "restart": "最初から",
-    "restartConfirm": "最初に戻りますか？ここまで選んだ答えは消えます。"
+    "restartConfirm": "最初に戻りますか？ここまで選んだ答えは消えます。",
+    "restartNo": "キャンセル",
+    "restartYes": "OK"
   }
 }

@@ -4690,6 +4690,16 @@ body.page-interview :is(.topbar, .wz-header, .site-footer) { font-family: var(--
   .rq .rq-restart{grid-column:3;grid-row:1}
   .rq .rq-dots{grid-column:1/-1;grid-row:2}
 }
+/* '처음으로' 확인 창 (페이지 안 <dialog>, 2026-11-06). 바깥은 어둡게, 버튼 높이 48px. '확인'은 진한 색(남색·2탄은 짙은 초록) */
+.rq-confirm{width:min(340px,calc(100% - 32px));max-width:none;padding:0;border:0;border-radius:20px;background:#fff;color:var(--ink);box-shadow:0 18px 50px rgba(0,0,0,.25)}
+.rq-confirm::backdrop{background:rgba(18,35,58,.5)}
+.rq-confirm-in{display:flex;flex-direction:column;gap:20px;padding:26px 20px 20px}
+.rq-confirm-msg{margin:0;font:700 17px/1.6 var(--font);text-align:center;word-break:keep-all;text-wrap:balance}
+.rq-confirm-btns{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.rq-confirm-btns button{min-height:48px;padding:0 10px;border:2px solid var(--ink);border-radius:14px;font:800 16px/1.2 var(--font);cursor:pointer}
+.rq-confirm-no{background:#fff;color:var(--ink)}
+.rq-confirm-yes{background:var(--ink);color:#fff}
+.rq-confirm-btns button:focus-visible{outline:3px solid var(--orange);outline-offset:2px}
 /* --- 제주 라이프 (#jeju-life): 팀이 만든 3D 제주 산책 게임을 iframe으로 (사용자 요청 2026-11-04, '제주 라이프 게임 웹진 삽입 안내.pdf') ---
    - 위쪽 줄·게임 고르기는 다른 게임과 같은 가운데 칸(460px). 게임 화면은 그 아래 넓게
    - 크기는 안내대로 PC 16:10(최대 1100px)·휴대폰 화면 높이의 78%. PC는 위쪽 줄·고르기와 함께 한 화면에 들어오게 높이로도 줄인다(최소 폭 560px)

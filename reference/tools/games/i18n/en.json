@@ -627,6 +627,8 @@
     "toSequel": "Play Believe It or Not, Jeju Life Part 2 →",
     "prev": "Back",
     "restart": "Start over",
-    "restartConfirm": "Go back to the start? Your answers so far will be cleared."
+    "restartConfirm": "Go back to the start? Your answers so far will be cleared.",
+    "restartNo": "Cancel",
+    "restartYes": "OK"
   }
 }
