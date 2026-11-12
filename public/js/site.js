@@ -1,8 +1,22 @@
 /* 이제주민 · site.js (모든 페이지 공용) */
+/* ---------- 공유용 페이지에서 바로 넘기기 (articles/jeju-life.html, 2026-11-06 제주 라이프 연동) ----------
+   카카오톡 등 미리보기를 만드는 프로그램은 스크립트를 돌리지 않아 그 페이지의 제목·그림(og)을 읽고, 사람이 열면 바로 게임 탭(?mode=life)으로 보낸다.
+   <html data-forward="life">인 페이지에서만. 주소 뒤 utm_·lang 값은 그대로 넘긴다(영어·일본어는 그 언어 웹진 페이지로).
+   게임 팀이 준 share/jeju-life.html의 페이지 안 스크립트를 공통 기준(스크립트는 site.js 하나)에 맞춰 여기로 옮겼다.
+   넘기는 페이지에서는 태그 관리자를 부르지 않는다(넘어간 페이지에서 센다) */
+var wzForward = (function () {
+  if (document.documentElement.getAttribute('data-forward') !== 'life') return false;
+  var q = new URLSearchParams(location.search), l = q.get('lang');
+  q.set('mode', 'life');
+  var dir = l === 'en' || l === 'ja' ? '../' + l + '/articles/' : './';
+  location.replace(dir + 'jeju-village-test.html?' + q.toString() + location.hash);
+  return true;
+})();
+
 /* ---------- Google 태그 관리자 (GTM-NR6G6B9M, 사용자 요청 2026-10-23) ----------
    Google 안내는 <head>에 바로 넣는 것이지만, 공통 기준(스크립트는 site.js 하나, 페이지 안 스크립트 금지)에 맞춰 여기서 불러온다.
    site.js는 페이지 끝에서 읽히므로 head에 둘 때보다 조금 늦게 시작한다. 코드는 Google이 준 그대로 */
-(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+if (!wzForward) (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
 new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
 j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
@@ -4439,6 +4453,8 @@ document.fonts && document.fonts.addEventListener && document.fonts.addEventList
      - 위쪽 줄·게임 고르기는 다른 게임과 같다. 화면이 하나라 홈은 늘 칠해져 있고, 누르면 이 칸 맨 위로 */
   const LIFE_ORIGIN = 'https://jeju-life.jeju-life.workers.dev';
   const LIFE_SRC = LIFE_ORIGIN + '/?room=webzine';
+  /* 게임 고르기와 게임 화면 사이 안내 한 줄 (2026-11-06) */
+  const LIFE_TIP = { ko: '전체 화면으로 플레이해 보세요! 🍊', en: 'Try playing in full screen! 🍊', ja: '全画面で遊んでみてください！🍊', zh: '试试全屏玩吧！🍊' };
   let lifeRoot = null;
   function lifeTrack(event, params) {
     window.dataLayer = window.dataLayer || [];
@@ -4465,10 +4481,33 @@ document.fonts && document.fonts.addEventListener && document.fonts.addEventList
     if (!f || !f.contentWindow) return;
     try { f.contentWindow.postMessage({ type: 'jeju-life:lang', lang: GL }, LIFE_ORIGIN); } catch (e) { /* 아직 안 열린 게임 */ }
   }
+  /* 게임이 보내는 알림 (2026-11-06 제주 라이프 연동): 준비됨(언어 · 할 수 있는 것 알리기) · 아이폰 전체 화면 · 플레이 중(체류 시간) · 스탬프 · 폰 대화(화면 위치 기억 · 되돌리기) */
+  let lifeChatY = null;
   window.addEventListener('message', e => {
-    if (e.origin !== LIFE_ORIGIN || !e.data || e.data.type !== 'jeju-life:ready') return;
+    if (e.origin !== LIFE_ORIGIN || !e.data) return;
     const f = lifeRoot && lifeRoot.querySelector('.jl-frame iframe');
-    if (f && f.contentWindow === e.source) lifeTellLang();
+    if (!f || f.contentWindow !== e.source) return;
+    const d = e.data;
+    if (d.type === 'jeju-life:ready') {
+      lifeTellLang();
+      f.contentWindow.postMessage({ type: 'jeju-life:caps', fullscreen: true, refit: true }, LIFE_ORIGIN);
+    } else if (d.type === 'jeju-life:fullscreen') {      // 아이폰: 게임 칸을 화면 가득
+      const on = !!d.on;
+      f.parentNode.classList.toggle('jl-full', on);
+      document.documentElement.classList.toggle('jl-noscroll', on);
+      f.contentWindow.postMessage({ type: 'jeju-life:fullscreen', on }, LIFE_ORIGIN);
+    } else if (d.type === 'jeju-life:active') {          // 게임을 하는 15초마다: GA 체류 시간
+      lifeTrack('life_play', { engagement_time_msec: d.ms });
+    } else if (d.type === 'jeju-life:mission') {         // 스탬프를 받을 때마다
+      lifeTrack('life_mission', { mission: d.id, kind: d.kind, count: d.n });
+    } else if (d.type === 'jeju-life:chat') {            // 폰: 대화 칸을 열기 직전 화면 위치를 기억
+      lifeChatY = window.scrollY;
+    } else if (d.type === 'jeju-life:refit') {           // 대화를 마치고 자판이 내려가면 그 위치로 되돌림 (자판이 다 내려간 뒤 한 번 더)
+      const y = lifeChatY;
+      const back = () => (y !== null ? window.scrollTo({ top: y, behavior: 'smooth' }) : f.closest('.jl-frame').scrollIntoView({ block: 'center', behavior: 'smooth' }));
+      back(); setTimeout(back, 400);
+      lifeChatY = null;
+    }
   });
   function lifeMount(force) {
     if (lifeRoot && !force) { lifeRoot.hidden = false; lifeFrame(true); return; }
@@ -4476,7 +4515,7 @@ document.fonts && document.fonts.addEventListener && document.fonts.addEventList
     el.className = 'jl'; el.id = 'jeju-life'; el.lang = langAttr();
     el.setAttribute('aria-labelledby', 'jl-title');
     el.innerHTML = '<div class="jl-app">' + gameHeader() + switches('life') + '<h2 class="sr-only" id="jl-title">' + esc(L.ui.lifeTitle) + '</h2></div>' +
-      '<div class="jl-frame"></div>';
+      '<p class="jl-tip">' + esc(LIFE_TIP[GL] || LIFE_TIP.ko) + '</p><div class="jl-frame"></div>';
     const running = lifeRoot && lifeRoot.querySelector('.jl-frame iframe');   // 언어만 바꿀 때는 돌고 있는 게임을 옮겨 둔다
     if (lifeRoot) lifeRoot.replaceWith(el); else main.append(el);
     lifeRoot = el;

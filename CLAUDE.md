@@ -790,6 +790,23 @@ ijejumin-webzine/
   - 시험할 때는 Playwright `route_web_socket`으로 게임 서버 접속을 막아 실제 방(webzine)에 들어가지 않게 했다
   - 확인: PC 1280×800·1366×650, 휴대폰 390·360, 카톡 312(글자 125%) × 네 언어 — 고르기 넘침·가로 스크롤·오류 없음, 오가기·뒤로 가기·언어 바꾸기
     - 카톡 312×520(글자 125%) 한국어는 고르기 이름이 두 줄이 되어 동네 테스트 '테스트 시작하기'가 화면 아래로 19px 넘친다(세 칸일 때는 들어갔다)
+  - **게임 팀 업데이트 반영** (2026-11-06, '클로드 코드 2/제주라이프_웹진업데이트/' README·PDF, 사용자 요청 "바뀐 곳만 옮겨줘")
+    - 게임 팀은 'js·css 폴더 파일을 그대로 덮어써 달라'고 했지만, 그 두 파일은 11/5 16:33 판(커밋 50aae6b, 그때 운영 서버 판)에 제주 라이프 부분만 더한 것이라
+      그대로 덮어쓰면 그 뒤 고친 베타 문구 삭제·믿거나 말거나 이름·'← 이전'/'처음으로'·확인 창이 사라진다. 그래서 바뀐 곳(diff)만 지금 파일에 옮겼다 (README도 '그 뒤 고쳤다면 바뀐 곳만'이라고 함)
+      - **게임 팀이 또 site.js·style.css 통째로 보내면** 먼저 우리 커밋과 비교해 바탕 판을 찾고, 바뀐 곳만 옮긴다 (바탕 판과 받은 파일을 `diff -u`로 비교 → 지금 파일에 `patch`)
+    - site.js (게임 블록 제주 라이프 부분): 게임 칸 위 안내 한 줄 `LIFE_TIP`('전체 화면으로 플레이해 보세요! 🍊', 네 언어, `.jl-tip`),
+      게임이 보내는 알림 받기를 통째로 바꿈 — `jeju-life:ready`(언어 알리기 + `jeju-life:caps` 전체 화면·위치 되돌리기 가능), `jeju-life:fullscreen`(아이폰: 게임 칸을 화면 가득 `.jl-full`, 뒤 페이지 스크롤 막기 `html.jl-noscroll`),
+      `jeju-life:active` → dataLayer `life_play`(게임하는 15초마다, `engagement_time_msec`), `jeju-life:mission` → `life_mission`(스탬프마다, mission·kind·count),
+      `jeju-life:chat`·`jeju-life:refit`(폰에서 대화를 마치면 대화 전 화면 위치로)
+    - style.css: `.jl-tip`·`.jl-frame.jl-full`·`html.jl-noscroll` 세 줄 (게임 블록 끝 바로 위). 안내 글자는 게임 팀 판대로 15px
+    - 공유용 페이지 `articles/jeju-life.html`(새로) + 그림 `images/og-jeju-life.jpg`(1200×630, 108KB, 게임 팀이 준 것): 카카오톡 미리보기에 제주 라이프 제목·그림이 뜨고, 사람이 열면 바로 게임 탭(`jeju-village-test.html?mode=life`)으로 간다
+      - 공유할 주소 `https://lxwebzine.hankyung.com/2026-1/team3/articles/jeju-life.html` (utm·`lang=en|ja` 그대로 넘김. 영어·일본어는 그 언어 웹진 페이지로)
+      - 게임 팀 판은 페이지 안 `<script>`·`<style>`이라 공통 기준에 맞춰 옮겼다: 넘기기는 `site.js` 맨 위(`<html data-forward="life">`인 페이지만, `wzForward`), 모양은 `style.css`의 `.page-forward`
+        - site.js를 `<head>`에서 defer 없이 읽어 글이 그려지기 전에 넘긴다. 넘기는 페이지에서는 태그 관리자를 부르지 않는다(넘어간 페이지에서 센다)
+        - canonical(자기 주소)·og:locale을 더했다. noindex는 게임 팀 판대로(검색에는 넘어간 페이지만). 헤더·푸터는 없다(사람이 볼 일이 없는 넘기기 페이지)
+        - 스크립트를 끈 사람만 '제주 라이프로 가는 중… 🌴' 링크를 본다 (링크 색은 바탕 대비 4.5:1 넘게 진하게 `#0b5c52`, 높이 44px)
+    - GTM: `life_play`(매개변수 `engagement_time_msec` = 데이터 영역 변수)·`life_mission` 태그는 아직 만들지 않았다 (사용자 규칙: 만들기 전에 묻기)
+    - 아이폰 전체 화면·대화 뒤 위치 되돌리기는 이 컴퓨터에서 흉내 낼 수 없어 휴대폰에서 확인한다 (README '올린 뒤 확인')
 - 그림: `images/balance-v2/`(A/B 그림 8장, AI 생성, 145~223KB). 실화냐는 마을 테스트 하르방을 쓴다
 - GA4: dataLayer에 `balance_*`(start·answer·complete·share·image_created 등)·`rq_*`(rq_start·rq_answer·rq_complete·rq_share 등, 전달 메모 4번)·`life_*` 이벤트를 넣는다. **GTM 태그는 아직 만들지 않았다** (사용자 규칙: 만들기 전에 묻기)
 - data-track: 공유 버튼(위쪽 줄 '공유'·결과 '친구에게 공유하기'·밸런스 '같은 질문 보내기'·'친구도 고르게') share_copy, 인터뷰로 가는 카드·'본문에서 바로 읽기' related_article

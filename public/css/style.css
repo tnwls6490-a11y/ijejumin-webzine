@@ -4022,6 +4022,11 @@ body.page-interview :is(.topbar, .wz-header, .site-footer) { font-family: var(--
 .vt .kw li, .vt .day span, .vt .tip, .vt .zine p, .vt .picks li { font-size: 16px; }
 /* ===== 마을 테스트 블록 끝 ===== */
 
+
+/* 공유용 페이지 articles/jeju-life.html (2026-11-06, 제주 라이프 연동): 사람이 열면 site.js가 바로 게임 탭으로 넘긴다.
+   스크립트를 끈 사람만 이 한 줄(게임 탭 링크)을 본다. 게임 팀이 준 페이지 안 스타일을 공통 기준에 맞춰 여기로 옮김 (링크 색은 바탕 대비 4.5:1 넘게 진하게) */
+.page-forward{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;background:#cdeeff;color:#0d3b3a}
+.page-forward a{display:inline-flex;align-items:center;min-height:44px;color:#0b5c52;font-weight:700}
 /* ===== 게임 고르기 블록 시작 (밸런스 게임 · 제주살이, 실화냐?) ===== */
 /* =========================================================
    마을 테스트 페이지(한국어)의 게임 두 개와 맨 위 '게임 고르기' (사용자 요청 2026-11-03). 화면은 site.js의 같은 이름 블록
@@ -4719,4 +4724,8 @@ body.page-interview :is(.topbar, .wz-header, .site-footer) { font-family: var(--
 .jl-frame{position:relative;width:min(calc(100% - 32px),1100px,max(560px,calc((100svh - var(--hdr-h,66px) - 250px) * 1.6)));margin:0 auto;aspect-ratio:16/10;border-radius:16px;overflow:hidden;background:#cdeeff;box-shadow:0 8px 30px rgba(0,0,0,.15)}
 .jl-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
 @media(max-width:600px){.jl-frame{width:calc(100% - 32px);aspect-ratio:auto;height:78vh;height:78svh;border-radius:12px}}
+/* 제주 라이프 (2026-11-06): 게임 고르기 아래 안내 한 줄 · 아이폰 전체 화면(게임 칸을 화면 가득) */
+.jl-tip{margin:-8px auto 12px;padding:0 16px;text-align:center;font-size:15px;font-weight:800;color:#0d3b3a}
+.jl-frame.jl-full{position:fixed;inset:0;z-index:2147483000;width:auto;height:auto;margin:0;aspect-ratio:auto;border-radius:0;box-shadow:none}
+html.jl-noscroll,html.jl-noscroll body{overflow:hidden}
 /* ===== 게임 고르기 블록 끝 ===== */
