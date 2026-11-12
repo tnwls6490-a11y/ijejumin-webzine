@@ -133,6 +133,9 @@ TAIL_CSS = '''/* 아티팩트에서 style="…"로 넣던 것 (공통 기준: st
 .vt #sheet .x { width: 44px; height: 44px; }
 .vt .app.fit .opt { min-height: clamp(44px, 6.4cqh, 56px); font-size: clamp(16px, 2.1cqh, 17px); }
 .vt .kw li, .vt .day span, .vt .tip, .vt .zine p, .vt .picks li { font-size: 16px; }
+/* 위쪽 줄 c3: 312px 휴대폰·카톡 글자 확대의 영어·일본어에서 c1·c2로도 넘쳐, Language는 지구본 그림만 (글자는 화면 낭독용으로 남김, 2026-11-12) */
+.vt .hdr.c3 #langbtn { padding-inline: 10px; }
+.vt .hdr.c3 #langbtn span { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 '''
 open(os.path.join(OUT, 'vt.css'), 'w', encoding='utf-8').write(HEAD_CSS + css + '\n' + TAIL_CSS)
 
@@ -274,6 +277,10 @@ const downloads = null;
 const waitDownloads = () => Promise.resolve();""")
 js = rep(js, "const [logo, pose] = await Promise.all([loadImg('img/logo.webp'), loadImg(`img/${r.pose}.webp`)]);",
              "const [logo, pose] = await Promise.all([loadImg(IMG + 'logo.webp'), loadImg(`${IMG}${r.pose}.webp`)]);")
+# 위쪽 줄 줄이기 단계에 c3(Language는 지구본 그림만)을 더한다 (2026-11-12, 312px·카톡 글자 확대의 영어·일본어)
+js = rep(js, """  h.classList.remove('c1', 'c2');
+  for (const c of ['c1', 'c2']) {""", """  h.classList.remove('c1', 'c2', 'c3');
+  for (const c of ['c1', 'c2', 'c3']) {""")
 js = rep(js, "document.fonts && document.fonts.ready.then(() => { document.querySelectorAll('.paper').forEach(tear); fitHeader(); });",
              "document.fonts && document.fonts.ready.then(() => { vtRoot.querySelectorAll('.paper').forEach(tear); fitHeader(); });")
 assert 'img/' not in js.replace('${IMG}', '').replace("IMG + '", ''), [m for m in re.findall(r".{20}img/.{20}", js)]

@@ -2901,8 +2901,8 @@ function applyStatic() {
 // Keep the header on one line: on narrow phones the home pill shows only its icon, then the pills sit closer together.
 function fitHeader() {
   const h = vtRoot.querySelector('.hdr');
-  h.classList.remove('c1', 'c2');
-  for (const c of ['c1', 'c2']) {
+  h.classList.remove('c1', 'c2', 'c3');
+  for (const c of ['c1', 'c2', 'c3']) {
     if (h.scrollWidth <= h.clientWidth + 1) return;
     h.classList.add(c);
   }
@@ -3730,12 +3730,18 @@ document.fonts && document.fonts.addEventListener && document.fonts.addEventList
     '<button class="pill" type="button" data-g="share" data-track="share_copy">' + gIcon('share') + '<span>' + esc(L.ui.share) + '</span></button>' +
     '<div class="langwrap"><button class="pill" type="button" data-g="lang" aria-haspopup="true" aria-expanded="false">' + gIcon('globe') + '<span lang="en">Language</span></button>' +
     '<div class="langmenu" role="menu" aria-label="Language" hidden>' + GLANGS.map(([k, n]) => '<button type="button" role="menuitemradio" lang="' + k + '" aria-checked="' + (k === GL) + '" data-g="setlang" data-lang="' + k + '">' + n + '</button>').join('') + '</div></div></div></div>';
-  /* 좁은 휴대폰: 동네 테스트 fitHeader처럼 한 줄에 안 들어가면 홈은 그림만(c1), 그다음 칸 사이를 좁게(c2) */
+  /* 좁은 휴대폰: 동네 테스트 fitHeader처럼 한 줄에 안 들어가면 홈은 그림만(c1), 그다음 칸 사이를 좁게(c2),
+     그래도 넘치면 Language는 지구본 그림만(c3, 글자는 화면 낭독용으로 남김). 312px 휴대폰·카톡 글자 확대에서 영어·일본어가 넘쳤다 (2026-11-12)
+     글꼴이 다 뜨기 전에 재면 좁게 재져서, 아직 뜨는 중이면 다 뜬 뒤 한 번 더 잰다 */
   function fitHdr(box) {
     const h = box && box.querySelector('.hdr');
     if (!h || !h.offsetWidth) return;
-    h.classList.remove('c1', 'c2');
-    for (const c of ['c1', 'c2']) { if (h.scrollWidth <= h.clientWidth + 1) return; h.classList.add(c); }
+    h.classList.remove('c1', 'c2', 'c3');
+    for (const c of ['c1', 'c2', 'c3']) { if (h.scrollWidth <= h.clientWidth + 1) break; h.classList.add(c); }
+    if (document.fonts && document.fonts.status !== 'loaded' && !h.dataset.fitWait) {
+      h.dataset.fitWait = '1';
+      document.fonts.ready.then(() => { delete h.dataset.fitWait; fitHdr(box); });
+    }
   }
   function closeGameLang() {
     main.querySelectorAll('#jeju-balance .langmenu, #rq .langmenu, #jeju-life .langmenu').forEach(m => {

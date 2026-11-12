@@ -4020,6 +4020,9 @@ body.page-interview :is(.topbar, .wz-header, .site-footer) { font-family: var(--
 .vt #sheet .x { width: 44px; height: 44px; }
 .vt .app.fit .opt { min-height: clamp(44px, 6.4cqh, 56px); font-size: clamp(16px, 2.1cqh, 17px); }
 .vt .kw li, .vt .day span, .vt .tip, .vt .zine p, .vt .picks li { font-size: 16px; }
+/* 위쪽 줄 c3: 312px 휴대폰·카톡 글자 확대의 영어·일본어에서 c1·c2로도 넘쳐, Language는 지구본 그림만 (글자는 화면 낭독용으로 남김, 2026-11-12) */
+.vt .hdr.c3 #langbtn { padding-inline: 10px; }
+.vt .hdr.c3 #langbtn span { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 /* ===== 마을 테스트 블록 끝 ===== */
 
 
@@ -4363,6 +4366,9 @@ body.page-interview :is(.topbar, .wz-header, .site-footer) { font-family: var(--
 :is(.rq,.jl) .hdr.c2 .hdr-actions,#jeju-balance .hdr.c2 .hdr-actions{gap:5px}
 :is(.rq,.jl) .hdr.c2 .pill,#jeju-balance .hdr.c2 .pill{padding-inline:9px 10px;gap:4px}
 :is(.rq,.jl) .hdr.c2 .is-home,#jeju-balance .hdr.c2 .is-home{padding-inline:8px}
+/* c3: Language는 지구본 그림만 (글자는 화면 낭독용으로 남김, site.js fitHdr. 312px·카톡 글자 확대의 영어·일본어, 2026-11-12) */
+:is(.rq,.jl) .hdr.c3 [data-g=lang],#jeju-balance .hdr.c3 [data-g=lang]{padding-inline:10px}
+:is(.rq,.jl) .hdr.c3 [data-g=lang] span,#jeju-balance .hdr.c3 [data-g=lang] span{position:absolute;width:1px;height:1px;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 /* 밸런스 게임 문제 화면 아래 '← 돌아가기' (고르면 바로 다음 문제로 넘어가서 '다음 고민' 버튼 대신, 사용자 요청 2026-11-03) */
 #jeju-balance .jb-goback{margin-top:2px}
 /* 친구에게 공유: 동네 테스트의 안내(.toast)·복사 창(#copybox)과 같은 모양 (사용자 요청 2026-11-03) */
